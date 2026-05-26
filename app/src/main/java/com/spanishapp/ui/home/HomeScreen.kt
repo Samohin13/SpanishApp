@@ -205,6 +205,21 @@ fun HomeScreen(
                 }
             }
 
+            // ── v1.23.0: PRO promo баннер ВВЕРХУ (только для free) ─────
+            // Заметный, прямо под статистикой — юзер не сможет пропустить.
+            if (!isPro) {
+                item {
+                    StaggeredEntrance(index = 2) {
+                        Column(modifier = Modifier.padding(horizontal = 16.dp)) {
+                            HomeProBannerTop(onClick = {
+                                navController.navigate("paywall") { launchSingleTop = true }
+                            })
+                            Spacer(Modifier.height(14.dp))
+                        }
+                    }
+                }
+            }
+
             // ── Continue Pager ─────────────────────────────────
             item {
                 StaggeredEntrance(index = 2) {
@@ -2811,5 +2826,80 @@ private fun HomeProBento(onClick: () -> Unit) {
                 .align(Alignment.BottomEnd)
                 .padding(4.dp),
         )
+    }
+}
+
+// ════════════════════════════════════════════════════════════
+//  v1.23.0: PRO promo BIG BANNER на главной — вверху,
+//  сразу после статистики. Дизайн: горизонтальный градиент
+//  primary→primary2 с 💎 слева, текстом по центру и стрелкой →.
+//  Достаточно крупный (~72dp высота) чтобы юзер не пропустил.
+// ════════════════════════════════════════════════════════════
+@Composable
+private fun HomeProBannerTop(onClick: () -> Unit) {
+    val primary = androidx.compose.ui.graphics.Color(0xFFFF8A3D)
+    val primary2 = androidx.compose.ui.graphics.Color(0xFFFF6A1A)
+    val gold = androidx.compose.ui.graphics.Color(0xFFFFD27A)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(androidx.compose.foundation.shape.RoundedCornerShape(20.dp))
+            .background(
+                androidx.compose.ui.graphics.Brush.linearGradient(
+                    listOf(primary, primary2)
+                )
+            )
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 14.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
+        ) {
+            // 💎 крупное, в круге
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(androidx.compose.foundation.shape.CircleShape)
+                    .background(androidx.compose.ui.graphics.Color.White.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text("💎", fontSize = 26.sp)
+            }
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "Открой весь курс с PRO",
+                    color = androidx.compose.ui.graphics.Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                )
+                Spacer(Modifier.height(2.dp))
+                Text(
+                    "A2 · B1 · B2 · 1327 глаголов · ∞ ИИ-чат",
+                    color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.9f),
+                    fontSize = 12.sp,
+                )
+                Spacer(Modifier.height(4.dp))
+                Box(
+                    modifier = Modifier
+                        .clip(androidx.compose.foundation.shape.RoundedCornerShape(99.dp))
+                        .background(androidx.compose.ui.graphics.Color.White)
+                        .padding(horizontal = 10.dp, vertical = 3.dp)
+                ) {
+                    Text(
+                        "🔥 7 дней бесплатно",
+                        color = primary2,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                    )
+                }
+            }
+            Text(
+                "→",
+                color = androidx.compose.ui.graphics.Color.White,
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Black,
+            )
+        }
     }
 }

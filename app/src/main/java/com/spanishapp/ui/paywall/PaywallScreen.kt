@@ -157,22 +157,22 @@ private fun PageHero() {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
             .padding(horizontal = 18.dp, vertical = 14.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        // Hero block
+        Spacer(Modifier.weight(0.5f))
+        // Hero block — большой, центрированный
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(RoundedCornerShape(24.dp))
+                .clip(RoundedCornerShape(28.dp))
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(Color(0xFF1F1A28), Color(0xFF14141A))
                     )
                 )
-                .border(1.dp, PrimaryOrange.copy(alpha = 0.2f), RoundedCornerShape(24.dp))
-                .padding(horizontal = 20.dp, vertical = 24.dp)
+                .border(1.dp, PrimaryOrange.copy(alpha = 0.25f), RoundedCornerShape(28.dp))
+                .padding(horizontal = 22.dp, vertical = 32.dp)
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()) {
@@ -181,19 +181,19 @@ private fun PageHero() {
                     modifier = Modifier
                         .clip(RoundedCornerShape(99.dp))
                         .border(1.dp, PrimaryOrange, RoundedCornerShape(99.dp))
-                        .padding(horizontal = 14.dp, vertical = 5.dp)
+                        .padding(horizontal = 16.dp, vertical = 6.dp)
                 ) {
                     Text(
                         "✦ ESPEAK · PREMIUM ✦",
                         color = PrimaryOrange,
-                        fontSize = 10.sp,
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.ExtraBold,
                         letterSpacing = 2.5.sp
                     )
                 }
-                Spacer(Modifier.height(14.dp))
-                Text("💎", fontSize = 64.sp)
-                Spacer(Modifier.height(4.dp))
+                Spacer(Modifier.height(20.dp))
+                Text("💎", fontSize = 88.sp)
+                Spacer(Modifier.height(10.dp))
                 Text(
                     buildAnnotatedString {
                         append("Открой ")
@@ -204,17 +204,18 @@ private fun PageHero() {
                         append("\nиспанский")
                     },
                     color = TextColor,
-                    fontSize = 30.sp,
+                    fontSize = 38.sp,
                     fontWeight = FontWeight.Light,
-                    lineHeight = 33.sp,
+                    lineHeight = 42.sp,
                     textAlign = TextAlign.Center,
                 )
-                Spacer(Modifier.height(6.dp))
+                Spacer(Modifier.height(10.dp))
                 Text(
-                    "«Путь от A1 до B2 в одной подписке»",
+                    "От алфавита до свободной речи —\nвсё в одной подписке",
                     color = TextDim,
-                    fontSize = 13.sp,
+                    fontSize = 14.sp,
                     fontStyle = FontStyle.Italic,
+                    lineHeight = 20.sp,
                     textAlign = TextAlign.Center,
                 )
             }
@@ -227,9 +228,9 @@ private fun PageHero() {
             modifier = Modifier.fillMaxWidth()
         ) {
             Row(
-                modifier = Modifier.padding(14.dp),
+                modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 AvatarStack()
                 Column {
@@ -240,13 +241,14 @@ private fun PageHero() {
                             }
                             append(" учеников уже PRO")
                         },
-                        color = TextColor, fontSize = 13.sp
+                        color = TextColor, fontSize = 15.sp
                     )
                     Text("★★★★★ 4.8 · Google Play",
-                        color = GoldColor, fontSize = 11.sp)
+                        color = GoldColor, fontSize = 12.sp)
                 }
             }
         }
+        Spacer(Modifier.weight(1f))
     }
 }
 
@@ -272,30 +274,31 @@ private fun AvatarStack() {
 private fun PageNumbers() {
     val stats = listOf(
         Triple("180", "уроков", "A2 · B1 · B2"),
-        Triple("75", "рассказов", "A2 · B1 · B2"),
-        Triple("1327", "глаголов", "+ 6 времён"),
+        Triple("75", "историй", "A2 · B1 · B2"),
+        Triple("1327", "глаголов", "все времена"),
         Triple("100", "уровней игр", "все 6 игр"),
-        Triple("∞", "AI-репетитор", "free = 50/день"),
-        Triple("~10K", "SM-2 слов", "A2 · B1 · B2"),
+        Triple("∞", "AI-репетитор", "сейчас 50/день"),
+        Triple("10К", "слов в карточках", "по всем уровням"),
     )
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 18.dp, vertical = 14.dp)
+            .padding(horizontal = 18.dp, vertical = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
+        Spacer(Modifier.weight(0.3f))
         Text(
-            "📊 Сколько контента откроется",
-            color = TextColor, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold,
+            "📊 Что ты получишь",
+            color = TextColor, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold,
             textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()
         )
-        Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(2.dp))
         Text(
-            "Free = 60 уроков A1. PRO — всё остальное.",
-            color = TextDim, fontSize = 12.sp,
+            "Сейчас доступны только 60 уроков уровня A1.\nС PRO открывается всё остальное:",
+            color = TextDim, fontSize = 14.sp, lineHeight = 20.sp,
             textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()
         )
-        Spacer(Modifier.height(14.dp))
+        Spacer(Modifier.height(8.dp))
         // Grid 2 cols × 3 rows
         stats.chunked(2).forEach { row ->
             Row(
@@ -306,8 +309,8 @@ private fun PageNumbers() {
                     StatCard(num, lbl, sub, modifier = Modifier.weight(1f))
                 }
             }
-            Spacer(Modifier.height(10.dp))
         }
+        Spacer(Modifier.weight(1f))
     }
 }
 
@@ -315,32 +318,32 @@ private fun PageNumbers() {
 private fun StatCard(num: String, lbl: String, sub: String, modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(18.dp))
+            .clip(RoundedCornerShape(20.dp))
             .background(
                 Brush.verticalGradient(listOf(SurfaceColor, Surface2Color))
             )
-            .border(1.dp, BorderColor, RoundedCornerShape(18.dp))
+            .border(1.dp, BorderColor, RoundedCornerShape(20.dp))
     ) {
         // Top accent strip
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(2.dp)
+                .height(3.dp)
                 .background(Brush.horizontalGradient(listOf(PrimaryOrange, GoldColor)))
         )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 16.dp),
+                .padding(horizontal = 12.dp, vertical = 22.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(num, color = PrimaryOrange, fontSize = 32.sp,
-                fontWeight = FontWeight.Black, letterSpacing = (-1).sp)
-            Spacer(Modifier.height(6.dp))
-            Text(lbl, color = TextColor, fontSize = 10.sp,
+            Text(num, color = PrimaryOrange, fontSize = 44.sp,
+                fontWeight = FontWeight.Black, letterSpacing = (-2).sp)
+            Spacer(Modifier.height(8.dp))
+            Text(lbl, color = TextColor, fontSize = 13.sp,
                 fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
             Spacer(Modifier.height(2.dp))
-            Text(sub, color = TextDim, fontSize = 9.sp, textAlign = TextAlign.Center)
+            Text(sub, color = TextDim, fontSize = 11.sp, textAlign = TextAlign.Center)
         }
     }
 }
@@ -350,52 +353,53 @@ private fun StatCard(num: String, lbl: String, sub: String, modifier: Modifier =
 private fun PageFeatures() {
     data class Feat(val icon: String, val title: String, val dim: String)
     val feats = listOf(
-        Feat("🎓", "180 уроков A2/B1/B2", "+ грамматика + диалоги всех уровней"),
-        Feat("📚", "75 рассказов", "free = только 25 книг A1"),
-        Feat("🔥", "1327 глаголов", "159 с полными таблицами 6 времён"),
-        Feat("🎯", "Все 100 уровней игр", "free = первые 10 каждой"),
-        Feat("🃏", "SM-2 карточки A2/B1/B2", "~10 000 слов в spaced repetition"),
-        Feat("🤖", "AI-репетитор безлимит", "free = 50 запросов в день"),
+        Feat("🎓", "Все уроки до B2", "180 новых уроков · грамматика · диалоги"),
+        Feat("📚", "Все 100 историй", "Художественное чтение всех уровней"),
+        Feat("🔥", "1327 глаголов", "Все формы прошедшего, будущего, сослагательного"),
+        Feat("🎯", "Все 100 уровней игр", "Сейчас открыты только первые 10 каждой"),
+        Feat("🃏", "Умные карточки слов", "Все 10 000 слов с интервальным повторением"),
+        Feat("🤖", "ИИ-репетитор без лимита", "Сейчас 50 сообщений в день — будет ∞"),
     )
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 18.dp, vertical = 14.dp)
+            .padding(horizontal = 18.dp, vertical = 14.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
-        Text("✨ Что входит", color = TextColor, fontSize = 20.sp,
+        Spacer(Modifier.weight(0.2f))
+        Text("✨ Что входит", color = TextColor, fontSize = 24.sp,
             fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth())
-        Spacer(Modifier.height(4.dp))
-        Text("Все 8 категорий контента без ограничений",
-            color = TextDim, fontSize = 12.sp,
+        Spacer(Modifier.height(2.dp))
+        Text("Все шесть направлений без ограничений",
+            color = TextDim, fontSize = 14.sp,
             textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
-        Spacer(Modifier.height(14.dp))
+        Spacer(Modifier.height(6.dp))
         feats.forEach { f ->
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(RoundedCornerShape(16.dp))
+                    .clip(RoundedCornerShape(18.dp))
                     .background(SurfaceColor)
-                    .padding(12.dp),
+                    .padding(horizontal = 14.dp, vertical = 14.dp),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(14.dp)
             ) {
                 Box(
                     modifier = Modifier
-                        .size(36.dp)
-                        .clip(RoundedCornerShape(11.dp))
-                        .background(PrimaryOrange.copy(alpha = 0.12f)),
+                        .size(44.dp)
+                        .clip(RoundedCornerShape(13.dp))
+                        .background(PrimaryOrange.copy(alpha = 0.15f)),
                     contentAlignment = Alignment.Center
-                ) { Text(f.icon, fontSize = 18.sp) }
+                ) { Text(f.icon, fontSize = 22.sp) }
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(f.title, color = TextColor, fontSize = 13.sp,
+                    Text(f.title, color = TextColor, fontSize = 15.sp,
                         fontWeight = FontWeight.Bold)
-                    Text(f.dim, color = TextDim, fontSize = 11.sp)
+                    Text(f.dim, color = TextDim, fontSize = 12.sp, lineHeight = 16.sp)
                 }
             }
-            Spacer(Modifier.height(10.dp))
         }
+        Spacer(Modifier.weight(1f))
     }
 }
 
@@ -421,14 +425,15 @@ private fun PageCompare() {
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 18.dp, vertical = 14.dp)
     ) {
-        Text("⚖️ Free vs PRO", color = TextColor, fontSize = 20.sp,
+        Spacer(Modifier.height(20.dp))
+        Text("⚖️ Free vs PRO", color = TextColor, fontSize = 24.sp,
             fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth())
         Spacer(Modifier.height(4.dp))
         Text("Что именно меняется при подписке",
-            color = TextDim, fontSize = 12.sp,
+            color = TextDim, fontSize = 14.sp,
             textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
-        Spacer(Modifier.height(14.dp))
+        Spacer(Modifier.height(16.dp))
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -441,16 +446,16 @@ private fun PageCompare() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Surface2Color)
-                    .padding(horizontal = 10.dp, vertical = 12.dp),
+                    .padding(horizontal = 12.dp, vertical = 14.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("КОНТЕНТ", color = TextDim, fontSize = 10.sp,
+                Text("КОНТЕНТ", color = TextDim, fontSize = 11.sp,
                     fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp,
                     modifier = Modifier.weight(1.4f))
-                Text("FREE", color = TextDim, fontSize = 11.sp,
+                Text("FREE", color = TextDim, fontSize = 12.sp,
                     fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center,
                     modifier = Modifier.weight(1f))
-                Text("PRO 💎", color = PrimaryOrange, fontSize = 11.sp,
+                Text("PRO 💎", color = PrimaryOrange, fontSize = 12.sp,
                     fontWeight = FontWeight.Black, letterSpacing = 1.sp,
                     textAlign = TextAlign.Center, modifier = Modifier.weight(1f))
             }
@@ -458,27 +463,27 @@ private fun PageCompare() {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 10.dp, vertical = 10.dp),
+                        .padding(horizontal = 12.dp, vertical = 12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Row(modifier = Modifier.weight(1.4f),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalAlignment = Alignment.CenterVertically) {
-                        Text(r.icon, fontSize = 13.sp)
-                        Text(r.cat, color = TextColor, fontSize = 12.sp,
+                        Text(r.icon, fontSize = 16.sp)
+                        Text(r.cat, color = TextColor, fontSize = 13.sp,
                             fontWeight = FontWeight.SemiBold)
                     }
-                    Text(r.free, color = TextDim, fontSize = 11.sp,
+                    Text(r.free, color = TextDim, fontSize = 12.sp,
                         textAlign = TextAlign.Center, modifier = Modifier.weight(1f))
                     Box(
                         modifier = Modifier
                             .weight(1f)
-                            .clip(RoundedCornerShape(6.dp))
-                            .background(PrimaryOrange.copy(alpha = 0.08f))
-                            .padding(vertical = 4.dp),
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(PrimaryOrange.copy(alpha = 0.1f))
+                            .padding(vertical = 6.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(r.pro, color = PrimaryOrange, fontSize = 11.sp,
+                        Text(r.pro, color = PrimaryOrange, fontSize = 12.sp,
                             fontWeight = FontWeight.ExtraBold,
                             textAlign = TextAlign.Center)
                     }

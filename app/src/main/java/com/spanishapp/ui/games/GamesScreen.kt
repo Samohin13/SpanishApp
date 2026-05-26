@@ -70,6 +70,7 @@ fun GamesScreen(
     vm: GamesScreenViewModel = hiltViewModel()
 ) {
     val progress by vm.gameProgress.collectAsStateWithLifecycle()
+    val isPro by com.spanishapp.ui.games.common.rememberIsProState()
     // v1.13.2: 2 cols ВЕЗДЕ (юзер: "должно быть 2 столбца 4 строки
     // как в мобильной просто крупнее"). Раньше было 4 cols × 2 rows
     // на планшете — выглядело как «сетка чисел», карточки маленькие.
@@ -96,6 +97,17 @@ fun GamesScreen(
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Spacer(Modifier.height(4.dp))
+            }
+        }
+
+        // v1.23.0: PRO promo баннер на хабе игр (только для free).
+        // Юзер видит «открой все 100 уровней» прямо над сеткой игр —
+        // самая важная точка для конверсии в играх.
+        if (!isPro) {
+            item(span = { GridItemSpan(cols) }) {
+                GamesProBanner(onClick = {
+                    navController.navigate("paywall") { launchSingleTop = true }
+                })
             }
         }
 
@@ -232,3 +244,58 @@ private fun GameCard(
     }
 }
 
+
+// ════════════════════════════════════════════════════════════
+//  v1.23.0: PRO banner на GamesScreen — заметный, призывает
+//  купить чтобы открыть уровни 11-100 каждой игры.
+// ════════════════════════════════════════════════════════════
+@Composable
+private fun GamesProBanner(onClick: () -> Unit) {
+    val primary = Color(0xFFFF8A3D)
+    val primary2 = Color(0xFFFF6A1A)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(androidx.compose.foundation.shape.RoundedCornerShape(20.dp))
+            .background(
+                androidx.compose.ui.graphics.Brush.linearGradient(
+                    listOf(primary, primary2)
+                )
+            )
+            .clickable(onClick = onClick)
+            .padding(horizontal = 16.dp, vertical = 14.dp)
+    ) {
+        Row(
+            verticalAlignment = androidx.compose.ui.Alignment.CenterVertically,
+            horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp),
+        ) {
+            Text("🎯", fontSize = 32.sp)
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "Открой все 100 уровней",
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                )
+                Text(
+                    "Сейчас доступны только первые 10 каждой",
+                    color = Color.White.copy(alpha = 0.9f),
+                    fontSize = 12.sp,
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(99.dp))
+                    .background(Color.White)
+                    .padding(horizontal = 12.dp, vertical = 6.dp)
+            ) {
+                Text(
+                    "PRO 💎",
+                    color = primary2,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Black,
+                )
+            }
+        }
+    }
+}
