@@ -391,6 +391,19 @@ fun AiChatScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        // v1.23.35: КЛЮЧЕВОЙ FIX. MainActivity делает .padding(bottom=navBar)+
+        // .consumeWindowInsets(navBar) на NavHost. Это создаёт baseline для
+        // children — navBar уже "съеден". Когда юзер открывает клаву, ime.bottom
+        // RAW = keyboard+navBar (keyboard occludes navBar). После consume:
+        // ime.bottom = keyboard. Если bottomBar добавляет imePadding — Surface
+        // отступает на keyboard, ВНЕ зависимости от того где он находится.
+        // А поскольку parent padding уже подняла NavHost на navBar — итого
+        // Surface стоит на navBar выше клавы = void = ~48dp.
+        //
+        // Fix: дать Scaffold знать о ime через contentWindowInsets. Тогда
+        // bottomBar slot позиционируется внутри Scaffold с учётом ime,
+        // БЕЗ imePadding на Surface. Никакого double-pad.
+        contentWindowInsets = WindowInsets.safeDrawing,
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -655,20 +668,11 @@ private fun ChatInputBar(
         label = "mic_pulse_anim",
     )
 
-    // v1.23.34: ПРАВИЛЬНАЯ диагностика после неудачных v1.23.32/33:
-    // Surface ОБЯЗАТЕЛЬНО с .imePadding() — иначе клава реально обрезает
-    // нижний край pill+FAB (видно на скрине юзера, обрезаны border curves).
-    //
-    // Старая моя гипотеза "Scaffold bottomBar сам учитывает ime" — НЕВЕРНА
-    // в текущей конфигурации. Без imePadding Surface рисуется ПОД клавой.
-    //
-    // Прошлый "void" между welcome-картами и pill (v1.23.31) — это не баг,
-    // а нормальная пустая wallpaper-область когда контент короткий и
-    // прижат к topBar'у. pill при этом стоял корректно над клавой.
+    // v1.23.35: imePadding УБРАН. Scaffold сам учитывает ime через
+    // contentWindowInsets=safeDrawing (см. AiChatScreen). bottomBar slot
+    // позиционируется правильно над клавой автоматически.
     Surface(
-        modifier = Modifier
-            .fillMaxWidth()
-            .imePadding(),
+        modifier = Modifier.fillMaxWidth(),
         color = MaterialTheme.colorScheme.surface,
         shadowElevation = 8.dp,
     ) {
