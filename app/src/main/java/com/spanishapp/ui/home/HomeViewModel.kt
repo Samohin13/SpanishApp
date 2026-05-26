@@ -219,9 +219,16 @@ class HomeViewModel @Inject constructor(
     // ── Continue Pager: a random weak word for a quick refresher ──
     // Pulled from the broader Practice pool (see WordDao#getPracticePool)
     // so brand-new users still see *something* instead of an empty card.
-    val weakSampleWord: StateFlow<WordEntity?> = flow {
-        emit(wordDao.getPracticePool(5).randomOrNull())
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+    //
+    // v1.23.3 (audit Bug 22): раньше `flow { emit(...) }` эмитил ОДИН раз
+    // на подписку. Если у нового юзера pool пустой при старте, weakSampleWord
+    // оставался null навсегда в рамках сессии, даже когда юзер выучил слова
+    // и pool наполнился. Теперь подписка на learnedCount() — каждое
+    // изменение прогресса триггерит re-fetch pool'а.
+    val weakSampleWord: StateFlow<WordEntity?> =
+        wordDao.learnedCount()
+            .map { wordDao.getPracticePool(5).randomOrNull() }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
 
     // ── Recent dictionary searches for the bento tile ──
     val recentWords: StateFlow<List<WordEntity>> =

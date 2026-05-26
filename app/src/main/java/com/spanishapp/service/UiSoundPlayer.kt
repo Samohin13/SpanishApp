@@ -10,6 +10,8 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -58,7 +60,15 @@ class UiSoundPlayer @Inject constructor(
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
-    @Volatile private var enabled: Boolean = true
+    /** v1.23.3 (audit Bug 9): enabled теперь StateFlow через stateIn
+     *  вместо manual scope.launch{collect{}} — раньше тот коллектор был
+     *  permanently leaked (UiSoundPlayer @Singleton, scope никогда не
+     *  cancellable). Теперь подписка через stateIn-stream сам управляет
+     *  collector lifecycle. Eagerly = подписка стартует сразу как только
+     *  кто-то получит UiSoundPlayer через DI. */
+    private val enabledState: StateFlow<Boolean> =
+        appPreferences.soundEffectsEnabled
+            .stateIn(scope, kotlinx.coroutines.flow.SharingStarted.Eagerly, true)
 
     private val audioManager: AudioManager? =
         context.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
@@ -99,13 +109,8 @@ class UiSoundPlayer @Inject constructor(
                 pool = newPool
             }
         }
-
-        // Observe user toggle. Reuses the existing soundEffectsEnabled
-        // preference so the Settings switch (settings_sound_effects)
-        // gates both the legacy generated-tone SoundPlayer AND this one.
-        scope.launch {
-            appPreferences.soundEffectsEnabled.collect { enabled = it }
-        }
+        // v1.23.3: убран старый scope.launch{collect} — заменён на
+        // enabledState (stateIn) выше. Один collector, нет лика.
     }
 
     /**
@@ -117,7 +122,7 @@ class UiSoundPlayer @Inject constructor(
      * @param volume 0f..1f (linear), default 1f
      */
     fun play(sound: Sound, volume: Float = 1f) {
-        if (!enabled) return
+        if (!enabledState.value) return
         if (audioManager?.ringerMode == AudioManager.RINGER_MODE_SILENT) return
         val p = pool ?: return // pool ещё не готов — no-op
         val id = soundIds[sound] ?: return
