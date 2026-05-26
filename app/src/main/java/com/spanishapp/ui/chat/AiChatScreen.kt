@@ -1010,6 +1010,14 @@ private fun TypingIndicator() {
 @Composable
 private fun WelcomeHint(onSuggestion: (String) -> Unit) {
     val scrollState = androidx.compose.foundation.rememberScrollState()
+    // v1.23.23: тёмный полупрозрачный scrim поверх wallpaper'а — текст и chips
+    // теперь читаемы на ЛЮБОМ фоне (раньше на atardecer/corazon/mediterraneo
+    // pink-on-pink и blue-on-blue были невидимы).
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.55f))
+    ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -1127,6 +1135,7 @@ private fun WelcomeHint(onSuggestion: (String) -> Unit) {
 
         Spacer(Modifier.height(16.dp))
     }
+    }  // close Box (scrim)
 }
 
 /**
