@@ -75,11 +75,12 @@ fun SpanishKeyboard(
     onValueChange: (TextFieldValue) -> Unit,
     onSend: () -> Unit,
     canSend: Boolean,
+    layout: KbLayout = KbLayout.ES,
+    onLayoutChange: (KbLayout) -> Unit = {},
     suggestions: List<String> = emptyList(),
     onPickSuggestion: (String) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    var layout by remember { mutableStateOf(KbLayout.ES) }
     var shifted by remember { mutableStateOf(true) }
     var capsLock by remember { mutableStateOf(false) }
     var collapsed by remember { mutableStateOf(false) }
@@ -290,7 +291,7 @@ fun SpanishKeyboard(
                     modifier = Modifier.weight(1.4f),
                     onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        layout = if (layout == KbLayout.NUM) KbLayout.ES else KbLayout.NUM
+                        onLayoutChange(if (layout == KbLayout.NUM) KbLayout.ES else KbLayout.NUM)
                         shifted = false
                         capsLock = false
                     },
@@ -307,11 +308,11 @@ fun SpanishKeyboard(
                     modifier = Modifier.weight(1.1f),
                     onClick = {
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        layout = when (layout) {
+                        onLayoutChange(when (layout) {
                             KbLayout.ES -> KbLayout.RU
                             KbLayout.RU -> KbLayout.ES
                             KbLayout.NUM -> KbLayout.RU
-                        }
+                        })
                         shifted = false
                         capsLock = false
                     },

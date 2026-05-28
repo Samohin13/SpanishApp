@@ -89,11 +89,13 @@ fun AiChatScreen(
             selection = androidx.compose.ui.text.TextRange(recognized.length),
         )
     }
-    // v1.24.12: язык распознавания авто-детект по содержимому inputа.
-    // Если в тексте есть кириллица → ru-RU; иначе es-ES (испанский по умолчанию).
+    // v1.24.16: язык STT определяется по ТЕКУЩЕЙ РАСКЛАДКЕ клавиатуры.
+    // Lifted state — keyboard layout живёт в AiChatScreen, и SpanishKeyboard,
+    // и mic используют одну и ту же переменную. RU клава → ru-RU, иначе es-ES.
+    // Раньше детект шёл по содержимому input (пустое → es-ES всегда) — баг.
+    var keyboardLayout by remember { mutableStateOf(KbLayout.ES) }
     val sttLanguage: () -> String = {
-        if (inputValue.text.any { it in 'а'..'я' || it in 'А'..'Я' || it == 'ё' || it == 'Ё' })
-            "ru-RU" else "es-ES"
+        if (keyboardLayout == KbLayout.RU) "ru-RU" else "es-ES"
     }
     val micPermLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
         contract = androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
@@ -169,6 +171,8 @@ fun AiChatScreen(
                 SpanishKeyboard(
                     value = inputValue,
                     onValueChange = { inputValue = it },
+                    layout = keyboardLayout,
+                    onLayoutChange = { keyboardLayout = it },
                     onSend = {
                         if (input.isNotBlank()) {
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
