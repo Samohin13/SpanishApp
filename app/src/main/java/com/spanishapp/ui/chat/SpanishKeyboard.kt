@@ -150,11 +150,12 @@ fun SpanishKeyboard(
                 return@Column
             }
 
-            // Suggestions slot — ВСЕГДА 40dp, чтобы инпут не прыгал
+            // Suggestions slot — ВСЕГДА 32dp, чтобы инпут не прыгал.
+            // 32dp = text 14sp + минимальный padding, без лишнего воздуха.
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(40.dp),
+                    .height(32.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 if (suggestions.isNotEmpty()) {
@@ -361,15 +362,14 @@ fun SpanishKeyboard(
                     )
                 }
             }
-            // v1.24.14: collapse-кнопка переехала ВНИЗ клавы (как у Samsung)
-            // Тонкая полоса 24dp с ▾ справа — компактно, не мешает печати.
+            // Collapse-кнопка справа-снизу, компактно (Samsung-style)
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.End,
             ) {
                 Box(
                     modifier = Modifier
-                        .size(width = 44.dp, height = 26.dp)
+                        .size(width = 40.dp, height = 20.dp)
                         .clickable {
                             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                             collapsed = true
@@ -380,11 +380,10 @@ fun SpanishKeyboard(
                         Icons.Default.KeyboardArrowDown,
                         contentDescription = "Свернуть клавиатуру",
                         tint = textColor.copy(alpha = 0.45f),
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(18.dp),
                     )
                 }
             }
-            Spacer(Modifier.height(2.dp))
         }
     }
 }
@@ -399,7 +398,7 @@ private fun SuggestionStrip(
     textColor: Color,
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth().height(40.dp),
+        modifier = Modifier.fillMaxWidth().height(32.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         suggestions.forEach { sug ->
