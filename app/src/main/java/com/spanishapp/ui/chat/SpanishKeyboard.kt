@@ -123,39 +123,50 @@ fun SpanishKeyboard(
                 .padding(horizontal = 4.dp),
             verticalArrangement = Arrangement.spacedBy(6.dp),
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(22.dp)
-                    .clickable {
-                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        collapsed = !collapsed
-                    },
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    if (collapsed) Icons.Default.KeyboardArrowUp
-                    else Icons.Default.KeyboardArrowDown,
-                    contentDescription = if (collapsed) "Развернуть" else "Свернуть",
-                    tint = textColor.copy(alpha = 0.5f),
-                    modifier = Modifier.size(18.dp),
-                )
-            }
-
+            // v1.24.14: collapsed handle переехал ВНИЗ клавы (в самый низ).
+            // Верхняя полоса теперь — ВСЕГДА зарезервированная 40dp слот
+            // под suggestions. Если подсказок нет — пустое место. Это значит:
+            // когда юзер начинает печатать, suggestions появляются БЕЗ
+            // расширения клавы → input field не прыгает.
             if (collapsed) {
-                Spacer(Modifier.height(4.dp))
+                // В свёрнутом виде показываем тонкую полосу с шевроном для разворота
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(28.dp)
+                        .clickable {
+                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                            collapsed = false
+                        },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        Icons.Default.KeyboardArrowUp,
+                        contentDescription = "Развернуть",
+                        tint = textColor.copy(alpha = 0.5f),
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
                 return@Column
             }
 
-            if (suggestions.isNotEmpty()) {
-                SuggestionStrip(
-                    suggestions = suggestions.take(3),
-                    onPick = { sug ->
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        onPickSuggestion(sug)
-                    },
-                    textColor = textColor,
-                )
+            // Suggestions slot — ВСЕГДА 40dp, чтобы инпут не прыгал
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                if (suggestions.isNotEmpty()) {
+                    SuggestionStrip(
+                        suggestions = suggestions.take(3),
+                        onPick = { sug ->
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            onPickSuggestion(sug)
+                        },
+                        textColor = textColor,
+                    )
+                }
             }
 
             // Цифровой ряд
@@ -350,7 +361,30 @@ fun SpanishKeyboard(
                     )
                 }
             }
-            Spacer(Modifier.height(4.dp))
+            // v1.24.14: collapse-кнопка переехала ВНИЗ клавы (как у Samsung)
+            // Тонкая полоса 24dp с ▾ справа — компактно, не мешает печати.
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(width = 44.dp, height = 26.dp)
+                        .clickable {
+                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                            collapsed = true
+                        },
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(
+                        Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Свернуть клавиатуру",
+                        tint = textColor.copy(alpha = 0.45f),
+                        modifier = Modifier.size(20.dp),
+                    )
+                }
+            }
+            Spacer(Modifier.height(2.dp))
         }
     }
 }
