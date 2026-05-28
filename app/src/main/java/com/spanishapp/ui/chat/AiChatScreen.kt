@@ -82,13 +82,19 @@ fun AiChatScreen(
     val input = inputValue.text
 
     // v1.24.17: приём scenario id из ChatArchiveScreen через savedStateHandle.
+    // v1.24.18: если PRO-сценарий и free-юзер → paywall, не выбор.
     val currentBackStackEntry = navController.currentBackStackEntry
-    LaunchedEffect(currentBackStackEntry) {
+    LaunchedEffect(currentBackStackEntry, isPro) {
         val picked = currentBackStackEntry
             ?.savedStateHandle
             ?.get<String>("picked_scenario_id")
         if (picked != null) {
-            ChatScenarios.byId(picked).let { vm.selectScenario(it) }
+            val sc = ChatScenarios.byId(picked)
+            if (sc.isPro && !isPro) {
+                navController.navigate("paywall") { launchSingleTop = true }
+            } else {
+                vm.selectScenario(sc)
+            }
             currentBackStackEntry.savedStateHandle.remove<String>("picked_scenario_id")
         }
     }
@@ -217,7 +223,12 @@ fun AiChatScreen(
         ) {
             ScenarioStrip(
                 selectedId = scenario.id,
+                isPro = isPro,
                 onSelect = { vm.selectScenario(it) },
+                onPaywall = {
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                    navController.navigate("paywall") { launchSingleTop = true }
+                },
             )
 
             LazyColumn(
@@ -399,12 +410,23 @@ private fun LevelPill(level: String) {
 @Composable
 private fun ScenarioStrip(
     selectedId: String,
+    isPro: Boolean,
     onSelect: (com.spanishapp.domain.chat.ChatScenario) -> Unit,
+    onPaywall: () -> Unit,
 ) {
-    // v1.24.12: чище — без PRO-кружков с эмодзи на углах, без чёрных pill'ов.
-    // Активный сценарий: оранжевая заливка + белый текст.
-    // Неактивный: surface + soft border. Pro помечается мелкой иконкой 💎 в тексте.
+    // v1.24.18:
+    //  • Auto-scroll к активному сценарию — раньше выбранный chip уезжал
+    //    за экран если был не в начале списка
+    //  • PRO scenarios: тап для free-юзера → paywall, не выбор
+    //  • locked для free → soft alpha + lock иконка вместо 💎
+    val listState = androidx.compose.foundation.lazy.rememberLazyListState()
+    LaunchedEffect(selectedId) {
+        val idx = ChatScenarios.all.indexOfFirst { it.id == selectedId }
+        if (idx >= 0) listState.animateScrollToItem(idx)
+    }
+
     LazyRow(
+        state = listState,
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
@@ -414,15 +436,25 @@ private fun ScenarioStrip(
     ) {
         items(ChatScenarios.all, key = { it.id }) { sc ->
             val isActive = sc.id == selectedId
-            val bg = if (isActive) EspeakChat.primary
-                     else MaterialTheme.colorScheme.surfaceContainerHighest
-            val fg = if (isActive) Color.White
-                     else MaterialTheme.colorScheme.onSurface
+            val locked = sc.isPro && !isPro
+            val bg = when {
+                isActive -> EspeakChat.primary
+                locked -> MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.6f)
+                else -> MaterialTheme.colorScheme.surfaceContainerHighest
+            }
+            val fg = when {
+                isActive -> Color.White
+                locked -> MaterialTheme.colorScheme.onSurface.copy(alpha = 0.55f)
+                else -> MaterialTheme.colorScheme.onSurface
+            }
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(20.dp))
                     .background(bg)
-                    .clickable { onSelect(sc) }
+                    .clickable {
+                        if (locked) onPaywall()
+                        else onSelect(sc)
+                    }
                     .padding(start = 12.dp, end = 14.dp, top = 8.dp, bottom = 8.dp),
             ) {
                 Row(
@@ -437,7 +469,10 @@ private fun ScenarioStrip(
                         color = fg,
                     )
                     if (sc.isPro) {
-                        Text("💎", fontSize = 11.sp)
+                        Text(
+                            if (locked) "🔒" else "💎",
+                            fontSize = 11.sp,
+                        )
                     }
                 }
             }

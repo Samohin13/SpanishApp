@@ -45,6 +45,11 @@ class AiChatViewModel @Inject constructor(
     val scenario: StateFlow<ChatScenario> = _scenario.asStateFlow()
 
     fun selectScenario(scenario: ChatScenario) {
+        // v1.24.18: PRO-guard — free-юзер не может выбрать PRO сценарий
+        if (scenario.isPro && !isPro.value) {
+            _error.value = "Этот сценарий доступен только в PRO. Обнови подписку."
+            return
+        }
         _scenario.value = scenario
     }
 
