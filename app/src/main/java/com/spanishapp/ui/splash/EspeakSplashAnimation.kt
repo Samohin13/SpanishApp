@@ -74,7 +74,22 @@ private const val CONV_DUR = 0.8f
 private const val BAM_FLASH_DUR = 0.25f
 private const val BAM_RING_DUR = 0.5f
 private const val BAM_LOGO_DUR = 0.6f
-private const val TOTAL_DUR = 9.5f
+private const val TOTAL_DUR = 9.5f            // виртуальная длительность
+
+/**
+ * Глобальный множитель скорости анимации.
+ *
+ * Реальное время splash = TOTAL_DUR / SPEED_MULT.
+ * При 1.9× → 9.5 / 1.9 = 5 сек реально. Анимация играет «виртуально»
+ * за 9.5 сек (все константы фаз остаются откалиброванными), но реальное
+ * время прохождения сжато в 1.9 раза.
+ *
+ * Применяется в двух местах:
+ *   1) В LaunchedEffect → виртуальное t = real * SPEED_MULT
+ *   2) В drawSplashFrame → скорость падения букв × SPEED_MULT
+ */
+private const val SPEED_MULT = 1.9f
+private const val REAL_TOTAL_DUR = TOTAL_DUR / SPEED_MULT
 
 /** Слот-пиксель внутри гладкого ESPEAK. Заполняется когда filler-буква долетает. */
 private data class WordSlot(val x: Float, val y: Float, var filled: Boolean)
@@ -332,9 +347,13 @@ fun EspeakSplashAnimation(onComplete: () -> Unit) {
         while (!done) {
             withFrameNanos { now ->
                 if (startNs == 0L) startNs = now
-                val t = (now - startNs) / 1_000_000_000f
+                val realT = (now - startNs) / 1_000_000_000f
+                // Виртуальное время для рендера — сжато × SPEED_MULT.
+                // Все константы фаз остаются прежними, реальная длительность
+                // splash = REAL_TOTAL_DUR (см. константу выше).
+                val t = realT * SPEED_MULT
                 time = if (fastForward) min(TOTAL_DUR, t + 8f) else min(TOTAL_DUR, t)
-                if (time >= TOTAL_DUR) {
+                if (realT >= REAL_TOTAL_DUR) {
                     done = true
                     completed = true
                 }
@@ -423,8 +442,9 @@ private fun DrawScope.drawSplashFrame(
                 continue
             }
 
-            // Падение
-            p.y += p.speed * 0.016f   // ~60 fps assumption (визуально стабильно)
+            // Падение. Скорость × SPEED_MULT — буквы летят пропорционально
+            // быстрее, чтобы успеть в виртуальном времени анимации.
+            p.y += p.speed * 0.016f * SPEED_MULT   // ~60 fps assumption
             if (Random.nextFloat() < 0.04f) p.ch = randChar()
 
             if (p.role == Letter.Role.FILLER) {
