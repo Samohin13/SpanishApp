@@ -274,7 +274,7 @@ fun AiChatScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 if (messages.isEmpty()) {
-                    item { WelcomeBubble(onSpeak = { vm.speak(it) }) }
+                    item { WelcomeBubble(scenario = scenario, onSpeak = { vm.speak(it) }) }
                 } else {
                     items(messages, key = { it.id }) { msg ->
                         ChatMessageItem(
@@ -922,11 +922,20 @@ private fun TypingIndicator() {
    WELCOME BUBBLE — первое сообщение при пустом чате
    ============================================================ */
 @Composable
-private fun WelcomeBubble(onSpeak: (String) -> Unit) {
-    val text = "¡Hola! Soy tu profesor de **ESPEAK**. ¿De qué quieres hablar hoy?"
+private fun WelcomeBubble(
+    scenario: com.spanishapp.domain.chat.ChatScenario,
+    onSpeak: (String) -> Unit,
+) {
+    // v1.25.0: per-scenario welcome — каждый сценарий = свой персонаж.
+    val es = scenario.welcomeEs.ifBlank {
+        "¡Hola! Soy tu profesor de **ESPEAK**. ¿De qué quieres hablar hoy?"
+    }
+    val ru = scenario.welcomeRu.ifBlank {
+        "Привет! Я твой преподаватель ESPEAK. О чём хочешь сегодня поговорить?"
+    }
     ChatMessageItem(
         role = "assistant",
-        content = "$text ⟦RU⟧ Привет! Я твой преподаватель ESPEAK. О чём хочешь сегодня поговорить?",
+        content = "$es ⟦RU⟧ $ru",
         correctionJson = "",
         onSpeak = onSpeak,
         onCorrectionParse = { emptyList() },

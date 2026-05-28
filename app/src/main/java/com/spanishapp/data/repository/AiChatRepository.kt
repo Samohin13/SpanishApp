@@ -107,7 +107,10 @@ class AiChatRepository @Inject constructor(
     }
 
     private fun buildSystemPrompt(scenario: ChatScenario, level: String, tutorName: String): String = buildString {
-        appendLine("Ты — $tutorName, дружелюбный преподаватель испанского из Мадрида.")
+        // v1.25.0: если в сценарии есть characterName — он играет ту роль.
+        // Иначе общий tutor (Default scenario).
+        val name = scenario.characterName ?: tutorName
+        appendLine("Ты — $name, дружелюбный собеседник из Мадрида (носитель испанского).")
         appendLine("Ученик — русскоговорящий, уровень CEFR: $level.")
         appendLine()
         appendLine("ПРАВИЛА ОТВЕТА:")
