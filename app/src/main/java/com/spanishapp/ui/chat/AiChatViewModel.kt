@@ -7,9 +7,11 @@ import com.spanishapp.data.repository.ChatCorrection
 import com.spanishapp.data.repository.parseCorrections
 import com.spanishapp.domain.chat.ChatScenario
 import com.spanishapp.domain.chat.ChatScenarios
+import com.spanishapp.service.AiChatLimiter
 import com.spanishapp.service.SpanishSpeechRecognizer
 import com.spanishapp.service.SpanishTts
 import com.spanishapp.service.SpeechResult
+import com.spanishapp.service.SubscriptionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -26,7 +28,17 @@ class AiChatViewModel @Inject constructor(
     private val repo: AiChatRepository,
     private val tts: SpanishTts,
     private val stt: SpanishSpeechRecognizer,
+    private val limiter: AiChatLimiter,
+    private val subscriptionManager: SubscriptionManager,
 ) : ViewModel() {
+
+    /** PRO-юзер обходит лимит. */
+    val isPro: StateFlow<Boolean> = subscriptionManager.isProActive
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
+
+    /** Сколько запросов осталось сегодня. PRO видит -1 (не показываем). */
+    val remainingMessages: StateFlow<Int> = limiter.remainingToday
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AiChatLimiter.DAILY_LIMIT)
 
     // ── Выбранный сценарий ─────────────────────────────────────
     private val _scenario = MutableStateFlow(ChatScenarios.DEFAULT)
@@ -58,10 +70,18 @@ class AiChatViewModel @Inject constructor(
         if (trimmed.isBlank() || _isSending.value) return
 
         viewModelScope.launch {
+            // PRO-юзеры обходят лимит. Free → проверяем.
+            if (!isPro.value && limiter.isExhausted()) {
+                _error.value = "Достигнут дневной лимит ${AiChatLimiter.DAILY_LIMIT} сообщений. " +
+                    "Лимит обновится завтра, либо подключи PRO для безлимита."
+                return@launch
+            }
+
             _isSending.value = true
             _error.value = null
 
             repo.sendMessage(trimmed, _scenario.value, level, "ESPEAK")
+                .onSuccess { if (!isPro.value) limiter.increment() }
                 .onFailure { _error.value = "Не удалось получить ответ. Проверь интернет." }
 
             _isSending.value = false

@@ -72,6 +72,8 @@ fun AiChatScreen(
     val isListening    by vm.isListening.collectAsStateWithLifecycle()
     val voiceAmplitude by vm.voiceAmplitude.collectAsStateWithLifecycle()
     val error          by vm.error.collectAsStateWithLifecycle()
+    val remaining      by vm.remainingMessages.collectAsStateWithLifecycle()
+    val isPro          by vm.isPro.collectAsStateWithLifecycle()
     // v1.24.6: TextFieldValue для полноценной поддержки курсора/выделения.
     // BasicTextField(readOnly=true) НЕ вызывает системную клаву, но позволяет
     // tap-to-position cursor и selection-by-long-press — как в S26 Ultra.
@@ -131,19 +133,21 @@ fun AiChatScreen(
             ChatHeader(
                 scenarioEmoji = scenario.emoji,
                 scenarioTitle = scenario.title,
-                limit = "47/50",
+                // PRO → null → счётчик скрыт. Free → "47/50".
+                limit = if (isPro) null else "$remaining/${com.spanishapp.service.AiChatLimiter.DAILY_LIMIT}",
                 onBack = { navController.popBackStack() },
                 onNewChat = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     vm.clearCurrentSession()
+                    inputValue = androidx.compose.ui.text.input.TextFieldValue("")
                 },
             )
         },
         bottomBar = {
             Column {
-                QuickChipsRow(onChip = { suggestion ->
+                QuickChipsRow(onChipPrompt = { prompt ->
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                    vm.send(suggestion)
+                    vm.send(prompt)
                 })
                 ChatComposer(
                     inputValue = inputValue,
@@ -235,7 +239,7 @@ fun AiChatScreen(
 private fun ChatHeader(
     scenarioEmoji: String,
     scenarioTitle: String,
-    limit: String,
+    limit: String?,    // null = PRO, скрыть счётчик
     onBack: () -> Unit,
     onNewChat: () -> Unit,
 ) {
@@ -282,20 +286,22 @@ private fun ChatHeader(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             fontWeight = FontWeight.Medium,
                         )
-                        Spacer(Modifier.width(7.dp))
-                        Box(
-                            Modifier
-                                .width(0.5.dp)
-                                .height(11.dp)
-                                .background(MaterialTheme.colorScheme.outline)
-                        )
-                        Spacer(Modifier.width(7.dp))
-                        Text(
-                            limit,
-                            fontSize = 11.5.sp,
-                            color = EspeakChat.primary,
-                            fontWeight = FontWeight.Bold,
-                        )
+                        if (limit != null) {
+                            Spacer(Modifier.width(7.dp))
+                            Box(
+                                Modifier
+                                    .width(0.5.dp)
+                                    .height(11.dp)
+                                    .background(MaterialTheme.colorScheme.outline)
+                            )
+                            Spacer(Modifier.width(7.dp))
+                            Text(
+                                limit,
+                                fontSize = 11.5.sp,
+                                color = EspeakChat.primary,
+                                fontWeight = FontWeight.Bold,
+                            )
+                        }
                     }
                 }
             }
@@ -733,42 +739,79 @@ private fun WelcomeBubble(onSpeak: (String) -> Unit) {
 }
 
 /* ============================================================
-   QUICK CHIPS — над инпутом, готовые промты
+   QUICK CHIPS — таргетированные follow-up команды для AI
+   v1.24.13: каждый chip отправляет ОСМЫСЛЕННЫЙ промт, не просто label.
+   Gemini имеет контекст истории → может выполнить "Объясни проще /
+   Дай пример / Дай упражнение / Говори медленнее / Перефразируй".
    ============================================================ */
+private data class QuickChip(val emoji: String, val label: String, val prompt: String)
+
+private val QUICK_CHIPS = listOf(
+    QuickChip(
+        emoji = "💡",
+        label = "Объясни проще",
+        prompt = "Объясни своё последнее сообщение проще: короткими фразами на уровне A1. " +
+            "Используй базовую лексику и продублируй ключевые слова на русском.",
+    ),
+    QuickChip(
+        emoji = "📝",
+        label = "Дай пример",
+        prompt = "Приведи 2–3 конкретных коротких примера на испанском по теме нашего разговора. " +
+            "После каждого — перевод в [скобках].",
+    ),
+    QuickChip(
+        emoji = "🎯",
+        label = "Дай упражнение",
+        prompt = "Дай мне небольшое упражнение на испанском по нашей текущей теме. " +
+            "Один вопрос или мини-задание (заполнить пропуск, выбрать форму, перевести фразу).",
+    ),
+    QuickChip(
+        emoji = "🐢",
+        label = "Помедленнее",
+        prompt = "Повтори свою мысль более простыми словами и короткими предложениями. " +
+            "Снизь сложность лексики до A2.",
+    ),
+    QuickChip(
+        emoji = "🔁",
+        label = "Перефразируй",
+        prompt = "Перефразируй своё последнее сообщение, используя другие слова и конструкции. " +
+            "Сохрани смысл, измени формулировку — это помогает мне видеть разные варианты.",
+    ),
+)
+
 @Composable
-private fun QuickChipsRow(onChip: (String) -> Unit) {
-    val chips = listOf(
-        "💡" to "Объясни проще",
-        "📝" to "Дай пример",
-        "🎯" to "Дай мне упражнение",
-        "🐢" to "Говори помедленнее",
-        "🔁" to "Перефразируй",
-    )
+private fun QuickChipsRow(onChipPrompt: (String) -> Unit) {
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.surface)
             .padding(top = 8.dp, bottom = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 12.dp),
     ) {
-        items(chips) { (emo, text) ->
-            Surface(
-                shape = RoundedCornerShape(14.dp),
-                color = EspeakChat.primaryPale,
-                modifier = Modifier.clickable { onChip(text) },
+        items(QUICK_CHIPS) { chip ->
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(EspeakChat.primary.copy(alpha = 0.14f))
+                    .border(
+                        1.dp,
+                        EspeakChat.primary.copy(alpha = 0.35f),
+                        RoundedCornerShape(16.dp),
+                    )
+                    .clickable { onChipPrompt(chip.prompt) }
+                    .padding(horizontal = 12.dp, vertical = 7.dp),
             ) {
                 Row(
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
                     verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
-                    Text(emo, fontSize = 13.sp)
+                    Text(chip.emoji, fontSize = 14.sp)
                     Text(
-                        text,
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFFC24A1A),
+                        chip.label,
+                        fontSize = 12.5.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = EspeakChat.primary,
                     )
                 }
             }

@@ -37,6 +37,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
@@ -679,56 +680,63 @@ private fun SpaceKey(
     val currentTap by rememberUpdatedState(onTap)
     val currentSwipe by rememberUpdatedState(onSwipe)
 
+    // v1.24.13: единый pointerInput для space-key.
+    // Раньше было ДВА конкурирующих pointerInput (detectTap + detectDrag) →
+    // на тапе вставлялся пробел И срабатывал drag-курсор одновременно.
+    // Юзер: "при нажатии на пробел он разделяет слова а потом берется за курсор".
+    // Теперь: единый awaitPointerEventScope — drag > 10dp = cursor mode, иначе = space.
+    val SWIPE_THRESHOLD_PX = remember { with(density) { 10.dp.toPx() } }
+
     Box(
         modifier = modifier
             .height(50.dp)
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
-                detectDragGestures(
-                    onDragStart = {
+                awaitPointerEventScope {
+                    while (true) {
+                        val down = awaitFirstDown()
                         pressed = true
                         accumPx = 0f
                         didSwipe = false
-                    },
-                    onDragEnd = {
-                        if (!didSwipe) {
-                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                            currentTap()
+                        try {
+                            while (true) {
+                                val event = awaitPointerEvent(
+                                    androidx.compose.ui.input.pointer.PointerEventPass.Main
+                                )
+                                val change = event.changes.firstOrNull() ?: break
+                                if (!change.pressed) {
+                                    // UP — если НЕ свайпили, вставляем пробел
+                                    if (!didSwipe) {
+                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                        currentTap()
+                                    }
+                                    break
+                                }
+                                // Накапливаем смещение
+                                val dx = change.position.x - down.position.x
+                                if (!didSwipe && kotlin.math.abs(dx) > SWIPE_THRESHOLD_PX) {
+                                    didSwipe = true
+                                    accumPx = dx
+                                }
+                                if (didSwipe) {
+                                    accumPx += change.positionChange().x
+                                    if (kotlin.math.abs(accumPx) >= pxPerChar) {
+                                        val delta = (accumPx / pxPerChar).toInt()
+                                        accumPx -= delta * pxPerChar
+                                        currentSwipe(delta)
+                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                    }
+                                    change.consume()
+                                }
+                            }
+                        } finally {
+                            pressed = false
+                            accumPx = 0f
+                            didSwipe = false
                         }
-                        pressed = false
-                        accumPx = 0f
-                        didSwipe = false
-                    },
-                    onDragCancel = {
-                        pressed = false
-                        accumPx = 0f
-                        didSwipe = false
-                    },
-                    onDrag = { _, drag ->
-                        accumPx += drag.x
-                        if (kotlin.math.abs(accumPx) > pxPerChar) {
-                            val delta = (accumPx / pxPerChar).toInt()
-                            accumPx -= delta * pxPerChar
-                            currentSwipe(delta)
-                            didSwipe = true
-                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        }
-                    },
-                )
-            }
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = { _ ->
-                        pressed = true
-                        if (!didSwipe) {
-                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                            currentTap()
-                        }
-                        tryAwaitRelease()
-                        pressed = false
-                    },
-                )
+                    }
+                }
             },
         contentAlignment = Alignment.Center,
     ) {
@@ -758,6 +766,9 @@ private fun SpecialKey(
         label = "special_bg",
     )
     val currentClick by rememberUpdatedState(onClick)
+    // v1.24.13: haptic был только на главных клавишах, на SpecialKey — нет.
+    // Теперь каждая клавиша вибрирует при нажатии.
+    val haptic = LocalHapticFeedback.current
     Box(
         modifier = modifier
             .height(50.dp)
@@ -767,6 +778,7 @@ private fun SpecialKey(
                 detectTapGestures(
                     onPress = { _ ->
                         pressed = true
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         currentClick()
                         tryAwaitRelease()
                         pressed = false
