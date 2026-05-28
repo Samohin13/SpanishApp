@@ -77,6 +77,28 @@ fun AiChatScreen(
     // tap-to-position cursor и selection-by-long-press — как в S26 Ultra.
     var inputValue by remember { mutableStateOf(androidx.compose.ui.text.input.TextFieldValue("")) }
     val input = inputValue.text
+
+    // v1.24.11: RECORD_AUDIO permission flow для микрофона.
+    // STT (SpeechRecognizer) падает с ERROR_INSUFFICIENT_PERMISSIONS без неё.
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val onVoiceRecognized: (String) -> Unit = { recognized ->
+        inputValue = androidx.compose.ui.text.input.TextFieldValue(
+            text = recognized,
+            selection = androidx.compose.ui.text.TextRange(recognized.length),
+        )
+    }
+    val micPermLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+        contract = androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+    ) { granted ->
+        if (granted) vm.startVoice(onVoiceRecognized)
+    }
+    fun launchMic() {
+        val granted = androidx.core.content.ContextCompat.checkSelfPermission(
+            context, android.Manifest.permission.RECORD_AUDIO
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        if (granted) vm.startVoice(onVoiceRecognized)
+        else micPermLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
+    }
     val listState = rememberLazyListState()
     val haptic = LocalHapticFeedback.current
     val scope = rememberCoroutineScope()
@@ -128,12 +150,7 @@ fun AiChatScreen(
                     },
                     onMic = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        vm.startVoice { recognized ->
-                            inputValue = androidx.compose.ui.text.input.TextFieldValue(
-                                text = recognized,
-                                selection = androidx.compose.ui.text.TextRange(recognized.length),
-                            )
-                        }
+                        launchMic()
                     },
                     isListening = isListening,
                     voiceAmplitude = voiceAmplitude,

@@ -86,50 +86,18 @@ fun SpanishKeyboard(
     val textColor = MaterialTheme.colorScheme.onSurface
     val accent = Color(0xFFFF8A3D)
 
-    fun shouldAutoCapAfter(text: String, pos: Int): Boolean {
-        if (pos == 0) return true
-        val tail = text.substring((pos - 2).coerceAtLeast(0), pos)
-        return tail.length >= 2 && tail[1] == ' ' && tail[0] in setOf('.', '!', '?')
-    }
-
-    fun shiftedStr(s: String): String =
-        if ((shifted || capsLock) && layout != KbLayout.NUM) s.uppercase() else s
-
-    fun insertAt(v: TextFieldValue, s: String): TextFieldValue {
-        val t = v.text
-        val sel = v.selection
-        val newText = t.substring(0, sel.start) + s + t.substring(sel.end)
-        return TextFieldValue(newText, TextRange(sel.start + s.length))
-    }
-
-    fun backspaceChar(v: TextFieldValue): TextFieldValue {
-        val t = v.text
-        val sel = v.selection
-        if (sel.start != sel.end) {
-            return TextFieldValue(
-                t.substring(0, sel.start) + t.substring(sel.end),
-                TextRange(sel.start),
-            )
-        }
-        if (sel.start == 0) return v
-        return TextFieldValue(
-            t.substring(0, sel.start - 1) + t.substring(sel.start),
-            TextRange(sel.start - 1),
-        )
-    }
-
-    fun moveCursor(v: TextFieldValue, delta: Int): TextFieldValue {
-        val newPos = (v.selection.start + delta).coerceIn(0, v.text.length)
-        return TextFieldValue(v.text, TextRange(newPos))
-    }
-
     val emit: (String) -> Unit = { s ->
         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-        val newValue = insertAt(value, shiftedStr(s))
+        val shiftedChar = KeyboardLogic.applyShift(
+            s, shifted, capsLock, layout == KbLayout.NUM,
+        )
+        val newValue = KeyboardLogic.insertAt(value, shiftedChar)
         onValueChange(newValue)
         if (shifted && !capsLock) shifted = false
         if (!capsLock && layout != KbLayout.NUM) {
-            if (shouldAutoCapAfter(newValue.text, newValue.selection.start)) shifted = true
+            if (KeyboardLogic.shouldAutoCapAfter(newValue.text, newValue.selection.start)) {
+                shifted = true
+            }
         }
     }
 
@@ -290,7 +258,7 @@ fun SpanishKeyboard(
                     textColor = textColor,
                     accent = accent,
                     modifier = Modifier.weight(1.4f),
-                    onCharDelete = { onValueChange(backspaceChar(value)) },
+                    onCharDelete = { onValueChange(KeyboardLogic.backspaceChar(value)) },
                     haptic = haptic,
                 )
             }
@@ -345,7 +313,7 @@ fun SpanishKeyboard(
                     haptic = haptic,
                     modifier = Modifier.weight(5f),
                     onTap = { emit(" ") },
-                    onSwipe = { delta -> onValueChange(moveCursor(value, delta)) },
+                    onSwipe = { delta -> onValueChange(KeyboardLogic.moveCursor(value, delta)) },
                 )
                 KeyButton(
                     label = if (layout == KbLayout.NUM) "?" else ".",
