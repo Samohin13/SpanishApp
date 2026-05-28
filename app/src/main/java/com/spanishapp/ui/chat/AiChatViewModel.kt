@@ -71,9 +71,11 @@ class AiChatViewModel @Inject constructor(
     fun dismissError() { _error.value = null }
 
     // ── Голосовой ввод: разовая запись ─────────────────────────
-    fun startVoice(onTextReady: (String) -> Unit) {
+    // language: "es-ES" (default) или "ru-RU". Передаётся из UI на основе
+    // текущей раскладки клавиатуры или предыдущего ввода.
+    fun startVoice(language: String = "es-ES", onTextReady: (String) -> Unit) {
         viewModelScope.launch {
-            when (val r = stt.listenOnce(language = "es-ES")) {
+            when (val r = stt.listenOnce(language = language)) {
                 is SpeechResult.Success   -> onTextReady(r.text)
                 is SpeechResult.Error     -> if (!r.isSilence) _error.value = r.message
                 is SpeechResult.Cancelled -> { /* юзер отменил */ }

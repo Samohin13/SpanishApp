@@ -87,16 +87,22 @@ fun AiChatScreen(
             selection = androidx.compose.ui.text.TextRange(recognized.length),
         )
     }
+    // v1.24.12: язык распознавания авто-детект по содержимому inputа.
+    // Если в тексте есть кириллица → ru-RU; иначе es-ES (испанский по умолчанию).
+    val sttLanguage: () -> String = {
+        if (inputValue.text.any { it in 'а'..'я' || it in 'А'..'Я' || it == 'ё' || it == 'Ё' })
+            "ru-RU" else "es-ES"
+    }
     val micPermLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
         contract = androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
     ) { granted ->
-        if (granted) vm.startVoice(onVoiceRecognized)
+        if (granted) vm.startVoice(sttLanguage(), onVoiceRecognized)
     }
     fun launchMic() {
         val granted = androidx.core.content.ContextCompat.checkSelfPermission(
             context, android.Manifest.permission.RECORD_AUDIO
         ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-        if (granted) vm.startVoice(onVoiceRecognized)
+        if (granted) vm.startVoice(sttLanguage(), onVoiceRecognized)
         else micPermLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
     }
     val listState = rememberLazyListState()
@@ -125,7 +131,6 @@ fun AiChatScreen(
             ChatHeader(
                 scenarioEmoji = scenario.emoji,
                 scenarioTitle = scenario.title,
-                level = "B1",
                 limit = "47/50",
                 onBack = { navController.popBackStack() },
                 onNewChat = {
@@ -230,7 +235,6 @@ fun AiChatScreen(
 private fun ChatHeader(
     scenarioEmoji: String,
     scenarioTitle: String,
-    level: String,
     limit: String,
     onBack: () -> Unit,
     onNewChat: () -> Unit,
@@ -265,16 +269,12 @@ private fun ChatHeader(
             ) {
                 AppLogoAvatar(size = 40.dp)
                 Column(modifier = Modifier.weight(1f)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            "ESPEAK",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 15.5.sp,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        Spacer(Modifier.width(6.dp))
-                        LevelPill(level)
-                    }
+                    Text(
+                        "ESPEAK",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 15.5.sp,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             "$scenarioEmoji $scenarioTitle",
@@ -367,54 +367,43 @@ private fun ScenarioStrip(
     selectedId: String,
     onSelect: (com.spanishapp.domain.chat.ChatScenario) -> Unit,
 ) {
+    // v1.24.12: чище — без PRO-кружков с эмодзи на углах, без чёрных pill'ов.
+    // Активный сценарий: оранжевая заливка + белый текст.
+    // Неактивный: surface + soft border. Pro помечается мелкой иконкой 💎 в тексте.
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
             .background(MaterialTheme.colorScheme.background)
-            .padding(vertical = 10.dp),
-        horizontalArrangement = Arrangement.spacedBy(6.dp),
+            .padding(vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 12.dp),
     ) {
         items(ChatScenarios.all, key = { it.id }) { sc ->
             val isActive = sc.id == selectedId
-            Surface(
-                shape = RoundedCornerShape(18.dp),
-                color = if (isActive) MaterialTheme.colorScheme.onSurface
-                        else MaterialTheme.colorScheme.surface,
-                border = if (!isActive)
-                    androidx.compose.foundation.BorderStroke(0.5.dp, MaterialTheme.colorScheme.outline)
-                else null,
+            val bg = if (isActive) EspeakChat.primary
+                     else MaterialTheme.colorScheme.surfaceContainerHighest
+            val fg = if (isActive) Color.White
+                     else MaterialTheme.colorScheme.onSurface
+            Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(18.dp))
-                    .clickable { onSelect(sc) },
+                    .clip(RoundedCornerShape(20.dp))
+                    .background(bg)
+                    .clickable { onSelect(sc) }
+                    .padding(start = 12.dp, end = 14.dp, top = 8.dp, bottom = 8.dp),
             ) {
-                Box {
-                    Row(
-                        modifier = Modifier.padding(start = 9.dp, end = 12.dp, top = 7.dp, bottom = 7.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(5.dp),
-                    ) {
-                        Text(sc.emoji, fontSize = 14.sp)
-                        Text(
-                            sc.title,
-                            fontSize = 12.5.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = if (isActive) MaterialTheme.colorScheme.surface
-                                    else MaterialTheme.colorScheme.onSurface,
-                        )
-                    }
-                    if (sc.isPro && !isActive) {
-                        Box(
-                            modifier = Modifier
-                                .align(Alignment.TopEnd)
-                                .offset(x = 4.dp, y = (-4).dp)
-                                .size(14.dp)
-                                .clip(CircleShape)
-                                .background(EspeakChat.gold),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text("💎", fontSize = 9.sp)
-                        }
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                ) {
+                    Text(sc.emoji, fontSize = 15.sp)
+                    Text(
+                        sc.title,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = fg,
+                    )
+                    if (sc.isPro) {
+                        Text("💎", fontSize = 11.sp)
                     }
                 }
             }

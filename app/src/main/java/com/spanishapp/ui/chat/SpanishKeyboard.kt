@@ -1,6 +1,7 @@
 package com.spanishapp.ui.chat
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -10,8 +11,11 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.awaitEachGesture
+import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -400,18 +404,19 @@ private fun KeyButton(
 ) {
     var showAccents by remember { mutableStateOf(false) }
     var pressed by remember { mutableStateOf(false) }
+    var hoveredAccentIdx by remember { mutableStateOf(-1) }  // активный акцент при slide
+
     val bgColor by animateColorAsState(
         targetValue = if (pressed) accent.copy(alpha = 0.35f) else bg,
         animationSpec = tween(60),
         label = "key_bg",
     )
+    val pressScale by animateFloatAsState(
+        targetValue = if (pressed) 0.96f else 1f,
+        animationSpec = tween(80),
+        label = "key_scale",
+    )
 
-    // v1.24.10: rememberUpdatedState — закрепляет ссылки на актуальные
-    // версии callbacks/values. pointerInput(Unit) теперь стабильна — НЕ
-    // пересоздаётся при изменении shifted/state, и захватывает СВЕЖИЙ onTap
-    // через эту ссылку. Это и есть фикс "печать стопится через 3 символа":
-    // раньше pointerInput захватывал старый onTap closure → emit вызывал
-    // устаревший value/state → новые буквы терялись.
     val currentOnTap by rememberUpdatedState(onTap)
     val currentOutput by rememberUpdatedState(output)
     val currentAccents by rememberUpdatedState(accents)
@@ -427,30 +432,100 @@ private fun KeyButton(
         }
     }
 
+    // v1.24.12: единый pointer flow для continuous accent gesture.
+    // hold → popup → slide без отрыва → release на нужном accent.
+    // awaitPointerEventScope даёт fine-grained контроль над событиями.
+    val density = LocalDensity.current
+    val accentKeyWidthPx = remember { with(density) { 48.dp.toPx() } }  // 44dp + 4dp gap
+    val popupVerticalRangePx = remember { with(density) { (-72).dp.toPx() } }
+
     Box(
         modifier = modifier
             .height(heightDp.dp)
-            .clip(RoundedCornerShape(7.dp))
-            .background(bgColor)
             .pointerInput(Unit) {
-                detectTapGestures(
-                    // КЛЮЧЕВОЕ: onPress срабатывает на DOWN — мгновенно!
-                    onPress = { _ ->
+                awaitPointerEventScope {
+                    while (true) {
+                        val down = awaitFirstDown()
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        currentOnTap(currentOutput)  // <-- fire immediately!
-                        pressed = true
-                        tryAwaitRelease()
-                        pressed = false
-                    },
-                    // Long-press — показ accents (если есть). Не вмешивается в onPress.
-                    onLongPress = {
-                        if (currentAccents.isNotEmpty()) {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            showAccents = true
+                        // Fire on DOWN — Gboard стиль
+                        if (currentAccents.isEmpty()) {
+                            currentOnTap(currentOutput)
                         }
-                    },
-                )
-            },
+                        pressed = true
+                        val startTime = System.currentTimeMillis()
+                        var enteredAccentMode = false
+                        var lastPos = down.position
+
+                        try {
+                            while (true) {
+                                val event = androidx.compose.ui.input.pointer.PointerEventPass.Main
+                                    .let { awaitPointerEvent(it) }
+                                val change = event.changes.firstOrNull() ?: break
+                                lastPos = change.position
+
+                                if (!change.pressed) {
+                                    // UP — финализируем
+                                    if (enteredAccentMode) {
+                                        if (hoveredAccentIdx in currentAccents.indices) {
+                                            val variant = currentAccents[hoveredAccentIdx]
+                                            // Применяем shift если label был uppercase
+                                            val out = if (label != label.lowercase())
+                                                variant.uppercase() else variant
+                                            currentOnTap(out)
+                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        }
+                                        // если палец вне popup → отмена (ничего не печатаем)
+                                    } else if (currentAccents.isNotEmpty()) {
+                                        // long-press не наступил, было обычное касание клавиши с accents
+                                        currentOnTap(currentOutput)
+                                    }
+                                    pressed = false
+                                    showAccents = false
+                                    hoveredAccentIdx = -1
+                                    break
+                                }
+
+                                // Pressed — check long-press timer и accent mode
+                                val elapsed = System.currentTimeMillis() - startTime
+                                if (!enteredAccentMode && elapsed > 320 && currentAccents.isNotEmpty()) {
+                                    enteredAccentMode = true
+                                    showAccents = true
+                                    hoveredAccentIdx = currentAccents.size / 2  // дефолт — средняя клавиша
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                }
+
+                                if (enteredAccentMode && currentAccents.isNotEmpty()) {
+                                    // Считаем над какой accent сейчас палец
+                                    // Popup центрирован над клавишей, accent-row начинается на
+                                    // (key_width - popup_width) / 2. Палец в координатах клавиши.
+                                    val keyWidthPx = size.width.toFloat()
+                                    val popupWidthPx = currentAccents.size * accentKeyWidthPx + 8.dp.toPx()
+                                    val popupLeftRelToKey = (keyWidthPx - popupWidthPx) / 2f + 6.dp.toPx()
+                                    val xInPopup = change.position.x - popupLeftRelToKey
+                                    val rawIdx = (xInPopup / accentKeyWidthPx).toInt()
+                                    val newIdx = rawIdx.coerceIn(0, currentAccents.size - 1)
+                                    if (newIdx != hoveredAccentIdx) {
+                                        hoveredAccentIdx = newIdx
+                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                    }
+                                }
+
+                                change.consume()
+                            }
+                        } finally {
+                            pressed = false
+                            showAccents = false
+                            hoveredAccentIdx = -1
+                        }
+                    }
+                }
+            }
+            .graphicsLayer {
+                scaleX = pressScale
+                scaleY = pressScale
+            }
+            .clip(RoundedCornerShape(8.dp))
+            .background(bgColor),
         contentAlignment = Alignment.Center,
     ) {
         Text(label, color = textColor, fontSize = fontSp.sp, fontWeight = FontWeight.Medium)
@@ -471,41 +546,43 @@ private fun KeyButton(
                     }
                 }
             }
+            // properties: focusable=false критично — иначе popup перехватит pointer events
             Popup(
                 popupPositionProvider = aboveProvider,
-                onDismissRequest = { showAccents = false },
-                properties = PopupProperties(focusable = true),
+                properties = PopupProperties(focusable = false),
             ) {
                 Surface(
                     shape = RoundedCornerShape(10.dp),
                     color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    shadowElevation = 8.dp,
+                    shadowElevation = 12.dp,
                 ) {
                     Row(
                         modifier = Modifier.padding(6.dp),
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
-                        accents.forEach { variant ->
+                        accents.forEachIndexed { idx, variant ->
+                            val isHovered = idx == hoveredAccentIdx
                             Box(
                                 modifier = Modifier
                                     .size(width = 44.dp, height = 50.dp)
                                     .clip(RoundedCornerShape(6.dp))
-                                    .background(MaterialTheme.colorScheme.surface)
+                                    .background(
+                                        if (isHovered) accent
+                                        else MaterialTheme.colorScheme.surface
+                                    )
                                     .border(
-                                        1.dp,
+                                        if (isHovered) 0.dp else 1.dp,
                                         MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
                                         RoundedCornerShape(6.dp),
-                                    )
-                                    .clickable {
-                                        val out = if (label != label.lowercase())
-                                            variant.uppercase() else variant
-                                        onTap(out)
-                                        showAccents = false
-                                    },
+                                    ),
                                 contentAlignment = Alignment.Center,
                             ) {
-                                Text(variant, color = textColor, fontSize = 18.sp,
-                                    fontWeight = FontWeight.SemiBold)
+                                Text(
+                                    variant,
+                                    color = if (isHovered) Color.White else textColor,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                )
                             }
                         }
                     }
