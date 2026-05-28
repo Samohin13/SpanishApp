@@ -397,6 +397,11 @@ object Navigation {
             // ── ИИ-чат (v1.24.0 — clean reimplementation) ────────
             composable("ai_chat") { AiChatScreen(navController = navController) }
 
+            // v1.24.17: архив чатов — список всех активных сессий
+            composable("chat_archive") {
+                com.spanishapp.ui.chat.ChatArchiveScreen(navController = navController)
+            }
+
 // ── Произношение ──────────────────────────────────
             composable("pronunciation") { PronunciationScreen(navController) }
 

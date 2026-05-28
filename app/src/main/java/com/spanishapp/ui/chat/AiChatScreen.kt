@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Mic
@@ -80,6 +81,18 @@ fun AiChatScreen(
     var inputValue by remember { mutableStateOf(androidx.compose.ui.text.input.TextFieldValue("")) }
     val input = inputValue.text
 
+    // v1.24.17: приём scenario id из ChatArchiveScreen через savedStateHandle.
+    val currentBackStackEntry = navController.currentBackStackEntry
+    LaunchedEffect(currentBackStackEntry) {
+        val picked = currentBackStackEntry
+            ?.savedStateHandle
+            ?.get<String>("picked_scenario_id")
+        if (picked != null) {
+            ChatScenarios.byId(picked).let { vm.selectScenario(it) }
+            currentBackStackEntry.savedStateHandle.remove<String>("picked_scenario_id")
+        }
+    }
+
     // v1.24.11: RECORD_AUDIO permission flow для микрофона.
     // STT (SpeechRecognizer) падает с ERROR_INSUFFICIENT_PERMISSIONS без неё.
     val context = androidx.compose.ui.platform.LocalContext.current
@@ -135,9 +148,12 @@ fun AiChatScreen(
             ChatHeader(
                 scenarioEmoji = scenario.emoji,
                 scenarioTitle = scenario.title,
-                // PRO → null → счётчик скрыт. Free → "47/50".
                 limit = if (isPro) null else "$remaining/${com.spanishapp.service.AiChatLimiter.DAILY_LIMIT}",
                 onBack = { navController.popBackStack() },
+                onArchive = {
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    navController.navigate("chat_archive")
+                },
                 onNewChat = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     vm.clearCurrentSession()
@@ -245,6 +261,7 @@ private fun ChatHeader(
     scenarioTitle: String,
     limit: String?,    // null = PRO, скрыть счётчик
     onBack: () -> Unit,
+    onArchive: () -> Unit,
     onNewChat: () -> Unit,
 ) {
     Surface(
@@ -310,6 +327,13 @@ private fun ChatHeader(
                 }
             }
 
+            IconButton(onClick = onArchive) {
+                Icon(
+                    Icons.Default.History,
+                    contentDescription = "Архив чатов",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
             IconButton(onClick = onNewChat) {
                 Icon(
                     Icons.Default.Add,

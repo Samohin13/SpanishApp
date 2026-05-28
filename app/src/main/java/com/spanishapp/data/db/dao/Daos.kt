@@ -498,6 +498,27 @@ interface ChatMessageDao {
     @Query("SELECT DISTINCT session_id FROM chat_messages")
     suspend fun getAllSessions(): List<String>
 
+    /** v1.24.17: метаданные сессий для архива чатов. */
+    data class SessionMeta(
+        @ColumnInfo(name = "session_id") val sessionId: String,
+        @ColumnInfo(name = "msg_count") val msgCount: Int,
+        @ColumnInfo(name = "last_ts") val lastTs: Long,
+        @ColumnInfo(name = "last_content") val lastContent: String,
+    )
+
+    @Query("""
+        SELECT session_id,
+               COUNT(*) AS msg_count,
+               MAX(timestamp) AS last_ts,
+               (SELECT content FROM chat_messages m2
+                WHERE m2.session_id = m1.session_id
+                ORDER BY m2.timestamp DESC LIMIT 1) AS last_content
+        FROM chat_messages m1
+        GROUP BY session_id
+        ORDER BY last_ts DESC
+    """)
+    fun observeSessionsMeta(): Flow<List<SessionMeta>>
+
     /** Stats screen — сколько сообщений в чате с указанного момента (любой роли). */
     @Query("SELECT COUNT(*) FROM chat_messages WHERE timestamp >= :since")
     fun observeCountSince(since: Long): Flow<Int>
