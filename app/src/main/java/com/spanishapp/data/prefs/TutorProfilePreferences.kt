@@ -28,7 +28,8 @@ private val Context.tutorPrefsStore by preferencesDataStore(name = "tutor_profil
 
 data class TutorProfile(
     val name: String = "Tutor",
-    val avatar: String = "🤖",
+    /** ID стиля из TutorAvatarStyles.STYLES (например "scholar", "star", "fire"). */
+    val avatar: String = "scholar",
     val configured: Boolean = false,
 )
 
@@ -43,7 +44,7 @@ class TutorProfilePreferences @Inject constructor(
     val profile: Flow<TutorProfile> = context.tutorPrefsStore.data.map { p ->
         TutorProfile(
             name = p[NAME] ?: "Tutor",
-            avatar = p[AVATAR] ?: "🤖",
+            avatar = p[AVATAR] ?: "scholar",
             configured = p[CONFIGURED] ?: false,
         )
     }
@@ -54,13 +55,5 @@ class TutorProfilePreferences @Inject constructor(
             it[AVATAR] = avatar
             it[CONFIGURED] = true
         }
-    }
-
-    /** Список доступных emoji-аватарок (нейтральные + разные). */
-    companion object {
-        val AVATARS = listOf(
-            "🤖", "🦉", "🐱", "🦊", "🐼", "🐰", "🦄",
-            "👩‍🏫", "👨‍🏫", "🧙", "🌟", "🌵",
-        )
     }
 }
