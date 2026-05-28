@@ -106,6 +106,19 @@ class SubscriptionPreferences @Inject constructor(
         }
     }
 
+    /**
+     * v1.25.4: Production purchase setter (вызывается PlayBillingManager).
+     * Без debug-меток — реальное состояние подписки.
+     */
+    suspend fun setPro(active: Boolean) {
+        context.subscriptionDataStore.edit { p ->
+            p[Keys.IS_PRO] = active
+            if (active) {
+                p[Keys.PURCHASED_AT] = System.currentTimeMillis()
+            }
+        }
+    }
+
     /** Debug-only: переключить PRO для QA gate-логики (без реальной покупки). */
     suspend fun debugSetPro(enabled: Boolean) {
         context.subscriptionDataStore.edit { p ->

@@ -38,6 +38,9 @@ class SpanishApp : Application() {
      *  в фоне внутри appScope.launch ниже. */
     @Inject lateinit var uiSoundPlayerLazy: dagger.Lazy<com.spanishapp.service.UiSoundPlayer>
 
+    /** v1.25.4: Google Play Billing — реальные PRO подписки. */
+    @Inject lateinit var playBillingManager: com.spanishapp.service.PlayBillingManager
+
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     /**
@@ -95,6 +98,13 @@ class SpanishApp : Application() {
         }.onFailure { e ->
             com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
                 .recordException(RuntimeException("[SpanishApp] RadioCatalogRefreshWorker scheduling failed", e))
+        }
+        // v1.25.4: подключаемся к Google Play Billing. Это инициирует
+        // запрос детальей подписки + restore existing purchases →
+        // isPro state из SubscriptionPreferences автоматически синхронизируется.
+        runCatching { playBillingManager.start() }.onFailure { e ->
+            com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+                .recordException(RuntimeException("[SpanishApp] PlayBilling start failed", e))
         }
         appScope.launch {
             runCatching {

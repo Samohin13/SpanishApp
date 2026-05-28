@@ -251,6 +251,8 @@ dependencies {
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     implementation(libs.googleid)
+    // v1.25.4: Google Play Billing Library 7 — реальные PRO подписки
+    implementation(libs.billing.ktx)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

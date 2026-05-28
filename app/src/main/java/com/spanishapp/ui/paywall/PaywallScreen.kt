@@ -150,11 +150,14 @@ fun PaywallScreen(navController: NavHostController) {
             }
 
             // === FIXED BOTTOM ===
+            val activity = androidx.compose.ui.platform.LocalContext.current as? android.app.Activity
             PaywallBottomBar(
                 selectedPlan = state.selectedPlan,
                 isLoading = state.isLoading,
                 onSelectPlan = vm::selectPlan,
-                onPurchase = { vm.startPurchase() }
+                onPurchase = {
+                    activity?.let { vm.startPurchase(it) }
+                }
             )
         }
     }

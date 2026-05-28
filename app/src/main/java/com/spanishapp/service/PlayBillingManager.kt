@@ -1,0 +1,214 @@
+package com.spanishapp.service
+
+import android.app.Activity
+import android.content.Context
+import android.util.Log
+import com.android.billingclient.api.AcknowledgePurchaseParams
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.PendingPurchasesParams
+import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.QueryPurchasesParams
+import com.android.billingclient.api.acknowledgePurchase
+import com.android.billingclient.api.queryProductDetails
+import com.android.billingclient.api.queryPurchasesAsync
+import com.spanishapp.data.prefs.SubscriptionPreferences
+import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+import javax.inject.Singleton
+
+/**
+ * Google Play Billing — реальные PRO подписки.
+ *
+ * Setup в Play Console:
+ *  1. Создать subscription с id PRODUCT_ID (espeak_pro)
+ *  2. Создать 2 base-plans:
+ *     - monthly (basePlanId=monthly): $4.99
+ *     - yearly (basePlanId=yearly): $34.99, опционально с 7-day free trial
+ *  3. Internal testing track + добавить tester accounts
+ *  4. В debug-сборке для тестирования: тестовый аккаунт + license testing
+ *
+ * Поток:
+ *  • startConnection() — устанавливает BillingClient connection
+ *  • queryProducts() — получает actual prices (locale-aware)
+ *  • launchPurchase(activity, plan) — открывает Play purchase sheet
+ *  • PurchasesUpdatedListener получает результат → acknowledgement
+ *  • restorePurchases() — query existing purchases on app start
+ *  • Синхронизация с SubscriptionPreferences (isPro)
+ *
+ * ⚠️ Acknowledgement в течение 3 дней ОБЯЗАТЕЛЕН (Play rule).
+ * Иначе purchase автоматически рефандится.
+ */
+@Singleton
+class PlayBillingManager @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val subscriptionPrefs: SubscriptionPreferences,
+) {
+    private val TAG = "PlayBillingManager"
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    private val _productDetails = MutableStateFlow<List<ProductDetails>>(emptyList())
+    val productDetails: StateFlow<List<ProductDetails>> = _productDetails.asStateFlow()
+
+    private val _connectionState = MutableStateFlow(ConnectionState.DISCONNECTED)
+    val connectionState: StateFlow<ConnectionState> = _connectionState.asStateFlow()
+
+    private val purchaseListener = PurchasesUpdatedListener { result, purchases ->
+        if (result.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+            purchases.forEach { handlePurchase(it) }
+        } else if (result.responseCode == BillingClient.BillingResponseCode.USER_CANCELED) {
+            Log.d(TAG, "User canceled purchase")
+        } else {
+            Log.w(TAG, "Purchase failed: ${result.debugMessage} (code=${result.responseCode})")
+        }
+    }
+
+    private val client: BillingClient = BillingClient.newBuilder(context)
+        .setListener(purchaseListener)
+        .enablePendingPurchases(
+            PendingPurchasesParams.newBuilder()
+                .enableOneTimeProducts()
+                .build()
+        )
+        .build()
+
+    enum class ConnectionState { DISCONNECTED, CONNECTING, CONNECTED, FAILED }
+
+    /** Подключиться к Play Billing. Вызвать из Application или MainActivity onCreate. */
+    fun start() {
+        if (_connectionState.value == ConnectionState.CONNECTED) return
+        _connectionState.value = ConnectionState.CONNECTING
+        client.startConnection(object : BillingClientStateListener {
+            override fun onBillingSetupFinished(result: BillingResult) {
+                if (result.responseCode == BillingClient.BillingResponseCode.OK) {
+                    _connectionState.value = ConnectionState.CONNECTED
+                    Log.d(TAG, "Billing connected")
+                    scope.launch {
+                        queryProducts()
+                        restorePurchases()
+                    }
+                } else {
+                    _connectionState.value = ConnectionState.FAILED
+                    Log.e(TAG, "Billing setup failed: ${result.debugMessage}")
+                }
+            }
+            override fun onBillingServiceDisconnected() {
+                _connectionState.value = ConnectionState.DISCONNECTED
+                // Можно реконнектиться экспоненциально, но Play SDK сам это делает
+            }
+        })
+    }
+
+    /** Запросить детали подписки (цены, base plans). */
+    suspend fun queryProducts() {
+        val params = QueryProductDetailsParams.newBuilder()
+            .setProductList(
+                listOf(
+                    QueryProductDetailsParams.Product.newBuilder()
+                        .setProductId(PRODUCT_ID)
+                        .setProductType(BillingClient.ProductType.SUBS)
+                        .build()
+                )
+            )
+            .build()
+        val result = client.queryProductDetails(params)
+        if (result.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+            _productDetails.value = result.productDetailsList ?: emptyList()
+            Log.d(TAG, "Loaded ${_productDetails.value.size} products")
+        } else {
+            Log.e(TAG, "queryProducts failed: ${result.billingResult.debugMessage}")
+        }
+    }
+
+    /**
+     * Запустить purchase flow.
+     * @param activity host activity (нужно Play UI)
+     * @param basePlanId "monthly" или "yearly" — соответствует Play Console
+     */
+    fun launchPurchase(activity: Activity, basePlanId: String) {
+        val product = _productDetails.value.firstOrNull { it.productId == PRODUCT_ID } ?: run {
+            Log.e(TAG, "Product not loaded yet")
+            return
+        }
+        val offer = product.subscriptionOfferDetails
+            ?.firstOrNull { it.basePlanId == basePlanId }
+            ?: product.subscriptionOfferDetails?.firstOrNull()
+            ?: run {
+                Log.e(TAG, "No subscription offers")
+                return
+            }
+        val params = BillingFlowParams.newBuilder()
+            .setProductDetailsParamsList(
+                listOf(
+                    BillingFlowParams.ProductDetailsParams.newBuilder()
+                        .setProductDetails(product)
+                        .setOfferToken(offer.offerToken)
+                        .build()
+                )
+            )
+            .build()
+        client.launchBillingFlow(activity, params)
+    }
+
+    /** Restore — на старте app или по запросу юзера ("Restore purchases" в Settings). */
+    suspend fun restorePurchases() {
+        val params = QueryPurchasesParams.newBuilder()
+            .setProductType(BillingClient.ProductType.SUBS)
+            .build()
+        val result = client.queryPurchasesAsync(params)
+        if (result.billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+            val active = result.purchasesList.any { p ->
+                p.purchaseState == Purchase.PurchaseState.PURCHASED &&
+                    p.products.contains(PRODUCT_ID)
+            }
+            scope.launch { subscriptionPrefs.setPro(active) }
+            result.purchasesList.forEach { handlePurchase(it) }
+        }
+    }
+
+    private fun handlePurchase(purchase: Purchase) {
+        if (purchase.purchaseState != Purchase.PurchaseState.PURCHASED) return
+        if (!purchase.products.contains(PRODUCT_ID)) return
+
+        // Активируем PRO в DataStore
+        scope.launch { subscriptionPrefs.setPro(true) }
+
+        // Acknowledgement в течение 3 дней — обязательно
+        if (!purchase.isAcknowledged) {
+            scope.launch {
+                val ackParams = AcknowledgePurchaseParams.newBuilder()
+                    .setPurchaseToken(purchase.purchaseToken)
+                    .build()
+                val ackResult = client.acknowledgePurchase(ackParams)
+                if (ackResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                    Log.d(TAG, "Purchase acknowledged")
+                } else {
+                    Log.e(TAG, "Acknowledge failed: ${ackResult.debugMessage}")
+                }
+            }
+        }
+    }
+
+    fun stop() {
+        try { client.endConnection() } catch (_: Exception) {}
+    }
+
+    companion object {
+        /** Subscription product id в Play Console. */
+        const val PRODUCT_ID = "espeak_pro"
+        const val PLAN_MONTHLY = "monthly"
+        const val PLAN_YEARLY = "yearly"
+    }
+}
