@@ -300,6 +300,9 @@ fun SpanishKeyboard(
                         modifier = Modifier.weight(1f),
                         onTap = emit,
                         haptic = haptic,
+                        // v1.25.2: row 3 буквы тоже регистрируем для glide
+                        registerPositionKey = key.label,
+                        keyPositions = keyPositions,
                     )
                 }
                 BackspaceKey(
@@ -900,42 +903,42 @@ private fun GlideOverlay(
     val currentDict by rememberUpdatedState(glideDictionary)
     val currentFreq by rememberUpdatedState(userWordFreq)
     val currentKeyPositions by rememberUpdatedState(keyPositions)
+
+    // v1.25.2: visual trail — точки текущего glide рисуются Canvas-полилинией
+    val trailPoints = remember { mutableStateListOf<androidx.compose.ui.geometry.Offset>() }
     var gliding by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.pointerInput(Unit) {
-            // Если не letter-layout (NUM) — glide отключён, просто пропускаем
             if (!isLetterLayout || currentDict.isEmpty()) return@pointerInput
             awaitPointerEventScope {
                 while (true) {
                     val downEvent = awaitPointerEvent(PointerEventPass.Initial)
                     val downChange = downEvent.changes.firstOrNull { it.changedToDown() }
                         ?: continue
-                    val startTime = System.currentTimeMillis()
                     val rootStart = downChange.position
                     val trace = mutableListOf<androidx.compose.ui.geometry.Offset>()
                     trace.add(rootStart)
                     var glideActivated = false
+                    // v1.25.2: snapshot value ПЕРЕД первым тапом KeyButton.
+                    // Если glide завершится успешно → откатим к этому состоянию
+                    // и вставим matched word (rollback "accidental" tap).
                     val valueAtDown = currentValue
 
-                    // Continue tracking until release
                     while (true) {
                         val ev = awaitPointerEvent(PointerEventPass.Initial)
                         val ch = ev.changes.firstOrNull() ?: break
                         if (!ch.pressed) {
-                            // UP
                             if (glideActivated) {
-                                // Trace → letters → match → insert
-                                val letters = traceToLetters(
-                                    trace, currentKeyPositions, this.size,
-                                )
+                                val letters = traceToLetters(trace, currentKeyPositions)
                                 val deduped = GlideMatcher.dedupeConsecutive(letters)
                                 val matched = GlideMatcher.matchBestWord(
                                     deduped, currentDict, currentFreq,
                                 )
                                 if (matched != null) {
-                                    // Replace the originally tapped char with matched word + space.
-                                    // valueAtDown = состояние до первого тапа KeyButton.
+                                    // v1.25.2 ROLLBACK: используем valueAtDown,
+                                    // не currentValue. KeyButton мог вставить
+                                    // случайную букву при DOWN — отбрасываем.
                                     val newText = valueAtDown.text + matched + " "
                                     currentOnChange(
                                         TextFieldValue(
@@ -948,11 +951,11 @@ private fun GlideOverlay(
                                 ch.consume()
                             }
                             gliding = false
+                            trailPoints.clear()
                             break
                         }
                         trace.add(ch.position)
                         if (!glideActivated) {
-                            // Накопленное расстояние от старта
                             val dx = ch.position.x - rootStart.x
                             val dy = ch.position.y - rootStart.y
                             val dist = kotlin.math.sqrt(dx * dx + dy * dy)
@@ -963,7 +966,9 @@ private fun GlideOverlay(
                             }
                         }
                         if (glideActivated) {
-                            // Consume → блокируем KeyButton от приёма событий
+                            trailPoints.add(ch.position)
+                            // Ограничим длину trail чтобы не разрастался
+                            if (trailPoints.size > 60) trailPoints.removeAt(0)
                             ch.consume()
                         }
                     }
@@ -972,6 +977,26 @@ private fun GlideOverlay(
         },
     ) {
         content()
+        // v1.25.2: визуальный trail поверх клавиш (только во время glide)
+        if (gliding && trailPoints.isNotEmpty()) {
+            val accent = Color(0xFFFF8A3D)
+            androidx.compose.foundation.Canvas(
+                modifier = Modifier.matchParentSize(),
+            ) {
+                for (i in 1 until trailPoints.size) {
+                    val from = trailPoints[i - 1]
+                    val to = trailPoints[i]
+                    val alpha = (i.toFloat() / trailPoints.size).coerceIn(0.15f, 0.8f)
+                    drawLine(
+                        color = accent.copy(alpha = alpha),
+                        start = from,
+                        end = to,
+                        strokeWidth = 6f,
+                        cap = androidx.compose.ui.graphics.StrokeCap.Round,
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -982,7 +1007,6 @@ private fun GlideOverlay(
 private fun traceToLetters(
     trace: List<androidx.compose.ui.geometry.Offset>,
     keyPositions: Map<String, androidx.compose.ui.geometry.Rect>,
-    overlaySize: androidx.compose.ui.unit.IntSize,
 ): List<Char> {
     if (keyPositions.isEmpty()) return emptyList()
     val letters = mutableListOf<Char>()
