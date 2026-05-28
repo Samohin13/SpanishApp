@@ -74,7 +74,7 @@ private const val CONV_DUR = 0.8f
 private const val BAM_FLASH_DUR = 0.25f
 private const val BAM_RING_DUR = 0.5f
 private const val BAM_LOGO_DUR = 0.6f
-private const val TOTAL_DUR = 10.0f
+private const val TOTAL_DUR = 9.5f
 
 /** Слот-пиксель внутри гладкого ESPEAK. Заполняется когда filler-буква долетает. */
 private data class WordSlot(val x: Float, val y: Float, var filled: Boolean)
@@ -309,11 +309,12 @@ fun EspeakSplashAnimation(onComplete: () -> Unit) {
     val wordPaint = remember { Paint(Paint.ANTI_ALIAS_FLAG).apply {
         textAlign = Paint.Align.CENTER; color = 0xFFFFFFFF.toInt()
         typeface = Typeface.create(Typeface.SANS_SERIF, Typeface.BOLD)
-        setShadowLayer(16f, 0f, 0f, 0x40000000.toInt())
+        // ⚠ Без setShadowLayer — юзер просил убрать тень под ESPEAK.
+        // Чистый белый шрифт на оранжевом фоне без grey-смаза снизу.
     } }
     val pixelPaint = remember { Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = 0xFFFFFFFF.toInt()
-        setShadowLayer(8f, 0f, 0f, 0x40000000.toInt())
+        // Тень убрана и у пикселей мозаики — для визуальной консистентности.
     } }
     val bullPaint = remember { Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = 0xFFFFFFFF.toInt()
