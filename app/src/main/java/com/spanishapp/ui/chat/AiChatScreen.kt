@@ -207,6 +207,11 @@ fun AiChatScreen(
                     onValueChange = { inputValue = it },
                     layout = keyboardLayout,
                     onLayoutChange = { keyboardLayout = it },
+                    // v1.24.20: glide-typing — словарь = static + user-learned
+                    glideDictionary = remember(userFreqSnapshot) {
+                        (userFreqSnapshot.keys + WordSuggester.allWords()).distinct()
+                    },
+                    userWordFreq = userFreqSnapshot,
                     onSend = {
                         if (input.isNotBlank()) {
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)

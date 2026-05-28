@@ -36,8 +36,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.changedToDown
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
+import androidx.compose.ui.layout.boundsInRoot
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
@@ -79,8 +83,14 @@ fun SpanishKeyboard(
     onLayoutChange: (KbLayout) -> Unit = {},
     suggestions: List<String> = emptyList(),
     onPickSuggestion: (String) -> Unit = {},
+    // v1.24.20: словарь для glide-matching. Если пуст — glide отключён.
+    glideDictionary: List<String> = emptyList(),
+    userWordFreq: Map<String, Int> = emptyMap(),
     modifier: Modifier = Modifier,
 ) {
+    // v1.24.20: позиции клавиш для glide-typing.
+    // KeyButton регистрирует свой Rect через onGloballyPositioned.
+    val keyPositions = remember { mutableStateMapOf<String, androidx.compose.ui.geometry.Rect>() }
     var shifted by remember { mutableStateOf(true) }
     var capsLock by remember { mutableStateOf(false) }
     var collapsed by remember { mutableStateOf(false) }
@@ -202,25 +212,39 @@ fun SpanishKeyboard(
                 }
             }
 
-            // Основные буквенные ряды
-            rows.take(2).forEach { row ->
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    row.forEach { key ->
-                        KeyButton(
-                            label = if ((shifted || capsLock) && layout != KbLayout.NUM)
-                                key.label.uppercase() else key.label,
-                            output = key.output,
-                            accents = key.accents,
-                            bg = keyBg,
-                            textColor = textColor,
-                            accent = accent,
-                            modifier = Modifier.weight(1f),
-                            onTap = emit,
-                            haptic = haptic,
-                        )
+            // Основные буквенные ряды (внутри glide-overlay Box)
+            GlideOverlay(
+                keyPositions = keyPositions,
+                glideDictionary = glideDictionary,
+                userWordFreq = userWordFreq,
+                value = value,
+                onValueChange = onValueChange,
+                isLetterLayout = layout != KbLayout.NUM,
+                haptic = haptic,
+            ) {
+                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    rows.take(2).forEach { row ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        ) {
+                            row.forEach { key ->
+                                KeyButton(
+                                    label = if ((shifted || capsLock) && layout != KbLayout.NUM)
+                                        key.label.uppercase() else key.label,
+                                    output = key.output,
+                                    accents = key.accents,
+                                    bg = keyBg,
+                                    textColor = textColor,
+                                    accent = accent,
+                                    modifier = Modifier.weight(1f),
+                                    onTap = emit,
+                                    haptic = haptic,
+                                    registerPositionKey = key.label,
+                                    keyPositions = keyPositions,
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -447,6 +471,10 @@ private fun KeyButton(
     fontSp: Int = 19,
     haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
     onTap: (String) -> Unit,
+    // v1.24.20: для glide-typing — клавиша регистрирует свою позицию.
+    registerPositionKey: String? = null,
+    keyPositions: androidx.compose.runtime.snapshots.SnapshotStateMap<
+        String, androidx.compose.ui.geometry.Rect>? = null,
 ) {
     var showAccents by remember { mutableStateOf(false) }
     var pressed by remember { mutableStateOf(false) }
@@ -488,6 +516,14 @@ private fun KeyButton(
     Box(
         modifier = modifier
             .height(heightDp.dp)
+            .let { m ->
+                if (registerPositionKey != null && keyPositions != null) {
+                    m.onGloballyPositioned { coords ->
+                        keyPositions[registerPositionKey] =
+                            coords.boundsInRoot()
+                    }
+                } else m
+            }
             .pointerInput(Unit) {
                 awaitPointerEventScope {
                     while (true) {
@@ -837,6 +873,140 @@ private fun SpecialKey(
 }
 
 // ── Раскладки ──────────────────────────────────────────────────
+
+/* ============================================================
+   GLIDE OVERLAY — детектор непрерывного ввода (swipe-typing)
+   Слой над letter rows, ловит pointer events ПЕРВЫМ (PointerEventPass.Initial)
+   - Если палец прошёл < 60dp за всё время → пропускает events детям (обычный tap)
+   - Если > 60dp пути → активирует glide mode, consume'ит события
+   - На UP в glide mode: матчит slow к словарю → вставляет слово
+   ============================================================ */
+@Composable
+private fun GlideOverlay(
+    keyPositions: androidx.compose.runtime.snapshots.SnapshotStateMap<
+        String, androidx.compose.ui.geometry.Rect>,
+    glideDictionary: List<String>,
+    userWordFreq: Map<String, Int>,
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
+    isLetterLayout: Boolean,
+    haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
+    content: @Composable () -> Unit,
+) {
+    val density = LocalDensity.current
+    val glideThresholdPx = remember { with(density) { 60.dp.toPx() } }
+    val currentValue by rememberUpdatedState(value)
+    val currentOnChange by rememberUpdatedState(onValueChange)
+    val currentDict by rememberUpdatedState(glideDictionary)
+    val currentFreq by rememberUpdatedState(userWordFreq)
+    val currentKeyPositions by rememberUpdatedState(keyPositions)
+    var gliding by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = Modifier.pointerInput(Unit) {
+            // Если не letter-layout (NUM) — glide отключён, просто пропускаем
+            if (!isLetterLayout || currentDict.isEmpty()) return@pointerInput
+            awaitPointerEventScope {
+                while (true) {
+                    val downEvent = awaitPointerEvent(PointerEventPass.Initial)
+                    val downChange = downEvent.changes.firstOrNull { it.changedToDown() }
+                        ?: continue
+                    val startTime = System.currentTimeMillis()
+                    val rootStart = downChange.position
+                    val trace = mutableListOf<androidx.compose.ui.geometry.Offset>()
+                    trace.add(rootStart)
+                    var glideActivated = false
+                    val valueAtDown = currentValue
+
+                    // Continue tracking until release
+                    while (true) {
+                        val ev = awaitPointerEvent(PointerEventPass.Initial)
+                        val ch = ev.changes.firstOrNull() ?: break
+                        if (!ch.pressed) {
+                            // UP
+                            if (glideActivated) {
+                                // Trace → letters → match → insert
+                                val letters = traceToLetters(
+                                    trace, currentKeyPositions, this.size,
+                                )
+                                val deduped = GlideMatcher.dedupeConsecutive(letters)
+                                val matched = GlideMatcher.matchBestWord(
+                                    deduped, currentDict, currentFreq,
+                                )
+                                if (matched != null) {
+                                    // Replace the originally tapped char with matched word + space.
+                                    // valueAtDown = состояние до первого тапа KeyButton.
+                                    val newText = valueAtDown.text + matched + " "
+                                    currentOnChange(
+                                        TextFieldValue(
+                                            newText,
+                                            androidx.compose.ui.text.TextRange(newText.length),
+                                        )
+                                    )
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                }
+                                ch.consume()
+                            }
+                            gliding = false
+                            break
+                        }
+                        trace.add(ch.position)
+                        if (!glideActivated) {
+                            // Накопленное расстояние от старта
+                            val dx = ch.position.x - rootStart.x
+                            val dy = ch.position.y - rootStart.y
+                            val dist = kotlin.math.sqrt(dx * dx + dy * dy)
+                            if (dist > glideThresholdPx) {
+                                glideActivated = true
+                                gliding = true
+                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                            }
+                        }
+                        if (glideActivated) {
+                            // Consume → блокируем KeyButton от приёма событий
+                            ch.consume()
+                        }
+                    }
+                }
+            }
+        },
+    ) {
+        content()
+    }
+}
+
+/**
+ * Из последовательности точек palet'а — последовательность букв.
+ * Snap каждой точки к ближайшей клавише по координатам.
+ */
+private fun traceToLetters(
+    trace: List<androidx.compose.ui.geometry.Offset>,
+    keyPositions: Map<String, androidx.compose.ui.geometry.Rect>,
+    overlaySize: androidx.compose.ui.unit.IntSize,
+): List<Char> {
+    if (keyPositions.isEmpty()) return emptyList()
+    val letters = mutableListOf<Char>()
+    // Overlay координаты в Local. keyPositions в Root.
+    // Здесь упрощённо: считаем что overlay начинается с (0, ?) — нужен offset.
+    // Для надёжности: пропускаем точки которые далеко от любой клавиши.
+    for (pt in trace) {
+        var bestKey: String? = null
+        var bestDist = Float.MAX_VALUE
+        for ((k, rect) in keyPositions) {
+            val cx = rect.center.x
+            val cy = rect.center.y
+            val dx = pt.x - cx
+            val dy = pt.y - cy
+            val d = dx * dx + dy * dy
+            if (d < bestDist) {
+                bestDist = d
+                bestKey = k
+            }
+        }
+        bestKey?.firstOrNull()?.lowercaseChar()?.let { letters.add(it) }
+    }
+    return letters
+}
 
 /* ============================================================
    GLOBE KEY — tap = цикл ES↔RU, long-press = меню всех раскладок

@@ -12,6 +12,9 @@ package com.spanishapp.ui.chat
  */
 object WordSuggester {
 
+    /** Все слова словаря — для glide-typing matcher'а. */
+    fun allWords(): List<String> = ES_WORDS + RU_WORDS
+
     fun suggest(input: String, max: Int = 3): List<String> {
         val word = currentWord(input).lowercase()
         if (word.isBlank()) return emptyList()
