@@ -1,16 +1,16 @@
 package com.spanishapp.ui.chat
 
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardReturn
@@ -26,11 +26,9 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalDensity
@@ -43,25 +41,24 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 /**
- * Профессиональная Compose-клавиатура для AI Chat.
- * Уровень: Samsung S-flagship / iOS keyboard.
+ * Профессиональная встроенная Compose-клавиатура.
+ * v1.24.8: переписана для НАДЁЖНОСТИ — combinedClickable + InteractionSource
+ * вместо хрупких detectTapGestures.
  *
- * Фичи (v1.24.6):
- *  • Цифровой ряд 1-0 всегда сверху (в ES/RU)
- *  • Курсор + выделение через readOnly BasicTextField
- *  • Swipe по space — двигает курсор влево/вправо
+ * Фичи:
+ *  • Цифровой ряд 1-0 всегда сверху
+ *  • Курсор + tap-to-position + long-press selection (через BasicTextField readOnly)
+ *  • Swipe по space — двигает курсор
  *  • Long-press backspace — auto-repeat → word-delete
- *  • Long-press на любой клавише — auto-repeat
- *  • Caps lock через double-tap shift
- *  • Auto-capitalize первой буквы + после . ! ?
- *  • Auto-space после знака
- *  • Press-feedback (scale + tint)
- *  • Подсказки слов: 3 чипа над клавой по prefix
+ *  • Long-press на любой клавише без accents — auto-repeat
+ *  • Caps Lock = двойной тап Shift
+ *  • Auto-capitalize первой буквы + после знаков . ! ?
+ *  • Подсказки слов: 3 чипа над клавой
+ *  • Popup акцентов СВЕРХУ над клавишей (long-press a/e/i/o/u)
+ *  • Press feedback через MutableInteractionSource (нативно)
  *  • Свёртывание/разворачивание
- *  • Popup акцентов сверху над клавишей (long-press a/e/i/o/u)
  */
 
 enum class KbLayout { ES, RU, NUM }
@@ -72,11 +69,6 @@ private data class KbKey(
     val accents: List<String> = emptyList(),
 )
 
-/**
- * Состояние клавиатуры передаётся через TextFieldValue (text + cursor + selection).
- * Все операции возвращают новое TextFieldValue — иммутабельный pattern.
- */
-@OptIn(ExperimentalFoundationApi::class, ExperimentalComposeUiApi::class)
 @Composable
 fun SpanishKeyboard(
     value: TextFieldValue,
@@ -88,85 +80,76 @@ fun SpanishKeyboard(
     modifier: Modifier = Modifier,
 ) {
     var layout by remember { mutableStateOf(KbLayout.ES) }
-    var shifted by remember { mutableStateOf(true) }   // start with auto-cap
+    var shifted by remember { mutableStateOf(true) }     // auto-cap at start
     var capsLock by remember { mutableStateOf(false) }
     var collapsed by remember { mutableStateOf(false) }
+    var lastShiftTap by remember { mutableStateOf(0L) }
 
     val haptic = LocalHapticFeedback.current
-    val scope = rememberCoroutineScope()
 
     val keyBg = MaterialTheme.colorScheme.surfaceContainerHighest
     val specialKeyBg = MaterialTheme.colorScheme.surfaceContainerHigh
     val textColor = MaterialTheme.colorScheme.onSurface
     val accent = Color(0xFFFF8A3D)
 
-    // ── Логика автокапитализации после знака ──
+    // ── Авто-кап после знака ──
     fun shouldAutoCapAfter(text: String, pos: Int): Boolean {
         if (pos == 0) return true
-        // Берём 2 символа до курсора
         val tail = text.substring((pos - 2).coerceAtLeast(0), pos)
         return tail.length >= 2 && tail[1] == ' ' && tail[0] in setOf('.', '!', '?')
     }
 
-    // ── Применяем shift к строке если нужно ──
-    fun shifted(s: String): String =
+    fun shiftedStr(s: String): String =
         if ((shifted || capsLock) && layout != KbLayout.NUM) s.uppercase() else s
 
-    // ── Вставка символа в позицию курсора ──
     fun insertAt(v: TextFieldValue, s: String): TextFieldValue {
         val t = v.text
         val sel = v.selection
         val newText = t.substring(0, sel.start) + s + t.substring(sel.end)
-        val newCursor = sel.start + s.length
-        return TextFieldValue(newText, TextRange(newCursor))
+        return TextFieldValue(newText, TextRange(sel.start + s.length))
     }
 
-    // ── Backspace: удалить символ перед курсором или выделение ──
     fun backspaceChar(v: TextFieldValue): TextFieldValue {
         val t = v.text
         val sel = v.selection
         if (sel.start != sel.end) {
-            // Удалить выделение
-            val newText = t.substring(0, sel.start) + t.substring(sel.end)
-            return TextFieldValue(newText, TextRange(sel.start))
+            return TextFieldValue(
+                t.substring(0, sel.start) + t.substring(sel.end),
+                TextRange(sel.start),
+            )
         }
         if (sel.start == 0) return v
-        val newText = t.substring(0, sel.start - 1) + t.substring(sel.start)
-        return TextFieldValue(newText, TextRange(sel.start - 1))
+        return TextFieldValue(
+            t.substring(0, sel.start - 1) + t.substring(sel.start),
+            TextRange(sel.start - 1),
+        )
     }
 
-    // ── Backspace word: удалить слово перед курсором ──
     fun backspaceWord(v: TextFieldValue): TextFieldValue {
         val t = v.text
         val sel = v.selection
         if (sel.start == 0 && sel.end == 0) return v
-        // Находим границу слова: пропускаем пробелы, потом не-пробелы
         var i = sel.start
         while (i > 0 && t[i - 1].isWhitespace()) i--
         while (i > 0 && !t[i - 1].isWhitespace()) i--
-        val newText = t.substring(0, i) + t.substring(sel.end)
-        return TextFieldValue(newText, TextRange(i))
+        return TextFieldValue(
+            t.substring(0, i) + t.substring(sel.end),
+            TextRange(i),
+        )
     }
 
-    // ── Двигаем курсор на delta ──
     fun moveCursor(v: TextFieldValue, delta: Int): TextFieldValue {
         val newPos = (v.selection.start + delta).coerceIn(0, v.text.length)
         return TextFieldValue(v.text, TextRange(newPos))
     }
 
-    // ── Emit символа с учётом shift/auto-cap ──
-    fun emit(s: String) {
+    val emit: (String) -> Unit = { s ->
         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-        val toInsert = shifted(s)
-        val newValue = insertAt(value, toInsert)
+        val newValue = insertAt(value, shiftedStr(s))
         onValueChange(newValue)
-        // Сбрасываем one-shot shift (caps lock остаётся)
         if (shifted && !capsLock) shifted = false
-        // После пробела/знака — проверим нужна ли авто-капитализация для следующей
         if (!capsLock && layout != KbLayout.NUM) {
-            val text = newValue.text
-            val pos = newValue.selection.start
-            if (shouldAutoCapAfter(text, pos)) shifted = true
+            if (shouldAutoCapAfter(newValue.text, newValue.selection.start)) shifted = true
         }
     }
 
@@ -212,7 +195,7 @@ fun SpanishKeyboard(
                 return@Column
             }
 
-            // ── Подсказки (3 чипа) ──
+            // ── Подсказки ──
             if (suggestions.isNotEmpty()) {
                 SuggestionStrip(
                     suggestions = suggestions.take(3),
@@ -225,7 +208,7 @@ fun SpanishKeyboard(
                 )
             }
 
-            // ── Цифровой ряд (всегда сверху в ES/RU) ──
+            // ── Цифровой ряд ──
             if (layout != KbLayout.NUM) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -233,24 +216,23 @@ fun SpanishKeyboard(
                 ) {
                     listOf("1","2","3","4","5","6","7","8","9","0").forEach { d ->
                         KeyButton(
-                            key = KbKey(d),
-                            shifted = false,  // цифры не shifted
-                            layout = layout,
+                            label = d,
+                            output = d,
+                            accents = emptyList(),
                             bg = keyBg,
-                            textColor = textColor.copy(alpha = 0.8f),
+                            textColor = textColor.copy(alpha = 0.85f),
                             accent = accent,
-                            haptic = haptic,
-                            scope = scope,
                             modifier = Modifier.weight(1f),
-                            heightDp = 38,  // цифровой ряд чуть тоньше
+                            heightDp = 40,
                             fontSp = 16,
-                            onTap = { emit(it) },
+                            onTap = emit,
+                            haptic = haptic,
                         )
                     }
                 }
             }
 
-            // ── Буквенные / NUM-ряды (первые 2) ──
+            // ── Основные буквенные/цифровые ряды (первые 2) ──
             rows.take(2).forEach { row ->
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -258,16 +240,16 @@ fun SpanishKeyboard(
                 ) {
                     row.forEach { key ->
                         KeyButton(
-                            key = key,
-                            shifted = shifted || capsLock,
-                            layout = layout,
+                            label = if ((shifted || capsLock) && layout != KbLayout.NUM)
+                                key.label.uppercase() else key.label,
+                            output = key.output,
+                            accents = key.accents,
                             bg = keyBg,
                             textColor = textColor,
                             accent = accent,
-                            haptic = haptic,
-                            scope = scope,
                             modifier = Modifier.weight(1f),
-                            onTap = { emit(it) },
+                            onTap = emit,
+                            haptic = haptic,
                         )
                     }
                 }
@@ -279,8 +261,6 @@ fun SpanishKeyboard(
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 if (layout != KbLayout.NUM) {
-                    // Shift / Caps Lock — двойной тап = caps lock
-                    var lastShiftTap by remember { mutableStateOf(0L) }
                     SpecialKey(
                         bg = when {
                             capsLock -> accent
@@ -292,16 +272,11 @@ fun SpanishKeyboard(
                             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                             val now = System.currentTimeMillis()
                             if (now - lastShiftTap < 300) {
-                                // Double-tap → caps lock
                                 capsLock = !capsLock
                                 shifted = capsLock
                             } else {
-                                if (capsLock) {
-                                    capsLock = false
-                                    shifted = false
-                                } else {
-                                    shifted = !shifted
-                                }
+                                if (capsLock) { capsLock = false; shifted = false }
+                                else shifted = !shifted
                             }
                             lastShiftTap = now
                         },
@@ -309,7 +284,7 @@ fun SpanishKeyboard(
                         Icon(
                             if (capsLock) Icons.Default.KeyboardCapslock
                             else Icons.Default.KeyboardArrowUp,
-                            contentDescription = if (capsLock) "Caps Lock" else "Shift",
+                            contentDescription = if (capsLock) "Caps" else "Shift",
                             tint = when {
                                 capsLock -> Color.White
                                 shifted -> accent
@@ -321,31 +296,30 @@ fun SpanishKeyboard(
                 }
                 rows[2].forEach { key ->
                     KeyButton(
-                        key = key,
-                        shifted = shifted || capsLock,
-                        layout = layout,
+                        label = if ((shifted || capsLock) && layout != KbLayout.NUM)
+                            key.label.uppercase() else key.label,
+                        output = key.output,
+                        accents = key.accents,
                         bg = keyBg,
                         textColor = textColor,
                         accent = accent,
-                        haptic = haptic,
-                        scope = scope,
                         modifier = Modifier.weight(1f),
-                        onTap = { emit(it) },
+                        onTap = emit,
+                        haptic = haptic,
                     )
                 }
-                // Backspace с long-press auto-repeat + word-delete
                 BackspaceKey(
                     bg = specialKeyBg,
                     textColor = textColor,
-                    haptic = haptic,
-                    scope = scope,
+                    accent = accent,
                     modifier = Modifier.weight(1.4f),
-                    onTapDelete = { onValueChange(backspaceChar(value)) },
+                    onCharDelete = { onValueChange(backspaceChar(value)) },
                     onWordDelete = { onValueChange(backspaceWord(value)) },
+                    haptic = haptic,
                 )
             }
 
-            // ── 4-й ряд: 123/ABC + globe + space (swipe!) + send ──
+            // ── 4-й ряд: 123 + globe + space (swipe!) + . + send ──
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -388,7 +362,6 @@ fun SpanishKeyboard(
                         modifier = Modifier.size(20.dp),
                     )
                 }
-                // Space с SWIPE cursor control (S-series signature)
                 SpaceKey(
                     layout = layout,
                     bg = keyBg,
@@ -396,25 +369,19 @@ fun SpanishKeyboard(
                     haptic = haptic,
                     modifier = Modifier.weight(5f),
                     onTap = { emit(" ") },
-                    onSwipe = { delta ->
-                        // delta — пиксели сдвига. Переводим в позиции (примерно 1 char на 10dp)
-                        onValueChange(moveCursor(value, delta))
-                    },
+                    onSwipe = { delta -> onValueChange(moveCursor(value, delta)) },
                 )
-                // . или ?
                 KeyButton(
-                    key = KbKey(if (layout == KbLayout.NUM) "?" else "."),
-                    shifted = false,
-                    layout = layout,
+                    label = if (layout == KbLayout.NUM) "?" else ".",
+                    output = if (layout == KbLayout.NUM) "?" else ".",
+                    accents = emptyList(),
                     bg = specialKeyBg,
                     textColor = textColor,
                     accent = accent,
-                    haptic = haptic,
-                    scope = scope,
                     modifier = Modifier.weight(1f),
-                    onTap = { emit(it) },
+                    onTap = emit,
+                    haptic = haptic,
                 )
-                // Send / Enter
                 SpecialKey(
                     bg = if (canSend) accent else specialKeyBg,
                     modifier = Modifier.weight(1.6f),
@@ -428,20 +395,19 @@ fun SpanishKeyboard(
                     Icon(
                         if (canSend) Icons.AutoMirrored.Filled.Send
                         else Icons.AutoMirrored.Filled.KeyboardReturn,
-                        contentDescription = if (canSend) "Отправить" else "Enter",
+                        contentDescription = if (canSend) "Send" else "Enter",
                         tint = if (canSend) Color.White else textColor,
                         modifier = Modifier.size(20.dp),
                     )
                 }
             }
-
             Spacer(Modifier.height(4.dp))
         }
     }
 }
 
 /* ============================================================
-   SUGGESTION STRIP — три чипа над клавой
+   SUGGESTION STRIP
    ============================================================ */
 @Composable
 private fun SuggestionStrip(
@@ -451,9 +417,7 @@ private fun SuggestionStrip(
     accent: Color,
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(40.dp),
+        modifier = Modifier.fillMaxWidth().height(40.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         suggestions.forEach { sug ->
@@ -477,78 +441,68 @@ private fun SuggestionStrip(
 }
 
 /* ============================================================
-   KEY BUTTON — с press-feedback (scale + tint) + auto-repeat
+   KEY BUTTON — combinedClickable + InteractionSource (надёжно!)
    ============================================================ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun KeyButton(
-    key: KbKey,
-    shifted: Boolean,
-    layout: KbLayout,
+    label: String,
+    output: String,
+    accents: List<String>,
     bg: Color,
     textColor: Color,
     accent: Color,
-    haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
-    scope: kotlinx.coroutines.CoroutineScope,
     modifier: Modifier = Modifier,
     heightDp: Int = 50,
     fontSp: Int = 19,
+    haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
     onTap: (String) -> Unit,
 ) {
     var showAccents by remember { mutableStateOf(false) }
-    var pressed by remember { mutableStateOf(false) }
-    val pressScale by animateFloatAsState(
-        targetValue = if (pressed) 0.92f else 1f,
-        label = "press_scale",
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val bgColor by animateColorAsState(
+        targetValue = if (isPressed) accent.copy(alpha = 0.35f) else bg,
+        label = "key_bg",
     )
 
-    val displayLabel = remember(key, shifted, layout) {
-        if (shifted && layout != KbLayout.NUM) key.label.uppercase() else key.label
+    // Auto-repeat для клавиш без accents
+    LaunchedEffect(isPressed, accents.isEmpty()) {
+        if (isPressed && accents.isEmpty()) {
+            delay(500)
+            while (isPressed) {
+                onTap(output)
+                delay(60)
+            }
+        }
     }
 
     Box(
         modifier = modifier
             .height(heightDp.dp)
-            .graphicsLayer { scaleX = pressScale; scaleY = pressScale }
-            .clip(RoundedCornerShape(6.dp))
-            .background(if (pressed) accent.copy(alpha = 0.25f) else bg)
-            .pointerInput(key, shifted) {
-                detectTapGestures(
-                    onPress = {
-                        pressed = true
-                        val released = tryAwaitRelease()
-                        pressed = false
-                        if (released) onTap(key.output)
-                    },
-                    onLongPress = {
-                        if (key.accents.isNotEmpty()) {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            showAccents = true
-                        } else {
-                            // Auto-repeat key
-                            scope.launch {
-                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                delay(300)
-                                while (pressed) {
-                                    onTap(key.output)
-                                    delay(70)
-                                }
-                            }
-                        }
-                    },
-                )
-            },
+            .clip(RoundedCornerShape(7.dp))
+            .background(bgColor)
+            .combinedClickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = { onTap(output) },
+                onLongClick = if (accents.isNotEmpty()) {
+                    {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        showAccents = true
+                    }
+                } else null,
+            ),
         contentAlignment = Alignment.Center,
     ) {
         Text(
-            displayLabel,
+            label,
             color = textColor,
             fontSize = fontSp.sp,
             fontWeight = FontWeight.Medium,
         )
 
-        if (showAccents && key.accents.isNotEmpty()) {
-            // Popup сверху над клавишей
+        if (showAccents && accents.isNotEmpty()) {
             val aboveProvider = remember {
                 object : androidx.compose.ui.window.PopupPositionProvider {
                     override fun calculatePosition(
@@ -573,16 +527,12 @@ private fun KeyButton(
                     shape = RoundedCornerShape(10.dp),
                     color = MaterialTheme.colorScheme.surfaceContainerHighest,
                     shadowElevation = 8.dp,
-                    border = androidx.compose.foundation.BorderStroke(
-                        1.dp,
-                        MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-                    ),
                 ) {
                     Row(
                         modifier = Modifier.padding(6.dp),
                         horizontalArrangement = Arrangement.spacedBy(4.dp),
                     ) {
-                        key.accents.forEach { variant ->
+                        accents.forEach { variant ->
                             Box(
                                 modifier = Modifier
                                     .size(width = 44.dp, height = 50.dp)
@@ -594,14 +544,15 @@ private fun KeyButton(
                                         RoundedCornerShape(6.dp),
                                     )
                                     .clickable {
-                                        val out = if (shifted) variant.uppercase() else variant
+                                        // Применяем shift как label показывает
+                                        val out = if (label != label.lowercase()) variant.uppercase() else variant
                                         onTap(out)
                                         showAccents = false
                                     },
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text(
-                                    if (shifted) variant.uppercase() else variant,
+                                    variant,
                                     color = textColor,
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.SemiBold,
@@ -616,56 +567,61 @@ private fun KeyButton(
 }
 
 /* ============================================================
-   BACKSPACE KEY — auto-repeat + word-delete на long-press
+   BACKSPACE KEY — auto-repeat → word-delete (через InteractionSource)
    ============================================================ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun BackspaceKey(
     bg: Color,
     textColor: Color,
-    haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
-    scope: kotlinx.coroutines.CoroutineScope,
+    accent: Color,
     modifier: Modifier = Modifier,
-    onTapDelete: () -> Unit,
+    onCharDelete: () -> Unit,
     onWordDelete: () -> Unit,
+    haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
 ) {
-    var pressed by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val bgColor by animateColorAsState(
+        targetValue = if (isPressed) accent.copy(alpha = 0.35f) else bg,
+        label = "bs_bg",
+    )
+
+    LaunchedEffect(isPressed) {
+        if (isPressed) {
+            delay(450)  // initial delay перед repeat
+            var charCount = 0
+            while (isPressed && charCount < 6) {
+                onCharDelete()
+                charCount++
+                delay(70)
+            }
+            // word-delete пока зажато
+            while (isPressed) {
+                onWordDelete()
+                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                delay(180)
+            }
+        }
+    }
 
     Box(
         modifier = modifier
             .height(50.dp)
-            .clip(RoundedCornerShape(6.dp))
-            .background(bg)
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onPress = {
-                        pressed = true
-                        onTapDelete()  // первый символ сразу
-                        val released = tryAwaitRelease()
-                        pressed = false
-                    },
-                    onLongPress = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        scope.launch {
-                            // Сначала 5 символов с интервалом 80ms
-                            var charCount = 0
-                            while (pressed && charCount < 5) {
-                                delay(80)
-                                if (!pressed) break
-                                onTapDelete()
-                                charCount++
-                            }
-                            // Потом word-delete каждые 150ms
-                            while (pressed) {
-                                delay(150)
-                                if (!pressed) break
-                                onWordDelete()
-                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                            }
-                        }
-                    },
-                )
-            },
+            .clip(RoundedCornerShape(7.dp))
+            .background(bgColor)
+            .combinedClickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = {
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    onCharDelete()
+                },
+                onLongClick = {
+                    // первое срабатывание long-press — uжe в LaunchedEffect через isPressed
+                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                },
+            ),
         contentAlignment = Alignment.Center,
     ) {
         Icon(
@@ -691,16 +647,21 @@ private fun SpaceKey(
     onSwipe: (delta: Int) -> Unit,
 ) {
     val density = LocalDensity.current
-    // Накопленный сдвиг в пикселях → конвертируем в позиции
-    var accumPx by remember { mutableStateOf(0f) }
     val pxPerChar = with(density) { 10.dp.toPx() }
+    var accumPx by remember { mutableStateOf(0f) }
     var didSwipe by remember { mutableStateOf(false) }
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val bgColor by animateColorAsState(
+        if (isPressed) MaterialTheme.colorScheme.surfaceContainerHigh else bg,
+        label = "space_bg",
+    )
 
     Box(
         modifier = modifier
             .height(50.dp)
-            .clip(RoundedCornerShape(6.dp))
-            .background(bg)
+            .clip(RoundedCornerShape(7.dp))
+            .background(bgColor)
             .pointerInput(Unit) {
                 detectDragGestures(
                     onDragStart = {
@@ -708,7 +669,7 @@ private fun SpaceKey(
                         didSwipe = false
                     },
                     onDragEnd = {
-                        if (!didSwipe) onTap()  // если не свайпили — обычный тап = пробел
+                        if (!didSwipe) onTap()
                         accumPx = 0f
                         didSwipe = false
                     },
@@ -716,26 +677,26 @@ private fun SpaceKey(
                         accumPx = 0f
                         didSwipe = false
                     },
-                    onDrag = { _, dragAmount ->
-                        // Только горизонтальный свайп
-                        accumPx += dragAmount.x
+                    onDrag = { _, drag ->
+                        accumPx += drag.x
                         if (kotlin.math.abs(accumPx) > pxPerChar) {
                             val delta = (accumPx / pxPerChar).toInt()
                             accumPx -= delta * pxPerChar
                             onSwipe(delta)
                             didSwipe = true
+                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         }
                     },
                 )
             }
-            .pointerInput(Unit) {
-                // Отдельный детектор для простого тапа (без drag)
-                detectTapGestures(onTap = {
-                    if (!didSwipe) {
-                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        onTap()
-                    }
-                })
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+            ) {
+                if (!didSwipe) {
+                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    onTap()
+                }
             },
         contentAlignment = Alignment.Center,
     ) {
@@ -758,12 +719,22 @@ private fun SpecialKey(
     onClick: () -> Unit,
     content: @Composable () -> Unit,
 ) {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val bgColor by animateColorAsState(
+        if (isPressed) bg.copy(alpha = (bg.alpha * 0.7f).coerceAtLeast(0.4f)) else bg,
+        label = "special_bg",
+    )
     Box(
         modifier = modifier
             .height(50.dp)
-            .clip(RoundedCornerShape(6.dp))
-            .background(bg)
-            .clickable(onClick = onClick),
+            .clip(RoundedCornerShape(7.dp))
+            .background(bgColor)
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick,
+            ),
         contentAlignment = Alignment.Center,
     ) {
         content()

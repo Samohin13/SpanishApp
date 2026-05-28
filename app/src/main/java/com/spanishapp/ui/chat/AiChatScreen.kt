@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
@@ -71,12 +72,6 @@ fun AiChatScreen(
     val isListening    by vm.isListening.collectAsStateWithLifecycle()
     val voiceAmplitude by vm.voiceAmplitude.collectAsStateWithLifecycle()
     val error          by vm.error.collectAsStateWithLifecycle()
-    val tutor          by vm.tutorProfile.collectAsStateWithLifecycle()
-
-    // v1.24.5: при первом заходе показать setup, если профиль не настроен.
-    var showSetup by remember(tutor.configured) { mutableStateOf(!tutor.configured) }
-    var showEdit by remember { mutableStateOf(false) }
-
     // v1.24.6: TextFieldValue для полноценной поддержки курсора/выделения.
     // BasicTextField(readOnly=true) НЕ вызывает системную клаву, но позволяет
     // tap-to-position cursor и selection-by-long-press — как в S26 Ultra.
@@ -106,14 +101,11 @@ fun AiChatScreen(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             ChatHeader(
-                tutorName = tutor.name,
-                tutorAvatar = tutor.avatar,
                 scenarioEmoji = scenario.emoji,
                 scenarioTitle = scenario.title,
                 level = "B1",
                 limit = "47/50",
                 onBack = { navController.popBackStack() },
-                onEditTutor = { showEdit = true },
                 onNewChat = {
                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                     vm.clearCurrentSession()
@@ -191,57 +183,25 @@ fun AiChatScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 if (messages.isEmpty()) {
-                    item { WelcomeBubble(tutorName = tutor.name, tutorAvatar = tutor.avatar, onSpeak = { vm.speak(it) }) }
+                    item { WelcomeBubble(onSpeak = { vm.speak(it) }) }
                 } else {
                     items(messages, key = { it.id }) { msg ->
                         ChatMessageItem(
                             role = msg.role,
                             content = msg.content,
                             correctionJson = msg.correctionJson,
-                            tutorAvatar = tutor.avatar,
                             onSpeak = { vm.speak(it) },
                             onCorrectionParse = { vm.corrections(it) },
                         )
                     }
                 }
                 if (isSending) {
-                    item { TypingIndicator(tutorAvatar = tutor.avatar) }
+                    item { TypingIndicator() }
                 }
             }
         }
     }
 
-    // v1.24.5: первичная настройка наставника при первом заходе
-    if (showSetup) {
-        TutorSetupDialog(
-            initialName = tutor.name.takeIf { it != "Tutor" } ?: "",
-            initialAvatar = tutor.avatar,
-            isFirstTime = true,
-            onDismiss = {
-                // При первом запуске пропустить — сохраняем дефолты "Tutor"/🤖
-                vm.saveTutorProfile("Tutor", TutorAvatarStyles.DEFAULT_ID)
-                showSetup = false
-            },
-            onSave = { name, avatar ->
-                vm.saveTutorProfile(name, avatar)
-                showSetup = false
-            },
-        )
-    }
-
-    // Редактирование профиля (по тапу на имя/аватар в header)
-    if (showEdit) {
-        TutorSetupDialog(
-            initialName = tutor.name,
-            initialAvatar = tutor.avatar,
-            isFirstTime = false,
-            onDismiss = { showEdit = false },
-            onSave = { name, avatar ->
-                vm.saveTutorProfile(name, avatar)
-                showEdit = false
-            },
-        )
-    }
 }
 
 /* ============================================================
@@ -251,14 +211,11 @@ fun AiChatScreen(
    ============================================================ */
 @Composable
 private fun ChatHeader(
-    tutorName: String,
-    tutorAvatar: String,
     scenarioEmoji: String,
     scenarioTitle: String,
     level: String,
     limit: String,
     onBack: () -> Unit,
-    onEditTutor: () -> Unit,
     onNewChat: () -> Unit,
 ) {
     Surface(
@@ -285,17 +242,15 @@ private fun ChatHeader(
             Row(
                 modifier = Modifier
                     .weight(1f)
-                    .clip(RoundedCornerShape(10.dp))
-                    .clickable(onClick = onEditTutor)
                     .padding(2.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
             ) {
-                TutorAvatarBadge(styleId = tutorAvatar, size = 40.dp)
+                AppLogoAvatar(size = 40.dp)
                 Column(modifier = Modifier.weight(1f)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            tutorName,
+                            "ESPEAK",
                             fontWeight = FontWeight.Bold,
                             fontSize = 15.5.sp,
                             color = MaterialTheme.colorScheme.onSurface,
@@ -340,47 +295,32 @@ private fun ChatHeader(
 }
 
 @Composable
-private fun TutorAvatarBadge(
-    styleId: String,
-    size: androidx.compose.ui.unit.Dp,
-    showOnline: Boolean = true,
-) {
-    // v1.24.7: pro-уровень аватарка — Material иконка на градиентном
-    // круге. Стиль из TutorAvatarStyles.byId(styleId) — 16 вариантов
-    // с разными иконками (School, Star, Fire, Diamond, Magic, …) и
-    // фирменными градиентами.
-    val style = remember(styleId) { TutorAvatarStyles.byId(styleId) }
+private fun AppLogoAvatar(size: androidx.compose.ui.unit.Dp) {
+    // Лого приложения как аватарка в чате. Используем ic_splash_logo —
+    // это фирменная иконка ESPEAK (mark из splash screen).
     Box(modifier = Modifier.size(size)) {
-        Box(
+        androidx.compose.foundation.Image(
+            painter = androidx.compose.ui.res.painterResource(com.spanishapp.R.drawable.ic_splash_logo),
+            contentDescription = "ESPEAK",
             modifier = Modifier
                 .fillMaxSize()
+                .clip(CircleShape),
+        )
+        // Зелёная точка online
+        Box(
+            modifier = Modifier
+                .size(11.dp)
+                .align(Alignment.BottomEnd)
                 .clip(CircleShape)
-                .background(Brush.linearGradient(style.gradient)),
+                .background(MaterialTheme.colorScheme.surface),
             contentAlignment = Alignment.Center,
         ) {
-            Icon(
-                imageVector = style.icon,
-                contentDescription = style.label,
-                tint = Color.White,
-                modifier = Modifier.size(size * 0.5f),
-            )
-        }
-        if (showOnline) {
             Box(
-                modifier = Modifier
-                    .size(11.dp)
-                    .align(Alignment.BottomEnd)
+                Modifier
+                    .size(8.dp)
                     .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surface),
-                contentAlignment = Alignment.Center,
-            ) {
-                Box(
-                    Modifier
-                        .size(8.dp)
-                        .clip(CircleShape)
-                        .background(EspeakChat.success)
-                )
-            }
+                    .background(EspeakChat.success)
+            )
         }
     }
 }
@@ -473,7 +413,6 @@ private fun ChatMessageItem(
     role: String,
     content: String,
     correctionJson: String,
-    tutorAvatar: String = "scholar",
     onSpeak: (String) -> Unit,
     onCorrectionParse: (String) -> List<com.spanishapp.data.repository.ChatCorrection>,
 ) {
@@ -486,7 +425,7 @@ private fun ChatMessageItem(
         verticalAlignment = Alignment.Bottom,
     ) {
         if (!isUser) {
-            TutorAvatarSmall(styleId = tutorAvatar, size = 28.dp)
+            AppLogoAvatar(size = 28.dp)
             Spacer(Modifier.width(6.dp))
         }
 
@@ -731,9 +670,9 @@ private fun SmallIconAction(
    TYPING INDICATOR — три пляшущих точки в AI-bubble
    ============================================================ */
 @Composable
-private fun TypingIndicator(tutorAvatar: String = "scholar") {
+private fun TypingIndicator() {
     Row(verticalAlignment = Alignment.Bottom) {
-        TutorAvatarSmall(styleId = tutorAvatar, size = 28.dp)
+        AppLogoAvatar(size = 28.dp)
         Spacer(Modifier.width(6.dp))
         Surface(
             shape = RoundedCornerShape(
@@ -776,13 +715,12 @@ private fun TypingIndicator(tutorAvatar: String = "scholar") {
    WELCOME BUBBLE — первое сообщение при пустом чате
    ============================================================ */
 @Composable
-private fun WelcomeBubble(tutorName: String, tutorAvatar: String, onSpeak: (String) -> Unit) {
-    val text = "¡Hola! Soy **$tutorName**, tu profesor(a) de español. ¿De qué quieres hablar hoy?"
+private fun WelcomeBubble(onSpeak: (String) -> Unit) {
+    val text = "¡Hola! Soy tu profesor de **ESPEAK**. ¿De qué quieres hablar hoy?"
     ChatMessageItem(
         role = "assistant",
-        content = "$text ⟦RU⟧ Привет! Я $tutorName, твой преподаватель испанского. О чём хочешь сегодня поговорить?",
+        content = "$text ⟦RU⟧ Привет! Я твой преподаватель ESPEAK. О чём хочешь сегодня поговорить?",
         correctionJson = "",
-        tutorAvatar = tutorAvatar,
         onSpeak = onSpeak,
         onCorrectionParse = { emptyList() },
     )
@@ -887,6 +825,14 @@ private fun ChatComposer(
                                 fontSize = 15.5.sp,
                             )
                         }
+                        // v1.24.8: FocusRequester для авто-фокуса — без него
+                        // курсор не виден до первого тапа на поле.
+                        val focusRequester = remember { androidx.compose.ui.focus.FocusRequester() }
+                        LaunchedEffect(Unit) {
+                            // Запросить фокус когда поле появляется
+                            kotlinx.coroutines.delay(100)
+                            runCatching { focusRequester.requestFocus() }
+                        }
                         BasicTextField(
                             value = inputValue,
                             onValueChange = onValueChange,
@@ -897,7 +843,9 @@ private fun ChatComposer(
                             ),
                             cursorBrush = androidx.compose.ui.graphics.SolidColor(EspeakChat.primary),
                             maxLines = 5,
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .focusRequester(focusRequester),
                         )
                     }
                 }
@@ -983,147 +931,3 @@ private fun VoiceWaveform(amplitude: Float, modifier: Modifier = Modifier) {
     }
 }
 
-/* ============================================================
-   TUTOR SMALL AVATAR — компактный бейдж для message bubble
-   ============================================================ */
-@Composable
-private fun TutorAvatarSmall(styleId: String, size: androidx.compose.ui.unit.Dp) {
-    val style = remember(styleId) { TutorAvatarStyles.byId(styleId) }
-    Box(
-        modifier = Modifier
-            .size(size)
-            .clip(CircleShape)
-            .background(Brush.linearGradient(style.gradient)),
-        contentAlignment = Alignment.Center,
-    ) {
-        Icon(
-            imageVector = style.icon,
-            contentDescription = null,
-            tint = Color.White,
-            modifier = Modifier.size(size * 0.55f),
-        )
-    }
-}
-
-/* ============================================================
-   TUTOR SETUP DIALOG — выбор имени и аватарки наставника
-   ============================================================ */
-@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
-@Composable
-private fun TutorSetupDialog(
-    initialName: String,
-    initialAvatar: String,
-    isFirstTime: Boolean,
-    onDismiss: () -> Unit,
-    onSave: (name: String, avatar: String) -> Unit,
-) {
-    var name by remember { mutableStateOf(initialName) }
-    var avatar by remember { mutableStateOf(initialAvatar) }
-
-    androidx.compose.material3.AlertDialog(
-        onDismissRequest = onDismiss,
-        title = {
-            Text(
-                if (isFirstTime) "Познакомься с наставником"
-                else "Настрой наставника",
-                fontWeight = FontWeight.Bold,
-            )
-        },
-        text = {
-            Column {
-                Text(
-                    if (isFirstTime)
-                        "Выбери имя и аватар. Наставник запомнит и встретит тебя при следующем заходе."
-                    else "Изменить имя или аватар.",
-                    fontSize = 13.5.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Spacer(Modifier.height(16.dp))
-
-                // Текущая аватарка крупно по центру
-                Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    val currentStyle = remember(avatar) { TutorAvatarStyles.byId(avatar) }
-                    Box(
-                        modifier = Modifier
-                            .size(84.dp)
-                            .clip(CircleShape)
-                            .background(Brush.linearGradient(currentStyle.gradient)),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Icon(
-                            imageVector = currentStyle.icon,
-                            contentDescription = currentStyle.label,
-                            tint = Color.White,
-                            modifier = Modifier.size(46.dp),
-                        )
-                    }
-                }
-
-                Spacer(Modifier.height(12.dp))
-
-                // Поле имени (используем системную клаву только в setup —
-                // это разовая операция, не основной чат)
-                androidx.compose.material3.OutlinedTextField(
-                    value = name,
-                    onValueChange = { if (it.length <= 20) name = it },
-                    label = { Text("Имя наставника") },
-                    placeholder = { Text("Tutor, Lucía, Maestro, …") },
-                    singleLine = true,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-
-                Spacer(Modifier.height(14.dp))
-
-                Text(
-                    "Аватар",
-                    fontSize = 12.5.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-                Spacer(Modifier.height(8.dp))
-                androidx.compose.foundation.layout.FlowRow(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                ) {
-                    TutorAvatarStyles.STYLES.forEach { style ->
-                        val selected = style.id == avatar
-                        Box(
-                            modifier = Modifier
-                                .size(if (selected) 50.dp else 46.dp)
-                                .clip(CircleShape)
-                                .background(Brush.linearGradient(style.gradient))
-                                .then(
-                                    if (selected)
-                                        Modifier.border(2.5.dp, EspeakChat.primary, CircleShape)
-                                    else Modifier
-                                )
-                                .clickable { avatar = style.id },
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Icon(
-                                imageVector = style.icon,
-                                contentDescription = style.label,
-                                tint = Color.White,
-                                modifier = Modifier.size(if (selected) 26.dp else 24.dp),
-                            )
-                        }
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            androidx.compose.material3.TextButton(
-                onClick = { onSave(name.ifBlank { "Tutor" }, avatar) }
-            ) {
-                Text(if (isFirstTime) "Готово" else "Сохранить", fontWeight = FontWeight.SemiBold)
-            }
-        },
-        dismissButton = if (!isFirstTime) {
-            { androidx.compose.material3.TextButton(onClick = onDismiss) { Text("Отмена") } }
-        } else null,
-    )
-}
