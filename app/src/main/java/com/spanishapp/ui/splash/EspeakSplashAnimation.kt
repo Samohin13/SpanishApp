@@ -321,12 +321,20 @@ fun EspeakSplashAnimation(onComplete: () -> Unit) {
     } }
 
     LaunchedEffect(Unit) {
-        val startNs = System.nanoTime()
-        while (!completed) {
+        // ⚠ startNs ОБЯЗАТЕЛЬНО фиксируем от withFrameNanos.now (а не от
+        // System.nanoTime()) — у них РАЗНЫЕ clock base. Разница может быть
+        // в миллиарды наносекунд → time сразу прыгает к TOTAL_DUR →
+        // анимация «перематывает» в финал и onComplete вызывается сразу.
+        // Юзер видит только финальный кадр без анимации.
+        var startNs = 0L
+        var done = false
+        while (!done) {
             withFrameNanos { now ->
+                if (startNs == 0L) startNs = now
                 val t = (now - startNs) / 1_000_000_000f
-                time = if (fastForward) min(TOTAL_DUR, t + 8f) else t
+                time = if (fastForward) min(TOTAL_DUR, t + 8f) else min(TOTAL_DUR, t)
                 if (time >= TOTAL_DUR) {
+                    done = true
                     completed = true
                 }
             }
