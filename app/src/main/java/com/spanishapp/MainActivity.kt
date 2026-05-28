@@ -151,21 +151,34 @@ class MainActivity : FragmentActivity() {
             ) {
                 SpanishAppTheme(darkTheme = darkTheme) {
                     SpanishBackground {
-                        // Ждём завершения seedIfNeeded() — на первом запуске
-                        // показываем splash-overlay с прогрессом. Splash
-                        // системы тоже держим до тех пор.
+                        // ── Splash animation gate ─────────────────────
+                        // Каждый запуск показываем кинематографичный
+                        // splash (~10 сек): падающие испанские буквы →
+                        // мозаика ESPEAK → конверг 14 «специальных» →
+                        // BAM → логотип-бык. См. EspeakSplashAnimation.
+                        //
+                        // Splash играет ВСЕГДА. Готовность БД (seed)
+                        // ждём параллельно — обычно seed успевает до
+                        // окончания анимации. Если seed дольше —
+                        // финальный кадр (логотип) держится до seedReady.
                         val app = applicationContext as SpanishApp
                         val seedReady by app.seedReady.collectAsStateWithLifecycle()
-                        LaunchedEffect(seedReady) {
-                            if (seedReady) splashHoldOpen = false
-                        }
-                        if (seedReady) {
+                        var splashAnimDone by remember { mutableStateOf(false) }
+
+                        // System splash скрываем как только Compose начал
+                        // рисовать наш Splash (через первый recomposition).
+                        LaunchedEffect(Unit) { splashHoldOpen = false }
+
+                        val readyForHome = splashAnimDone && seedReady
+                        if (!readyForHome) {
+                            com.spanishapp.ui.splash.EspeakSplashAnimation(
+                                onComplete = { splashAnimDone = true }
+                            )
+                        } else {
                             // v1.22.27: онбординг ОТКЛЮЧЁН по решению владельца.
                             // OnboardingScreen + OnboardingViewModel + OnboardingPrefs
-                            // остаются в коде на случай если потребуется вернуть
-                            // (например, для adaptive entry point продвинутых юзеров).
-                            // Сейчас юзер сразу попадает на главный экран, как было
-                            // до v1.22.25.
+                            // остаются в коде на случай если потребуется вернуть.
+                            // Юзер после splash + seed сразу попадает на главный экран.
                             SpanishAppRoot(widgetTarget = widgetTarget)
 
                             // v1.22.30: плашка «доступно обновление» (минимальная).
@@ -185,8 +198,6 @@ class MainActivity : FragmentActivity() {
                                     },
                                 )
                             }
-                        } else {
-                            FirstLaunchLoadingOverlay()
                         }
                     }
                 }
