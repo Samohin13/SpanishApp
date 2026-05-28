@@ -438,12 +438,22 @@ private fun KeyButton(
         label = "key_bg",
     )
 
+    // v1.24.10: rememberUpdatedState — закрепляет ссылки на актуальные
+    // версии callbacks/values. pointerInput(Unit) теперь стабильна — НЕ
+    // пересоздаётся при изменении shifted/state, и захватывает СВЕЖИЙ onTap
+    // через эту ссылку. Это и есть фикс "печать стопится через 3 символа":
+    // раньше pointerInput захватывал старый onTap closure → emit вызывал
+    // устаревший value/state → новые буквы терялись.
+    val currentOnTap by rememberUpdatedState(onTap)
+    val currentOutput by rememberUpdatedState(output)
+    val currentAccents by rememberUpdatedState(accents)
+
     // Auto-repeat ТОЛЬКО для клавиш без accents
     LaunchedEffect(pressed) {
-        if (pressed && accents.isEmpty()) {
+        if (pressed && currentAccents.isEmpty()) {
             delay(400)
             while (pressed) {
-                onTap(output)
+                currentOnTap(currentOutput)
                 delay(50)
             }
         }
@@ -454,19 +464,19 @@ private fun KeyButton(
             .height(heightDp.dp)
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
-            .pointerInput(label, output, accents) {
+            .pointerInput(Unit) {
                 detectTapGestures(
                     // КЛЮЧЕВОЕ: onPress срабатывает на DOWN — мгновенно!
                     onPress = { _ ->
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        onTap(output)  // <-- fire immediately!
+                        currentOnTap(currentOutput)  // <-- fire immediately!
                         pressed = true
                         tryAwaitRelease()
                         pressed = false
                     },
                     // Long-press — показ accents (если есть). Не вмешивается в onPress.
                     onLongPress = {
-                        if (accents.isNotEmpty()) {
+                        if (currentAccents.isNotEmpty()) {
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             showAccents = true
                         }
@@ -556,13 +566,17 @@ private fun BackspaceKey(
         label = "bs_bg",
     )
 
-    // Repeat только char-delete, бесконечно пока зажато (по запросу юзера)
+    // v1.24.10: rememberUpdatedState чтобы pointerInput захватывал
+    // СВЕЖИЙ onCharDelete (он использует актуальный `value` из ViewModel).
+    val currentDelete by rememberUpdatedState(onCharDelete)
+
+    // Repeat только char-delete, бесконечно пока зажато
     LaunchedEffect(pressed) {
         if (pressed) {
-            delay(400)  // initial threshold
+            delay(400)
             while (pressed) {
-                onCharDelete()
-                delay(45)  // плавно, как в Gboard
+                currentDelete()
+                delay(45)
             }
         }
     }
@@ -576,7 +590,7 @@ private fun BackspaceKey(
                 detectTapGestures(
                     onPress = { _ ->
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        onCharDelete()      // FIRE on DOWN
+                        currentDelete()      // FIRE on DOWN
                         pressed = true
                         tryAwaitRelease()
                         pressed = false
@@ -617,6 +631,8 @@ private fun SpaceKey(
         animationSpec = tween(60),
         label = "space_bg",
     )
+    val currentTap by rememberUpdatedState(onTap)
+    val currentSwipe by rememberUpdatedState(onSwipe)
 
     Box(
         modifier = modifier
@@ -633,7 +649,7 @@ private fun SpaceKey(
                     onDragEnd = {
                         if (!didSwipe) {
                             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                            onTap()
+                            currentTap()
                         }
                         pressed = false
                         accumPx = 0f
@@ -649,7 +665,7 @@ private fun SpaceKey(
                         if (kotlin.math.abs(accumPx) > pxPerChar) {
                             val delta = (accumPx / pxPerChar).toInt()
                             accumPx -= delta * pxPerChar
-                            onSwipe(delta)
+                            currentSwipe(delta)
                             didSwipe = true
                             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         }
@@ -657,13 +673,12 @@ private fun SpaceKey(
                 )
             }
             .pointerInput(Unit) {
-                // Простой тап = пробел (если не было drag)
                 detectTapGestures(
                     onPress = { _ ->
                         pressed = true
                         if (!didSwipe) {
                             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                            onTap()
+                            currentTap()
                         }
                         tryAwaitRelease()
                         pressed = false
@@ -697,6 +712,7 @@ private fun SpecialKey(
         animationSpec = tween(60),
         label = "special_bg",
     )
+    val currentClick by rememberUpdatedState(onClick)
     Box(
         modifier = modifier
             .height(50.dp)
@@ -706,7 +722,7 @@ private fun SpecialKey(
                 detectTapGestures(
                     onPress = { _ ->
                         pressed = true
-                        onClick()
+                        currentClick()
                         tryAwaitRelease()
                         pressed = false
                     },
