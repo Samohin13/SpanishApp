@@ -1110,7 +1110,7 @@ private fun ChatComposer(
                         )
                     }
                 }
-            } else
+            } else {
             // Поле ввода — readOnly BasicTextField:
             // системная клава НЕ вызывается (readOnly), но курсор,
             // tap-to-position и long-press selection РАБОТАЮТ нативно.
@@ -1195,6 +1195,7 @@ private fun ChatComposer(
                         }
                     }
                 }
+            }
             }
 
             // Кнопка: Send (если есть текст) / Stop+Send (если идёт запись) / Mic (если пусто)

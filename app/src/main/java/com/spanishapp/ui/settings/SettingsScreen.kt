@@ -92,6 +92,7 @@ class SettingsViewModel @Inject constructor(
     private val recentSearchDao: com.spanishapp.data.db.dao.RecentSearchDao,
     private val weeklyLeagueDao: com.spanishapp.data.db.dao.WeeklyLeagueDao,
     private val subscriptionManager: com.spanishapp.service.SubscriptionManager,
+    private val playBillingManager: com.spanishapp.service.PlayBillingManager,
 ) : ViewModel() {
 
     /** v1.23.6: для debug-toggle и отображения текущего статуса. */
@@ -101,6 +102,11 @@ class SettingsViewModel @Inject constructor(
     /** v1.23.6: debug-toggle для тестирования PRO-gating. */
     fun debugSetPro(enabled: Boolean) = viewModelScope.launch {
         subscriptionManager.debugSetPro(enabled)
+    }
+
+    /** v1.25.5: restore purchases — query Play для existing subscription. */
+    fun restorePurchases() = viewModelScope.launch {
+        playBillingManager.restorePurchases()
     }
 
     /**
@@ -546,6 +552,13 @@ fun SettingsScreen(
                 ) {
                     navController.navigate("paywall") { launchSingleTop = true }
                 }
+                // v1.25.5: restore purchases — для юзеров которые
+                // переустановили app или поменяли устройство.
+                SettingsItem(
+                    icon = Icons.Default.Refresh,
+                    title = "Восстановить покупки",
+                    summary = "Проверить активную PRO подписку",
+                ) { vm.restorePurchases() }
                 // v1.23.6: Debug-toggle для тестирования PRO-gating до
                 // интеграции Google Play Billing (Фаза 5). Только в debug-
                 // сборках — в release будет скрыт.

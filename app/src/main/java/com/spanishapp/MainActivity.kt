@@ -384,6 +384,8 @@ fun SpanishAppRoot(
             )
             // Глобальный оверлей для разблокировки достижений
             com.spanishapp.ui.components.AchievementUnlockHost()
+            // v1.25.5: баннер "❄ Стрик сохранён" когда срабатывает freeze
+            com.spanishapp.ui.components.StreakFreezePopupHost()
             // Глобальный "+N ⭐" попап при изменении рейтинга
             com.spanishapp.ui.components.RatingPopupHost()
         }
