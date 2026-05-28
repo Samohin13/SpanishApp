@@ -148,7 +148,11 @@ data class ChatMessageEntity(
     val content: String,
     val timestamp: Long = System.currentTimeMillis(),
     @ColumnInfo(name = "session_id") val sessionId: String = "default",
-    @ColumnInfo(name = "correction_json") val correctionJson: String = ""
+    @ColumnInfo(name = "correction_json") val correctionJson: String = "",
+    // v1.25.0 (db v28): voice messages — путь к .m4a файлу в filesDir
+    // и длительность для UI. Если null → обычное текстовое сообщение.
+    @ColumnInfo(name = "audio_path") val audioPath: String? = null,
+    @ColumnInfo(name = "audio_duration_ms") val audioDurationMs: Long = 0L,
 )
 
 @Entity(tableName = "achievements")

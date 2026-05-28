@@ -7,12 +7,16 @@ import com.spanishapp.data.repository.ChatCorrection
 import com.spanishapp.data.repository.parseCorrections
 import com.spanishapp.domain.chat.ChatScenario
 import com.spanishapp.domain.chat.ChatScenarios
+import com.spanishapp.data.db.dao.ChatMessageDao
+import com.spanishapp.data.db.entity.ChatMessageEntity
 import com.spanishapp.data.prefs.UserWordFrequency
 import com.spanishapp.service.AiChatLimiter
 import com.spanishapp.service.SpanishSpeechRecognizer
 import com.spanishapp.service.SpanishTts
 import com.spanishapp.service.SpeechResult
 import com.spanishapp.service.SubscriptionManager
+import com.spanishapp.service.VoicePlayer
+import com.spanishapp.service.VoiceRecorder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -31,8 +35,55 @@ class AiChatViewModel @Inject constructor(
     private val stt: SpanishSpeechRecognizer,
     private val limiter: AiChatLimiter,
     private val subscriptionManager: SubscriptionManager,
+    private val chatDao: ChatMessageDao,
     val userWordFrequency: UserWordFrequency,
+    val voiceRecorder: VoiceRecorder,
+    val voicePlayer: VoicePlayer,
 ) : ViewModel() {
+
+    // ── Voice messages ────────────────────────────────────────
+    val voiceIsRecording: StateFlow<Boolean> = voiceRecorder.isRecording
+    val voiceElapsedMs: StateFlow<Long> = voiceRecorder.elapsedMs
+    val voiceAmpRec: StateFlow<Float> = voiceRecorder.amplitude
+
+    /** Старт записи. UI должен показать overlay. */
+    fun startVoiceRecord(): Boolean = voiceRecorder.start() != null
+
+    /** Завершить запись + отправить (сохранить сообщение с audioPath). */
+    fun stopAndSendVoiceMessage() {
+        val result = voiceRecorder.stop() ?: return
+        val (path, duration) = result
+        viewModelScope.launch {
+            chatDao.insert(
+                ChatMessageEntity(
+                    role = "user",
+                    content = "",
+                    sessionId = _scenario.value.id,
+                    audioPath = path,
+                    audioDurationMs = duration,
+                )
+            )
+        }
+    }
+
+    /** Отмена — удаляет файл записи. */
+    fun cancelVoiceRecord() { voiceRecorder.cancel() }
+
+    /** Toggle play/pause для воспроизведения голосового. */
+    fun toggleVoicePlay(path: String) {
+        if (voicePlayer.currentPath.value == path) {
+            if (voicePlayer.isPlaying.value) voicePlayer.pause()
+            else voicePlayer.resume()
+        } else {
+            voicePlayer.play(path)
+        }
+    }
+
+    override fun onCleared() {
+        voicePlayer.stop()
+        voiceRecorder.cancel()
+        super.onCleared()
+    }
 
     /** PRO-юзер обходит лимит. */
     val isPro: StateFlow<Boolean> = subscriptionManager.isProActive

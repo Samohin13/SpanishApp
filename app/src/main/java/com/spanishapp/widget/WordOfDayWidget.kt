@@ -70,6 +70,7 @@ class WordOfDayWidget : GlanceAppWidget() {
                         AppDatabase.MIGRATION_23_24,
                         AppDatabase.MIGRATION_25_26,
                         AppDatabase.MIGRATION_26_27,
+                AppDatabase.MIGRATION_27_28,
                     )
                     .apply { if (BuildConfig.DEBUG) fallbackToDestructiveMigration() }
                     .build()

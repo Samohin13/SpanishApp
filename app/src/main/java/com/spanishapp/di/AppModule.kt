@@ -51,6 +51,7 @@ object AppModule {
                 AppDatabase.MIGRATION_23_24,
                 AppDatabase.MIGRATION_25_26,
                 AppDatabase.MIGRATION_26_27,
+                AppDatabase.MIGRATION_27_28,
             )
         // fallbackToDestructiveMigration ТОЛЬКО в debug. Раньше было всегда —
         // любая будущая ошибка миграции в release молча wipe'ала весь прогресс

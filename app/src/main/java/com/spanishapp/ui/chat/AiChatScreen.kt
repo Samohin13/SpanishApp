@@ -17,7 +17,10 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Pause
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AttachFile
 import androidx.compose.material.icons.filled.Mic
@@ -113,19 +116,26 @@ fun AiChatScreen(
     // и mic используют одну и ту же переменную. RU клава → ru-RU, иначе es-ES.
     // Раньше детект шёл по содержимому input (пустое → es-ES всегда) — баг.
     var keyboardLayout by remember { mutableStateOf(KbLayout.ES) }
-    val sttLanguage: () -> String = {
-        if (keyboardLayout == KbLayout.RU) "ru-RU" else "es-ES"
-    }
+
+    // v1.25.0: mic FAB теперь = voice message recording (WhatsApp-style).
+    // tap 1 → start recording → FAB меняется на send. tap 2 → stop+save.
+    val voiceIsRecording by vm.voiceIsRecording.collectAsStateWithLifecycle()
+    val voiceElapsedMs by vm.voiceElapsedMs.collectAsStateWithLifecycle()
+    val voiceAmpRec by vm.voiceAmpRec.collectAsStateWithLifecycle()
     val micPermLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
         contract = androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
     ) { granted ->
-        if (granted) vm.startVoice(sttLanguage(), onVoiceRecognized)
+        if (granted) vm.startVoiceRecord()
     }
-    fun launchMic() {
+    fun toggleMic() {
+        if (voiceIsRecording) {
+            vm.stopAndSendVoiceMessage()
+            return
+        }
         val granted = androidx.core.content.ContextCompat.checkSelfPermission(
             context, android.Manifest.permission.RECORD_AUDIO
         ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-        if (granted) vm.startVoice(sttLanguage(), onVoiceRecognized)
+        if (granted) vm.startVoiceRecord()
         else micPermLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
     }
     val listState = rememberLazyListState()
@@ -183,8 +193,15 @@ fun AiChatScreen(
                     },
                     onMic = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        launchMic()
+                        toggleMic()
                     },
+                    onCancelVoice = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        vm.cancelVoiceRecord()
+                    },
+                    isRecordingVoice = voiceIsRecording,
+                    voiceRecordingMs = voiceElapsedMs,
+                    voiceRecordingAmp = voiceAmpRec,
                     isListening = isListening,
                     voiceAmplitude = voiceAmplitude,
                 )
@@ -266,6 +283,10 @@ fun AiChatScreen(
                             correctionJson = msg.correctionJson,
                             onSpeak = { vm.speak(it) },
                             onCorrectionParse = { vm.corrections(it) },
+                            audioPath = msg.audioPath,
+                            audioDurationMs = msg.audioDurationMs,
+                            voicePlayer = vm.voicePlayer,
+                            onToggleVoicePlay = { vm.toggleVoicePlay(it) },
                         )
                     }
                 }
@@ -507,6 +528,11 @@ private fun ChatMessageItem(
     correctionJson: String,
     onSpeak: (String) -> Unit,
     onCorrectionParse: (String) -> List<com.spanishapp.data.repository.ChatCorrection>,
+    // v1.25.0: voice messages
+    audioPath: String? = null,
+    audioDurationMs: Long = 0L,
+    voicePlayer: com.spanishapp.service.VoicePlayer? = null,
+    onToggleVoicePlay: (String) -> Unit = {},
 ) {
     val isUser = role == "user"
     Row(
@@ -547,14 +573,25 @@ private fun ChatMessageItem(
                 shadowElevation = if (isUser) 0.dp else 1.dp,
             ) {
                 Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
-                    // Парсим текст: ⟦RU⟧ отделяет испанскую и русскую части
-                    val (esPart, ruPart) = splitBilingual(content)
-                    BilingualText(
-                        es = esPart,
-                        ru = ruPart,
-                        isUser = isUser,
-                        onWordTap = { word -> onSpeak(word) },
-                    )
+                    // v1.25.0: голосовое сообщение → audio player вместо текста
+                    if (!audioPath.isNullOrBlank() && voicePlayer != null) {
+                        VoiceMessagePlayer(
+                            audioPath = audioPath,
+                            totalMs = audioDurationMs,
+                            voicePlayer = voicePlayer,
+                            onToggle = onToggleVoicePlay,
+                            tintForUser = isUser,
+                        )
+                    } else {
+                        // Парсим текст: ⟦RU⟧ отделяет испанскую и русскую части
+                        val (esPart, ruPart) = splitBilingual(content)
+                        BilingualText(
+                            es = esPart,
+                            ru = ruPart,
+                            isUser = isUser,
+                            onWordTap = { word -> onSpeak(word) },
+                        )
+                    }
 
                     if (!isUser && correctionJson.isNotBlank()) {
                         val corrections = onCorrectionParse(correctionJson)
@@ -575,6 +612,84 @@ private fun ChatMessageItem(
         if (isUser) {
             Spacer(Modifier.width(6.dp))
             Box(Modifier.width(28.dp))
+        }
+    }
+}
+
+/* ============================================================
+   VOICE MESSAGE PLAYER — play/pause + progress bar + duration
+   ============================================================ */
+@Composable
+private fun VoiceMessagePlayer(
+    audioPath: String,
+    totalMs: Long,
+    voicePlayer: com.spanishapp.service.VoicePlayer,
+    onToggle: (String) -> Unit,
+    tintForUser: Boolean,
+) {
+    val currentPath by voicePlayer.currentPath.collectAsStateWithLifecycle()
+    val isPlaying by voicePlayer.isPlaying.collectAsStateWithLifecycle()
+    val positionMs by voicePlayer.positionMs.collectAsStateWithLifecycle()
+    val isThis = currentPath == audioPath
+
+    val progress = if (isThis && totalMs > 0)
+        (positionMs.toFloat() / totalMs.toFloat()).coerceIn(0f, 1f)
+    else 0f
+
+    val fg = if (tintForUser) Color.White else MaterialTheme.colorScheme.onSurface
+    val accent = if (tintForUser) Color.White else EspeakChat.primary
+    val trackBg = if (tintForUser) Color.White.copy(alpha = 0.3f)
+                  else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+
+    Row(
+        modifier = Modifier.widthIn(min = 180.dp).padding(vertical = 2.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+    ) {
+        // Play/pause button
+        Box(
+            modifier = Modifier
+                .size(38.dp)
+                .clip(CircleShape)
+                .background(accent.copy(alpha = 0.18f))
+                .clickable { onToggle(audioPath) },
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                if (isThis && isPlaying) Icons.Default.Pause
+                else Icons.Default.PlayArrow,
+                contentDescription = if (isThis && isPlaying) "Пауза" else "Воспроизвести",
+                tint = accent,
+                modifier = Modifier.size(22.dp),
+            )
+        }
+        // Progress bar + duration
+        Column(modifier = Modifier.weight(1f)) {
+            // Тонкий progress
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(3.dp)
+                    .clip(RoundedCornerShape(2.dp))
+                    .background(trackBg),
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth(progress)
+                        .height(3.dp)
+                        .clip(RoundedCornerShape(2.dp))
+                        .background(accent),
+                )
+            }
+            Spacer(Modifier.height(6.dp))
+            val shownMs = if (isThis) positionMs else totalMs
+            val mm = shownMs / 60000
+            val ss = ((shownMs / 1000) % 60).toInt()
+            Text(
+                "%d:%02d".format(mm, ss),
+                fontSize = 11.sp,
+                color = fg.copy(alpha = 0.85f),
+            )
         }
     }
 }
@@ -908,6 +1023,10 @@ private fun ChatComposer(
     onValueChange: (androidx.compose.ui.text.input.TextFieldValue) -> Unit,
     onSend: () -> Unit,
     onMic: () -> Unit,
+    onCancelVoice: () -> Unit = {},
+    isRecordingVoice: Boolean = false,
+    voiceRecordingMs: Long = 0L,
+    voiceRecordingAmp: Float = 0f,
     isListening: Boolean,
     voiceAmplitude: Float,
 ) {
@@ -925,6 +1044,64 @@ private fun ChatComposer(
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
+            // v1.25.0: режим recording — pill заменяется на воспроизводящий timer/waveform/cancel
+            if (isRecordingVoice) {
+                Surface(
+                    shape = RoundedCornerShape(22.dp),
+                    color = Color(0xFF6B0F0F).copy(alpha = 0.18f),
+                    modifier = Modifier
+                        .weight(1f)
+                        .heightIn(min = 42.dp),
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                    ) {
+                        // ✗ отмена
+                        IconButton(onClick = onCancelVoice, modifier = Modifier.size(36.dp)) {
+                            Icon(
+                                Icons.Default.Close,
+                                contentDescription = "Отменить запись",
+                                tint = Color(0xFFE53935),
+                                modifier = Modifier.size(22.dp),
+                            )
+                        }
+                        // ● пульсирующая красная точка
+                        val recPulse by rememberInfiniteTransition(label = "rec").animateFloat(
+                            initialValue = 0.5f, targetValue = 1f,
+                            animationSpec = infiniteRepeatable(
+                                tween(700), RepeatMode.Reverse,
+                            ),
+                            label = "rec_dot",
+                        )
+                        Box(
+                            modifier = Modifier
+                                .size(10.dp)
+                                .clip(CircleShape)
+                                .background(Color(0xFFE53935).copy(alpha = recPulse)),
+                        )
+                        // mm:ss timer
+                        val mm = (voiceRecordingMs / 60000)
+                        val ss = ((voiceRecordingMs / 1000) % 60).toInt()
+                        Text(
+                            "%d:%02d".format(mm, ss),
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        // тонкий waveform
+                        VoiceWaveform(
+                            amplitude = voiceRecordingAmp,
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(30.dp),
+                        )
+                    }
+                }
+            } else
             // Поле ввода — readOnly BasicTextField:
             // системная клава НЕ вызывается (readOnly), но курсор,
             // tap-to-position и long-press selection РАБОТАЮТ нативно.
@@ -1011,11 +1188,15 @@ private fun ChatComposer(
                 }
             }
 
-            // Кнопка: Send (если есть текст) или Mic (если пусто)
+            // Кнопка: Send (если есть текст) / Stop+Send (если идёт запись) / Mic (если пусто)
             ActionButton(
-                isSend = sendActive,
+                isSend = sendActive || isRecordingVoice,
                 isListening = isListening,
-                onClick = if (sendActive) onSend else onMic,
+                onClick = when {
+                    sendActive -> onSend
+                    isRecordingVoice -> onMic  // стоп + send
+                    else -> onMic              // старт записи
+                },
             )
         }
     }

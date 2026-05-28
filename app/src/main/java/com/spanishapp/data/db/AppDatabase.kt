@@ -38,7 +38,7 @@ import com.spanishapp.data.db.entity.*
         LessonCompletionEventEntity::class,
         ActivityTimeLogEntity::class,
     ],
-    version = 27,
+    version = 28,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -361,6 +361,16 @@ abstract class AppDatabase : RoomDatabase() {
                 """.trimIndent())
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_activity_time_log_started_at ON activity_time_log(started_at)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_activity_time_log_activity_type ON activity_time_log(activity_type)")
+            }
+        }
+
+        // ── v28: voice messages — добавляем audio_path + audio_duration_ms ──
+        //   к chat_messages для WhatsApp-style голосовых. Nullable путь:
+        //   NULL → обычное текстовое; не-NULL → .m4a в filesDir/voice_messages/.
+        val MIGRATION_27_28 = object : Migration(27, 28) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE chat_messages ADD COLUMN audio_path TEXT")
+                db.execSQL("ALTER TABLE chat_messages ADD COLUMN audio_duration_ms INTEGER NOT NULL DEFAULT 0")
             }
         }
 
