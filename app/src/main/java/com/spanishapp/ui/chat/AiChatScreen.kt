@@ -13,7 +13,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
@@ -812,6 +812,25 @@ private fun ChatComposer(
                         modifier = Modifier.fillMaxWidth().height(42.dp),
                     )
                 } else {
+                    // v1.24.9: Своя мигающая каретка как overlay над BasicTextField.
+                    // BasicTextField(readOnly=true) НЕ рисует курсор сам — Compose
+                    // намеренно скрывает каретку в read-only. Поэтому мы:
+                    //  1. Получаем TextLayoutResult через onTextLayout
+                    //  2. Считаем cursor rect через layout.getCursorRect(selection.start)
+                    //  3. Рисуем blinking Box в этой позиции
+                    var textLayout by remember {
+                        mutableStateOf<androidx.compose.ui.text.TextLayoutResult?>(null)
+                    }
+                    val cursorBlink by rememberInfiniteTransition(label = "cursor").animateFloat(
+                        initialValue = 1f,
+                        targetValue = 0f,
+                        animationSpec = infiniteRepeatable(
+                            animation = tween(530, easing = LinearEasing),
+                            repeatMode = RepeatMode.Reverse,
+                        ),
+                        label = "cursor_alpha",
+                    )
+                    val density = LocalDensity.current
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -825,14 +844,6 @@ private fun ChatComposer(
                                 fontSize = 15.5.sp,
                             )
                         }
-                        // v1.24.8: FocusRequester для авто-фокуса — без него
-                        // курсор не виден до первого тапа на поле.
-                        val focusRequester = remember { androidx.compose.ui.focus.FocusRequester() }
-                        LaunchedEffect(Unit) {
-                            // Запросить фокус когда поле появляется
-                            kotlinx.coroutines.delay(100)
-                            runCatching { focusRequester.requestFocus() }
-                        }
                         BasicTextField(
                             value = inputValue,
                             onValueChange = onValueChange,
@@ -841,12 +852,32 @@ private fun ChatComposer(
                                 color = MaterialTheme.colorScheme.onSurface,
                                 fontSize = 15.5.sp,
                             ),
-                            cursorBrush = androidx.compose.ui.graphics.SolidColor(EspeakChat.primary),
+                            cursorBrush = androidx.compose.ui.graphics.SolidColor(Color.Transparent),
                             maxLines = 5,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .focusRequester(focusRequester),
+                            onTextLayout = { textLayout = it },
+                            modifier = Modifier.fillMaxWidth(),
                         )
+                        // Кастомная каретка
+                        textLayout?.let { layout ->
+                            val cursorPos = inputValue.selection.start.coerceIn(0, inputValue.text.length)
+                            val rect = runCatching { layout.getCursorRect(cursorPos) }.getOrNull()
+                            if (rect != null) {
+                                Box(
+                                    modifier = Modifier
+                                        .offset {
+                                            androidx.compose.ui.unit.IntOffset(
+                                                rect.left.toInt(),
+                                                rect.top.toInt(),
+                                            )
+                                        }
+                                        .size(
+                                            width = 2.dp,
+                                            height = with(density) { rect.height.toDp() },
+                                        )
+                                        .background(EspeakChat.primary.copy(alpha = cursorBlink)),
+                                )
+                            }
+                        }
                     }
                 }
             }
