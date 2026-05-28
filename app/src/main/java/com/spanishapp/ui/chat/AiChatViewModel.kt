@@ -7,6 +7,7 @@ import com.spanishapp.data.repository.ChatCorrection
 import com.spanishapp.data.repository.parseCorrections
 import com.spanishapp.domain.chat.ChatScenario
 import com.spanishapp.domain.chat.ChatScenarios
+import com.spanishapp.data.prefs.UserWordFrequency
 import com.spanishapp.service.AiChatLimiter
 import com.spanishapp.service.SpanishSpeechRecognizer
 import com.spanishapp.service.SpanishTts
@@ -30,6 +31,7 @@ class AiChatViewModel @Inject constructor(
     private val stt: SpanishSpeechRecognizer,
     private val limiter: AiChatLimiter,
     private val subscriptionManager: SubscriptionManager,
+    val userWordFrequency: UserWordFrequency,
 ) : ViewModel() {
 
     /** PRO-юзер обходит лимит. */
@@ -86,7 +88,10 @@ class AiChatViewModel @Inject constructor(
             _error.value = null
 
             repo.sendMessage(trimmed, _scenario.value, level, "ESPEAK")
-                .onSuccess { if (!isPro.value) limiter.increment() }
+                .onSuccess {
+                    if (!isPro.value) limiter.increment()
+                    userWordFrequency.recordText(trimmed)  // learn from sent message
+                }
                 .onFailure { _error.value = "Не удалось получить ответ. Проверь интернет." }
 
             _isSending.value = false

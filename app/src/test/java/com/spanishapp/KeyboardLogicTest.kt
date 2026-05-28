@@ -356,4 +356,52 @@ class KeyboardLogicTest {
         value = KeyboardLogic.insertAt(value, "o")
         assertEquals("hola", value.text)
     }
+
+    // ── Double-space → period ───────────────────────────────────
+
+    @Test fun `canDoubleSpacePeriod - после буквы и пробела - true`() {
+        val v = TextFieldValue("hola ", TextRange(5))
+        assertTrue(KeyboardLogic.canDoubleSpacePeriod(v))
+    }
+
+    @Test fun `canDoubleSpacePeriod - после цифры и пробела - true`() {
+        val v = TextFieldValue("abc 5 ", TextRange(6))
+        assertTrue(KeyboardLogic.canDoubleSpacePeriod(v))
+    }
+
+    @Test fun `canDoubleSpacePeriod - после двух пробелов - false`() {
+        val v = TextFieldValue("a  ", TextRange(3))
+        assertFalse(KeyboardLogic.canDoubleSpacePeriod(v))
+    }
+
+    @Test fun `canDoubleSpacePeriod - в начале текста - false`() {
+        val v = TextFieldValue("", TextRange(0))
+        assertFalse(KeyboardLogic.canDoubleSpacePeriod(v))
+    }
+
+    @Test fun `canDoubleSpacePeriod - после точки и пробела - false`() {
+        // ". " — точка уже есть, не дублируем
+        val v = TextFieldValue("ok. ", TextRange(4))
+        assertFalse(KeyboardLogic.canDoubleSpacePeriod(v))
+    }
+
+    @Test fun `canDoubleSpacePeriod - выделение - false`() {
+        val v = TextFieldValue("hola ", TextRange(2, 4))
+        assertFalse(KeyboardLogic.canDoubleSpacePeriod(v))
+    }
+
+    @Test fun `doubleSpaceToPeriod - стандартный случай`() {
+        val v = TextFieldValue("hola ", TextRange(5))
+        val r = KeyboardLogic.doubleSpaceToPeriod(v)
+        assertEquals("hola. ", r.text)
+        assertEquals(6, r.selection.start)
+    }
+
+    @Test fun `doubleSpaceToPeriod - в середине текста`() {
+        val v = TextFieldValue("hola amigo", TextRange(5))  // "hola |amigo"
+        val r = KeyboardLogic.doubleSpaceToPeriod(v)
+        // Заменяет " " (5-я) → ". " → "hola. amigo"
+        assertEquals("hola. amigo", r.text)
+        assertEquals(6, r.selection.start)
+    }
 }

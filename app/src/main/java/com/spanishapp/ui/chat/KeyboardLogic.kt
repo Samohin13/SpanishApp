@@ -61,6 +61,35 @@ object KeyboardLogic {
         return if ((shifted || capsLock) && !isNumericLayout) s.uppercase() else s
     }
 
+    /**
+     * Можно ли применить double-space → period замену?
+     * Условия: курсор collapsed, символ перед курсором — пробел, перед пробелом —
+     * буква/цифра (не пробел / не знак), и пробел не является первым символом текста.
+     * Это match'ит "abc " + space → "abc. ".
+     */
+    fun canDoubleSpacePeriod(v: TextFieldValue): Boolean {
+        val t = v.text
+        val pos = v.selection.start
+        if (!v.selection.collapsed) return false
+        if (pos < 2) return false
+        if (t[pos - 1] != ' ') return false
+        val prev = t[pos - 2]
+        // Букву/цифру оставляем, знаки уже стоящие в конце (. , ! ?) пропускаем
+        return prev.isLetterOrDigit()
+    }
+
+    /**
+     * Заменяет trailing пробел перед курсором на ". " (точка + пробел).
+     * Курсор передвигается на 1 позицию вперёд (т.к. был " ", стал ". ").
+     */
+    fun doubleSpaceToPeriod(v: TextFieldValue): TextFieldValue {
+        val t = v.text
+        val pos = v.selection.start
+        // Заменяем символ позиции (pos-1) с " " на ". "
+        val newText = t.substring(0, pos - 1) + ". " + t.substring(pos)
+        return TextFieldValue(newText, TextRange(pos + 1))
+    }
+
     // ── Раскладки (data only, без Compose) ──
 
     fun esRows(): List<List<String>> = listOf(

@@ -189,7 +189,19 @@ fun AiChatScreen(
                     voiceAmplitude = voiceAmplitude,
                 )
                 // v1.24.6: pro-уровень клавиатура с курсором, swipe-space, suggestions
-                val suggestions = remember(input) { WordSuggester.suggest(input) }
+                // v1.24.19: подсказки = user-learned (приоритет) + static dictionary.
+                // Юзер набирает "ho" → если он уже отправлял "hola" много раз —
+                // оно появится первым; иначе fallback на топ-частотные слова.
+                val userFreqSnapshot by vm.userWordFrequency.freq.collectAsStateWithLifecycle()
+                val suggestions = remember(input, userFreqSnapshot) {
+                    val lastWord = input
+                        .substringAfterLast(' ', missingDelimiterValue = input)
+                        .substringAfterLast('\n', missingDelimiterValue = "")
+                        .ifBlank { input.substringAfterLast(' ', missingDelimiterValue = input) }
+                    val userSuggestions = vm.userWordFrequency.suggest(lastWord, 3)
+                    val staticSuggestions = WordSuggester.suggest(input, 3)
+                    (userSuggestions + staticSuggestions).distinct().take(3)
+                }
                 SpanishKeyboard(
                     value = inputValue,
                     onValueChange = { inputValue = it },

@@ -97,7 +97,14 @@ fun SpanishKeyboard(
         val shiftedChar = KeyboardLogic.applyShift(
             s, shifted, capsLock, layout == KbLayout.NUM,
         )
-        val newValue = KeyboardLogic.insertAt(value, shiftedChar)
+        // v1.24.19: double-space → ". " (как iOS/Gboard).
+        // Если вводим пробел и перед курсором уже пробел (но не два), и
+        // символ ДО пробела — буква/цифра → заменяем " " на ". ".
+        val newValue = if (shiftedChar == " " && KeyboardLogic.canDoubleSpacePeriod(value)) {
+            KeyboardLogic.doubleSpaceToPeriod(value)
+        } else {
+            KeyboardLogic.insertAt(value, shiftedChar)
+        }
         onValueChange(newValue)
         if (shifted && !capsLock) shifted = false
         if (!capsLock && layout != KbLayout.NUM) {
@@ -303,10 +310,14 @@ fun SpanishKeyboard(
                         color = textColor,
                     )
                 }
-                SpecialKey(
+                // v1.24.19: long-press на globe → выпадайка со всеми раскладками
+                GlobeKey(
                     bg = specialKeyBg,
+                    textColor = textColor,
+                    accent = accent,
                     modifier = Modifier.weight(1.1f),
-                    onClick = {
+                    currentLayout = layout,
+                    onShortCycle = {
                         haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                         onLayoutChange(when (layout) {
                             KbLayout.ES -> KbLayout.RU
@@ -316,14 +327,14 @@ fun SpanishKeyboard(
                         shifted = false
                         capsLock = false
                     },
-                ) {
-                    Icon(
-                        Icons.Default.Language,
-                        contentDescription = "Раскладка",
-                        tint = textColor,
-                        modifier = Modifier.size(20.dp),
-                    )
-                }
+                    onPickLayout = { picked ->
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        onLayoutChange(picked)
+                        shifted = false
+                        capsLock = false
+                    },
+                    haptic = haptic,
+                )
                 SpaceKey(
                     layout = layout,
                     bg = keyBg,
@@ -826,6 +837,127 @@ private fun SpecialKey(
 }
 
 // ── Раскладки ──────────────────────────────────────────────────
+
+/* ============================================================
+   GLOBE KEY — tap = цикл ES↔RU, long-press = меню всех раскладок
+   ============================================================ */
+@Composable
+private fun GlobeKey(
+    bg: Color,
+    textColor: Color,
+    accent: Color,
+    currentLayout: KbLayout,
+    onShortCycle: () -> Unit,
+    onPickLayout: (KbLayout) -> Unit,
+    haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
+    modifier: Modifier = Modifier,
+) {
+    var pressed by remember { mutableStateOf(false) }
+    var showMenu by remember { mutableStateOf(false) }
+    val bgColor by animateColorAsState(
+        if (pressed) bg.copy(alpha = (bg.alpha * 0.7f).coerceAtLeast(0.4f)) else bg,
+        animationSpec = tween(60),
+        label = "globe_bg",
+    )
+    val currentCycle by rememberUpdatedState(onShortCycle)
+    val currentPick by rememberUpdatedState(onPickLayout)
+
+    Box(
+        modifier = modifier
+            .height(50.dp)
+            .clip(RoundedCornerShape(7.dp))
+            .background(bgColor)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onPress = { _ ->
+                        pressed = true
+                        tryAwaitRelease()
+                        pressed = false
+                    },
+                    onTap = { currentCycle() },
+                    onLongPress = {
+                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                        showMenu = true
+                    },
+                )
+            },
+        contentAlignment = Alignment.Center,
+    ) {
+        Icon(
+            Icons.Default.Language,
+            contentDescription = "Раскладка",
+            tint = textColor,
+            modifier = Modifier.size(20.dp),
+        )
+
+        if (showMenu) {
+            // Popup сверху, по центру над клавишей
+            val provider = remember {
+                object : androidx.compose.ui.window.PopupPositionProvider {
+                    override fun calculatePosition(
+                        anchorBounds: androidx.compose.ui.unit.IntRect,
+                        windowSize: androidx.compose.ui.unit.IntSize,
+                        layoutDirection: androidx.compose.ui.unit.LayoutDirection,
+                        popupContentSize: androidx.compose.ui.unit.IntSize,
+                    ): androidx.compose.ui.unit.IntOffset {
+                        val x = (anchorBounds.left + (anchorBounds.width - popupContentSize.width) / 2)
+                            .coerceIn(8, (windowSize.width - popupContentSize.width - 8).coerceAtLeast(8))
+                        val y = (anchorBounds.top - popupContentSize.height - 8).coerceAtLeast(8)
+                        return androidx.compose.ui.unit.IntOffset(x, y)
+                    }
+                }
+            }
+            Popup(
+                popupPositionProvider = provider,
+                onDismissRequest = { showMenu = false },
+                properties = PopupProperties(focusable = true),
+            ) {
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    shadowElevation = 12.dp,
+                ) {
+                    Column(modifier = Modifier.padding(6.dp)) {
+                        val items = listOf(
+                            Triple(KbLayout.ES, "🇪🇸", "Español"),
+                            Triple(KbLayout.RU, "🇷🇺", "Русский"),
+                            Triple(KbLayout.NUM, "🔢", "Цифры"),
+                        )
+                        items.forEach { (lay, flag, label) ->
+                            val isActive = lay == currentLayout
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(
+                                        if (isActive) accent.copy(alpha = 0.2f)
+                                        else Color.Transparent
+                                    )
+                                    .clickable {
+                                        currentPick(lay)
+                                        showMenu = false
+                                    }
+                                    .padding(horizontal = 14.dp, vertical = 10.dp),
+                            ) {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(10.dp),
+                                ) {
+                                    Text(flag, fontSize = 16.sp)
+                                    Text(
+                                        label,
+                                        color = if (isActive) accent else textColor,
+                                        fontSize = 14.sp,
+                                        fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Medium,
+                                    )
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 private fun esLetterRows(): List<List<KbKey>> = listOf(
     listOf("q","w","e","r","t","y","u","i","o","p").map {
