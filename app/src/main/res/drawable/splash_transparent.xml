@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Полностью прозрачный 1×1 drawable для system splash (Android 12+).
+
+    Цель: убрать «приоткрытие приложения» когда юзер на cold-start видит
+    тёмный фон с оранжевым кругом и быком (system splash) → потом наша
+    кинематографичная EspeakSplashAnimation. Это два разных экрана и
+    переход выглядит как «приложение запустилось дважды».
+
+    Решение: system splash делаем визуально неотличимым от первой фазы
+    нашей анимации:
+      • Фон splash = оранжевый #FF6B35 (точно как первая фаза анимации)
+      • Иконка = этот прозрачный drawable (= ничего не видно)
+    Юзер видит сплошной оранжевый прямоугольник → плавно переходит в
+    нашу Compose-анимацию без визуального разрыва.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#00000000"
+        android:pathData="M0,0h108v108h-108z" />
+</vector>

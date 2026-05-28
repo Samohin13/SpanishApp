@@ -4,19 +4,23 @@
     <style name="Theme.SpanishApp" parent="android:Theme.Material.Light.NoActionBar" />
 
     <!-- Splash Screen Theme (SplashScreen API, Android 12+).
-         v1.13.2: было solid #FF6B35 — на планшете огромный пустой
-         оранжевый фон выглядел ужасно. Теперь dark background +
-         оранжевый круг с иконкой = премиальный look, иконка в фокусе. -->
+         v1.25.0: «невидимый» system splash для seamless-перехода в
+         нашу EspeakSplashAnimation. Раньше юзер видел дважды:
+           1) тёмный фон + оранжевая иконка с быком (system splash, 200-500ms)
+           2) оранжевый фон + падающие буквы (наш Compose splash)
+         Между ними была явная визуальная граница — «приоткрытие».
+
+         Теперь system splash подкрашен в первый цвет анимации (#FF6B35)
+         и иконка прозрачная → юзер видит сплошной оранжевый прямоугольник
+         мгновенно при tap по launcher → плавно переходит в Compose-анимацию
+         без видимого скачка темы. -->
     <style name="Theme.SpanishApp.Splash" parent="Theme.SplashScreen">
-        <!-- Тёмный фон — иконка контрастно выделяется -->
-        <item name="windowSplashScreenBackground">#0F0F11</item>
+        <!-- Фон строго совпадает с первой фазой EspeakSplashAnimation -->
+        <item name="windowSplashScreenBackground">#FF6B35</item>
 
-        <!-- Иконка в центре (adaptive icon foreground) -->
-        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_round</item>
-
-        <!-- Оранжевая подложка под иконку (Android 12+ автоматически
-             рисует circle ~200dp с этим background color). -->
-        <item name="windowSplashScreenIconBackgroundColor">#FF6B35</item>
+        <!-- Прозрачная «иконка» — её не видно. Это даёт чистый
+             оранжевый прямоугольник пока Compose ещё не отрисовался. -->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/splash_transparent</item>
 
         <!-- Тема которая применяется после скрытия сплеша -->
         <item name="postSplashScreenTheme">@style/Theme.SpanishApp</item>
