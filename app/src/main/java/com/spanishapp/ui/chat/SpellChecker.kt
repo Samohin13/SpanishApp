@@ -27,7 +27,14 @@ object SpellChecker {
         val confidence: Float,
     )
 
-    private const val MAX_DISTANCE = 2
+    // v1.25.61: MAX_DISTANCE 2 → 1 (юзер набрал "давай" — autocorrect
+    // менял на "диван" т.к. distance=2). Distance=1 ловит реальные
+    // опечатки (одна буква мимо), но не насилует валидные слова которых
+    // нет в словаре.
+    private const val MAX_DISTANCE = 1
+    // v1.25.61: confidence threshold повышен 0.5 → 0.7 (меньше false
+    // positives — autocorrect должен срабатывать только когда мы УВЕРЕНЫ).
+    private const val MIN_CONFIDENCE = 0.7f
 
     /**
      * Проверить слово. Возвращает suggestion если найдено лучшее, null иначе.
@@ -78,8 +85,7 @@ object SpellChecker {
         }
 
         val final = best ?: return null
-        // threshold 0.5 — иначе слишком много false-positive исправлений
-        if (bestScore < 0.5f) return null
+        if (bestScore < MIN_CONFIDENCE) return null
         return SpellSuggestion(w, final, bestScore)
     }
 }

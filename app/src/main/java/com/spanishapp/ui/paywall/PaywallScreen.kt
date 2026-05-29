@@ -75,6 +75,9 @@ private val PAYWALL_STATS = listOf(
     StatItem("1327", "глаголов", "все времена"),
     StatItem("100", "уровней игр", "все 6 игр"),
     StatItem("10К", "слов в карточках", "по всем уровням"),
+    // v1.25.61: добавлен 6-й — иначе grid 2×3 крашится ArrayIndexOutOfBounds
+    // когда юзер тапает PRO-сценарий в чате → paywall открыт → crash
+    StatItem("∞", "AI-чат", "без лимита 50/день"),
 )
 
 private data class FeatItem(val icon: String, val title: String, val dim: String)
