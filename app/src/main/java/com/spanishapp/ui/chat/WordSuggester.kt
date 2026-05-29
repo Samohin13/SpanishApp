@@ -16,23 +16,42 @@ object WordSuggester {
     fun allWords(): List<String> = ES_WORDS + RU_WORDS
 
     /**
-     * v1.25.10: подсказки берутся из ExpandedDictionary (~3500 слов),
-     * не из базовых ES_WORDS/RU_WORDS (~400). Это значит при наборе
-     * "при" Samsung-style сразу пять кандидатов: привет, приходить,
-     * прикольно, приехать, приготовить.
-     *
-     * Сортировка: сначала наиболее частотные (топ списка), потом
-     * остальные. Дубликаты исключены через distinct() в ExpandedDictionary.
+     * v1.25.13: T9 = PREFIX match + FUZZY fallback.
+     *  • Сначала ищем по префиксу — точные кандидаты ("при" → "привет").
+     *  • Если меньше max → добавляем fuzzy (Levenshtein ≤ 2) для опечаток
+     *    ("hila" → "hola").
+     *  • Distinct + take(max). Это Samsung-style suggestion logic.
      */
     fun suggest(input: String, max: Int = 3): List<String> {
         val word = currentWord(input).lowercase()
         if (word.isBlank()) return emptyList()
         val isRu = word.first() in 'а'..'я' || word.first() == 'ё'
         val pool = if (isRu) ExpandedDictionary.RU else ExpandedDictionary.ES
-        return pool.asSequence()
+
+        // 1. Prefix match (точные)
+        val prefixMatches = pool.asSequence()
             .filter { it.startsWith(word) && it != word }
             .take(max)
             .toList()
+
+        if (prefixMatches.size >= max || word.length < 3) {
+            return prefixMatches.take(max)
+        }
+
+        // 2. Fuzzy match (для опечаток) — добавляем оставшиеся слоты
+        val needed = max - prefixMatches.size
+        val fuzzyMatches = pool.asSequence()
+            .filter {
+                it.length in (word.length - 2)..(word.length + 2) &&
+                    it.first() == word.first() &&
+                    GlideMatcher.levenshtein(word, it) <= 2 &&
+                    it !in prefixMatches
+            }
+            .sortedBy { GlideMatcher.levenshtein(word, it) }
+            .take(needed)
+            .toList()
+
+        return (prefixMatches + fuzzyMatches).distinct().take(max)
     }
 
     /** Заменить последнее слово на полное предложенное + пробел. */

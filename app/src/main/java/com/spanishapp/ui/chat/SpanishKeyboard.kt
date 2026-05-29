@@ -505,16 +505,11 @@ private fun KeyButton(
     val currentOutput by rememberUpdatedState(output)
     val currentAccents by rememberUpdatedState(accents)
 
-    // Auto-repeat ТОЛЬКО для клавиш без accents
-    LaunchedEffect(pressed) {
-        if (pressed && currentAccents.isEmpty()) {
-            delay(400)
-            while (pressed) {
-                currentOnTap(currentOutput)
-                delay(50)
-            }
-        }
-    }
+    // v1.25.13: auto-repeat для букв УБРАН. Раньше задерживал glide:
+    // палец проходит через клавишу → задерживается на 400ms → срабатывает
+    // auto-repeat и вставляются повторы (видно как "hhhhhh..."), всё это
+    // ломало glide-typing. Letters auto-repeat ОЧЕНЬ редко нужен в UX.
+    // Backspace и numbers могут иметь — но это в отдельных композаблах.
 
     // v1.24.12: единый pointer flow для continuous accent gesture.
     // hold → popup → slide без отрыва → release на нужном accent.
