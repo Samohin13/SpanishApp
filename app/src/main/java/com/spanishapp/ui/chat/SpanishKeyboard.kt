@@ -1282,9 +1282,12 @@ private fun esAccents(letter: String): List<String> = when (letter) {
 }
 
 // v1.25.20: Samsung-style спец-символы на русской раскладке.
-// Для каждой буквы — small hint в углу, доступен через long-press.
+// v1.25.35: Mobile-layout — row 1 = 11 клавиш (без "ъ"), как у Samsung.
+// "ъ" теперь доступен через long-press на "ь" (это стандарт мобильных
+// клавиатур RU). Юзер: "у самсунга 11 кнопок, у нас 12 — компьютерная
+// раскладка надо мобильную".
 private fun ruLetterRows(): List<List<KbKey>> = listOf(
-    listOf("й","ц","у","к","е","н","г","ш","щ","з","х","ъ").map {
+    listOf("й","ц","у","к","е","н","г","ш","щ","з","х").map {
         KbKey(it, accents = ruAccents(it))
     },
     listOf("ф","ы","в","а","п","р","о","л","д","ж","э").map {
@@ -1307,8 +1310,8 @@ private fun ruAccents(letter: String): List<String> = when (letter) {
     "ш" -> listOf("^")
     "щ" -> listOf("[","{")
     "з" -> listOf("]","}")
-    "х" -> listOf("§")
-    "ъ" -> listOf("№")
+    "х" -> listOf("§","№")
+    // v1.25.35: "ъ" больше нет как отдельной клавиши — accent на "ь" (см. ниже)
     // Row 2
     "ф" -> listOf("!","¡")
     "ы" -> listOf("@")
@@ -1328,7 +1331,9 @@ private fun ruAccents(letter: String): List<String> = when (letter) {
     "м" -> listOf(":")
     "и" -> listOf(";")
     "т" -> listOf("/","\\")
-    "ь" -> listOf("?","¿")
+    // v1.25.35: "ъ" ПЕРВЫМ (видно в hint, доступен тапом-удержанием —
+    // как у Samsung mobile RU layout).
+    "ь" -> listOf("ъ","?","¿")
     "б" -> listOf("<","≤")
     "ю" -> listOf(">","≥")
     else -> emptyList()
