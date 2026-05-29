@@ -103,39 +103,29 @@ fun AiChatScreen(
     }
 
     // v1.24.11: RECORD_AUDIO permission flow для микрофона.
-    // STT (SpeechRecognizer) падает с ERROR_INSUFFICIENT_PERMISSIONS без неё.
+    // v1.25.7: REVERT voice messages → mic = STT. Speech-to-text:
+    // тап → говоришь → распознаётся → текст в input → юзер жмёт Send.
     val context = androidx.compose.ui.platform.LocalContext.current
+    var keyboardLayout by remember { mutableStateOf(KbLayout.ES) }
     val onVoiceRecognized: (String) -> Unit = { recognized ->
         inputValue = androidx.compose.ui.text.input.TextFieldValue(
             text = recognized,
             selection = androidx.compose.ui.text.TextRange(recognized.length),
         )
     }
-    // v1.24.16: язык STT определяется по ТЕКУЩЕЙ РАСКЛАДКЕ клавиатуры.
-    // Lifted state — keyboard layout живёт в AiChatScreen, и SpanishKeyboard,
-    // и mic используют одну и ту же переменную. RU клава → ru-RU, иначе es-ES.
-    // Раньше детект шёл по содержимому input (пустое → es-ES всегда) — баг.
-    var keyboardLayout by remember { mutableStateOf(KbLayout.ES) }
-
-    // v1.25.0: mic FAB теперь = voice message recording (WhatsApp-style).
-    // tap 1 → start recording → FAB меняется на send. tap 2 → stop+save.
-    val voiceIsRecording by vm.voiceIsRecording.collectAsStateWithLifecycle()
-    val voiceElapsedMs by vm.voiceElapsedMs.collectAsStateWithLifecycle()
-    val voiceAmpRec by vm.voiceAmpRec.collectAsStateWithLifecycle()
+    val sttLanguage: () -> String = {
+        if (keyboardLayout == KbLayout.RU) "ru-RU" else "es-ES"
+    }
     val micPermLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
         contract = androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
     ) { granted ->
-        if (granted) vm.startVoiceRecord()
+        if (granted) vm.startVoice(sttLanguage(), onVoiceRecognized)
     }
-    fun toggleMic() {
-        if (voiceIsRecording) {
-            vm.stopAndSendVoiceMessage()
-            return
-        }
+    fun launchMic() {
         val granted = androidx.core.content.ContextCompat.checkSelfPermission(
             context, android.Manifest.permission.RECORD_AUDIO
         ) == android.content.pm.PackageManager.PERMISSION_GRANTED
-        if (granted) vm.startVoiceRecord()
+        if (granted) vm.startVoice(sttLanguage(), onVoiceRecognized)
         else micPermLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
     }
     val listState = rememberLazyListState()
@@ -193,15 +183,8 @@ fun AiChatScreen(
                     },
                     onMic = {
                         haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        toggleMic()
+                        launchMic()
                     },
-                    onCancelVoice = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        vm.cancelVoiceRecord()
-                    },
-                    isRecordingVoice = voiceIsRecording,
-                    voiceRecordingMs = voiceElapsedMs,
-                    voiceRecordingAmp = voiceAmpRec,
                     isListening = isListening,
                     voiceAmplitude = voiceAmplitude,
                 )
@@ -283,10 +266,6 @@ fun AiChatScreen(
                             correctionJson = msg.correctionJson,
                             onSpeak = { vm.speak(it) },
                             onCorrectionParse = { vm.corrections(it) },
-                            audioPath = msg.audioPath,
-                            audioDurationMs = msg.audioDurationMs,
-                            voicePlayer = vm.voicePlayer,
-                            onToggleVoicePlay = { vm.toggleVoicePlay(it) },
                         )
                     }
                 }
@@ -528,11 +507,6 @@ private fun ChatMessageItem(
     correctionJson: String,
     onSpeak: (String) -> Unit,
     onCorrectionParse: (String) -> List<com.spanishapp.data.repository.ChatCorrection>,
-    // v1.25.0: voice messages
-    audioPath: String? = null,
-    audioDurationMs: Long = 0L,
-    voicePlayer: com.spanishapp.service.VoicePlayer? = null,
-    onToggleVoicePlay: (String) -> Unit = {},
 ) {
     val isUser = role == "user"
     Row(
@@ -573,25 +547,14 @@ private fun ChatMessageItem(
                 shadowElevation = if (isUser) 0.dp else 1.dp,
             ) {
                 Column(modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)) {
-                    // v1.25.0: голосовое сообщение → audio player вместо текста
-                    if (!audioPath.isNullOrBlank() && voicePlayer != null) {
-                        VoiceMessagePlayer(
-                            audioPath = audioPath,
-                            totalMs = audioDurationMs,
-                            voicePlayer = voicePlayer,
-                            onToggle = onToggleVoicePlay,
-                            tintForUser = isUser,
-                        )
-                    } else {
-                        // Парсим текст: ⟦RU⟧ отделяет испанскую и русскую части
-                        val (esPart, ruPart) = splitBilingual(content)
-                        BilingualText(
-                            es = esPart,
-                            ru = ruPart,
-                            isUser = isUser,
-                            onWordTap = { word -> onSpeak(word) },
-                        )
-                    }
+                    // Парсим текст: ⟦RU⟧ отделяет испанскую и русскую части
+                    val (esPart, ruPart) = splitBilingual(content)
+                    BilingualText(
+                        es = esPart,
+                        ru = ruPart,
+                        isUser = isUser,
+                        onWordTap = { word -> onSpeak(word) },
+                    )
 
                     if (!isUser && correctionJson.isNotBlank()) {
                         val corrections = onCorrectionParse(correctionJson)
@@ -1032,10 +995,6 @@ private fun ChatComposer(
     onValueChange: (androidx.compose.ui.text.input.TextFieldValue) -> Unit,
     onSend: () -> Unit,
     onMic: () -> Unit,
-    onCancelVoice: () -> Unit = {},
-    isRecordingVoice: Boolean = false,
-    voiceRecordingMs: Long = 0L,
-    voiceRecordingAmp: Float = 0f,
     isListening: Boolean,
     voiceAmplitude: Float,
 ) {
@@ -1053,64 +1012,9 @@ private fun ChatComposer(
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
-            // v1.25.0: режим recording — pill заменяется на воспроизводящий timer/waveform/cancel
-            if (isRecordingVoice) {
-                Surface(
-                    shape = RoundedCornerShape(22.dp),
-                    color = Color(0xFF6B0F0F).copy(alpha = 0.18f),
-                    modifier = Modifier
-                        .weight(1f)
-                        .heightIn(min = 42.dp),
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 12.dp, vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    ) {
-                        // ✗ отмена
-                        IconButton(onClick = onCancelVoice, modifier = Modifier.size(36.dp)) {
-                            Icon(
-                                Icons.Default.Close,
-                                contentDescription = "Отменить запись",
-                                tint = Color(0xFFE53935),
-                                modifier = Modifier.size(22.dp),
-                            )
-                        }
-                        // ● пульсирующая красная точка
-                        val recPulse by rememberInfiniteTransition(label = "rec").animateFloat(
-                            initialValue = 0.5f, targetValue = 1f,
-                            animationSpec = infiniteRepeatable(
-                                tween(700), RepeatMode.Reverse,
-                            ),
-                            label = "rec_dot",
-                        )
-                        Box(
-                            modifier = Modifier
-                                .size(10.dp)
-                                .clip(CircleShape)
-                                .background(Color(0xFFE53935).copy(alpha = recPulse)),
-                        )
-                        // mm:ss timer
-                        val mm = (voiceRecordingMs / 60000)
-                        val ss = ((voiceRecordingMs / 1000) % 60).toInt()
-                        Text(
-                            "%d:%02d".format(mm, ss),
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        // тонкий waveform
-                        VoiceWaveform(
-                            amplitude = voiceRecordingAmp,
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(30.dp),
-                        )
-                    }
-                }
-            } else {
+            // v1.25.7: voice recording UI убран — mic теперь STT.
+            // Когда isListening=true → внутри pill показывается waveform
+            // через VoiceWaveform (см. ниже).
             // Поле ввода — readOnly BasicTextField:
             // системная клава НЕ вызывается (readOnly), но курсор,
             // tap-to-position и long-press selection РАБОТАЮТ нативно.
@@ -1196,17 +1100,12 @@ private fun ChatComposer(
                     }
                 }
             }
-            }
 
-            // Кнопка: Send (если есть текст) / Stop+Send (если идёт запись) / Mic (если пусто)
+            // Кнопка: Send (если есть текст) или Mic (если пусто = старт STT)
             ActionButton(
-                isSend = sendActive || isRecordingVoice,
+                isSend = sendActive,
                 isListening = isListening,
-                onClick = when {
-                    sendActive -> onSend
-                    isRecordingVoice -> onMic  // стоп + send
-                    else -> onMic              // старт записи
-                },
+                onClick = if (sendActive) onSend else onMic,
             )
         }
     }
