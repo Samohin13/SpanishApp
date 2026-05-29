@@ -171,20 +171,27 @@ class AiChatViewModel @Inject constructor(
 
     private fun sanitizeForTts(raw: String): String {
         var t = raw
-        // Markdown bold/italic/strike/inline-code
-        t = t.replace(Regex("\\*\\*(.+?)\\*\\*"), "$1")  // **bold**
-        t = t.replace(Regex("(?<![a-zа-я0-9])_(.+?)_(?![a-zа-я0-9])", RegexOption.IGNORE_CASE), "$1") // _italic_
-        t = t.replace(Regex("~(.+?)~"), "$1")            // ~strike~
-        t = t.replace(Regex("`([^`]+)`"), "$1")          // `code`
-        // Quote prefix ">"
+        // 1. Markdown — извлечь текст из обёрток (bold/italic/strike/code)
+        t = t.replace(Regex("\\*\\*(.+?)\\*\\*"), "$1")
+        t = t.replace(Regex("(?<![\\p{L}0-9])_(.+?)_(?![\\p{L}0-9])"), "$1")
+        t = t.replace(Regex("~(.+?)~"), "$1")
+        t = t.replace(Regex("`([^`]+)`"), "$1")
         t = t.replace(Regex("(?m)^>\\s*"), "")
-        // Markdown links [text](url) → text
         t = t.replace(Regex("\\[(.+?)\\]\\([^)]+\\)"), "$1")
-        // Эмодзи и pictograph диапазоны (грубая sanitization, не идеально)
-        t = t.replace(Regex("[\\u2600-\\u27BF\\uD83C-\\uDBFF\\uDC00-\\uDFFF\\uFE0F]"), "")
-        // Скобки и одиночные спец-символы которые TTS читает дословно
-        t = t.replace(Regex("[\\[\\]{}<>|]"), "")
-        // Множественные пробелы / переводы строк → одиночный пробел
+
+        // 2. v1.25.66: whitelist подход — оставить ТОЛЬКО осмысленные символы,
+        // всё остальное (спец-символы, скобки, кавычки, /, \, |, #, @, *, и т.д.)
+        // удалить чтоб TTS их не озвучивал. Юзер: "спецсимволы и знаки
+        // препинания не нужно проговаривать, учитывать да — но не озвучивать".
+        // Whitelist:
+        //   \p{L}  — любая буква (lat/cyr/accented)
+        //   \p{N}  — цифры
+        //   пробел/перенос
+        //   .,!?;: ¿¡ — пунктуация для пауз/интонации (НЕ озвучивается TTS)
+        //   - ' — дефис/апостроф (часть слов: don't, mañana-mañana)
+        t = t.replace(Regex("[^\\p{L}\\p{N}\\s.,!?;:¿¡\\-']"), " ")
+
+        // 3. Нормализация пробелов
         t = t.replace(Regex("\\s+"), " ").trim()
         return t
     }
