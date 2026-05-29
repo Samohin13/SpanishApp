@@ -544,8 +544,8 @@ private fun KeyButton(
                         var lastPos = down.position
                         var swipedDown = false  // v1.25.21: swipe-down → instant hint insert
 
-                        // v1.25.21: swipe-down threshold (Samsung gesture)
-                        val swipeDownThresholdPx = with(density) { 18.dp.toPx() }
+                        // v1.25.22: threshold снижен 18→10dp, direction check мягче
+                        val swipeDownThresholdPx = with(density) { 10.dp.toPx() }
 
                         try {
                             while (true) {
@@ -553,6 +553,20 @@ private fun KeyButton(
                                     .let { awaitPointerEvent(it) }
                                 val change = event.changes.firstOrNull() ?: break
                                 lastPos = change.position
+
+                                // v1.25.22: после swipe-down — поглощаем все остальные
+                                // события чтоб glide-overlay не активировался и не вставил
+                                // matched word поверх нашего символа.
+                                if (swipedDown) {
+                                    if (!change.pressed) {
+                                        pressed = false
+                                        showAccents = false
+                                        hoveredAccentIdx = -1
+                                        break
+                                    }
+                                    change.consume()
+                                    continue
+                                }
 
                                 if (!change.pressed) {
                                     // UP — финализируем
@@ -578,31 +592,32 @@ private fun KeyButton(
                                     break
                                 }
 
-                                // v1.25.21: Samsung-style swipe-DOWN gesture — мгновенная
-                                // вставка первого accent без long-press. Палец сдвинулся
-                                // вниз на >18dp в первые ~200ms → вставляем accents.first().
+                                // v1.25.22: Samsung-style swipe-DOWN — главный жест для
+                                // спец-символов. Threshold 10dp (раньше 18), без time limit,
+                                // direction check мягче (dy > dx*0.5 вместо dy > abs(dx)).
+                                // Юзер сказал: "с Q работает, с остальными нет" — причина была
+                                // в строгих ограничениях которые срабатывали только при идеально
+                                // вертикальном свайпе. Теперь работает почти при любом движении вниз.
                                 val dy = change.position.y - down.position.y
                                 val dx = change.position.x - down.position.x
                                 val elapsed = System.currentTimeMillis() - startTime
-                                if (!swipedDown && !enteredAccentMode &&
+                                if (!enteredAccentMode &&
                                     currentAccents.isNotEmpty() &&
                                     dy > swipeDownThresholdPx &&
-                                    dy > kotlin.math.abs(dx) &&  // именно вниз, не вбок
-                                    elapsed < 400) {
+                                    dy > kotlin.math.abs(dx) * 0.5f) {  // direction: вниз с допуском диагонали
                                     swipedDown = true
                                     val variant = currentAccents.first()
                                     val out = if (label != label.lowercase())
                                         variant.uppercase() else variant
                                     currentOnTap(out)
                                     haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    pressed = false
                                     change.consume()
                                     continue
                                 }
 
                                 // Pressed — check long-press timer и accent mode
                                 // v1.25.21: ускорено 320ms → 220ms (Samsung-like responsiveness)
-                                if (!swipedDown && !enteredAccentMode && elapsed > 220 && currentAccents.isNotEmpty()) {
+                                if (!enteredAccentMode && elapsed > 220 && currentAccents.isNotEmpty()) {
                                     enteredAccentMode = true
                                     showAccents = true
                                     hoveredAccentIdx = currentAccents.size / 2  // дефолт — средняя клавиша
