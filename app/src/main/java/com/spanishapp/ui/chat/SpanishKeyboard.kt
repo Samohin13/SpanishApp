@@ -16,6 +16,7 @@ import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.zIndex
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -1011,21 +1012,28 @@ private fun GlideOverlay(
         },
     ) {
         content()
-        // v1.25.2: визуальный trail поверх клавиш (только во время glide)
+        // v1.25.15: trail с zIndex(10f) → рисуется ПОВЕРХ клавиш.
+        // Раньше Canvas был в одном уровне с KeyButton (graphicsLayer/elevation
+        // выносили клавиши вперёд) → trail прятался ПОД клавишами.
+        // Plus: strokeWidth 6→12 (заметнее) + brighter alpha range.
         if (gliding && trailPoints.isNotEmpty()) {
             val accent = Color(0xFFFF8A3D)
             androidx.compose.foundation.Canvas(
-                modifier = Modifier.matchParentSize(),
+                modifier = Modifier
+                    .matchParentSize()
+                    .zIndex(10f),
             ) {
                 for (i in 1 until trailPoints.size) {
                     val from = trailPoints[i - 1]
                     val to = trailPoints[i]
-                    val alpha = (i.toFloat() / trailPoints.size).coerceIn(0.15f, 0.8f)
+                    // Голова trail (последние точки) — yark, хвост блёклый
+                    val progress = i.toFloat() / trailPoints.size
+                    val alpha = (0.4f + progress * 0.5f).coerceAtMost(0.9f)
                     drawLine(
                         color = accent.copy(alpha = alpha),
                         start = from,
                         end = to,
-                        strokeWidth = 6f,
+                        strokeWidth = 12f,
                         cap = androidx.compose.ui.graphics.StrokeCap.Round,
                     )
                 }
