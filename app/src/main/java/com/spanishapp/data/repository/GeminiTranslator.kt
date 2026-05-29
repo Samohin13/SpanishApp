@@ -130,8 +130,11 @@ class GeminiTranslator @Inject constructor(
                 builder.header("X-App-Secret", secret)
             }
             // v1.25.31: deployed worker также требует Firebase ID token.
+            // v1.25.33: anonymous sign-in fallback если currentUser=null.
             val idToken = runCatching {
-                val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+                val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
+                val user = auth.currentUser
+                    ?: auth.signInAnonymously().await().user
                 user?.getIdToken(false)?.await()?.token
             }.getOrNull()
             if (!idToken.isNullOrEmpty()) {

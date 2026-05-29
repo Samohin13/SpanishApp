@@ -164,10 +164,16 @@ class AiChatRepository @Inject constructor(
         if (secret.isNotEmpty()) {
             builder.header("X-App-Secret", secret)
         }
+        // v1.25.33: если юзер ни разу не заходил в Profile/Settings,
+        // currentUser = null → token = null → 401 от worker'а. Sign-in
+        // anonymously здесь решает проблему первого открытия чата.
         val idToken = runCatching {
-            val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+            val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
+            val user = auth.currentUser
+                ?: auth.signInAnonymously().await().user
             user?.getIdToken(false)?.await()?.token
-        }.getOrNull()
+        }.onFailure { Log.w(TAG, "Firebase token error", it) }
+            .getOrNull()
         if (!idToken.isNullOrEmpty()) {
             builder.header("Authorization", "Bearer $idToken")
         }
