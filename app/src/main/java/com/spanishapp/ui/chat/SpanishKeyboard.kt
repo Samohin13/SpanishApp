@@ -109,13 +109,19 @@ fun SpanishKeyboard(
             s, shifted, capsLock, layout == KbLayout.NUM,
         )
         // v1.24.19: double-space → ". " (как iOS/Gboard).
-        // Если вводим пробел и перед курсором уже пробел (но не два), и
-        // символ ДО пробела — буква/цифра → заменяем " " на ". ".
-        val newValue = if (shiftedChar == " " && KeyboardLogic.canDoubleSpacePeriod(value)) {
+        val newValue0 = if (shiftedChar == " " && KeyboardLogic.canDoubleSpacePeriod(value)) {
             KeyboardLogic.doubleSpaceToPeriod(value)
         } else {
             KeyboardLogic.insertAt(value, shiftedChar)
         }
+        // v1.25.9: SpellChecker autocorrect on space.
+        // Если ввели space или знак — проверяем последнее слово.
+        // Если SpellChecker уверенно подсказывает замену → заменяем.
+        val newValue = if ((shiftedChar == " " || shiftedChar == "." ||
+                            shiftedChar == "," || shiftedChar == "!" || shiftedChar == "?")
+            && layout != KbLayout.NUM) {
+            applyAutocorrect(newValue0, layout, userWordFreq)
+        } else newValue0
         onValueChange(newValue)
         if (shifted && !capsLock) shifted = false
         if (!capsLock && layout != KbLayout.NUM) {
@@ -140,7 +146,7 @@ fun SpanishKeyboard(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(5.dp),
         ) {
             // v1.24.14: collapsed handle переехал ВНИЗ клавы (в самый низ).
             // Верхняя полоса теперь — ВСЕГДА зарезервированная 40dp слот
@@ -204,7 +210,7 @@ fun SpanishKeyboard(
                             textColor = textColor.copy(alpha = 0.85f),
                             accent = accent,
                             modifier = Modifier.weight(1f),
-                            heightDp = 40,
+                            heightDp = 36,
                             fontSp = 16,
                             onTap = emit,
                             haptic = haptic,
@@ -223,7 +229,7 @@ fun SpanishKeyboard(
                 isLetterLayout = layout != KbLayout.NUM,
                 haptic = haptic,
             ) {
-                Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
                     rows.take(2).forEach { row ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -471,7 +477,7 @@ private fun KeyButton(
     textColor: Color,
     accent: Color,
     modifier: Modifier = Modifier,
-    heightDp: Int = 50,
+    heightDp: Int = 44,
     fontSp: Int = 19,
     haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
     onTap: (String) -> Unit,
@@ -615,6 +621,24 @@ private fun KeyButton(
         contentAlignment = Alignment.Center,
     ) {
         Text(label, color = textColor, fontSize = fontSp.sp, fontWeight = FontWeight.Medium)
+        // v1.25.9: Samsung-style hint в верхнем-правом углу клавиши.
+        // Показывает первый accent (что появится по long-press) — даёт
+        // визуальный сигнал юзеру что доступно скрытое.
+        if (accents.isNotEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 3.dp, end = 5.dp),
+                contentAlignment = Alignment.TopEnd,
+            ) {
+                Text(
+                    accents.first(),
+                    color = textColor.copy(alpha = 0.45f),
+                    fontSize = 9.sp,
+                    fontWeight = FontWeight.Normal,
+                )
+            }
+        }
 
         if (showAccents && accents.isNotEmpty()) {
             val aboveProvider = remember {
@@ -650,7 +674,7 @@ private fun KeyButton(
                             val isHovered = idx == hoveredAccentIdx
                             Box(
                                 modifier = Modifier
-                                    .size(width = 44.dp, height = 50.dp)
+                                    .size(width = 44.dp, height = 44.dp)
                                     .clip(RoundedCornerShape(6.dp))
                                     .background(
                                         if (isHovered) accent
@@ -714,7 +738,7 @@ private fun BackspaceKey(
 
     Box(
         modifier = modifier
-            .height(50.dp)
+            .height(44.dp)
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
@@ -774,7 +798,7 @@ private fun SpaceKey(
 
     Box(
         modifier = modifier
-            .height(50.dp)
+            .height(44.dp)
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
@@ -856,7 +880,7 @@ private fun SpecialKey(
     val haptic = LocalHapticFeedback.current
     Box(
         modifier = modifier
-            .height(50.dp)
+            .height(44.dp)
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
@@ -1074,7 +1098,7 @@ private fun GlobeKey(
 
     Box(
         modifier = modifier
-            .height(50.dp)
+            .height(44.dp)
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
@@ -1200,3 +1224,54 @@ private fun numRows(): List<List<KbKey>> = listOf(
     listOf("@","#","$","¿","¡","&","*","(",")","-").map { KbKey(it) },
     listOf("+","\"","'",":",";",",","/","!").map { KbKey(it) },
 )
+
+/**
+ * v1.25.9: Применить spell-check autocorrect к слову которое только что
+ * было завершено (юзер нажал space / точку / знак).
+ *
+ * Logic:
+ *  1. Найти границы только что введённого слова перед триггер-символом
+ *  2. SpellChecker.check(word, language, userFreq)
+ *  3. Если SpellSuggestion возвращён → заменить слово в тексте
+ *  4. Курсор остаётся в позиции после триггер-символа
+ *
+ * Если SpellChecker возвращает null → возвращаем value as-is.
+ */
+private fun applyAutocorrect(
+    value: TextFieldValue,
+    layout: KbLayout,
+    userWordFreq: Map<String, Int>,
+): TextFieldValue {
+    val text = value.text
+    val cursor = value.selection.start
+    if (cursor < 2) return value  // слишком короткий контекст
+
+    // Триггер-символ (space/./,/!/?) уже в позиции cursor-1.
+    // Слово — между предыдущим word-boundary и (cursor-1).
+    val triggerPos = cursor - 1
+    val triggerChar = text[triggerPos]
+    if (!triggerChar.let { it == ' ' || it == '.' || it == ',' || it == '!' || it == '?' }) {
+        return value
+    }
+    // Найти начало слова
+    var wordStart = triggerPos
+    while (wordStart > 0 && text[wordStart - 1].isLetter()) wordStart--
+    if (wordStart >= triggerPos) return value  // пустое слово
+
+    val word = text.substring(wordStart, triggerPos)
+    if (word.length < 3) return value
+
+    val language = if (layout == KbLayout.RU) "RU" else "ES"
+    val suggestion = SpellChecker.check(word, language, userWordFreq) ?: return value
+
+    // Замена слова. Курсор смещается на разницу длин.
+    val newWord = if (word.first().isUpperCase()) {
+        suggestion.correction.replaceFirstChar { it.titlecase() }
+    } else {
+        suggestion.correction
+    }
+    val newText = text.substring(0, wordStart) + newWord + text.substring(triggerPos)
+    val deltaLength = newWord.length - word.length
+    val newCursor = cursor + deltaLength
+    return TextFieldValue(newText, TextRange(newCursor))
+}
