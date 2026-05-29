@@ -571,8 +571,10 @@ private fun KeyButton(
                             var enteredAccentMode = false
 
                             // Запускаем независимый long-press таймер.
+                            // v1.25.43: 200→350ms (iOS standard, даёт palcu время
+                            // на начало glide без срабатывания picker'а).
                             val longPressJob = this@coroutineScope.launch {
-                                kotlinx.coroutines.delay(200)
+                                kotlinx.coroutines.delay(350)
                                 if (currentAccents.isNotEmpty()) {
                                     enteredAccentMode = true
                                     showAccents = true
@@ -583,11 +585,11 @@ private fun KeyButton(
                                 }
                             }
 
-                            // v1.25.42: porog движения для отмены long-press.
-                            // Если палец сдвинулся больше → юзер делает glide, не long-press.
-                            // Без этого: палец на букве задержался при глайде → 200ms → picker
-                            // → glide ломается (баг "пытался набрать привет — открылся popup").
+                            // v1.25.42 + v1.25.43:
+                            //  - 8dp → cancel long-press timer (если ещё не выстрелил)
+                            //  - 25dp → force-dismiss picker если уже показался + reset state
                             val movementCancelPx = with(density) { 8.dp.toPx() }
+                            val glideForceDismissPx = with(density) { 25.dp.toPx() }
                             val downPos = down.position
 
                             try {
@@ -596,13 +598,22 @@ private fun KeyButton(
                                         .let { awaitPointerEvent(it) }
                                     val change = event.changes.firstOrNull() ?: break
 
-                                    // v1.25.42: cancel long-press при движении (glide detection)
-                                    if (!enteredAccentMode && change.pressed) {
+                                    // v1.25.42/43: cancel или force-dismiss по дистанции
+                                    if (change.pressed) {
                                         val dx = change.position.x - downPos.x
                                         val dy = change.position.y - downPos.y
                                         val dist = kotlin.math.sqrt(dx * dx + dy * dy)
-                                        if (dist > movementCancelPx) {
+                                        if (!enteredAccentMode && dist > movementCancelPx) {
                                             longPressJob.cancel()
+                                        }
+                                        // v1.25.43: даже если picker УЖЕ открылся, при
+                                        // продолжающемся glide-движении (>25dp) принудительно
+                                        // закрываем его и сбрасываем mode — события уйдут
+                                        // в GlideOverlay.
+                                        if (enteredAccentMode && dist > glideForceDismissPx) {
+                                            enteredAccentMode = false
+                                            showAccents = false
+                                            hoveredAccentIdx = -1
                                         }
                                     }
 
