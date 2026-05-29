@@ -494,6 +494,8 @@ private fun KeyButton(
     var showAccents by remember { mutableStateOf(false) }
     var pressed by remember { mutableStateOf(false) }
     var hoveredAccentIdx by remember { mutableStateOf(-1) }  // активный акцент при slide
+    // v1.25.49: enteredAccentMode promoted to state (нужен в Popup callback)
+    var enteredAccentMode by remember { mutableStateOf(false) }
 
     val bgColor by animateColorAsState(
         targetValue = if (pressed) accent.copy(alpha = 0.35f) else bg,
@@ -557,7 +559,7 @@ private fun KeyButton(
                                 currentOnTap(currentOutput)
                             }
                             pressed = true
-                            var enteredAccentMode = false
+                            enteredAccentMode = false  // reset для нового gesture
 
                             // Запускаем независимый long-press таймер.
                             // v1.25.43: 200→350ms (iOS standard, даёт palcu время
@@ -607,47 +609,25 @@ private fun KeyButton(
                                     }
 
                                     if (!change.pressed) {
-                                        // UP — финализируем
+                                        // v1.25.49: UP больше не закрывает picker.
+                                        // Если accent mode уже активен → оставляем picker
+                                        // открытым, юзер выберет тапом на cell. Если нет
+                                        // (обычный тап) → вставляем букву как раньше.
                                         longPressJob.cancel()
-                                        if (enteredAccentMode) {
-                                            if (hoveredAccentIdx in currentAccents.indices) {
-                                                val variant = currentAccents[hoveredAccentIdx]
-                                                val out = if (label != label.lowercase())
-                                                    variant.uppercase() else variant
-                                                currentOnTap(out)
-                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                            }
-                                        } else if (currentAccents.isNotEmpty()) {
-                                            // обычный tap клавиши с accents
+                                        if (!enteredAccentMode && currentAccents.isNotEmpty()) {
                                             currentOnTap(currentOutput)
                                         }
                                         pressed = false
-                                        showAccents = false
-                                        hoveredAccentIdx = -1
                                         break
                                     }
-
-                                    if (enteredAccentMode && currentAccents.isNotEmpty()) {
-                                        // Slide tracking в picker
-                                        val keyWidthPx = size.width.toFloat()
-                                        val popupWidthPx = currentAccents.size * accentKeyWidthPx + 8.dp.toPx()
-                                        val popupLeftRelToKey = (keyWidthPx - popupWidthPx) / 2f + 6.dp.toPx()
-                                        val xInPopup = change.position.x - popupLeftRelToKey
-                                        val rawIdx = (xInPopup / accentKeyWidthPx).toInt()
-                                        val newIdx = rawIdx.coerceIn(0, currentAccents.size - 1)
-                                        if (newIdx != hoveredAccentIdx) {
-                                            hoveredAccentIdx = newIdx
-                                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                        }
-                                    }
-
                                     change.consume()
                                 }
                             } finally {
                                 longPressJob.cancel()
                                 pressed = false
-                                showAccents = false
-                                hoveredAccentIdx = -1
+                                // v1.25.49: НЕ закрываем showAccents в finally —
+                                // picker сам закроется по tap-on-variant или
+                                // tap-outside (onDismissRequest).
                             }
                         }
                     }
@@ -703,45 +683,75 @@ private fun KeyButton(
                     }
                 }
             }
-            // properties: focusable=false критично — иначе popup перехватит pointer events
+            // v1.25.49: focusable=true + dismissOnClickOutside — picker
+            // закрывается при тапе ВНЕ popup'а. Внутри — два ряда cells
+            // (для длинных списков accents типа гласных с 6 опциями).
             Popup(
                 popupPositionProvider = aboveProvider,
-                properties = PopupProperties(focusable = false),
+                onDismissRequest = {
+                    showAccents = false
+                    enteredAccentMode = false
+                    hoveredAccentIdx = -1
+                },
+                properties = PopupProperties(
+                    focusable = true,
+                    dismissOnClickOutside = true,
+                    dismissOnBackPress = true,
+                ),
             ) {
                 Surface(
                     shape = RoundedCornerShape(10.dp),
                     color = MaterialTheme.colorScheme.surfaceContainerHighest,
                     shadowElevation = 12.dp,
                 ) {
-                    Row(
+                    // Делим accents на 2 ряда: первая половина наверху,
+                    // вторая внизу. Если accents = 6 → 3+3. Если 4 → 2+2.
+                    val half = (accents.size + 1) / 2
+                    val topRow = accents.take(half)
+                    val bottomRow = accents.drop(half)
+                    Column(
                         modifier = Modifier.padding(6.dp),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
-                        accents.forEachIndexed { idx, variant ->
-                            val isHovered = idx == hoveredAccentIdx
-                            Box(
-                                modifier = Modifier
-                                    .size(width = 44.dp, height = 40.dp)
-                                    .clip(RoundedCornerShape(6.dp))
-                                    .background(
-                                        if (isHovered) accent
-                                        else MaterialTheme.colorScheme.surface
-                                    )
-                                    .border(
-                                        if (isHovered) 0.dp else 1.dp,
-                                        MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
-                                        RoundedCornerShape(6.dp),
-                                    ),
-                                contentAlignment = Alignment.Center,
-                            ) {
-                                Text(
-                                    variant,
-                                    color = if (isHovered) Color.White else textColor,
-                                    fontSize = 18.sp,
-                                    fontWeight = FontWeight.SemiBold,
-                                )
+                        // Helper для одного ряда cells
+                        @Composable
+                        fun AccentRow(items: List<String>) {
+                            Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                                items.forEach { variant ->
+                                    Box(
+                                        modifier = Modifier
+                                            .size(width = 44.dp, height = 40.dp)
+                                            .clip(RoundedCornerShape(6.dp))
+                                            .background(MaterialTheme.colorScheme.surface)
+                                            .border(
+                                                1.dp,
+                                                MaterialTheme.colorScheme.outline.copy(alpha = 0.4f),
+                                                RoundedCornerShape(6.dp),
+                                            )
+                                            .clickable {
+                                                val out = if (label != label.lowercase())
+                                                    variant.uppercase() else variant
+                                                currentOnTap(out)
+                                                haptic.performHapticFeedback(
+                                                    HapticFeedbackType.LongPress
+                                                )
+                                                showAccents = false
+                                                enteredAccentMode = false
+                                            },
+                                        contentAlignment = Alignment.Center,
+                                    ) {
+                                        Text(
+                                            variant,
+                                            color = textColor,
+                                            fontSize = 18.sp,
+                                            fontWeight = FontWeight.SemiBold,
+                                        )
+                                    }
+                                }
                             }
                         }
+                        AccentRow(topRow)
+                        if (bottomRow.isNotEmpty()) AccentRow(bottomRow)
                     }
                 }
             }
