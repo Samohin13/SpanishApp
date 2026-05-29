@@ -45,12 +45,15 @@ object GlideMatcher {
         val lastLetter = traceLetters.last()
         val traceLen = traceLetters.size
 
+        // v1.25.17: length range расширен ВНИЗ — короткие слова (hola=4) больше
+        // НЕ отсекаются длинным trace (15+). Раньше was traceLen/2..traceLen*2+2,
+        // теперь 3..traceLen+3. Это даёт правильный матч для "hola" даже если
+        // палец прошёл через 15 промежуточных клавиш.
         val candidates = dictionary
             .asSequence()
             .map { it.lowercase() }
             .filter { word ->
-                word.length >= 2 &&
-                    word.length in (traceLen / 2)..(traceLen * 2 + 2) &&
+                word.length in 3..(traceLen + 3) &&
                     word.first() == firstLetter &&
                     word.last() == lastLetter
             }
@@ -64,18 +67,20 @@ object GlideMatcher {
 
         for (word in candidates) {
             val dist = levenshtein(traceStr, word)
-            val lenPenalty = abs(word.length - traceLen) * 0.3
+            val lenPenalty = abs(word.length - traceLen) * 0.15  // менее агрессивно (0.3→0.15)
             val freqBoost = userFreq[word]?.let { ln(it.toDouble() + 1) * 0.5 } ?: 0.0
-            val score = -dist.toDouble() - lenPenalty + freqBoost
+            // v1.25.17: bonus за popular short words — компенсирует
+            // length penalty для коротких как hola/casa/agua.
+            val shortBonus = if (word.length <= 5) 1.0 else 0.0
+            val score = -dist.toDouble() - lenPenalty + freqBoost + shortBonus
             if (score > bestScore) {
                 bestScore = score
                 bestWord = word
             }
         }
 
-        // Минимальный threshold: score не должен быть катастрофически низким.
-        // Эмпирическая граница: -traceLen (т.е. distance > длины trace = мусор)
-        if (bestWord != null && bestScore < -traceLen.toDouble()) return null
+        // Threshold: relaxed — больший лимит чтобы fuzzy матчи проходили
+        if (bestWord != null && bestScore < -traceLen.toDouble() * 1.5) return null
         return bestWord
     }
 

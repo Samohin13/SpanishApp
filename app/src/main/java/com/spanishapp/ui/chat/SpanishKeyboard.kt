@@ -1011,31 +1011,41 @@ private fun GlideOverlay(
         },
     ) {
         content()
-        // v1.25.15: trail с zIndex(10f) → рисуется ПОВЕРХ клавиш.
-        // Раньше Canvas был в одном уровне с KeyButton (graphicsLayer/elevation
-        // выносили клавиши вперёд) → trail прятался ПОД клавишами.
-        // Plus: strokeWidth 6→12 (заметнее) + brighter alpha range.
-        if (gliding && trailPoints.isNotEmpty()) {
+        // v1.25.17: smooth trail через Path + quadraticBezierTo.
+        // Раньше каждый сегмент рисовался отдельным drawLine → пиксельные
+        // углы. Теперь через bezier с control points = соседними точками.
+        if (gliding && trailPoints.size >= 2) {
             val accent = Color(0xFFFF8A3D)
+            val pointsCopy = trailPoints.toList()  // snapshot чтобы Canvas не дёргался
             androidx.compose.foundation.Canvas(
                 modifier = Modifier
                     .matchParentSize()
                     .zIndex(10f),
             ) {
-                for (i in 1 until trailPoints.size) {
-                    val from = trailPoints[i - 1]
-                    val to = trailPoints[i]
-                    // Голова trail (последние точки) — yark, хвост блёклый
-                    val progress = i.toFloat() / trailPoints.size
-                    val alpha = (0.4f + progress * 0.5f).coerceAtMost(0.9f)
-                    drawLine(
-                        color = accent.copy(alpha = alpha),
-                        start = from,
-                        end = to,
-                        strokeWidth = 12f,
-                        cap = androidx.compose.ui.graphics.StrokeCap.Round,
-                    )
+                val path = androidx.compose.ui.graphics.Path()
+                path.moveTo(pointsCopy[0].x, pointsCopy[0].y)
+                if (pointsCopy.size == 2) {
+                    path.lineTo(pointsCopy[1].x, pointsCopy[1].y)
+                } else {
+                    // Quadratic bezier: control = current point, end = midpoint к следующему
+                    for (i in 1 until pointsCopy.size - 1) {
+                        val midX = (pointsCopy[i].x + pointsCopy[i + 1].x) / 2f
+                        val midY = (pointsCopy[i].y + pointsCopy[i + 1].y) / 2f
+                        path.quadraticBezierTo(
+                            pointsCopy[i].x, pointsCopy[i].y, midX, midY,
+                        )
+                    }
+                    path.lineTo(pointsCopy.last().x, pointsCopy.last().y)
                 }
+                drawPath(
+                    path = path,
+                    color = accent.copy(alpha = 0.85f),
+                    style = androidx.compose.ui.graphics.drawscope.Stroke(
+                        width = 14f,
+                        cap = androidx.compose.ui.graphics.StrokeCap.Round,
+                        join = androidx.compose.ui.graphics.StrokeJoin.Round,
+                    ),
+                )
             }
         }
     }
