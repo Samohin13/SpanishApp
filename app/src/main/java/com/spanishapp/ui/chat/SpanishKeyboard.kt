@@ -1207,6 +1207,12 @@ private fun GlobeKey(
     }
 }
 
+// v1.25.20: Samsung-style accent hints на ВСЕХ буквах.
+// Раньше hint показывался только на гласных (a,e,i,o,u,n).
+// Теперь каждая буква имеет либо испанский accent (a,e,i,o,u,n),
+// либо спец-символ (+, ×, ÷, !, @, #, $, % и т.д.) доступный
+// через long-press. Юзер видит маленькую подсказку в углу каждой
+// клавиши — как на Samsung Keyboard.
 private fun esLetterRows(): List<List<KbKey>> = listOf(
     listOf("q","w","e","r","t","y","u","i","o","p").map {
         KbKey(it, accents = esAccents(it))
@@ -1214,24 +1220,97 @@ private fun esLetterRows(): List<List<KbKey>> = listOf(
     listOf("a","s","d","f","g","h","j","k","l","ñ").map {
         KbKey(it, accents = esAccents(it))
     },
-    listOf("z","x","c","v","b","n","m").map { KbKey(it) },
+    listOf("z","x","c","v","b","n","m").map {
+        KbKey(it, accents = esAccents(it))
+    },
 )
 
 private fun esAccents(letter: String): List<String> = when (letter) {
-    "a" -> listOf("á","à","ä","â")
-    "e" -> listOf("é","è","ë","ê")
-    "i" -> listOf("í","ï","î")
+    // Гласные — испанский accent ПЕРВЫМ (для удобства Spanish typing),
+    // затем варианты и спец-символ в хвосте.
+    "a" -> listOf("á","à","ä","â","!")
+    "e" -> listOf("é","è","ë","ê","€")
+    "i" -> listOf("í","ï","î","*")
     "o" -> listOf("ó","ò","ö","ô")
     "u" -> listOf("ú","ü","û")
-    "n" -> listOf("ñ")
+    "n" -> listOf("ñ","?")
+    // Согласные — Samsung-style спец-символы.
+    "q" -> listOf("+")
+    "w" -> listOf("×")
+    "r" -> listOf("÷")
+    "t" -> listOf("—","–")
+    "y" -> listOf("~")
+    "p" -> listOf("[","]")
+    "s" -> listOf("@")
+    "d" -> listOf("#")
+    "f" -> listOf("$","£","¥")
+    "g" -> listOf("%")
+    "h" -> listOf("\\","|")
+    "j" -> listOf("&")
+    "k" -> listOf("(","{")
+    "l" -> listOf(")","}")
+    "ñ" -> listOf("=","≠")
+    "z" -> listOf("\"","«","»")
+    "x" -> listOf("'","`")
+    "c" -> listOf(":")
+    "v" -> listOf(";")
+    "b" -> listOf("/")
+    "m" -> listOf("!","¡")
     else -> emptyList()
 }
 
+// v1.25.20: Samsung-style спец-символы на русской раскладке.
+// Для каждой буквы — small hint в углу, доступен через long-press.
 private fun ruLetterRows(): List<List<KbKey>> = listOf(
-    listOf("й","ц","у","к","е","н","г","ш","щ","з","х","ъ").map { KbKey(it) },
-    listOf("ф","ы","в","а","п","р","о","л","д","ж","э").map { KbKey(it) },
-    listOf("я","ч","с","м","и","т","ь","б","ю").map { KbKey(it) },
+    listOf("й","ц","у","к","е","н","г","ш","щ","з","х","ъ").map {
+        KbKey(it, accents = ruAccents(it))
+    },
+    listOf("ф","ы","в","а","п","р","о","л","д","ж","э").map {
+        KbKey(it, accents = ruAccents(it))
+    },
+    listOf("я","ч","с","м","и","т","ь","б","ю").map {
+        KbKey(it, accents = ruAccents(it))
+    },
 )
+
+private fun ruAccents(letter: String): List<String> = when (letter) {
+    // Row 1
+    "й" -> listOf("+")
+    "ц" -> listOf("×")
+    "у" -> listOf("~")
+    "к" -> listOf("÷")
+    "е" -> listOf("ё","—")
+    "н" -> listOf("—","–")
+    "г" -> listOf("¨")
+    "ш" -> listOf("^")
+    "щ" -> listOf("[","{")
+    "з" -> listOf("]","}")
+    "х" -> listOf("§")
+    "ъ" -> listOf("№")
+    // Row 2
+    "ф" -> listOf("!","¡")
+    "ы" -> listOf("@")
+    "в" -> listOf("#")
+    "а" -> listOf("€")
+    "п" -> listOf("%")
+    "р" -> listOf("₽")
+    "о" -> listOf("&")
+    "л" -> listOf("*")
+    "д" -> listOf("(","{")
+    "ж" -> listOf(")","}")
+    "э" -> listOf("=","≠")
+    // Row 3
+    "я" -> listOf("\"","«","»")
+    "ч" -> listOf("'","`")
+    "с" -> listOf("$")
+    "м" -> listOf(":")
+    "и" -> listOf(";")
+    "т" -> listOf("/","\\")
+    "ь" -> listOf("?","¿")
+    "б" -> listOf("<","≤")
+    "ю" -> listOf(">","≥")
+    else -> emptyList()
+}
 
 // v1.25.18: NUM-раскладка расширена — _, =, |, \\, [, ], {, },
 // европейская валюта, типографские кавычки и др.
