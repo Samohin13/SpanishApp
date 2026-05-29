@@ -261,6 +261,12 @@ fun SpanishKeyboard(
                         }
                     }
                     // 3-й ряд внутри glide-overlay: shift + буквы z-m + backspace
+                    // v1.25.36: weight Shift/Backspace зависит от layout.
+                    //  RU mobile: row 2 = 11 клавиш, row 3 = 9 букв → spec.weight=1.0
+                    //            (Shift+Backspace ШИРИНОЙ КАК БУКВА — Samsung style)
+                    //  ES:        row 2 = 10 клавиш, row 3 = 7 букв  → spec.weight=1.5
+                    //            (Shift+Backspace чуть шире чтобы row выровнялся)
+                    val specialWeight = if (layout == KbLayout.RU) 1f else 1.5f
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -272,7 +278,7 @@ fun SpanishKeyboard(
                                     shifted -> accent.copy(alpha = 0.3f)
                                     else -> specialKeyBg
                                 },
-                                modifier = Modifier.weight(1.4f),
+                                modifier = Modifier.weight(specialWeight),
                                 onClick = {
                                     haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                     val now = System.currentTimeMillis()
@@ -319,7 +325,7 @@ fun SpanishKeyboard(
                             bg = specialKeyBg,
                             textColor = textColor,
                             accent = accent,
-                            modifier = Modifier.weight(1.4f),
+                            modifier = Modifier.weight(specialWeight),
                             onCharDelete = { onValueChange(KeyboardLogic.backspaceChar(value)) },
                             haptic = haptic,
                         )
