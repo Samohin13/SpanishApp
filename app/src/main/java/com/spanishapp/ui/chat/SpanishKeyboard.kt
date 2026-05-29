@@ -1233,10 +1233,46 @@ private fun ruLetterRows(): List<List<KbKey>> = listOf(
     listOf("я","ч","с","м","и","т","ь","б","ю").map { KbKey(it) },
 )
 
+// v1.25.18: NUM-раскладка расширена — _, =, |, \\, [, ], {, },
+// европейская валюта, типографские кавычки и др.
+// Доступно через long-press accents (как у Samsung).
 private fun numRows(): List<List<KbKey>> = listOf(
-    listOf("1","2","3","4","5","6","7","8","9","0").map { KbKey(it) },
-    listOf("@","#","$","¿","¡","&","*","(",")","-").map { KbKey(it) },
-    listOf("+","\"","'",":",";",",","/","!").map { KbKey(it) },
+    listOf(
+        KbKey("1", accents = listOf("!", "¹")),
+        KbKey("2", accents = listOf("@", "²")),
+        KbKey("3", accents = listOf("#", "³", "№")),
+        KbKey("4", accents = listOf("$", "€", "₽")),
+        KbKey("5", accents = listOf("%", "‰")),
+        KbKey("6", accents = listOf("^", "<")),
+        KbKey("7", accents = listOf("&", ">")),
+        KbKey("8", accents = listOf("*", "°")),
+        KbKey("9", accents = listOf("(", "[", "{")),
+        KbKey("0", accents = listOf(")", "]", "}")),
+    ),
+    listOf(
+        KbKey("@"),
+        KbKey("#"),
+        KbKey("$"),
+        KbKey("_", accents = listOf("—", "–", "~")),
+        KbKey("&"),
+        KbKey("-", accents = listOf("—", "–")),
+        KbKey("+", accents = listOf("±", "×", "÷")),
+        KbKey("(", accents = listOf("[", "{")),
+        KbKey(")", accents = listOf("]", "}")),
+        KbKey("=", accents = listOf("≠", "≈")),
+    ),
+    listOf(
+        KbKey("*"),
+        KbKey("\"", accents = listOf("«", "»", "“", "”")),
+        KbKey("'", accents = listOf("`", "‘", "’")),
+        KbKey(":"),
+        KbKey(";"),
+        KbKey(",", accents = listOf("<")),
+        KbKey(".", accents = listOf(">")),
+        KbKey("/", accents = listOf("\\", "|")),
+        KbKey("!", accents = listOf("¡")),
+        KbKey("?", accents = listOf("¿")),
+    ),
 )
 
 /**
