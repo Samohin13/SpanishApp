@@ -597,35 +597,30 @@ private fun KeyButton(
                                         if (!enteredAccentMode && dist > movementCancelPx) {
                                             longPressJob.cancel()
                                         }
-                                        // v1.25.51: distance-to-cell-center hit test
-                                        // (вместо strict y-band). Юзер не мог переключиться
-                                        // на верхний ряд — застревал в bottom. Теперь
-                                        // выбирается БЛИЖАЙШАЯ cell по 2D дистанции.
+                                        // v1.25.52: row selection — по dy-relative от down,
+                                        // col — distance-to-cell-center в попап-координатах.
+                                        // Самсунг работает так: popup физически далеко, но
+                                        // gesture-relative mapping делает row переключаемым
+                                        // коротким swipe upward (20dp). Это критично UX.
                                         if (enteredAccentMode && popupRect != androidx.compose.ui.geometry.Rect.Zero) {
                                             val rowsCount = if (currentAccents.size > 3) 2 else 1
                                             val cellsPerRow = (currentAccents.size + rowsCount - 1) / rowsCount
                                             val cellW = accentKeyWidthPx
-                                            val cellH = with(density) { 46.dp.toPx() }
                                             val padPx = with(density) { 6.dp.toPx() }
+                                            val upThresholdPx = with(density) { 20.dp.toPx() }
+                                            // dy от точки нажатия (local coords KeyButton)
+                                            val dy = change.position.y - downPos.y
+                                            // Row: dy < -20dp → top row (0), иначе bottom row (последний)
+                                            val rowIdx = if (rowsCount > 1 && dy < -upThresholdPx) 0
+                                                         else (rowsCount - 1)
+                                            // Col: absolute finger x в popup-координатах
                                             val fingerRootX = change.position.x + keyRootOffset.x
-                                            val fingerRootY = change.position.y + keyRootOffset.y
-                                            var bestIdx = 0
-                                            var bestDist = Float.MAX_VALUE
-                                            for (i in currentAccents.indices) {
-                                                val row = i / cellsPerRow
-                                                val col = i % cellsPerRow
-                                                val cellCenterX = popupRect.left + padPx + col * cellW + cellW / 2f
-                                                val cellCenterY = popupRect.top + padPx + row * cellH + cellH / 2f
-                                                val dx = fingerRootX - cellCenterX
-                                                val dy = fingerRootY - cellCenterY
-                                                val d = dx * dx + dy * dy  // squared, monotonic
-                                                if (d < bestDist) {
-                                                    bestDist = d
-                                                    bestIdx = i
-                                                }
-                                            }
-                                            if (bestIdx != hoveredAccentIdx) {
-                                                hoveredAccentIdx = bestIdx
+                                            val relX = fingerRootX - popupRect.left - padPx
+                                            val colIdx = (relX / cellW).toInt().coerceIn(0, cellsPerRow - 1)
+                                            val flatIdx = (rowIdx * cellsPerRow + colIdx)
+                                                .coerceIn(0, currentAccents.size - 1)
+                                            if (flatIdx != hoveredAccentIdx) {
+                                                hoveredAccentIdx = flatIdx
                                                 haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                             }
                                         }
