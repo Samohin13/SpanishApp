@@ -283,7 +283,9 @@ fun AiChatScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background),
-                contentPadding = PaddingValues(horizontal = 12.dp, vertical = 14.dp),
+                // v1.25.69: end padding 12 → 4dp (юзер: сообщения юзера ближе к
+                // правому краю). 4dp оставляет тонкий зазор от bezel, не плотно.
+                contentPadding = PaddingValues(start = 12.dp, end = 4.dp, top = 14.dp, bottom = 14.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
             ) {
                 if (messages.isEmpty()) {
