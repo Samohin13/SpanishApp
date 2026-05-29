@@ -583,11 +583,28 @@ private fun KeyButton(
                                 }
                             }
 
+                            // v1.25.42: porog движения для отмены long-press.
+                            // Если палец сдвинулся больше → юзер делает glide, не long-press.
+                            // Без этого: палец на букве задержался при глайде → 200ms → picker
+                            // → glide ломается (баг "пытался набрать привет — открылся popup").
+                            val movementCancelPx = with(density) { 8.dp.toPx() }
+                            val downPos = down.position
+
                             try {
                                 while (true) {
                                     val event = androidx.compose.ui.input.pointer.PointerEventPass.Main
                                         .let { awaitPointerEvent(it) }
                                     val change = event.changes.firstOrNull() ?: break
+
+                                    // v1.25.42: cancel long-press при движении (glide detection)
+                                    if (!enteredAccentMode && change.pressed) {
+                                        val dx = change.position.x - downPos.x
+                                        val dy = change.position.y - downPos.y
+                                        val dist = kotlin.math.sqrt(dx * dx + dy * dy)
+                                        if (dist > movementCancelPx) {
+                                            longPressJob.cancel()
+                                        }
+                                    }
 
                                     if (!change.pressed) {
                                         // UP — финализируем
