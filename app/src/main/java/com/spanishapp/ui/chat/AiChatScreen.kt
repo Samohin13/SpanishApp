@@ -263,10 +263,13 @@ fun AiChatScreen(
         },
         snackbarHost = { SnackbarHost(snackbar) },
     ) { padding ->
+        // v1.25.71: применяем ТОЛЬКО top/bottom padding от Scaffold,
+        // горизонтальный (system gesture insets ~24dp) убираем —
+        // иначе bubble не доходит до правого края экрана.
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(top = padding.calculateTopPadding(), bottom = padding.calculateBottomPadding())
         ) {
             ScenarioStrip(
                 selectedId = scenario.id,
