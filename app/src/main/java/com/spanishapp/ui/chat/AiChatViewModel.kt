@@ -167,7 +167,15 @@ class AiChatViewModel @Inject constructor(
     // ── TTS озвучка ────────────────────────────────────────────
     // v1.25.60: sanitize text перед TTS — диктор не должен произносить
     // markdown-маркеры (** _ ` ~ > [ ] и т.д.), эмодзи, code blocks.
-    fun speak(text: String) { tts.speak(sanitizeForTts(text)) }
+    // v1.25.67: TOGGLE — если уже играет, остановить вместо повторного play.
+    val isSpeaking: StateFlow<Boolean> get() = tts.isPlaying
+    fun speak(text: String) {
+        if (tts.isPlaying.value) {
+            tts.stop()
+        } else {
+            tts.speak(sanitizeForTts(text))
+        }
+    }
 
     private fun sanitizeForTts(raw: String): String {
         var t = raw

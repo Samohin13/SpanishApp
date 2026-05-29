@@ -39,6 +39,10 @@ class SpanishTts @Inject constructor(
     private val _isReady = MutableStateFlow(false)
     val isReady: StateFlow<Boolean> = _isReady
 
+    // v1.25.67: expose play state — UI использует для toggle (тап play → тап stop).
+    // Используем remoteTts.isPlaying так как чат всегда идёт через premium voices.
+    val isPlaying: StateFlow<Boolean> get() = remoteTts.isPlaying
+
     // Кэшируем состояние тоггла «Голос диктора» — обновляется при каждом
     // изменении настройки. Если выключено — speak() становится no-op.
     @Volatile private var enabled: Boolean = true
