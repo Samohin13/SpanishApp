@@ -210,7 +210,7 @@ fun SpanishKeyboard(
                             textColor = textColor.copy(alpha = 0.85f),
                             accent = accent,
                             modifier = Modifier.weight(1f),
-                            heightDp = 36,
+                            heightDp = 32,
                             fontSp = 18,
                             onTap = emit,
                             haptic = haptic,
@@ -477,7 +477,7 @@ private fun KeyButton(
     textColor: Color,
     accent: Color,
     modifier: Modifier = Modifier,
-    heightDp: Int = 44,
+    heightDp: Int = 40,
     fontSp: Int = 21,
     haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
     onTap: (String) -> Unit,
@@ -674,7 +674,7 @@ private fun KeyButton(
                             val isHovered = idx == hoveredAccentIdx
                             Box(
                                 modifier = Modifier
-                                    .size(width = 44.dp, height = 44.dp)
+                                    .size(width = 44.dp, height = 40.dp)
                                     .clip(RoundedCornerShape(6.dp))
                                     .background(
                                         if (isHovered) accent
@@ -738,7 +738,7 @@ private fun BackspaceKey(
 
     Box(
         modifier = modifier
-            .height(44.dp)
+            .height(40.dp)
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
@@ -798,7 +798,7 @@ private fun SpaceKey(
 
     Box(
         modifier = modifier
-            .height(44.dp)
+            .height(40.dp)
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
@@ -880,7 +880,7 @@ private fun SpecialKey(
     val haptic = LocalHapticFeedback.current
     Box(
         modifier = modifier
-            .height(44.dp)
+            .height(40.dp)
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
@@ -1098,7 +1098,7 @@ private fun GlobeKey(
 
     Box(
         modifier = modifier
-            .height(44.dp)
+            .height(40.dp)
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
