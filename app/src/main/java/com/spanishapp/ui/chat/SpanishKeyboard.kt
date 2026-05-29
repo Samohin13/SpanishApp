@@ -643,26 +643,28 @@ private fun KeyButton(
             .background(bgColor),
         contentAlignment = Alignment.Center,
     ) {
-        Text(label, color = textColor, fontSize = fontSp.sp, fontWeight = FontWeight.Medium)
-        // v1.25.9: Samsung-style hint в верхнем-правом углу клавиши.
-        // Показывает первый accent (что появится по long-press) — даёт
-        // визуальный сигнал юзеру что доступно скрытое.
-        if (accents.isNotEmpty()) {
-            // v1.25.14: hint крупнее (9→12sp) + alpha 0.45→0.75 + SemiBold.
-            // Юзер видит á/é/í/ó/ú ярче — заметно что доступно по long-press.
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(top = 2.dp, end = 4.dp),
-                contentAlignment = Alignment.TopEnd,
-            ) {
+        // v1.25.37: Samsung-style layout — hint и буква в Column,
+        // оба горизонтально по центру. Hint компактный, буква нормального
+        // веса. Если accents пуст — только буква, по центру key.
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            if (accents.isNotEmpty()) {
                 Text(
                     accents.first(),
-                    color = textColor.copy(alpha = 0.75f),
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.SemiBold,
+                    color = textColor.copy(alpha = 0.5f),
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Normal,
+                    lineHeight = 10.sp,
                 )
             }
+            Text(
+                label,
+                color = textColor,
+                fontSize = fontSp.sp,
+                fontWeight = FontWeight.Normal,  // не Medium — как Samsung
+            )
         }
 
         if (showAccents && accents.isNotEmpty()) {
