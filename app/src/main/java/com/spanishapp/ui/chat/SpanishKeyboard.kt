@@ -202,9 +202,7 @@ fun SpanishKeyboard(
             if (layout != KbLayout.NUM) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    // v1.25.32: spacing 0 для hit area expansion. Visual gap
-                    // создаётся через padding ВНУТРИ KeyButton.
-                    horizontalArrangement = Arrangement.spacedBy(0.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
                     listOf("1","2","3","4","5","6","7","8","9","0").forEach { d ->
                         KeyButton(
@@ -242,8 +240,7 @@ fun SpanishKeyboard(
                     rows.take(2).forEach { row ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            // v1.25.32: spacing 0 — hit area expansion.
-                            horizontalArrangement = Arrangement.spacedBy(0.dp),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
                         ) {
                             row.forEach { key ->
                                 KeyButton(
@@ -530,15 +527,21 @@ private fun KeyButton(
     val accentKeyWidthPx = remember { with(density) { 48.dp.toPx() } }  // 44dp + 4dp gap
     val popupVerticalRangePx = remember { with(density) { (-72).dp.toPx() } }
 
-    // v1.25.32: hit area expansion. Outer Box ловит pointer events на ВСЁМ
-    // cell (без gap'ов), inner Box рисует visual с 3dp padding. Эффективно
-    // hit zones соседних клавиш ТРОГАЮТ друг друга — dead-zone в gap'е нет.
-    // Это даёт +6dp горизонтальной hit area на клавишу как у iOS/Samsung/Gboard.
-    // Glide-typing keyPositions хранит координаты VISUAL inner Box (важно для
-    // правильного snap-to-key в матчере).
+    // v1.25.34: revert hit area hack — он разорвал визуальную однородность
+    // (rows 1-2 без gap+inner padding vs row 3 с gap без padding). Юзер: "в
+    // третьем ряду чёрт пойми что". Визуал сейчас как Samsung — все рядки
+    // одинаковые. Hit area expansion отложен (искать решение без visual cost).
     Box(
         modifier = modifier
             .height(heightDp.dp)
+            .let { m ->
+                if (registerPositionKey != null && keyPositions != null) {
+                    m.onGloballyPositioned { coords ->
+                        keyPositions[registerPositionKey] =
+                            coords.boundsInRoot()
+                    }
+                } else m
+            }
             .pointerInput(Unit) {
                 // v1.25.26 CRITICAL FIX: long-press теперь через независимый
                 // launch + delay. Раньше проверялось `elapsed > 200ms` ВНУТРИ
@@ -626,32 +629,14 @@ private fun KeyButton(
                     }
                 }
             }
-            ,
+            .graphicsLayer {
+                scaleX = pressScale
+                scaleY = pressScale
+            }
+            .clip(RoundedCornerShape(8.dp))
+            .background(bgColor),
         contentAlignment = Alignment.Center,
     ) {
-        // v1.25.32: inner visual Box — рисует клавишу с 3dp padding.
-        // Visual gap между соседними клавишами = 6dp (3+3), но hit zone
-        // покрывает весь outer cell без зазоров.
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 3.dp, vertical = 1.dp)
-                .let { m ->
-                    if (registerPositionKey != null && keyPositions != null) {
-                        m.onGloballyPositioned { coords ->
-                            keyPositions[registerPositionKey] =
-                                coords.boundsInRoot()
-                        }
-                    } else m
-                }
-                .graphicsLayer {
-                    scaleX = pressScale
-                    scaleY = pressScale
-                }
-                .clip(RoundedCornerShape(8.dp))
-                .background(bgColor),
-            contentAlignment = Alignment.Center,
-        ) {
         Text(label, color = textColor, fontSize = fontSp.sp, fontWeight = FontWeight.Medium)
         // v1.25.9: Samsung-style hint в верхнем-правом углу клавиши.
         // Показывает первый accent (что появится по long-press) — даёт
@@ -733,7 +718,6 @@ private fun KeyButton(
                 }
             }
         }
-        }  // v1.25.32: close inner visual Box
     }
 }
 
