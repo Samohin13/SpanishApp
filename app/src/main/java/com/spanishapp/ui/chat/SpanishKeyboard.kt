@@ -213,8 +213,10 @@ fun SpanishKeyboard(
                             textColor = textColor.copy(alpha = 0.85f),
                             accent = accent,
                             modifier = Modifier.weight(1f),
-                            heightDp = 32,
-                            fontSp = 18,
+                            // v1.25.29: цифры 32→38dp, 18→20sp — но всё ещё компактнее
+                            // буквенного ряда (цифры реже нужны → не съедают вертикаль)
+                            heightDp = 38,
+                            fontSp = 20,
                             onTap = emit,
                             haptic = haptic,
                         )
@@ -480,8 +482,12 @@ private fun KeyButton(
     textColor: Color,
     accent: Color,
     modifier: Modifier = Modifier,
-    heightDp: Int = 40,
-    fontSp: Int = 21,
+    // v1.25.29: высота 40→49dp (между iOS 46-50 и Samsung 50-55),
+    // шрифт 21→23sp (среднее iOS 22 / Samsung 24). Закрывает Material
+    // accessibility minimum 48dp + перестаёт смотреться мелко рядом с
+    // системными клавиатурами.
+    heightDp: Int = 49,
+    fontSp: Int = 23,
     haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
     onTap: (String) -> Unit,
     // v1.24.20: для glide-typing — клавиша регистрирует свою позицию.
@@ -747,7 +753,7 @@ private fun BackspaceKey(
 
     Box(
         modifier = modifier
-            .height(40.dp)
+            .height(49.dp)  // v1.25.29: 40→49dp синхронно с буквенными
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
@@ -807,7 +813,7 @@ private fun SpaceKey(
 
     Box(
         modifier = modifier
-            .height(40.dp)
+            .height(49.dp)  // v1.25.29: 40→49dp синхронно с буквенными
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
@@ -889,7 +895,7 @@ private fun SpecialKey(
     val haptic = LocalHapticFeedback.current
     Box(
         modifier = modifier
-            .height(40.dp)
+            .height(49.dp)  // v1.25.29: 40→49dp синхронно с буквенными
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
@@ -1124,7 +1130,7 @@ private fun GlobeKey(
 
     Box(
         modifier = modifier
-            .height(40.dp)
+            .height(49.dp)  // v1.25.29: 40→49dp синхронно с буквенными
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
