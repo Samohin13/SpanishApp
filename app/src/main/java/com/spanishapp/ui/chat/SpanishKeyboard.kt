@@ -1110,16 +1110,18 @@ private fun esAccents(letter: String): List<String> = when (letter) {
     // ── Row 1: Q W E R T Y U I O P ────────────────────
     "q" -> listOf("+")
     "w" -> listOf("×")
-    "e" -> listOf("é","è","ë","ê")           // Samsung: ´
+    // v1.25.46: гласные расширены до Samsung-style полного picker'а
+    // с международными вариантами (Å Æ Ā Ă Ą и т.д.)
+    "e" -> listOf("é","è","ê","ë","ē","ĕ","ė","ę","ě","€","ǝ")
     "r" -> listOf("÷")
-    "t" -> listOf("=")                          // было —
-    "y" -> listOf("/")                          // было ~
-    "u" -> listOf("ú","ü","û","<")           // Samsung: <
-    "i" -> listOf("í","ï","î",">")           // Samsung: >
-    "o" -> listOf("ó","ò","ö","ô","[")       // Samsung: [
-    "p" -> listOf("]")                          // было [
+    "t" -> listOf("=")
+    "y" -> listOf("/","ý","ÿ")
+    "u" -> listOf("ú","ù","û","ü","ū","ŭ","ů","ų","<")
+    "i" -> listOf("í","ì","î","ï","ī","ĭ","į",">")
+    "o" -> listOf("ó","ò","ô","ö","õ","ø","œ","ō","ŏ","ő","[")
+    "p" -> listOf("]")
     // ── Row 2: A S D F G H J K L Ñ ────────────────────
-    "a" -> listOf("á","à","ä","â","!")       // Samsung: !
+    "a" -> listOf("á","à","â","ã","ä","å","æ","ā","ă","ą","!")
     "s" -> listOf("@")
     "d" -> listOf("#")
     "f" -> listOf("€")                          // было $ £ ¥
@@ -1135,7 +1137,7 @@ private fun esAccents(letter: String): List<String> = when (letter) {
     "c" -> listOf(":")
     "v" -> listOf(";")
     "b" -> listOf("/")
-    "n" -> listOf("ñ","?")                   // Samsung: ?
+    "n" -> listOf("ñ","ń","ņ","ň","ŋ","?")   // Samsung: ?
     "m" -> listOf("?")                          // было ! ¡
     else -> emptyList()
 }
@@ -1157,42 +1159,40 @@ private fun ruLetterRows(): List<List<KbKey>> = listOf(
     },
 )
 
+// v1.25.46: RU как Samsung mobile RU (из скрина). Многие совпадают с ES.
 private fun ruAccents(letter: String): List<String> = when (letter) {
-    // Row 1
+    // ── Row 1: Й Ц У К Е Н Г Ш Щ З Х ─────────────────
     "й" -> listOf("+")
-    "ц" -> listOf("×")
-    "у" -> listOf("~")
-    "к" -> listOf("÷")
-    "е" -> listOf("ё","—")
-    "н" -> listOf("—","–")
-    "г" -> listOf("¨")
-    "ш" -> listOf("^")
+    "ц" -> listOf("÷")                          // было ×, Samsung: ÷
+    "у" -> listOf("¤","~")                      // Samsung: ¤ currency
+    "к" -> listOf("=")                          // Samsung: =
+    "е" -> listOf("ё","—")                      // Ё всегда ПЕРВЫМ (важно для русского)
+    "н" -> listOf(">","—","–")                 // Samsung: >
+    "г" -> listOf("<","¨")                      // Samsung: <
+    "ш" -> listOf(">","^")                      // Samsung: >
     "щ" -> listOf("[","{")
     "з" -> listOf("]","}")
     "х" -> listOf("§","№")
-    // v1.25.35: "ъ" больше нет как отдельной клавиши — accent на "ь" (см. ниже)
-    // Row 2
+    // ── Row 2: Ф Ы В А П Р О Л Д Ж Э ─────────────────
     "ф" -> listOf("!","¡")
     "ы" -> listOf("@")
     "в" -> listOf("#")
-    "а" -> listOf("€")
+    "а" -> listOf("₽","€")                      // Samsung: ₽ (rubl' первым)
     "п" -> listOf("%")
-    "р" -> listOf("₽")
+    "р" -> listOf("?","¿")                      // Samsung: ?
     "о" -> listOf("&")
     "л" -> listOf("*")
     "д" -> listOf("(","{")
     "ж" -> listOf(")","}")
     "э" -> listOf("=","≠")
-    // Row 3
+    // ── Row 3: Я Ч С М И Т Ь Б Ю ─────────────────────
     "я" -> listOf("\"","«","»")
     "ч" -> listOf("'","`")
     "с" -> listOf("$")
     "м" -> listOf(":")
     "и" -> listOf(";")
     "т" -> listOf("/","\\")
-    // v1.25.35: "ъ" ПЕРВЫМ (видно в hint, доступен тапом-удержанием —
-    // как у Samsung mobile RU layout).
-    "ь" -> listOf("ъ","?","¿")
+    "ь" -> listOf("ъ","?","¿")                  // ъ — Russian hard sign (v1.25.35)
     "б" -> listOf("<","≤")
     "ю" -> listOf(">","≥")
     else -> emptyList()
