@@ -260,12 +260,13 @@ fun SpanishKeyboard(
                         }
                     }
                     // 3-й ряд внутри glide-overlay: shift + буквы z-m + backspace
-                    // v1.25.36: weight Shift/Backspace зависит от layout.
-                    //  RU mobile: row 2 = 11 клавиш, row 3 = 9 букв → spec.weight=1.0
-                    //            (Shift+Backspace ШИРИНОЙ КАК БУКВА — Samsung style)
-                    //  ES:        row 2 = 10 клавиш, row 3 = 7 букв  → spec.weight=1.5
-                    //            (Shift+Backspace чуть шире чтобы row выровнялся)
-                    val specialWeight = if (layout == KbLayout.RU) 1f else 1.5f
+                    // v1.25.40: уже Shift/Backspace (юзер: "сделай не такими широкими").
+                    //  RU mobile: spec=1.0 — уже = ширине буквы, дальше уменьшать нельзя
+                    //  ES:        spec=1.2 — было 1.5, теперь чуть шире буквы (на ~20%).
+                    //             Row 3 letters получаются на ~6% шире row 1-2 letters
+                    //             (что заметно меньше чем при 1.5 — там были той же ширины
+                    //             но Shift/Backspace в 1.5× выглядели массивно).
+                    val specialWeight = if (layout == KbLayout.RU) 1f else 1.2f
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
