@@ -15,12 +15,20 @@ object WordSuggester {
     /** Все слова словаря — для glide-typing matcher'а. */
     fun allWords(): List<String> = ES_WORDS + RU_WORDS
 
+    /**
+     * v1.25.10: подсказки берутся из ExpandedDictionary (~3500 слов),
+     * не из базовых ES_WORDS/RU_WORDS (~400). Это значит при наборе
+     * "при" Samsung-style сразу пять кандидатов: привет, приходить,
+     * прикольно, приехать, приготовить.
+     *
+     * Сортировка: сначала наиболее частотные (топ списка), потом
+     * остальные. Дубликаты исключены через distinct() в ExpandedDictionary.
+     */
     fun suggest(input: String, max: Int = 3): List<String> {
         val word = currentWord(input).lowercase()
         if (word.isBlank()) return emptyList()
-        // Определяем язык по первой букве
         val isRu = word.first() in 'а'..'я' || word.first() == 'ё'
-        val pool = if (isRu) RU_WORDS else ES_WORDS
+        val pool = if (isRu) ExpandedDictionary.RU else ExpandedDictionary.ES
         return pool.asSequence()
             .filter { it.startsWith(word) && it != word }
             .take(max)

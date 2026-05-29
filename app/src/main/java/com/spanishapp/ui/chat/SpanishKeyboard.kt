@@ -199,7 +199,7 @@ fun SpanishKeyboard(
             if (layout != KbLayout.NUM) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(5.dp),
                 ) {
                     listOf("1","2","3","4","5","6","7","8","9","0").forEach { d ->
                         KeyButton(
@@ -211,7 +211,7 @@ fun SpanishKeyboard(
                             accent = accent,
                             modifier = Modifier.weight(1f),
                             heightDp = 36,
-                            fontSp = 16,
+                            fontSp = 18,
                             onTap = emit,
                             haptic = haptic,
                         )
@@ -233,7 +233,7 @@ fun SpanishKeyboard(
                     rows.take(2).forEach { row ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(5.dp),
                         ) {
                             row.forEach { key ->
                                 KeyButton(
@@ -259,7 +259,7 @@ fun SpanishKeyboard(
             // 3-й ряд: shift + буквы + backspace
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
             ) {
                 if (layout != KbLayout.NUM) {
                     SpecialKey(
@@ -325,7 +325,7 @@ fun SpanishKeyboard(
             // 4-й ряд: 123 + globe + space (swipe) + . + send
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                horizontalArrangement = Arrangement.spacedBy(5.dp),
             ) {
                 SpecialKey(
                     bg = specialKeyBg,
@@ -338,7 +338,7 @@ fun SpanishKeyboard(
                     },
                 ) {
                     Text(
-                        if (layout == KbLayout.NUM) "ABC" else "123",
+                        if (layout == KbLayout.NUM) "ABC" else "!1#",
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 13.sp,
                         color = textColor,
@@ -478,7 +478,7 @@ private fun KeyButton(
     accent: Color,
     modifier: Modifier = Modifier,
     heightDp: Int = 44,
-    fontSp: Int = 19,
+    fontSp: Int = 21,
     haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
     onTap: (String) -> Unit,
     // v1.24.20: для glide-typing — клавиша регистрирует свою позицию.
@@ -668,7 +668,7 @@ private fun KeyButton(
                 ) {
                     Row(
                         modifier = Modifier.padding(6.dp),
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        horizontalArrangement = Arrangement.spacedBy(5.dp),
                     ) {
                         accents.forEachIndexed { idx, variant ->
                             val isHovered = idx == hoveredAccentIdx
@@ -923,7 +923,7 @@ private fun GlideOverlay(
 ) {
     val density = LocalDensity.current
     // v1.25.8: threshold снижен 60dp → 35dp — glide активируется быстрее
-    val glideThresholdPx = remember { with(density) { 35.dp.toPx() } }
+    val glideThresholdPx = remember { with(density) { 25.dp.toPx() } }
     val currentValue by rememberUpdatedState(value)
     val currentOnChange by rememberUpdatedState(onValueChange)
     val currentDict by rememberUpdatedState(glideDictionary)
