@@ -656,11 +656,13 @@ private fun KeyButton(
                     .padding(top = 2.dp, end = 4.dp),
                 contentAlignment = Alignment.TopEnd,
             ) {
+                // v1.25.39: hint крупнее (10→12sp) + alpha 0.5→0.7 + Medium weight.
+                // Юзер: "сделай чуть крупнее и заметнее".
                 Text(
                     accents.first(),
-                    color = textColor.copy(alpha = 0.5f),
-                    fontSize = 10.sp,
-                    fontWeight = FontWeight.Normal,
+                    color = textColor.copy(alpha = 0.7f),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
                 )
             }
         }
