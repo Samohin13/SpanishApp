@@ -118,18 +118,15 @@ fun SpanishKeyboard(
         } else {
             KeyboardLogic.insertAt(value, shiftedChar)
         }
-        // v1.25.9: SpellChecker autocorrect on space.
-        // Если ввели space или знак — проверяем последнее слово.
-        // Если SpellChecker уверенно подсказывает замену → заменяем.
-        val newValue = if ((shiftedChar == " " || shiftedChar == "." ||
-                            shiftedChar == "," || shiftedChar == "!" || shiftedChar == "?")
-            && layout != KbLayout.NUM) {
-            applyAutocorrect(newValue0, layout, userWordFreq)
-        } else newValue0
-        onValueChange(newValue)
+        // v1.25.62: AUTOCORRECT ОТКЛЮЧЁН.
+        // Юзер: "словарь никак не должен влиять на то что я пишу,
+        //        запрос не зависит от наличия слов в словаре".
+        // Подсказки в strip остаются (можно тапнуть, чтобы вставить),
+        // но автоматических подмен на пробеле/знаках больше нет.
+        onValueChange(newValue0)
         if (shifted && !capsLock) shifted = false
         if (!capsLock && layout != KbLayout.NUM) {
-            if (KeyboardLogic.shouldAutoCapAfter(newValue.text, newValue.selection.start)) {
+            if (KeyboardLogic.shouldAutoCapAfter(newValue0.text, newValue0.selection.start)) {
                 shifted = true
             }
         }
