@@ -42,6 +42,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.layout.boundsInRoot
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
@@ -897,7 +898,8 @@ private fun GlideOverlay(
     content: @Composable () -> Unit,
 ) {
     val density = LocalDensity.current
-    val glideThresholdPx = remember { with(density) { 60.dp.toPx() } }
+    // v1.25.8: threshold снижен 60dp → 35dp — glide активируется быстрее
+    val glideThresholdPx = remember { with(density) { 35.dp.toPx() } }
     val currentValue by rememberUpdatedState(value)
     val currentOnChange by rememberUpdatedState(onValueChange)
     val currentDict by rememberUpdatedState(glideDictionary)
@@ -908,8 +910,17 @@ private fun GlideOverlay(
     val trailPoints = remember { mutableStateListOf<androidx.compose.ui.geometry.Offset>() }
     var gliding by remember { mutableStateOf(false) }
 
+    // v1.25.8 КРИТИЧНЫЙ FIX: trace.position в Local-координатах GlideOverlay,
+    // а keyPositions.boundsInRoot() — в Root. Без offset они НЕ совпадают →
+    // traceToLetters возвращал мусор → glide НЕ работал.
+    var overlayRootOffset by remember { mutableStateOf(androidx.compose.ui.geometry.Offset.Zero) }
+
     Box(
-        modifier = Modifier.pointerInput(Unit) {
+        modifier = Modifier
+            .onGloballyPositioned { coords ->
+                overlayRootOffset = coords.positionInRoot()
+            }
+            .pointerInput(Unit) {
             if (!isLetterLayout || currentDict.isEmpty()) return@pointerInput
             awaitPointerEventScope {
                 while (true) {
@@ -930,7 +941,9 @@ private fun GlideOverlay(
                         val ch = ev.changes.firstOrNull() ?: break
                         if (!ch.pressed) {
                             if (glideActivated) {
-                                val letters = traceToLetters(trace, currentKeyPositions)
+                                val letters = traceToLetters(
+                                    trace, currentKeyPositions, overlayRootOffset,
+                                )
                                 val deduped = GlideMatcher.dedupeConsecutive(letters)
                                 val matched = GlideMatcher.matchBestWord(
                                     deduped, currentDict, currentFreq,
@@ -1007,20 +1020,23 @@ private fun GlideOverlay(
 private fun traceToLetters(
     trace: List<androidx.compose.ui.geometry.Offset>,
     keyPositions: Map<String, androidx.compose.ui.geometry.Rect>,
+    overlayRootOffset: androidx.compose.ui.geometry.Offset,
 ): List<Char> {
     if (keyPositions.isEmpty()) return emptyList()
     val letters = mutableListOf<Char>()
-    // Overlay координаты в Local. keyPositions в Root.
-    // Здесь упрощённо: считаем что overlay начинается с (0, ?) — нужен offset.
-    // Для надёжности: пропускаем точки которые далеко от любой клавиши.
+    // v1.25.8: КРИТИЧНЫЙ FIX. Конвертируем local-trace coords → root coords
+    // через сложение с overlayRootOffset. Без этого snap-to-key возвращал
+    // ближайшую клавишу относительно неправильного origin → мусор.
     for (pt in trace) {
+        val rootX = pt.x + overlayRootOffset.x
+        val rootY = pt.y + overlayRootOffset.y
         var bestKey: String? = null
         var bestDist = Float.MAX_VALUE
         for ((k, rect) in keyPositions) {
             val cx = rect.center.x
             val cy = rect.center.y
-            val dx = pt.x - cx
-            val dy = pt.y - cy
+            val dx = rootX - cx
+            val dy = rootY - cy
             val d = dx * dx + dy * dy
             if (d < bestDist) {
                 bestDist = d
