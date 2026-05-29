@@ -53,7 +53,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 /**
  * Pro-уровень Compose-клавиатура, реагирующая как Gboard:
@@ -530,86 +533,88 @@ private fun KeyButton(
                 } else m
             }
             .pointerInput(Unit) {
-                awaitPointerEventScope {
-                    while (true) {
-                        val down = awaitFirstDown()
-                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                        // Fire on DOWN — Gboard стиль
-                        if (currentAccents.isEmpty()) {
-                            currentOnTap(currentOutput)
-                        }
-                        pressed = true
-                        val startTime = System.currentTimeMillis()
-                        var enteredAccentMode = false
-                        var lastPos = down.position
-                        try {
-                            while (true) {
-                                val event = androidx.compose.ui.input.pointer.PointerEventPass.Main
-                                    .let { awaitPointerEvent(it) }
-                                val change = event.changes.firstOrNull() ?: break
-                                lastPos = change.position
+                // v1.25.26 CRITICAL FIX: long-press теперь через независимый
+                // launch + delay. Раньше проверялось `elapsed > 200ms` ВНУТРИ
+                // event loop'а — но awaitPointerEvent() возвращается ТОЛЬКО
+                // когда приходит event. Если палец стоит неподвижно — никаких
+                // events → проверка не срабатывает → picker не появляется.
+                // Это объясняло баг "то работает то нет, нужно жать с силой".
+                // Теперь таймер крутится в отдельном launch — не зависит от
+                // того дёргается палец или нет.
+                kotlinx.coroutines.coroutineScope {
+                    awaitPointerEventScope {
+                        while (true) {
+                            val down = awaitFirstDown()
+                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                            // Fire on DOWN — Gboard стиль
+                            if (currentAccents.isEmpty()) {
+                                currentOnTap(currentOutput)
+                            }
+                            pressed = true
+                            var enteredAccentMode = false
 
-                                if (!change.pressed) {
-                                    // UP — финализируем
-                                    if (enteredAccentMode) {
-                                        if (hoveredAccentIdx in currentAccents.indices) {
-                                            val variant = currentAccents[hoveredAccentIdx]
-                                            // Применяем shift если label был uppercase
-                                            val out = if (label != label.lowercase())
-                                                variant.uppercase() else variant
-                                            currentOnTap(out)
-                                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                        }
-                                        // если палец вне popup → отмена (ничего не печатаем)
-                                    } else if (currentAccents.isNotEmpty()) {
-                                        // long-press не наступил, было обычное касание клавиши с accents
-                                        currentOnTap(currentOutput)
-                                    }
-                                    pressed = false
-                                    showAccents = false
-                                    hoveredAccentIdx = -1
-                                    break
-                                }
-
-                                // v1.25.24: swipe-down УБРАН (не стандартен у мировых клав).
-                                // Доступ к спец-символам — только через long-press picker,
-                                // как у Samsung / Gboard / iOS. Юзер: "если бы это было удобно
-                                // то мировые гиганты давно бы пользовались".
-                                val elapsed = System.currentTimeMillis() - startTime
-                                // Long-press: 200ms (Samsung ~300, Gboard ~250, iOS ~500 —
-                                // выбираем агрессивный middle ground для отзывчивости).
-                                if (!enteredAccentMode && elapsed > 200 && currentAccents.isNotEmpty()) {
+                            // Запускаем независимый long-press таймер.
+                            val longPressJob = this@coroutineScope.launch {
+                                kotlinx.coroutines.delay(200)
+                                if (currentAccents.isNotEmpty()) {
                                     enteredAccentMode = true
                                     showAccents = true
-                                    // v1.25.24: default = ПЕРВАЯ опция (та что hint в углу).
-                                    // Юзер просто зажимает → отпускает → получает hint-символ.
-                                    // Slide нужен только если нужен ДРУГОЙ вариант.
                                     hoveredAccentIdx = 0
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    haptic.performHapticFeedback(
+                                        HapticFeedbackType.LongPress
+                                    )
                                 }
-
-                                if (enteredAccentMode && currentAccents.isNotEmpty()) {
-                                    // Считаем над какой accent сейчас палец
-                                    // Popup центрирован над клавишей, accent-row начинается на
-                                    // (key_width - popup_width) / 2. Палец в координатах клавиши.
-                                    val keyWidthPx = size.width.toFloat()
-                                    val popupWidthPx = currentAccents.size * accentKeyWidthPx + 8.dp.toPx()
-                                    val popupLeftRelToKey = (keyWidthPx - popupWidthPx) / 2f + 6.dp.toPx()
-                                    val xInPopup = change.position.x - popupLeftRelToKey
-                                    val rawIdx = (xInPopup / accentKeyWidthPx).toInt()
-                                    val newIdx = rawIdx.coerceIn(0, currentAccents.size - 1)
-                                    if (newIdx != hoveredAccentIdx) {
-                                        hoveredAccentIdx = newIdx
-                                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                                    }
-                                }
-
-                                change.consume()
                             }
-                        } finally {
-                            pressed = false
-                            showAccents = false
-                            hoveredAccentIdx = -1
+
+                            try {
+                                while (true) {
+                                    val event = androidx.compose.ui.input.pointer.PointerEventPass.Main
+                                        .let { awaitPointerEvent(it) }
+                                    val change = event.changes.firstOrNull() ?: break
+
+                                    if (!change.pressed) {
+                                        // UP — финализируем
+                                        longPressJob.cancel()
+                                        if (enteredAccentMode) {
+                                            if (hoveredAccentIdx in currentAccents.indices) {
+                                                val variant = currentAccents[hoveredAccentIdx]
+                                                val out = if (label != label.lowercase())
+                                                    variant.uppercase() else variant
+                                                currentOnTap(out)
+                                                haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                            }
+                                        } else if (currentAccents.isNotEmpty()) {
+                                            // обычный tap клавиши с accents
+                                            currentOnTap(currentOutput)
+                                        }
+                                        pressed = false
+                                        showAccents = false
+                                        hoveredAccentIdx = -1
+                                        break
+                                    }
+
+                                    if (enteredAccentMode && currentAccents.isNotEmpty()) {
+                                        // Slide tracking в picker
+                                        val keyWidthPx = size.width.toFloat()
+                                        val popupWidthPx = currentAccents.size * accentKeyWidthPx + 8.dp.toPx()
+                                        val popupLeftRelToKey = (keyWidthPx - popupWidthPx) / 2f + 6.dp.toPx()
+                                        val xInPopup = change.position.x - popupLeftRelToKey
+                                        val rawIdx = (xInPopup / accentKeyWidthPx).toInt()
+                                        val newIdx = rawIdx.coerceIn(0, currentAccents.size - 1)
+                                        if (newIdx != hoveredAccentIdx) {
+                                            hoveredAccentIdx = newIdx
+                                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                        }
+                                    }
+
+                                    change.consume()
+                                }
+                            } finally {
+                                longPressJob.cancel()
+                                pressed = false
+                                showAccents = false
+                                hoveredAccentIdx = -1
+                            }
                         }
                     }
                 }
