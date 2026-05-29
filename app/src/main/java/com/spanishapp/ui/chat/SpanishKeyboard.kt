@@ -220,7 +220,9 @@ fun SpanishKeyboard(
                 }
             }
 
-            // Основные буквенные ряды (внутри glide-overlay Box)
+            // v1.25.19: ВСЕ 3 ряда букв в одном GlideOverlay (row 3 z-m тоже).
+            // Раньше row 3 был СНАРУЖИ — палец заходящий туда не видим был
+            // glide-overlay'у → trail прерывался, буквы не учитывались.
             GlideOverlay(
                 keyPositions = keyPositions,
                 glideDictionary = glideDictionary,
@@ -254,73 +256,71 @@ fun SpanishKeyboard(
                             }
                         }
                     }
-                }
-            }
-
-            // 3-й ряд: shift + буквы + backspace
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-            ) {
-                if (layout != KbLayout.NUM) {
-                    SpecialKey(
-                        bg = when {
-                            capsLock -> accent
-                            shifted -> accent.copy(alpha = 0.3f)
-                            else -> specialKeyBg
-                        },
-                        modifier = Modifier.weight(1.4f),
-                        onClick = {
-                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                            val now = System.currentTimeMillis()
-                            if (now - lastShiftTap < 300) {
-                                capsLock = !capsLock
-                                shifted = capsLock
-                            } else {
-                                if (capsLock) { capsLock = false; shifted = false }
-                                else shifted = !shifted
-                            }
-                            lastShiftTap = now
-                        },
+                    // 3-й ряд внутри glide-overlay: shift + буквы z-m + backspace
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
-                        Icon(
-                            if (capsLock) Icons.Default.KeyboardCapslock
-                            else Icons.Default.KeyboardArrowUp,
-                            contentDescription = if (capsLock) "Caps" else "Shift",
-                            tint = when {
-                                capsLock -> Color.White
-                                shifted -> accent
-                                else -> textColor
-                            },
-                            modifier = Modifier.size(22.dp),
+                        if (layout != KbLayout.NUM) {
+                            SpecialKey(
+                                bg = when {
+                                    capsLock -> accent
+                                    shifted -> accent.copy(alpha = 0.3f)
+                                    else -> specialKeyBg
+                                },
+                                modifier = Modifier.weight(1.4f),
+                                onClick = {
+                                    haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                                    val now = System.currentTimeMillis()
+                                    if (now - lastShiftTap < 300) {
+                                        capsLock = !capsLock
+                                        shifted = capsLock
+                                    } else {
+                                        if (capsLock) { capsLock = false; shifted = false }
+                                        else shifted = !shifted
+                                    }
+                                    lastShiftTap = now
+                                },
+                            ) {
+                                Icon(
+                                    if (capsLock) Icons.Default.KeyboardCapslock
+                                    else Icons.Default.KeyboardArrowUp,
+                                    contentDescription = if (capsLock) "Caps" else "Shift",
+                                    tint = when {
+                                        capsLock -> Color.White
+                                        shifted -> accent
+                                        else -> textColor
+                                    },
+                                    modifier = Modifier.size(22.dp),
+                                )
+                            }
+                        }
+                        rows[2].forEach { key ->
+                            KeyButton(
+                                label = if ((shifted || capsLock) && layout != KbLayout.NUM)
+                                    key.label.uppercase() else key.label,
+                                output = key.output,
+                                accents = key.accents,
+                                bg = keyBg,
+                                textColor = textColor,
+                                accent = accent,
+                                modifier = Modifier.weight(1f),
+                                onTap = emit,
+                                haptic = haptic,
+                                registerPositionKey = key.label,
+                                keyPositions = keyPositions,
+                            )
+                        }
+                        BackspaceKey(
+                            bg = specialKeyBg,
+                            textColor = textColor,
+                            accent = accent,
+                            modifier = Modifier.weight(1.4f),
+                            onCharDelete = { onValueChange(KeyboardLogic.backspaceChar(value)) },
+                            haptic = haptic,
                         )
                     }
                 }
-                rows[2].forEach { key ->
-                    KeyButton(
-                        label = if ((shifted || capsLock) && layout != KbLayout.NUM)
-                            key.label.uppercase() else key.label,
-                        output = key.output,
-                        accents = key.accents,
-                        bg = keyBg,
-                        textColor = textColor,
-                        accent = accent,
-                        modifier = Modifier.weight(1f),
-                        onTap = emit,
-                        haptic = haptic,
-                        // v1.25.2: row 3 буквы тоже регистрируем для glide
-                        registerPositionKey = key.label,
-                        keyPositions = keyPositions,
-                    )
-                }
-                BackspaceKey(
-                    bg = specialKeyBg,
-                    textColor = textColor,
-                    accent = accent,
-                    modifier = Modifier.weight(1.4f),
-                    onCharDelete = { onValueChange(KeyboardLogic.backspaceChar(value)) },
-                    haptic = haptic,
-                )
             }
 
             // 4-й ряд: 123 + globe + space (swipe) + . + send
