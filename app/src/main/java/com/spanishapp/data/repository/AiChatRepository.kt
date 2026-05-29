@@ -35,7 +35,9 @@ class AiChatRepository @Inject constructor(
 ) {
 
     private companion object {
-        const val MODEL = "gemini-flash-latest"
+        // v1.25.58: gemini-2.5-flash — current stable. Worker имеет
+        // fallback на 2.5-flash-lite и 2.0-flash при rate-limit.
+        const val MODEL = "gemini-2.5-flash"
         const val TAG = "AiChatRepo"
 
         fun apiUrl(): String {
