@@ -391,7 +391,14 @@ data class TheoryProgressEntity(
  *
  * См. docs/VOCAB_TRACKING_PLAN.md.
  */
-@Entity(tableName = "user_vocab_state")
+@Entity(
+    tableName = "user_vocab_state",
+    indices = [
+        Index(value = ["status"]),
+        Index(value = ["cefr"]),
+        Index(value = ["last_seen_at"]),
+    ],
+)
 data class UserVocabStateEntity(
     /** Lowercased испанская форма слова. */
     @PrimaryKey @ColumnInfo(name = "word") val word: String,

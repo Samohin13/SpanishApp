@@ -39,7 +39,7 @@ import com.spanishapp.data.db.entity.*
         ActivityTimeLogEntity::class,
         UserVocabStateEntity::class,
     ],
-    version = 29,
+    version = 30,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -377,7 +377,8 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         // ── v29: user_vocab_state — агрегированный словарный запас юзера
-        //   (см. docs/VOCAB_TRACKING_PLAN.md, v1.25.28). ──
+        //   (см. docs/VOCAB_TRACKING_PLAN.md, v1.25.28). Исправлено в v1.25.30:
+        //   убраны DEFAULT 0 (Entity их не объявляла → schema validation fail).
         val MIGRATION_28_29 = object : Migration(28, 29) {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("""
@@ -387,11 +388,38 @@ abstract class AppDatabase : RoomDatabase() {
                         cefr TEXT,
                         status TEXT NOT NULL,
                         score REAL NOT NULL,
-                        usage_count INTEGER NOT NULL DEFAULT 0,
-                        corrections_count INTEGER NOT NULL DEFAULT 0,
-                        flashcard_ef REAL NOT NULL DEFAULT 0,
-                        last_seen_at INTEGER NOT NULL DEFAULT 0,
-                        updated_at INTEGER NOT NULL DEFAULT 0
+                        usage_count INTEGER NOT NULL,
+                        corrections_count INTEGER NOT NULL,
+                        flashcard_ef REAL NOT NULL,
+                        last_seen_at INTEGER NOT NULL,
+                        updated_at INTEGER NOT NULL
+                    )
+                """.trimIndent())
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_user_vocab_state_status ON user_vocab_state(status)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_user_vocab_state_cefr ON user_vocab_state(cefr)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_user_vocab_state_last_seen ON user_vocab_state(last_seen_at)")
+            }
+        }
+
+        // ── v30: HOTFIX. Юзеры которые поставили v1.25.28 имеют сломанную
+        //   user_vocab_state со схемой DEFAULT 0 → краш schema validation.
+        //   Дроп + recreate с правильной схемой. Данных потерять не страшно —
+        //   их и не было (worker не успевал отработать т.к. app падал). ──
+        val MIGRATION_29_30 = object : Migration(29, 30) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("DROP TABLE IF EXISTS user_vocab_state")
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS user_vocab_state (
+                        word TEXT NOT NULL PRIMARY KEY,
+                        word_id INTEGER,
+                        cefr TEXT,
+                        status TEXT NOT NULL,
+                        score REAL NOT NULL,
+                        usage_count INTEGER NOT NULL,
+                        corrections_count INTEGER NOT NULL,
+                        flashcard_ef REAL NOT NULL,
+                        last_seen_at INTEGER NOT NULL,
+                        updated_at INTEGER NOT NULL
                     )
                 """.trimIndent())
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_user_vocab_state_status ON user_vocab_state(status)")
