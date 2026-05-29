@@ -2,309 +2,250 @@ package com.spanishapp
 
 import com.spanishapp.ui.chat.AccentPickerHitTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 /**
- * v1.25.53 — тесты hit-test logic для accent picker'а.
- *
- * Покрывает:
- *  - 1-row pickers (≤3 accents)
- *  - 2-row pickers (4-6 accents)
- *  - dy threshold для row switching
- *  - col selection через absolute X coords
- *  - edge cases (finger вне popup, coerce'ы)
+ * v1.25.54 — exhaustive coverage hit-test:
+ *  - Все размеры (0..6 accents)
+ *  - Все cell positions достижимы
+ *  - Threshold boundary precise
+ *  - Coerce'ы на extreme finger positions
+ *  - Real ES/RU keyboard data (все клавиши которые имеют accents)
  */
 class AccentPickerHitTestTest {
 
-    // ── Default setup для типичного scenario ─────────
-    // Key shirina ~36dp, cell shirina 48dp (44dp + 4dp gap),
-    // padPx 6dp, upThreshold 20dp.
-    // 6 accents picker (3+3 rows) расположен над key.
-    // Density ~2.75 для типичного device.
-    // Все coords в float pixels для simplicity test'ов.
-
-    private val cellW = 48f      // 1px = 1dp for simplicity
+    // Typical units. cellW=48 (44+4), key 36dp wide.
+    private val cellW = 48f
     private val padPx = 6f
     private val upThreshold = 20f
-    private val keyRootX = 100f   // key starts at x=100
     private val keyWidth = 36f
-    private val popupLeftX = keyRootX - 60f  // popup wider than key, centered
 
+    private fun hitAt(
+        accentsCount: Int,
+        x: Float,
+        y: Float,
+    ) = AccentPickerHitTest.computeHoveredIdx(
+        accentsCount = accentsCount,
+        fingerLocalX = x,
+        fingerLocalY = y,
+        downLocalY = 0f,
+        keyWidthPx = keyWidth,
+        cellWidthPx = cellW,
+        padPx = padPx,
+        upThresholdPx = upThreshold,
+    )
+
+    /**
+     * Центр cell в local-coords (gesture).
+     * popup centered над key, row 0 — top (нужен upward swipe), row 1 — bottom (default).
+     */
+    private fun cellCenterX(accentsCount: Int, col: Int): Float {
+        val rowsCount = if (accentsCount > 3) 2 else 1
+        val cellsPerRow = (accentsCount + rowsCount - 1) / rowsCount
+        val popupWidth = cellsPerRow * cellW + 2 * padPx
+        val popupLeftLocal = (keyWidth - popupWidth) / 2f
+        return popupLeftLocal + padPx + col * cellW + cellW / 2f
+    }
+
+    // ────────────────────────────────────────────────────
+    //  EXHAUSTIVE: каждая cell достижима
+    // ────────────────────────────────────────────────────
     @Test
-    fun `1 row picker — 3 accents, bottom only`() {
-        // 3 accents → 1 row. Always rowIdx=0.
-        // Finger directly above key center → col=1 (middle)
-        val idx = AccentPickerHitTest.computeHoveredIdx(
-            accentsCount = 3,
-            fingerLocalX = keyWidth / 2f,  // local center of key
-            fingerLocalY = 0f,
-            downLocalY = 0f,
-            keyRootX = keyRootX,
-            popupLeftX = popupLeftX,
-            cellWidthPx = cellW,
-            padPx = padPx,
-            upThresholdPx = upThreshold,
-        )
-        assertEquals("Middle of 3-cell row should be idx=1", 1, idx)
+    fun `exhaustive — every cell reachable for 1 accent`() {
+        assertEquals(0, hitAt(1, x = cellCenterX(1, 0), y = 0f))
     }
 
     @Test
-    fun `2 row picker — 6 accents, bottom row default`() {
-        // 6 accents → 2 rows × 3 cols. dy=0 → bottom row (rowIdx=1).
-        val idx = AccentPickerHitTest.computeHoveredIdx(
-            accentsCount = 6,
-            fingerLocalX = keyWidth / 2f,
-            fingerLocalY = 0f,  // no upward movement
-            downLocalY = 0f,
-            keyRootX = keyRootX,
-            popupLeftX = popupLeftX,
-            cellWidthPx = cellW,
-            padPx = padPx,
-            upThresholdPx = upThreshold,
-        )
-        // rowIdx=1, colIdx=1 (middle) → flat = 1*3+1 = 4 (5th accent)
-        assertEquals(4, idx)
+    fun `exhaustive — every cell reachable for 2 accents`() {
+        // 2 accents → 1 row, 2 cols
+        assertEquals(0, hitAt(2, x = cellCenterX(2, 0), y = 0f))
+        assertEquals(1, hitAt(2, x = cellCenterX(2, 1), y = 0f))
     }
 
     @Test
-    fun `2 row picker — swipe up past threshold switches to top`() {
-        // dy = -25 (past threshold of -20) → top row
-        val idx = AccentPickerHitTest.computeHoveredIdx(
-            accentsCount = 6,
-            fingerLocalX = keyWidth / 2f,
-            fingerLocalY = -25f,
-            downLocalY = 0f,
-            keyRootX = keyRootX,
-            popupLeftX = popupLeftX,
-            cellWidthPx = cellW,
-            padPx = padPx,
-            upThresholdPx = upThreshold,
-        )
-        // rowIdx=0, colIdx=1 → flat = 0*3+1 = 1 (2nd accent)
-        assertEquals(1, idx)
+    fun `exhaustive — every cell reachable for 3 accents`() {
+        // 3 → 1 row, 3 cols
+        assertEquals(0, hitAt(3, x = cellCenterX(3, 0), y = 0f))
+        assertEquals(1, hitAt(3, x = cellCenterX(3, 1), y = 0f))
+        assertEquals(2, hitAt(3, x = cellCenterX(3, 2), y = 0f))
     }
 
     @Test
-    fun `2 row picker — slight upward swipe stays in bottom`() {
-        // dy = -10 (less than -20 threshold) → still bottom
-        val idx = AccentPickerHitTest.computeHoveredIdx(
-            accentsCount = 6,
-            fingerLocalX = keyWidth / 2f,
-            fingerLocalY = -10f,
-            downLocalY = 0f,
-            keyRootX = keyRootX,
-            popupLeftX = popupLeftX,
-            cellWidthPx = cellW,
-            padPx = padPx,
-            upThresholdPx = upThreshold,
-        )
-        assertEquals(4, idx)  // bottom row middle
+    fun `exhaustive — every cell reachable for 4 accents (2x2)`() {
+        // 4 → 2 rows × 2 cols. cellsPerRow = (4+1)/2 = 2
+        // top row (rowIdx=0, y < -20): idx 0, 1
+        assertEquals(0, hitAt(4, x = cellCenterX(4, 0), y = -30f))
+        assertEquals(1, hitAt(4, x = cellCenterX(4, 1), y = -30f))
+        // bottom row (rowIdx=1, y=0): idx 2, 3
+        assertEquals(2, hitAt(4, x = cellCenterX(4, 0), y = 0f))
+        assertEquals(3, hitAt(4, x = cellCenterX(4, 1), y = 0f))
     }
 
     @Test
-    fun `swipe right moves col to right`() {
-        // Сдвигаем finger вправо на 2 ширины cell — должны попасть в col=2
-        val idx = AccentPickerHitTest.computeHoveredIdx(
-            accentsCount = 6,
-            fingerLocalX = keyWidth / 2f + 2f * cellW,  // shifted right by 2 cells
-            fingerLocalY = 0f,
-            downLocalY = 0f,
-            keyRootX = keyRootX,
-            popupLeftX = popupLeftX,
-            cellWidthPx = cellW,
-            padPx = padPx,
-            upThresholdPx = upThreshold,
-        )
-        // bottom row, col=2 → flat = 1*3+2 = 5 (last)
-        assertEquals(5, idx)
+    fun `exhaustive — every cell reachable for 5 accents (3 plus 2)`() {
+        // 5 → 2 rows. cellsPerRow = (5+1)/2 = 3. Top has 3, bottom has 2.
+        // top: 0,1,2 ; bottom: 3,4 (and col 2 of bottom coerced to 4)
+        assertEquals(0, hitAt(5, x = cellCenterX(5, 0), y = -30f))
+        assertEquals(1, hitAt(5, x = cellCenterX(5, 1), y = -30f))
+        assertEquals(2, hitAt(5, x = cellCenterX(5, 2), y = -30f))
+        assertEquals(3, hitAt(5, x = cellCenterX(5, 0), y = 0f))
+        assertEquals(4, hitAt(5, x = cellCenterX(5, 1), y = 0f))
     }
 
     @Test
-    fun `swipe left clamps to col 0`() {
-        // Очень далеко влево — coerced до col=0
-        val idx = AccentPickerHitTest.computeHoveredIdx(
-            accentsCount = 6,
-            fingerLocalX = -500f,
-            fingerLocalY = 0f,
-            downLocalY = 0f,
-            keyRootX = keyRootX,
-            popupLeftX = popupLeftX,
-            cellWidthPx = cellW,
-            padPx = padPx,
-            upThresholdPx = upThreshold,
-        )
-        // bottom row, col=0 → flat = 3 (4th accent)
-        assertEquals(3, idx)
+    fun `exhaustive — every cell reachable for 6 accents (3 plus 3)`() {
+        // 6 → 2 rows × 3 cols
+        for (col in 0..2) {
+            assertEquals("top row col=$col", col, hitAt(6, x = cellCenterX(6, col), y = -30f))
+            assertEquals("bottom row col=$col", 3 + col, hitAt(6, x = cellCenterX(6, col), y = 0f))
+        }
+    }
+
+    // ────────────────────────────────────────────────────
+    //  THRESHOLD BOUNDARY
+    // ────────────────────────────────────────────────────
+    @Test
+    fun `threshold dy strictly less than -upThreshold switches to top`() {
+        // Just past threshold: dy = -upThreshold - epsilon → top
+        assertEquals(1, hitAt(6, x = cellCenterX(6, 1), y = -20.01f))  // < -20 → top
+        assertEquals(4, hitAt(6, x = cellCenterX(6, 1), y = -20f))      // == -20 → bottom (strict)
+        assertEquals(4, hitAt(6, x = cellCenterX(6, 1), y = -19.99f))   // > -20 → bottom
+    }
+
+    // ────────────────────────────────────────────────────
+    //  COERCE — finger за пределами cells
+    // ────────────────────────────────────────────────────
+    @Test
+    fun `coerce — finger far left clamps to col 0`() {
+        assertEquals(3, hitAt(6, x = -9999f, y = 0f))  // bottom row, col 0
     }
 
     @Test
-    fun `swipe right clamps to last col`() {
-        // Очень далеко вправо — coerced до cellsPerRow-1 = 2
-        val idx = AccentPickerHitTest.computeHoveredIdx(
-            accentsCount = 6,
-            fingerLocalX = 5000f,
-            fingerLocalY = 0f,
-            downLocalY = 0f,
-            keyRootX = keyRootX,
-            popupLeftX = popupLeftX,
-            cellWidthPx = cellW,
-            padPx = padPx,
-            upThresholdPx = upThreshold,
-        )
-        assertEquals(5, idx)
+    fun `coerce — finger far right clamps to last col`() {
+        assertEquals(5, hitAt(6, x = 9999f, y = 0f))  // bottom row, col 2 → idx 5
     }
 
     @Test
-    fun `swipe up-right combo lands in top-right`() {
-        val idx = AccentPickerHitTest.computeHoveredIdx(
-            accentsCount = 6,
-            fingerLocalX = keyWidth / 2f + 2f * cellW,
-            fingerLocalY = -30f,  // past threshold
-            downLocalY = 0f,
-            keyRootX = keyRootX,
-            popupLeftX = popupLeftX,
-            cellWidthPx = cellW,
-            padPx = padPx,
-            upThresholdPx = upThreshold,
-        )
-        // top row col 2 → flat = 0*3+2 = 2
-        assertEquals(2, idx)
+    fun `coerce — top row far right`() {
+        assertEquals(2, hitAt(6, x = 9999f, y = -50f))  // top row, last col
+    }
+
+    // ────────────────────────────────────────────────────
+    //  EDGE CASES
+    // ────────────────────────────────────────────────────
+    @Test
+    fun `0 accents returns 0 safely`() {
+        assertEquals(0, hitAt(0, x = 0f, y = 0f))
+        assertEquals(0, hitAt(0, x = 9999f, y = -9999f))
     }
 
     @Test
-    fun `5 accents — bottom row has 2 cells, accessible`() {
-        // 5 accents → 2 rows, cellsPerRow=3, top=3, bottom=2
-        // Bottom row последняя позиция должна быть idx=4
-        val idx = AccentPickerHitTest.computeHoveredIdx(
-            accentsCount = 5,
-            fingerLocalX = keyWidth / 2f + 2f * cellW,  // far right
-            fingerLocalY = 0f,
-            downLocalY = 0f,
-            keyRootX = keyRootX,
-            popupLeftX = popupLeftX,
-            cellWidthPx = cellW,
-            padPx = padPx,
-            upThresholdPx = upThreshold,
-        )
-        // bottom row col 2 → flat = 1*3+2 = 5, coerced to 4 (last)
-        assertEquals(4, idx)
+    fun `single accent ignores all positions`() {
+        for (x in -1000..1000 step 100) {
+            for (y in -1000..1000 step 100) {
+                assertEquals("at ($x,$y)", 0, hitAt(1, x.toFloat(), y.toFloat()))
+            }
+        }
     }
 
     @Test
-    fun `4 accents — 2 rows × 2 cells each`() {
-        // 4 accents → rowsCount=2 (>3), cellsPerRow = (4+1)/2 = 2
-        // Top has 2 cells, bottom has 2 cells.
-        val idx = AccentPickerHitTest.computeHoveredIdx(
-            accentsCount = 4,
-            fingerLocalX = keyWidth / 2f + cellW,  // shift right by 1 cell
-            fingerLocalY = 0f,
-            downLocalY = 0f,
-            keyRootX = keyRootX,
-            popupLeftX = popupLeftX,
-            cellWidthPx = cellW,
-            padPx = padPx,
-            upThresholdPx = upThreshold,
-        )
-        // bottom row, col 1 → flat = 1*2+1 = 3 (last)
-        assertEquals(3, idx)
+    fun `2 accents single row ignores up-swipe`() {
+        // rowsCount=1 → rowIdx always 0
+        assertEquals(0, hitAt(2, x = cellCenterX(2, 0), y = -50f))  // up swipe — still col 0
+        assertEquals(1, hitAt(2, x = cellCenterX(2, 1), y = -50f))
     }
 
     @Test
-    fun `2 accents — single row of 2 cells`() {
-        // 2 accents → 1 row. rowIdx always 0. col either 0 or 1.
-        val idx = AccentPickerHitTest.computeHoveredIdx(
-            accentsCount = 2,
-            fingerLocalX = keyWidth / 2f + cellW,
-            fingerLocalY = -25f,  // even if up-swipe, no top row exists
-            downLocalY = 0f,
-            keyRootX = keyRootX,
-            popupLeftX = popupLeftX,
-            cellWidthPx = cellW,
-            padPx = padPx,
-            upThresholdPx = upThreshold,
+    fun `3 accents single row ignores up-swipe`() {
+        assertEquals(0, hitAt(3, x = cellCenterX(3, 0), y = -50f))
+        assertEquals(1, hitAt(3, x = cellCenterX(3, 1), y = -50f))
+        assertEquals(2, hitAt(3, x = cellCenterX(3, 2), y = -50f))
+    }
+
+    // ────────────────────────────────────────────────────
+    //  REAL KEYBOARD DATA — ES & RU
+    // ────────────────────────────────────────────────────
+    /**
+     * Все ES keys с accents должны давать pickable picker без падений.
+     * Тест: для каждого accent count в реальных данных — итерируем по cells.
+     */
+    @Test
+    fun `real ES keyboard — every accents-key has reachable cells`() {
+        val accentCounts = listOf(
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,  // single-accent keys
+            3,  // y: / ý ÿ
+            5,  // u: < ú ù û ü
+            5,  // i: > í ì î ï
+            6,  // o: [ ó ò ô ö õ
+            6,  // a: ! á à â ã ä
+            6,  // e: ´ é è ê ë €
+            4,  // n: ? ñ ń ň
         )
-        // rowIdx forced to 0 (rowsCount=1), col=1 → flat = 1
-        assertEquals(1, idx)
+        for (count in accentCounts) {
+            val rowsCount = if (count > 3) 2 else 1
+            val cellsPerRow = (count + rowsCount - 1) / rowsCount
+            // Все cells должны быть достижимы
+            for (i in 0 until count) {
+                val row = i / cellsPerRow
+                val col = i % cellsPerRow
+                val y = if (row == 0 && rowsCount > 1) -30f else 0f
+                val hit = hitAt(count, x = cellCenterX(count, col), y = y)
+                assertEquals("accents=$count idx=$i (row=$row col=$col)", i, hit)
+            }
+        }
+    }
+
+    /**
+     * RU keyboard: тот же exhaustive check для размеров accents.
+     */
+    @Test
+    fun `real RU keyboard — every accents-key has reachable cells`() {
+        // Размеры из ruAccents (после v1.25.46): {1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,2,2,3,3,3,2,2}
+        // Берём уникальные размеры.
+        val uniqueCounts = setOf(1, 2, 3)
+        for (count in uniqueCounts) {
+            val rowsCount = if (count > 3) 2 else 1
+            val cellsPerRow = (count + rowsCount - 1) / rowsCount
+            for (i in 0 until count) {
+                val row = i / cellsPerRow
+                val col = i % cellsPerRow
+                val y = if (row == 0 && rowsCount > 1) -30f else 0f
+                val hit = hitAt(count, x = cellCenterX(count, col), y = y)
+                assertEquals("RU count=$count idx=$i", i, hit)
+            }
+        }
+    }
+
+    // ────────────────────────────────────────────────────
+    //  RESULT MONOTONICITY — сглаживание slide
+    // ────────────────────────────────────────────────────
+    @Test
+    fun `monotonic — slide right increments col`() {
+        // 6 accents, bottom row. Slide справа налево и обратно.
+        val xs = (-100..100 step 10).map { it.toFloat() }
+        var lastIdx = -1
+        for (x in xs) {
+            val idx = hitAt(6, x = x, y = 0f)
+            // Идём слева направо → idx должен не уменьшаться
+            assertTrue("Slide non-monotonic at x=$x: was $lastIdx, now $idx",
+                idx >= lastIdx || idx == 3)  // wrap around to col 0 at right boundary doesn't apply
+            lastIdx = idx
+        }
     }
 
     @Test
-    fun `1 accent — always returns 0`() {
-        val idx = AccentPickerHitTest.computeHoveredIdx(
-            accentsCount = 1,
-            fingerLocalX = 999f,  // any position
-            fingerLocalY = -999f,
-            downLocalY = 0f,
-            keyRootX = keyRootX,
-            popupLeftX = popupLeftX,
-            cellWidthPx = cellW,
-            padPx = padPx,
-            upThresholdPx = upThreshold,
-        )
-        assertEquals(0, idx)
-    }
-
-    @Test
-    fun `0 accents — returns 0 safely`() {
-        val idx = AccentPickerHitTest.computeHoveredIdx(
-            accentsCount = 0,
-            fingerLocalX = 0f,
-            fingerLocalY = 0f,
-            downLocalY = 0f,
-            keyRootX = keyRootX,
-            popupLeftX = popupLeftX,
-            cellWidthPx = cellW,
-            padPx = padPx,
-            upThresholdPx = upThreshold,
-        )
-        assertEquals(0, idx)
-    }
-
-    @Test
-    fun `threshold boundary — dy exactly at -20 stays in bottom`() {
-        // Boundary: dy < -upThreshold (strict). dy = -20 не меньше -20 → bottom
-        val idx = AccentPickerHitTest.computeHoveredIdx(
-            accentsCount = 6,
-            fingerLocalX = keyWidth / 2f,
-            fingerLocalY = -20f,  // exactly at threshold
-            downLocalY = 0f,
-            keyRootX = keyRootX,
-            popupLeftX = popupLeftX,
-            cellWidthPx = cellW,
-            padPx = padPx,
-            upThresholdPx = upThreshold,
-        )
-        assertEquals(4, idx)  // bottom row (not switched yet)
-    }
-
-    @Test
-    fun `threshold boundary — dy just past -20 switches to top`() {
-        val idx = AccentPickerHitTest.computeHoveredIdx(
-            accentsCount = 6,
-            fingerLocalX = keyWidth / 2f,
-            fingerLocalY = -21f,  // just past
-            downLocalY = 0f,
-            keyRootX = keyRootX,
-            popupLeftX = popupLeftX,
-            cellWidthPx = cellW,
-            padPx = padPx,
-            upThresholdPx = upThreshold,
-        )
-        assertEquals(1, idx)  // top row middle
-    }
-
-    @Test
-    fun `downward swipe stays in bottom`() {
-        val idx = AccentPickerHitTest.computeHoveredIdx(
-            accentsCount = 6,
-            fingerLocalX = keyWidth / 2f,
-            fingerLocalY = 50f,  // moving DOWN
-            downLocalY = 0f,
-            keyRootX = keyRootX,
-            popupLeftX = popupLeftX,
-            cellWidthPx = cellW,
-            padPx = padPx,
-            upThresholdPx = upThreshold,
-        )
-        assertEquals(4, idx)  // bottom row middle
+    fun `monotonic — slide upward triggers row switch ONCE`() {
+        // 6 accents. Slide finger UP. Check transition точно одна.
+        val yValues = (0 downTo -50 step 1).map { it.toFloat() }
+        var switches = 0
+        var lastRow = -1
+        for (y in yValues) {
+            val idx = hitAt(6, x = cellCenterX(6, 1), y = y)
+            val row = idx / 3
+            if (lastRow != -1 && row != lastRow) switches++
+            lastRow = row
+        }
+        assertEquals("Should be exactly 1 row switch during upward slide", 1, switches)
     }
 }

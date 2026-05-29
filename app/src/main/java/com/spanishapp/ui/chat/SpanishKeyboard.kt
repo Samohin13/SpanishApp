@@ -597,16 +597,16 @@ private fun KeyButton(
                                         if (!enteredAccentMode && dist > movementCancelPx) {
                                             longPressJob.cancel()
                                         }
-                                        // v1.25.53: hit-test через pure function AccentPickerHitTest
-                                        // (тестируемая, см. AccentPickerHitTestTest)
-                                        if (enteredAccentMode && popupRect != androidx.compose.ui.geometry.Rect.Zero) {
+                                        // v1.25.54: hit-test через local coords ONLY
+                                        // (no popup position dependency — было flaky из-за
+                                        // race'а с onGloballyPositioned)
+                                        if (enteredAccentMode) {
                                             val newIdx = AccentPickerHitTest.computeHoveredIdx(
                                                 accentsCount = currentAccents.size,
                                                 fingerLocalX = change.position.x,
                                                 fingerLocalY = change.position.y,
                                                 downLocalY = downPos.y,
-                                                keyRootX = keyRootOffset.x,
-                                                popupLeftX = popupRect.left,
+                                                keyWidthPx = size.width.toFloat(),
                                                 cellWidthPx = accentKeyWidthPx,
                                                 padPx = with(density) { 6.dp.toPx() },
                                                 upThresholdPx = with(density) { 20.dp.toPx() },

@@ -1,20 +1,19 @@
 package com.spanishapp.ui.chat
 
 /**
- * v1.25.53 — pure-function hit-test для accent picker'а.
+ * v1.25.54 — pure hit-test для accent picker'а.
+ * Координаты ТОЛЬКО local (от KeyButton). Не зависит от popupRect (раньше
+ * onGloballyPositioned race'илось с pointer events → застревал на cells).
  *
- * Извлечён из KeyButton.pointerInput для unit-тестирования.
+ * Predпосылки:
+ *  - Popup всегда визуально центрирован над key (cap 6 accents = ≤296dp wide,
+ *    fits любой phone screen)
+ *  - Popup top = key.top - popupHeight - 4dp gap
+ *  - Cells layout: 6dp padding + cells + 6dp gap между rows + cells + 6dp padding
  *
  * Алгоритм:
- *  - ROW: gesture-relative от точки down. dy < -upThreshold → top row,
- *    иначе bottom row. (Только если accentsCount > 3, иначе 1 row.)
- *  - COL: absolute finger x относительно popup-cells.
- *  - flatIdx = rowIdx * cellsPerRow + colIdx, coerced в [0, count-1].
- *
- * Координаты:
- *  - finger local — относительно KeyButton (где сработал DOWN)
- *  - keyRootX — absolute X положение KeyButton в окне
- *  - popupLeftX — absolute X левого края popup
+ *  - ROW: dy < -upThreshold → top, иначе bottom (для multi-row)
+ *  - COL: finger.x relative к popup-cells (popup centered над key)
  */
 object AccentPickerHitTest {
 
@@ -23,8 +22,7 @@ object AccentPickerHitTest {
         fingerLocalX: Float,
         fingerLocalY: Float,
         downLocalY: Float,
-        keyRootX: Float,
-        popupLeftX: Float,
+        keyWidthPx: Float,
         cellWidthPx: Float,
         padPx: Float,
         upThresholdPx: Float,
@@ -34,14 +32,18 @@ object AccentPickerHitTest {
         val rowsCount = if (accentsCount > 3) 2 else 1
         val cellsPerRow = (accentsCount + rowsCount - 1) / rowsCount
 
-        // ROW: dy от точки нажатия. upward swipe → top row.
+        // Popup width = N cells × cellW + 2 padding (между cells gap baked в cellW=48 для 44dp+4)
+        val popupWidth = cellsPerRow * cellWidthPx + 2f * padPx
+        // Popup centered над key: его left edge в local coords:
+        val popupLeftLocal = (keyWidthPx - popupWidth) / 2f
+
+        // ROW: dy от точки down (gesture-relative)
         val dy = fingerLocalY - downLocalY
         val rowIdx = if (rowsCount > 1 && dy < -upThresholdPx) 0
                      else (rowsCount - 1)
 
-        // COL: absolute finger x → relative к popup → cell index
-        val fingerRootX = fingerLocalX + keyRootX
-        val relX = fingerRootX - popupLeftX - padPx
+        // COL: finger x relative к popup-cells
+        val relX = fingerLocalX - popupLeftLocal - padPx
         val colIdx = (relX / cellWidthPx).toInt().coerceIn(0, cellsPerRow - 1)
 
         return (rowIdx * cellsPerRow + colIdx).coerceIn(0, accentsCount - 1)
