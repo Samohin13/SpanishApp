@@ -88,8 +88,8 @@ fun SpanishKeyboard(
     onLayoutChange: (KbLayout) -> Unit = {},
     suggestions: List<String> = emptyList(),
     onPickSuggestion: (String) -> Unit = {},
-    // v1.24.20: словарь для glide-matching. Если пуст — glide отключён.
-    glideDictionary: List<String> = emptyList(),
+    // v1.25.44: glideDictionary убран вместе с glide-typing.
+    // userWordFreq оставлен — нужен для SpellChecker autocorrect.
     userWordFreq: Map<String, Int> = emptyMap(),
     modifier: Modifier = Modifier,
 ) {
@@ -223,19 +223,9 @@ fun SpanishKeyboard(
                 }
             }
 
-            // v1.25.19: ВСЕ 3 ряда букв в одном GlideOverlay (row 3 z-m тоже).
-            // Раньше row 3 был СНАРУЖИ — палец заходящий туда не видим был
-            // glide-overlay'у → trail прерывался, буквы не учитывались.
-            GlideOverlay(
-                keyPositions = keyPositions,
-                glideDictionary = glideDictionary,
-                userWordFreq = userWordFreq,
-                value = value,
-                onValueChange = onValueChange,
-                isLetterLayout = layout != KbLayout.NUM,
-                haptic = haptic,
-            ) {
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            // v1.25.44: glide-typing удалён (юзер: "убери это свайп вообще
+            // и линию тоже"). 3 ряда букв теперь в обычном Column без overlay.
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     rows.take(2).forEach { row ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
@@ -331,7 +321,6 @@ fun SpanishKeyboard(
                         )
                     }
                 }
-            }
 
             // 4-й ряд: 123 + globe + space (swipe) + . + send
             Row(
@@ -960,192 +949,16 @@ private fun SpecialKey(
 
 // ── Раскладки ──────────────────────────────────────────────────
 
-/* ============================================================
-   GLIDE OVERLAY — детектор непрерывного ввода (swipe-typing)
-   Слой над letter rows, ловит pointer events ПЕРВЫМ (PointerEventPass.Initial)
-   - Если палец прошёл < 60dp за всё время → пропускает events детям (обычный tap)
-   - Если > 60dp пути → активирует glide mode, consume'ит события
-   - На UP в glide mode: матчит slow к словарю → вставляет слово
-   ============================================================ */
-@Composable
-private fun GlideOverlay(
-    keyPositions: androidx.compose.runtime.snapshots.SnapshotStateMap<
-        String, androidx.compose.ui.geometry.Rect>,
-    glideDictionary: List<String>,
-    userWordFreq: Map<String, Int>,
-    value: TextFieldValue,
-    onValueChange: (TextFieldValue) -> Unit,
-    isLetterLayout: Boolean,
-    haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
-    content: @Composable () -> Unit,
-) {
-    val density = LocalDensity.current
-    // v1.25.8: threshold снижен 60dp → 35dp — glide активируется быстрее
-    val glideThresholdPx = remember { with(density) { 25.dp.toPx() } }
-    val currentValue by rememberUpdatedState(value)
-    val currentOnChange by rememberUpdatedState(onValueChange)
-    val currentDict by rememberUpdatedState(glideDictionary)
-    val currentFreq by rememberUpdatedState(userWordFreq)
-    val currentKeyPositions by rememberUpdatedState(keyPositions)
+// v1.25.44: GlideOverlay + traceToLetters удалены (юзер: "убери это
+// свайп вообще и линию тоже"). Glide-typing был экспериментальной
+// фичей, конфликтовал с long-press для спец-символов и постоянно
+// требовал тюнинга. Убран для стабильности и предсказуемого UX.
+//
+// Что заменяет glide для быстрого ввода:
+//  - prefix-based suggestions (3 чипа над клавой) с bigram-усилением
+//  - SpellChecker autocorrect on space
+//  - long-press для спец-символов
 
-    // v1.25.2: visual trail — точки текущего glide рисуются Canvas-полилинией
-    val trailPoints = remember { mutableStateListOf<androidx.compose.ui.geometry.Offset>() }
-    var gliding by remember { mutableStateOf(false) }
-
-    // v1.25.8 КРИТИЧНЫЙ FIX: trace.position в Local-координатах GlideOverlay,
-    // а keyPositions.boundsInRoot() — в Root. Без offset они НЕ совпадают →
-    // traceToLetters возвращал мусор → glide НЕ работал.
-    var overlayRootOffset by remember { mutableStateOf(androidx.compose.ui.geometry.Offset.Zero) }
-
-    Box(
-        modifier = Modifier
-            .onGloballyPositioned { coords ->
-                overlayRootOffset = coords.positionInRoot()
-            }
-            .pointerInput(Unit) {
-            if (!isLetterLayout || currentDict.isEmpty()) return@pointerInput
-            awaitPointerEventScope {
-                while (true) {
-                    val downEvent = awaitPointerEvent(PointerEventPass.Initial)
-                    val downChange = downEvent.changes.firstOrNull { it.changedToDown() }
-                        ?: continue
-                    val rootStart = downChange.position
-                    val trace = mutableListOf<androidx.compose.ui.geometry.Offset>()
-                    trace.add(rootStart)
-                    var glideActivated = false
-                    // v1.25.2: snapshot value ПЕРЕД первым тапом KeyButton.
-                    // Если glide завершится успешно → откатим к этому состоянию
-                    // и вставим matched word (rollback "accidental" tap).
-                    val valueAtDown = currentValue
-
-                    while (true) {
-                        val ev = awaitPointerEvent(PointerEventPass.Initial)
-                        val ch = ev.changes.firstOrNull() ?: break
-                        if (!ch.pressed) {
-                            if (glideActivated) {
-                                val letters = traceToLetters(
-                                    trace, currentKeyPositions, overlayRootOffset,
-                                )
-                                val deduped = GlideMatcher.dedupeConsecutive(letters)
-                                val matched = GlideMatcher.matchBestWord(
-                                    deduped, currentDict, currentFreq,
-                                )
-                                if (matched != null) {
-                                    // v1.25.2 ROLLBACK: используем valueAtDown,
-                                    // не currentValue. KeyButton мог вставить
-                                    // случайную букву при DOWN — отбрасываем.
-                                    val newText = valueAtDown.text + matched + " "
-                                    currentOnChange(
-                                        TextFieldValue(
-                                            newText,
-                                            androidx.compose.ui.text.TextRange(newText.length),
-                                        )
-                                    )
-                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                                }
-                                ch.consume()
-                            }
-                            gliding = false
-                            trailPoints.clear()
-                            break
-                        }
-                        trace.add(ch.position)
-                        if (!glideActivated) {
-                            val dx = ch.position.x - rootStart.x
-                            val dy = ch.position.y - rootStart.y
-                            val dist = kotlin.math.sqrt(dx * dx + dy * dy)
-                            if (dist > glideThresholdPx) {
-                                glideActivated = true
-                                gliding = true
-                                haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                            }
-                        }
-                        if (glideActivated) {
-                            trailPoints.add(ch.position)
-                            // Ограничим длину trail чтобы не разрастался
-                            if (trailPoints.size > 60) trailPoints.removeAt(0)
-                            ch.consume()
-                        }
-                    }
-                }
-            }
-        },
-    ) {
-        content()
-        // v1.25.17: smooth trail через Path + quadraticBezierTo.
-        // Раньше каждый сегмент рисовался отдельным drawLine → пиксельные
-        // углы. Теперь через bezier с control points = соседними точками.
-        if (gliding && trailPoints.size >= 2) {
-            val accent = Color(0xFFFF8A3D)
-            val pointsCopy = trailPoints.toList()  // snapshot чтобы Canvas не дёргался
-            androidx.compose.foundation.Canvas(
-                modifier = Modifier
-                    .matchParentSize()
-                    .zIndex(10f),
-            ) {
-                val path = androidx.compose.ui.graphics.Path()
-                path.moveTo(pointsCopy[0].x, pointsCopy[0].y)
-                if (pointsCopy.size == 2) {
-                    path.lineTo(pointsCopy[1].x, pointsCopy[1].y)
-                } else {
-                    // Quadratic bezier: control = current point, end = midpoint к следующему
-                    for (i in 1 until pointsCopy.size - 1) {
-                        val midX = (pointsCopy[i].x + pointsCopy[i + 1].x) / 2f
-                        val midY = (pointsCopy[i].y + pointsCopy[i + 1].y) / 2f
-                        path.quadraticBezierTo(
-                            pointsCopy[i].x, pointsCopy[i].y, midX, midY,
-                        )
-                    }
-                    path.lineTo(pointsCopy.last().x, pointsCopy.last().y)
-                }
-                drawPath(
-                    path = path,
-                    color = accent.copy(alpha = 0.85f),
-                    style = androidx.compose.ui.graphics.drawscope.Stroke(
-                        width = 14f,
-                        cap = androidx.compose.ui.graphics.StrokeCap.Round,
-                        join = androidx.compose.ui.graphics.StrokeJoin.Round,
-                    ),
-                )
-            }
-        }
-    }
-}
-
-/**
- * Из последовательности точек palet'а — последовательность букв.
- * Snap каждой точки к ближайшей клавише по координатам.
- */
-private fun traceToLetters(
-    trace: List<androidx.compose.ui.geometry.Offset>,
-    keyPositions: Map<String, androidx.compose.ui.geometry.Rect>,
-    overlayRootOffset: androidx.compose.ui.geometry.Offset,
-): List<Char> {
-    if (keyPositions.isEmpty()) return emptyList()
-    val letters = mutableListOf<Char>()
-    // v1.25.8: КРИТИЧНЫЙ FIX. Конвертируем local-trace coords → root coords
-    // через сложение с overlayRootOffset. Без этого snap-to-key возвращал
-    // ближайшую клавишу относительно неправильного origin → мусор.
-    for (pt in trace) {
-        val rootX = pt.x + overlayRootOffset.x
-        val rootY = pt.y + overlayRootOffset.y
-        var bestKey: String? = null
-        var bestDist = Float.MAX_VALUE
-        for ((k, rect) in keyPositions) {
-            val cx = rect.center.x
-            val cy = rect.center.y
-            val dx = rootX - cx
-            val dy = rootY - cy
-            val d = dx * dx + dy * dy
-            if (d < bestDist) {
-                bestDist = d
-                bestKey = k
-            }
-        }
-        bestKey?.firstOrNull()?.lowercaseChar()?.let { letters.add(it) }
-    }
-    return letters
-}
 
 /* ============================================================
    GLOBE KEY — tap = цикл ES↔RU, long-press = меню всех раскладок

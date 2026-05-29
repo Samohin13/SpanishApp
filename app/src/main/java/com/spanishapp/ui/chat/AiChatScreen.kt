@@ -234,10 +234,7 @@ fun AiChatScreen(
                     onValueChange = { inputValue = it },
                     layout = keyboardLayout,
                     onLayoutChange = { keyboardLayout = it },
-                    // v1.24.20: glide-typing — словарь = static + user-learned
-                    glideDictionary = remember(userFreqSnapshot) {
-                        (userFreqSnapshot.keys + WordSuggester.allWords()).distinct()
-                    },
+                    // v1.25.44: glide-typing убран. userWordFreq остаётся для autocorrect.
                     userWordFreq = userFreqSnapshot,
                     onSend = {
                         if (input.isNotBlank()) {
