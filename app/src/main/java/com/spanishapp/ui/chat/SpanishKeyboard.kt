@@ -176,13 +176,11 @@ fun SpanishKeyboard(
                 return@Column
             }
 
-            // v1.25.23: slot уменьшен 32dp → 26dp (юзер жаловался на большой
-            // пустой "карман" над клавиатурой). Текст подсказок крупнее (14→16sp
-            // SemiBold) — заметнее даже в более тонкой полоске.
+            // v1.25.25: ещё компактнее (26→23dp) + подсказки крупнее (16→20sp).
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(26.dp),
+                    .height(23.dp),
                 contentAlignment = Alignment.Center,
             ) {
                 if (suggestions.isNotEmpty()) {
@@ -444,9 +442,9 @@ private fun SuggestionStrip(
     onPick: (String) -> Unit,
     textColor: Color,
 ) {
-    // v1.25.23: компактнее (32→26dp) + крупнее текст (14→16sp SemiBold).
+    // v1.25.25: ещё компактнее (26→23dp) + текст 20sp SemiBold.
     Row(
-        modifier = Modifier.fillMaxWidth().height(26.dp),
+        modifier = Modifier.fillMaxWidth().height(23.dp),
         horizontalArrangement = Arrangement.spacedBy(2.dp),
     ) {
         suggestions.forEach { sug ->
@@ -457,7 +455,7 @@ private fun SuggestionStrip(
                     .clickable { onPick(sug) },
                 contentAlignment = Alignment.Center,
             ) {
-                Text(sug, color = textColor, fontSize = 16.sp,
+                Text(sug, color = textColor, fontSize = 20.sp,
                     fontWeight = FontWeight.SemiBold, maxLines = 1)
             }
         }
