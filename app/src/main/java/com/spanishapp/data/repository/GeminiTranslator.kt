@@ -4,6 +4,7 @@ import android.util.Log
 import android.util.LruCache
 import com.spanishapp.BuildConfig
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.jsonArray
@@ -96,7 +97,7 @@ class GeminiTranslator @Inject constructor(
             result
         }
 
-    private fun callGemini(prompt: String): String? {
+    private suspend fun callGemini(prompt: String): String? {
         // Allow direct mode (key in BuildConfig) OR proxy mode (URL in BuildConfig).
         val hasProxy = BuildConfig.AI_PROXY_URL.isNotBlank()
         val hasKey   = BuildConfig.GEMINI_API_KEY.isNotBlank()
@@ -127,6 +128,14 @@ class GeminiTranslator @Inject constructor(
             val secret = BuildConfig.AI_PROXY_SECRET.trim()
             if (proxy.isNotEmpty() && secret.isNotEmpty()) {
                 builder.header("X-App-Secret", secret)
+            }
+            // v1.25.31: deployed worker также требует Firebase ID token.
+            val idToken = runCatching {
+                val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+                user?.getIdToken(false)?.await()?.token
+            }.getOrNull()
+            if (!idToken.isNullOrEmpty()) {
+                builder.header("Authorization", "Bearer $idToken")
             }
             val request = builder.build()
             okHttpClient.newCall(request).execute().use { response ->

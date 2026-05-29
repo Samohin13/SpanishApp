@@ -6,6 +6,7 @@ import com.spanishapp.data.db.dao.ChatMessageDao
 import com.spanishapp.data.db.entity.ChatMessageEntity
 import com.spanishapp.domain.chat.ChatScenario
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -132,7 +133,7 @@ class AiChatRepository @Inject constructor(
         }
     }
 
-    private fun callGemini(systemPrompt: String, history: List<ChatMessageEntity>): String? {
+    private suspend fun callGemini(systemPrompt: String, history: List<ChatMessageEntity>): String? {
         val payload = JSONObject().apply {
             put("system_instruction", JSONObject().apply {
                 put("parts", JSONArray().put(JSONObject().put("text", systemPrompt)))
@@ -151,14 +152,31 @@ class AiChatRepository @Inject constructor(
             })
         }
 
-        val req = Request.Builder()
+        // v1.25.31: X-App-Secret + Firebase ID token. Раньше код ничего не
+        // прикладывал → Cloudflare Worker возвращал 403 (missing secret)
+        // / 401 (missing Firebase token). Юзер: "не работает ии".
+        // GeminiTranslator уже отправлял secret, AiChatRepository нет — баг
+        // от рефакторинга прокси.
+        val builder = Request.Builder()
             .url(apiUrl())
             .post(payload.toString().toRequestBody("application/json".toMediaType()))
-            .build()
+        val secret = BuildConfig.AI_PROXY_SECRET.trim()
+        if (secret.isNotEmpty()) {
+            builder.header("X-App-Secret", secret)
+        }
+        val idToken = runCatching {
+            val user = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+            user?.getIdToken(false)?.await()?.token
+        }.getOrNull()
+        if (!idToken.isNullOrEmpty()) {
+            builder.header("Authorization", "Bearer $idToken")
+        }
+        val req = builder.build()
 
         okHttp.newCall(req).execute().use { resp ->
             if (!resp.isSuccessful) {
-                Log.w(TAG, "Gemini HTTP ${resp.code}")
+                val errBody = resp.body?.string().orEmpty().take(200)
+                Log.w(TAG, "Gemini HTTP ${resp.code}: $errBody")
                 return null
             }
             val body = resp.body?.string().orEmpty()
