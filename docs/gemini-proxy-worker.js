@@ -1,355 +1,411 @@
-// ────────────────────────────────────────────────────────────────
-//  ESPEAK — Gemini + TTS proxy for Cloudflare Workers
-//  Hides API keys from the Android APK + adds rate limiting.
-//
-//  Endpoints:
-//   POST /v1beta/models/<model>:generateContent
-//   POST /v1beta/models/<model>:streamGenerateContent
-//   POST /tts  — Google Cloud Text-to-Speech (v1.18.17)
-//
-//  Auth: X-App-Secret header (rejects unknown callers)
-//  Rate limit: 30 req/min/IP, 300/day/IP, 5000/day global
-//
-//  Secrets in Cloudflare:
-//    GEMINI_KEY     — Generative Language API key
-//    GOOGLE_TTS_KEY — Cloud Text-to-Speech API key (v1.18.17)
-//    APP_SECRET     — shared secret (matches AI_PROXY_SECRET in app)
-// ────────────────────────────────────────────────────────────────
+/**
+ * ESPEAK Gemini + TTS Proxy (Cloudflare Worker) v3
+ *
+ * SYNCED from deployed worker on 2026-05-29.
+ *
+ * Многослойная защита:
+ *   1. X-App-Secret           — фильтр случайных гостей (любой APK имеет)
+ *   2. Firebase ID Token      — JWT валидация, только зарегистрированные юзеры
+ *   3. Rate-limit per IP      — макс N запросов / IP / окно
+ *   4. Model fallback         — при 429/503 пробуем другие модели Gemini
+ *
+ * Endpoints:
+ *   POST /v1beta/models/{model}:{action}  — Gemini Chat (как было)
+ *   POST /tts                              — Google Cloud Text-to-Speech (v3, добавлен 1.22.6)
+ *
+ * Env vars (Cloudflare Dashboard → Settings → Variables and Secrets):
+ *   • GEMINI_API_KEY      — Google AI Studio ключ (для Gemini)
+ *   • GOOGLE_TTS_API_KEY  — Cloud Text-to-Speech API ключ (для /tts; можно
+ *                           использовать тот же что GEMINI_API_KEY если
+ *                           включены оба API на одном проекте)
+ *   • APP_SECRET          — общий секрет (тот же что AI_PROXY_SECRET в Android)
+ *   • FIREBASE_PROJECT    — "spanishapp-35092" (для валидации ID Token)
+ *   • RATE_LIMIT          — макс запросов на IP за минуту (по умолчанию 20)
+ *
+ * Android-сторона:
+ *   • AiChatRepository.kt / GeminiTranslator.kt отправляют:
+ *       X-App-Secret: <BuildConfig.AI_PROXY_SECRET>
+ *       Authorization: Bearer <Firebase ID token>
+ *   • signInAnonymously() fallback если currentUser=null (v1.25.33).
+ */
+
+const FALLBACK_MODELS = [
+  "gemini-flash-latest",
+  "gemini-2.0-flash-exp",
+  "gemini-1.5-flash",
+];
 
 const GEMINI_HOST = "https://generativelanguage.googleapis.com";
-const TTS_HOST = "https://texttospeech.googleapis.com";
 
-const ALLOWED_MODELS = [
-  "gemini-1.5-flash",
-  "gemini-1.5-flash-latest",
-  "gemini-1.5-flash-002",
-  "gemini-1.5-pro",
-  "gemini-1.5-pro-latest",
-  "gemini-2.0-flash",
-  "gemini-2.0-flash-001",
-  "gemini-2.0-flash-exp",
-  "gemini-2.0-flash-lite",
-  "gemini-2.5-flash",
-  "gemini-2.5-flash-preview",
-  "gemini-2.5-flash-lite",
-  "gemini-2.5-pro",
-  "gemini-flash-latest",
-  "gemini-flash-lite-latest",
-];
+// In-memory rate-limit (per Worker isolate). Не идеально, но проще KV
+// и достаточно для отсечки tо-the-moon-абьюза.
+const rateLimitMap = new Map(); // ip → { count, windowStart }
 
-// v1.18.31: Google Cloud TTS — единственный провайдер (Edge TTS блокируется
-// Microsoft для Cloudflare Worker IPs). 8 production голосов + legacy список.
-const ALLOWED_TTS_VOICES = [
-  // 8 production голосов (используются в PremiumVoiceCatalog)
-  "es-ES-Polyglot-1", "es-ES-Neural2-B", "es-ES-Neural2-D", "es-ES-Wavenet-C",
-  "ru-RU-Wavenet-A", "ru-RU-Wavenet-B", "ru-RU-Wavenet-C", "ru-RU-Wavenet-D",
-  // Legacy Google voices — для старых кэшей
-  "es-ES-Neural2-A", "es-ES-Neural2-C", "es-ES-Neural2-E", "es-ES-Neural2-F",
-  "es-ES-Studio-C", "es-ES-Studio-F",
-  "es-ES-Wavenet-B", "es-ES-Wavenet-D",
-  "es-ES-Standard-A", "es-ES-Standard-B",
-  "es-ES-Standard-C", "es-ES-Standard-D",
-  "ru-RU-Wavenet-E",
-  "ru-RU-Standard-A", "ru-RU-Standard-B",
-  "ru-RU-Standard-C", "ru-RU-Standard-D", "ru-RU-Standard-E",
-  "es-US-Neural2-A", "es-US-Neural2-B", "es-US-Neural2-C",
-];
+// Кеш Firebase публичных ключей (обновляются ~раз в сутки)
+let firebaseKeysCache = { keys: null, fetchedAt: 0 };
 
-// ── Rate limits ──
-// v1.18.32: подняты — TTS preview/курсы часто дёргают endpoint.
-// MP3 кэшируется на устройстве → реальный месячный трафик низкий.
-const RPM_PER_IP = 90;
-const DAILY_PER_IP = 2000;
-const DAILY_GLOBAL = 20000;
+// ─────────────────────────────────────────────────────────────────
 
-const ipRpmBucket = new Map();
-const ipDailyBucket = new Map();
-let globalDayKey = "";
-let globalDayCount = 0;
-
-function todayKey() {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function checkRateLimits(ip) {
+async function getFirebaseKeys() {
   const now = Date.now();
-  const day = todayKey();
-
-  if (globalDayKey !== day) {
-    globalDayKey = day;
-    globalDayCount = 0;
+  // Кеш 1 час
+  if (firebaseKeysCache.keys && now - firebaseKeysCache.fetchedAt < 3600 * 1000) {
+    return firebaseKeysCache.keys;
   }
-  if (globalDayCount >= DAILY_GLOBAL) {
-    return { ok: false, status: 429, error: "Global daily quota exceeded — try tomorrow" };
-  }
-
-  const rpmEntry = ipRpmBucket.get(ip);
-  if (!rpmEntry || now - rpmEntry.windowStart > 60_000) {
-    ipRpmBucket.set(ip, { windowStart: now, count: 1 });
-  } else {
-    rpmEntry.count += 1;
-    if (rpmEntry.count > RPM_PER_IP) {
-      return { ok: false, status: 429, error: `Rate limit (${RPM_PER_IP} rpm) exceeded` };
-    }
-  }
-
-  const dailyEntry = ipDailyBucket.get(ip);
-  if (!dailyEntry || dailyEntry.day !== day) {
-    ipDailyBucket.set(ip, { day, count: 1 });
-  } else {
-    dailyEntry.count += 1;
-    if (dailyEntry.count > DAILY_PER_IP) {
-      return { ok: false, status: 429, error: `Daily limit (${DAILY_PER_IP}/day) exceeded` };
-    }
-  }
-
-  globalDayCount += 1;
-  return { ok: true };
+  const resp = await fetch(
+    "https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com"
+  );
+  const keys = await resp.json();
+  firebaseKeysCache = { keys, fetchedAt: now };
+  return keys;
 }
 
-function safeEquals(a, b) {
-  if (typeof a !== "string" || typeof b !== "string") return false;
-  if (a.length !== b.length) return false;
-  let mismatch = 0;
-  for (let i = 0; i < a.length; i++) {
-    mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  }
-  return mismatch === 0;
+/** Base64URL → ArrayBuffer */
+function b64uToBuf(b64u) {
+  const b64 = b64u.replace(/-/g, "+").replace(/_/g, "/").padEnd(
+    b64u.length + ((4 - (b64u.length % 4)) % 4),
+    "="
+  );
+  const bin = atob(b64);
+  const buf = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+  return buf.buffer;
 }
+
+/** Конвертирует PEM (x509) → ArrayBuffer для importKey */
+function pemToBuf(pem) {
+  const body = pem
+    .replace(/-----BEGIN [^-]+-----/g, "")
+    .replace(/-----END [^-]+-----/g, "")
+    .replace(/\s+/g, "");
+  return b64uToBuf(body.replace(/\+/g, "-").replace(/\//g, "_"));
+}
+
+async function verifyFirebaseToken(token, projectId) {
+  const parts = token.split(".");
+  if (parts.length !== 3) throw new Error("malformed token");
+  const [headerB64, payloadB64, sigB64] = parts;
+
+  const header = JSON.parse(new TextDecoder().decode(b64uToBuf(headerB64)));
+  const payload = JSON.parse(new TextDecoder().decode(b64uToBuf(payloadB64)));
+
+  // Базовые проверки claim'ов
+  const now = Math.floor(Date.now() / 1000);
+  if (!payload.exp || payload.exp < now) throw new Error("token expired");
+  if (!payload.iat || payload.iat > now + 60) throw new Error("token from future");
+  if (payload.aud !== projectId) throw new Error("wrong aud");
+  if (payload.iss !== `https://securetoken.google.com/${projectId}`) throw new Error("wrong iss");
+  if (!payload.sub) throw new Error("no sub");
+
+  if (header.alg !== "RS256") throw new Error("alg must be RS256");
+  if (!header.kid) throw new Error("no kid");
+
+  // Получаем публичный ключ Firebase для этого kid
+  const keys = await getFirebaseKeys();
+  const pemKey = keys[header.kid];
+  if (!pemKey) throw new Error(`unknown kid: ${header.kid}`);
+
+  // Импортируем x509 cert
+  const certBuf = pemToBuf(pemKey);
+  const key = await crypto.subtle.importKey(
+    "spki",
+    certBuf,
+    { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+    false,
+    ["verify"]
+  ).catch(() => null);
+
+  if (!key) {
+    // Fallback: используем JWKS endpoint (даёт сразу JWK формат)
+    const jwksResp = await fetch(
+      `https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com`
+    );
+    const jwks = await jwksResp.json();
+    const jwk = (jwks.keys || []).find((k) => k.kid === header.kid);
+    if (!jwk) throw new Error("kid not in JWKS");
+    const importedKey = await crypto.subtle.importKey(
+      "jwk",
+      jwk,
+      { name: "RSASSA-PKCS1-v1_5", hash: "SHA-256" },
+      false,
+      ["verify"]
+    );
+    const sigBuf = b64uToBuf(sigB64);
+    const data = new TextEncoder().encode(`${headerB64}.${payloadB64}`);
+    const ok = await crypto.subtle.verify(
+      "RSASSA-PKCS1-v1_5",
+      importedKey,
+      sigBuf,
+      data
+    );
+    if (!ok) throw new Error("signature invalid");
+    return payload;
+  }
+
+  const sigBuf = b64uToBuf(sigB64);
+  const data = new TextEncoder().encode(`${headerB64}.${payloadB64}`);
+  const ok = await crypto.subtle.verify(
+    "RSASSA-PKCS1-v1_5",
+    key,
+    sigBuf,
+    data
+  );
+  if (!ok) throw new Error("signature invalid");
+  return payload;
+}
+
+function checkRateLimit(ip, limit) {
+  const now = Date.now();
+  const WINDOW_MS = 60 * 1000; // 1 минута
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now - entry.windowStart > WINDOW_MS) {
+    rateLimitMap.set(ip, { count: 1, windowStart: now });
+    return true;
+  }
+  entry.count++;
+  if (entry.count > limit) return false;
+  return true;
+}
+
+// ─────────────────────────────────────────────────────────────────
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
+    // CORS preflight
     if (request.method === "OPTIONS") {
-      return new Response(null, { status: 204, headers: corsHeaders() });
-    }
-    if (request.method !== "POST") {
-      return jsonError(405, "Method not allowed");
-    }
-
-    // ── Shared secret check ──
-    if (env.APP_SECRET && env.APP_SECRET.length > 0) {
-      const sent = request.headers.get("X-App-Secret") || "";
-      if (!safeEquals(sent, env.APP_SECRET)) {
-        return jsonError(403, "Forbidden");
-      }
-    }
-
-    const url = new URL(request.url);
-
-    // v1.18.17: TTS endpoint
-    if (url.pathname === "/tts" || url.pathname === "/tts/") {
-      return handleTts(request, env);
-    }
-
-    // Gemini endpoints
-    const match = url.pathname.match(
-      /^\/v1beta\/models\/([a-z0-9.\-]+):(stream)?generateContent\/?$/i,
-    );
-    if (!match) return jsonError(404, "Unknown endpoint");
-
-    const model = match[1];
-    const isStream = !!match[2];
-    if (!ALLOWED_MODELS.includes(model)) {
-      return jsonError(400, `Model ${model} not allowed`);
-    }
-
-    const ip = request.headers.get("CF-Connecting-IP") || "anon";
-    const limit = checkRateLimits(ip);
-    if (!limit.ok) return jsonError(limit.status, limit.error);
-
-    if (!env.GEMINI_KEY) {
-      return jsonError(500, "Proxy not configured: missing GEMINI_KEY");
-    }
-
-    const verb = isStream ? "streamGenerateContent" : "generateContent";
-    const sseSuffix = isStream ? "&alt=sse" : "";
-    const bodyText = await request.text();
-
-    // v1.18.33: автоматический fallback по моделям при 429 / 503.
-    // У каждой Gemini модели своя дневная квота — если основная
-    // исчерпана, пробуем следующую. Streaming тоже поддерживается
-    // (первая успешная стримит, остальные не дёргаются).
-    const fallbackChain = buildFallbackChain(model);
-
-    let upstream;
-    let usedModel = model;
-    for (const tryModel of fallbackChain) {
-      upstream = await fetch(
-        `${GEMINI_HOST}/v1beta/models/${tryModel}:${verb}?key=${env.GEMINI_KEY}${sseSuffix}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: bodyText,
-        },
-      );
-      usedModel = tryModel;
-      // 429 = квота исчерпана, 503 = service unavailable — пробуем след. модель
-      if (upstream.status !== 429 && upstream.status !== 503) break;
-    }
-
-    // v1.18.34: если все модели исчерпали квоту → добавим header с UTC
-    // timestamp следующего сброса (полночь Pacific Time → UTC epoch).
-    // App покажет юзеру относительное время «через Nч Mм» на его локали
-    // независимо от его часового пояса.
-    const quotaResetHeader = (upstream.status === 429)
-      ? { "X-Quota-Reset-Utc": String(nextPacificMidnightUtcMs()) }
-      : {};
-
-    if (isStream) {
-      return new Response(upstream.body, {
-        status: upstream.status,
+      return new Response(null, {
+        status: 204,
         headers: {
-          "Content-Type": "text/event-stream",
-          "Cache-Control": "no-cache",
-          "X-Used-Model": usedModel,
-          ...quotaResetHeader,
-          ...corsHeaders(),
+          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Methods": "POST, OPTIONS",
+          "Access-Control-Allow-Headers": "Content-Type, X-App-Secret, Authorization",
         },
       });
     }
 
-    const text = await upstream.text();
-    return new Response(text, {
-      status: upstream.status,
-      headers: {
-        "Content-Type": "application/json",
-        "X-Used-Model": usedModel,
-        ...quotaResetHeader,
-        ...corsHeaders(),
-      },
-    });
+    if (request.method !== "POST") {
+      return new Response("Method Not Allowed", { status: 405 });
+    }
+
+    // ── Уровень 1: X-App-Secret ───────────────────────────────
+    const incoming = request.headers.get("X-App-Secret") || "";
+    if (!env.APP_SECRET || incoming !== env.APP_SECRET) {
+      return new Response("Forbidden: bad X-App-Secret", { status: 403 });
+    }
+
+    // ── Уровень 2: Firebase ID Token ──────────────────────────
+    // Опционально — если FIREBASE_PROJECT не задан в env, пропускаем
+    // проверку (для постепенной миграции).
+    // v3 (1.22.6): /tts endpoint пропускает Firebase-проверку.
+    // Премиум-голоса вызываются часто (каждое слово в флэшкартах/играх),
+    // токены живут 1 час и требуют рефреша — это усложнение без выигрыша.
+    // X-App-Secret + rate-limit + локальный кэш аудио в приложении
+    // достаточны для отсечки злоупотреблений.
+    const isTtsEndpoint = new URL(request.url).pathname === "/tts";
+    if (env.FIREBASE_PROJECT && !isTtsEndpoint) {
+      const authHeader = request.headers.get("Authorization") || "";
+      const token = authHeader.replace(/^Bearer\s+/i, "").trim();
+      if (!token) {
+        return new Response("Unauthorized: missing Firebase token", { status: 401 });
+      }
+      try {
+        const payload = await verifyFirebaseToken(token, env.FIREBASE_PROJECT);
+        // payload.sub = Firebase UID — можно использовать для per-user rate-limit
+      } catch (e) {
+        return new Response(`Unauthorized: ${e.message}`, { status: 401 });
+      }
+    }
+
+    // ── Уровень 3: Rate-limit per IP ──────────────────────────
+    const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+    const limit = parseInt(env.RATE_LIMIT || "20", 10);
+    if (!checkRateLimit(ip, limit)) {
+      return new Response(
+        JSON.stringify({
+          error: { code: 429, message: `Rate limit exceeded: ${limit} req/min` },
+        }),
+        { status: 429, headers: { "Content-Type": "application/json", "Retry-After": "60" } }
+      );
+    }
+
+    // ── Парсим path ───────────────────────────────────────────
+    const url = new URL(request.url);
+
+    // ── /tts endpoint (v3, 1.22.6) — Google Cloud Text-to-Speech ──
+    if (url.pathname === "/tts") {
+      return handleTts(request, env);
+    }
+
+    const match = url.pathname.match(/^\/v1beta\/models\/([^:]+):(\w+)/);
+    if (!match) {
+      return new Response("Bad request path", { status: 400 });
+    }
+    const requestedModel = match[1];
+    const action = match[2];
+
+    const body = await request.text();
+
+    // ── Уровень 4: Model fallback при 429/503 ─────────────────
+    const tried = [];
+    const models = [requestedModel, ...FALLBACK_MODELS.filter((m) => m !== requestedModel)];
+
+    for (const model of models) {
+      const isStream = action === "streamGenerateContent";
+      const targetUrl =
+        `${GEMINI_HOST}/v1beta/models/${model}:${action}` +
+        `?key=${env.GEMINI_API_KEY}` +
+        (isStream ? `&alt=sse` : ``);
+
+      const upstreamResp = await fetch(targetUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+      });
+
+      if (upstreamResp.status === 429 || upstreamResp.status === 503) {
+        tried.push(`${model}:${upstreamResp.status}`);
+        continue;
+      }
+
+      const respHeaders = new Headers(upstreamResp.headers);
+      respHeaders.set("Access-Control-Allow-Origin", "*");
+      respHeaders.set("X-ESPEAK-Model", model);
+      if (tried.length) respHeaders.set("X-ESPEAK-Tried", tried.join(","));
+
+      return new Response(upstreamResp.body, {
+        status: upstreamResp.status,
+        statusText: upstreamResp.statusText,
+        headers: respHeaders,
+      });
+    }
+
+    return new Response(
+      JSON.stringify({
+        error: { code: 429, message: `All models rate-limited: ${tried.join(", ")}` },
+      }),
+      { status: 429, headers: { "Content-Type": "application/json" } }
+    );
   },
 };
 
-// ────────────────────────────────────────────────────────────────
-//  TTS — Google Cloud Text-to-Speech proxy (v1.18.17)
-// ────────────────────────────────────────────────────────────────
-//
-// Request: POST /tts
-//   Body: { "text": "Hola...", "voice": "es-ES-Neural2-A", "speed": 1.0 }
-//   Header: X-App-Secret
-//
-// Response: audio/mpeg (MP3 bytes)
+// ─────────────────────────────────────────────────────────────────
+// /tts — Google Cloud Text-to-Speech proxy
+// ─────────────────────────────────────────────────────────────────
 async function handleTts(request, env) {
-  const ip = request.headers.get("CF-Connecting-IP") || "anon";
-  const limit = checkRateLimits(ip);
-  if (!limit.ok) return jsonError(limit.status, limit.error);
-
-  if (!env.GOOGLE_TTS_KEY) {
-    return jsonError(500, "TTS not configured: missing GOOGLE_TTS_KEY");
+  const ttsKey = env.GOOGLE_TTS_API_KEY || env.GEMINI_API_KEY;
+  if (!ttsKey) {
+    return new Response(
+      JSON.stringify({ error: "GOOGLE_TTS_API_KEY not configured" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
   }
 
-  let body;
-  try { body = await request.json(); }
-  catch { return jsonError(400, "Bad JSON body"); }
-
-  const text = (body.text || "").trim();
-  if (!text) return jsonError(400, "Missing text");
-  if (text.length > 2000) return jsonError(400, "Text too long (max 2000 chars)");
-
-  const voice = body.voice || "es-ES-Neural2-A";
-  if (!ALLOWED_TTS_VOICES.includes(voice)) {
-    return jsonError(400, `Voice ${voice} not allowed`);
+  let payload;
+  try {
+    payload = await request.json();
+  } catch {
+    return new Response(
+      JSON.stringify({ error: "Bad JSON body" }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
+    );
   }
-  const speed = Math.max(0.5, Math.min(2.0, Number(body.speed) || 1.0));
-  const pitch = Math.max(-20, Math.min(20, Number(body.pitch) || 0));
 
-  // languageCode = первые 5 символов voice (es-ES / ru-RU / es-US)
-  const languageCode = voice.substring(0, 5);
+  const text = (payload.text || "").toString().trim();
+  if (!text) {
+    return new Response(
+      JSON.stringify({ error: "Missing text" }),
+      { status: 400, headers: { "Content-Type": "application/json" } }
+    );
+  }
+
+  const voiceName = (payload.voice || "es-ES-Neural2-D").toString();
+  const langMatch = voiceName.match(/^([a-z]{2})-([A-Z]{2})/);
+  const languageCode = langMatch ? `${langMatch[1]}-${langMatch[2]}` : "es-ES";
+
+  const speed = clamp(Number(payload.speed) || 1.0, 0.25, 4.0);
+  const pitch = clamp(Number(payload.pitch) || 0, -20.0, 20.0);
+
+  // ── Edge cache (v3.2, 1.22.7) ──
+  const cacheKey = await buildCacheKey(text, voiceName, speed, pitch);
+  const cache = caches.default;
+  const cachedResp = await cache.match(cacheKey);
+  if (cachedResp) {
+    const h = new Headers(cachedResp.headers);
+    h.set("X-ESPEAK-Cache", "HIT");
+    return new Response(cachedResp.body, {
+      status: cachedResp.status,
+      headers: h,
+    });
+  }
 
   const ttsBody = {
-    input: { text: text },
-    voice: { languageCode: languageCode, name: voice },
-    audioConfig: { audioEncoding: "MP3", speakingRate: speed, pitch: pitch },
+    input: { text: text.slice(0, 5000) },
+    voice: { languageCode, name: voiceName },
+    audioConfig: {
+      audioEncoding: "MP3",
+      speakingRate: speed,
+      pitch: pitch,
+    },
   };
 
-  const upstream = await fetch(
-    `${TTS_HOST}/v1/text:synthesize?key=${env.GOOGLE_TTS_KEY}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(ttsBody),
-    },
-  );
+  const ttsUrl = `https://texttospeech.googleapis.com/v1/text:synthesize?key=${ttsKey}`;
+  const upstream = await fetch(ttsUrl, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(ttsBody),
+  });
 
   if (!upstream.ok) {
     const errText = await upstream.text();
-    return jsonError(upstream.status, `TTS failed: ${errText.substring(0, 200)}`);
+    return new Response(
+      JSON.stringify({
+        error: `Cloud TTS HTTP ${upstream.status}`,
+        details: errText.slice(0, 500),
+      }),
+      {
+        status: upstream.status,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 
-  // Google TTS возвращает {"audioContent": "<base64>"} — декодируем в bytes.
-  const json = await upstream.json();
-  if (!json.audioContent) {
-    return jsonError(500, "TTS response missing audioContent");
+  const data = await upstream.json();
+  const audioBase64 = data.audioContent;
+  if (!audioBase64) {
+    return new Response(
+      JSON.stringify({ error: "Cloud TTS returned no audioContent" }),
+      { status: 502, headers: { "Content-Type": "application/json" } }
+    );
   }
-  const binary = atob(json.audioContent);
-  const bytes = new Uint8Array(binary.length);
-  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
 
-  return new Response(bytes, {
+  const bin = atob(audioBase64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+
+  const resp = new Response(bytes, {
     status: 200,
     headers: {
       "Content-Type": "audio/mpeg",
-      "Cache-Control": "public, max-age=86400",
-      ...corsHeaders(),
+      "Cache-Control": "public, max-age=604800, immutable",
+      "Access-Control-Allow-Origin": "*",
+      "X-ESPEAK-Cache": "MISS",
     },
   });
+
+  await cache.put(cacheKey, resp.clone());
+  return resp;
 }
 
-// v1.18.33: цепочка fallback моделей. У каждой свой ежедневный квота
-// у Google → если основная исчерпана, пробуем след.
-// Порядок: запрошенная модель первая, потом самые «дешёвые» по квоте.
-const MODEL_FALLBACK_ORDER = [
-  "gemini-flash-lite-latest",      // самая дешёвая, большая квота
-  "gemini-2.5-flash-lite",
-  "gemini-2.0-flash-lite",
-  "gemini-flash-latest",
-  "gemini-2.5-flash",
-  "gemini-2.0-flash",
-];
-
-function buildFallbackChain(primaryModel) {
-  const chain = [primaryModel];
-  for (const m of MODEL_FALLBACK_ORDER) {
-    if (m !== primaryModel) chain.push(m);
-  }
-  return chain;
-}
-
-// v1.18.34: следующая полночь Pacific Time в UTC ms (Gemini сбрасывает
-// квоты в 00:00 PT, что разный «местный час» в Astana/Tbilisi/Valencia
-// — клиент получает абсолютный UTC timestamp и форматирует под себя).
-function nextPacificMidnightUtcMs() {
-  const now = new Date();
-  // PT = UTC-8 (PST) или UTC-7 (PDT). Берём более широкий offset (PST=UTC-8)
-  // — даже если сейчас PDT, юзер увидит чуть больший resetIn, не критично.
-  const PT_OFFSET_HOURS = 8;
-  // Текущий момент в "Pacific local time"
-  const ptNowMs = now.getTime() - PT_OFFSET_HOURS * 3600 * 1000;
-  const ptNow = new Date(ptNowMs);
-  // Следующая полночь PT
-  const ptMidnight = new Date(Date.UTC(
-    ptNow.getUTCFullYear(),
-    ptNow.getUTCMonth(),
-    ptNow.getUTCDate() + 1,
-    0, 0, 0, 0
-  ));
-  // Возвращаем обратно в UTC
-  return ptMidnight.getTime() + PT_OFFSET_HOURS * 3600 * 1000;
-}
-
-function corsHeaders() {
-  return {
-    "Access-Control-Allow-Origin": "*",
-    "Access-Control-Allow-Methods": "POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type, X-App-Secret",
-    "Access-Control-Max-Age": "86400",
-  };
-}
-
-function jsonError(status, message) {
-  return new Response(JSON.stringify({ error: message }), {
-    status,
-    headers: { "Content-Type": "application/json", ...corsHeaders() },
+async function buildCacheKey(text, voice, speed, pitch) {
+  const raw = `${voice}|${speed}|${pitch}|${text}`;
+  const hashBuf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(raw));
+  const hashArr = Array.from(new Uint8Array(hashBuf));
+  const hashHex = hashArr.map(b => b.toString(16).padStart(2, "0")).join("");
+  return new Request(`https://espeak-tts-cache.local/v1/${hashHex}`, {
+    method: "GET",
   });
+}
+
+function clamp(v, lo, hi) {
+  return Math.min(hi, Math.max(lo, v));
 }
