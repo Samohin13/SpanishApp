@@ -351,7 +351,9 @@ fun SpanishKeyboard(
                     Text(
                         if (layout == KbLayout.NUM) "ABC" else "!1#",
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 13.sp,
+                        // v1.25.41: 13→17sp (юзер: "тут слишком мелко"). Близко к
+                        // буквенным 23sp но достаточно тонко чтобы вместить 3 символа.
+                        fontSize = 17.sp,
                         color = textColor,
                     )
                 }
