@@ -553,6 +553,23 @@ fun ProfileScreen(
                 }
             }
 
+            // ── МОЙ СЛОВАРНЫЙ ЗАПАС (v1.25.28) ──────────────────
+            StaggeredEntrance(index = 5) {
+                Column {
+                    SectionHeader(
+                        "Мой словарный запас",
+                        Color(0xFFA78BFA),
+                        modifier = Modifier.padding(horizontal = 24.dp),
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    VocabTile(
+                        onClick = { navController.navigate("vocab") },
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                    )
+                    Spacer(Modifier.height(20.dp))
+                }
+            }
+
             // ── ДОСТИЖЕНИЯ ──────────────────────────────────────
             StaggeredEntrance(index = 6) {
                 Column {
@@ -1586,4 +1603,97 @@ private fun formatRadioMinutes(minutes: Long): String {
     val h = minutes / 60
     val m = minutes % 60
     return if (m == 0L) "${h}ч" else "${h}ч ${m}м"
+}
+
+// ═══════════════════════════════════════════════════════════
+//  📚 VOCAB TILE — v1.25.28
+//  Показывает общее число слов в словаре юзера + breakdown по CEFR
+//  и delta за неделю. Tap → vocab screen.
+// ═══════════════════════════════════════════════════════════
+@Composable
+private fun VocabTile(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    viewModel: com.spanishapp.ui.vocab.VocabViewModel = androidx.hilt.navigation.compose.hiltViewModel(),
+) {
+    val ui by viewModel.state.collectAsStateWithLifecycle()
+    val purple = Color(0xFFA78BFA)
+
+    ProfileTile(accent = purple, modifier = modifier.fillMaxWidth(), height = 130.dp, onClick = onClick) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            // Левая часть: число слов
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "${ui.totalKnown}",
+                    fontSize = 36.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    "слов в словаре",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    letterSpacing = 0.5.sp,
+                )
+                if (ui.addedThisWeek > 0) {
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        "+${ui.addedThisWeek} за неделю",
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF4ADE80),
+                    )
+                }
+            }
+            // Правая часть: CEFR mini-bars
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                CefrMiniBar("A1", ui.cefrA1, 250, Color(0xFF4ADE80))
+                CefrMiniBar("A2", ui.cefrA2, 400, Color(0xFF4EA1FF))
+                CefrMiniBar("B1", ui.cefrB1, 600, purple)
+                CefrMiniBar("B2", ui.cefrB2, 800, Color(0xFFFF8A3D))
+            }
+        }
+    }
+}
+
+@Composable
+private fun CefrMiniBar(level: String, count: Int, total: Int, color: Color) {
+    val pct = (count.toFloat() / total).coerceIn(0f, 1f)
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            level,
+            fontSize = 10.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.width(18.dp),
+        )
+        Box(
+            modifier = Modifier
+                .weight(1f)
+                .height(6.dp)
+                .clip(RoundedCornerShape(3.dp))
+                .background(MaterialTheme.colorScheme.surface),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(pct)
+                    .clip(RoundedCornerShape(3.dp))
+                    .background(color)
+            )
+        }
+        Spacer(Modifier.width(6.dp))
+        Text(
+            "$count",
+            fontSize = 10.sp,
+            color = MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.width(28.dp),
+        )
+    }
 }

@@ -53,6 +53,14 @@ interface WordDao {
     @Query("SELECT * FROM words WHERE total_reviews > 0 ORDER BY RANDOM() LIMIT :limit")
     suspend fun getAllWordsOnce(limit: Int): List<WordEntity>
 
+    /** v1.25.28: ВСЕ слова которые юзер хоть как-то трогал (для VocabAggregator). */
+    @Query("SELECT * FROM words WHERE total_reviews > 0 OR is_learned = 1 OR repetitions > 0")
+    suspend fun getAllStudiedWords(): List<WordEntity>
+
+    /** v1.25.28: lookup batch — для каждого spanish из chat возвращает WordEntity если есть. */
+    @Query("SELECT * FROM words WHERE lower(trim(spanish)) IN (:spanishWords)")
+    suspend fun getWordsBySpanishBatch(spanishWords: List<String>): List<WordEntity>
+
     // Случайные слова БЕЗ фильтра по прогрессу — для игр (работает с нуля)
     @Query("SELECT * FROM words ORDER BY RANDOM() LIMIT :limit")
     suspend fun getRandomWords(limit: Int): List<WordEntity>
@@ -911,3 +919,73 @@ interface GameMistakesDao {
     @Query("DELETE FROM game_mistakes")
     suspend fun deleteAll()
 }
+
+/**
+ * v1.25.28 — DAO для агрегированного словарного запаса юзера.
+ * Read обычно через Flow для UI VocabScreen, upsert батчем
+ * из VocabAggregatorWorker.
+ *
+ * См. UserVocabStateEntity + docs/VOCAB_TRACKING_PLAN.md.
+ */
+@Dao
+interface UserVocabStateDao {
+    @androidx.room.Upsert
+    suspend fun upsertAll(entries: List<UserVocabStateEntity>)
+
+    @androidx.room.Upsert
+    suspend fun upsert(entry: UserVocabStateEntity)
+
+    @Query("SELECT * FROM user_vocab_state ORDER BY last_seen_at DESC")
+    fun observeAll(): Flow<List<UserVocabStateEntity>>
+
+    @Query("SELECT * FROM user_vocab_state WHERE status = :status ORDER BY score DESC")
+    fun observeByStatus(status: String): Flow<List<UserVocabStateEntity>>
+
+    @Query("SELECT * FROM user_vocab_state WHERE cefr = :cefr ORDER BY score DESC")
+    fun observeByCefr(cefr: String): Flow<List<UserVocabStateEntity>>
+
+    @Query("SELECT COUNT(*) FROM user_vocab_state WHERE status != 'UNKNOWN'")
+    fun observeKnownCount(): Flow<Int>
+
+    @Query("SELECT COUNT(*) FROM user_vocab_state WHERE updated_at >= :since AND status != 'UNKNOWN'")
+    fun observeAddedSince(since: Long): Flow<Int>
+
+    @Query("SELECT status, COUNT(*) as cnt FROM user_vocab_state WHERE status != 'UNKNOWN' GROUP BY status")
+    fun observeStatusCounts(): Flow<List<StatusCount>>
+
+    @Query("SELECT cefr, COUNT(*) as cnt FROM user_vocab_state WHERE status != 'UNKNOWN' AND cefr IS NOT NULL GROUP BY cefr")
+    fun observeCefrCounts(): Flow<List<CefrCount>>
+
+    @Query("SELECT * FROM user_vocab_state WHERE usage_count > 0 ORDER BY usage_count DESC LIMIT :limit")
+    fun observeTopUsed(limit: Int = 8): Flow<List<UserVocabStateEntity>>
+
+    @Query("""
+        SELECT * FROM user_vocab_state
+        WHERE status IN ('LEARNING','PRODUCING')
+          AND last_seen_at < :thresholdMs
+        ORDER BY last_seen_at ASC
+        LIMIT :limit
+    """)
+    fun observeForgotten(thresholdMs: Long, limit: Int = 10): Flow<List<UserVocabStateEntity>>
+
+    @Query("SELECT * FROM user_vocab_state WHERE word = :word LIMIT 1")
+    suspend fun getByWord(word: String): UserVocabStateEntity?
+
+    @Query("SELECT * FROM user_vocab_state")
+    suspend fun getAll(): List<UserVocabStateEntity>
+
+    @Query("DELETE FROM user_vocab_state")
+    suspend fun deleteAll()
+}
+
+/** Row-projection для observeStatusCounts. */
+data class StatusCount(
+    val status: String,
+    val cnt: Int,
+)
+
+/** Row-projection для observeCefrCounts. */
+data class CefrCount(
+    val cefr: String?,
+    val cnt: Int,
+)

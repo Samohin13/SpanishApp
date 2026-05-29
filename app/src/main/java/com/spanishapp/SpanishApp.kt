@@ -93,6 +93,13 @@ class SpanishApp : Application() {
             com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
                 .recordException(RuntimeException("[SpanishApp] RatingDecayWorker scheduling failed", e))
         }
+        // v1.25.28: daily vocab aggregation (см. docs/VOCAB_TRACKING_PLAN.md)
+        runCatching {
+            com.spanishapp.service.VocabAggregatorWorker.schedule(this)
+        }.onFailure { e ->
+            com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+                .recordException(RuntimeException("[SpanishApp] VocabAggregatorWorker scheduling failed", e))
+        }
         runCatching {
             com.spanishapp.radio.player.RadioCatalogRefreshWorker.schedule(this)
         }.onFailure { e ->

@@ -54,6 +54,7 @@ class RatingDecayWorker(
                 AppDatabase.MIGRATION_25_26,
                 AppDatabase.MIGRATION_26_27,
                 AppDatabase.MIGRATION_27_28,
+                AppDatabase.MIGRATION_28_29,
             )
             .apply { if (BuildConfig.DEBUG) fallbackToDestructiveMigration() }
             .build()

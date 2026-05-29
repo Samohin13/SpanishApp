@@ -37,8 +37,9 @@ import com.spanishapp.data.db.entity.*
         GameMistakeEntity::class,
         LessonCompletionEventEntity::class,
         ActivityTimeLogEntity::class,
+        UserVocabStateEntity::class,
     ],
-    version = 28,
+    version = 29,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -67,6 +68,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun gameMistakesDao(): GameMistakesDao
     abstract fun lessonCompletionHistoryDao(): LessonCompletionHistoryDao
     abstract fun activityTimeLogDao(): ActivityTimeLogDao
+    abstract fun userVocabStateDao(): UserVocabStateDao
     // radioWordCatchDao() удалён в v1.11.7 — фича «Поймал слово!» выпилена в v1.9.0.
     // Абстрактный метод оставался без Hilt-провайдера → ЛЮБОЙ @Inject его =
     // crash на старте (Dagger graph MissingBinding). Entity RadioWordCatchEntity
@@ -371,6 +373,30 @@ abstract class AppDatabase : RoomDatabase() {
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE chat_messages ADD COLUMN audio_path TEXT")
                 db.execSQL("ALTER TABLE chat_messages ADD COLUMN audio_duration_ms INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
+        // ── v29: user_vocab_state — агрегированный словарный запас юзера
+        //   (см. docs/VOCAB_TRACKING_PLAN.md, v1.25.28). ──
+        val MIGRATION_28_29 = object : Migration(28, 29) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS user_vocab_state (
+                        word TEXT NOT NULL PRIMARY KEY,
+                        word_id INTEGER,
+                        cefr TEXT,
+                        status TEXT NOT NULL,
+                        score REAL NOT NULL,
+                        usage_count INTEGER NOT NULL DEFAULT 0,
+                        corrections_count INTEGER NOT NULL DEFAULT 0,
+                        flashcard_ef REAL NOT NULL DEFAULT 0,
+                        last_seen_at INTEGER NOT NULL DEFAULT 0,
+                        updated_at INTEGER NOT NULL DEFAULT 0
+                    )
+                """.trimIndent())
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_user_vocab_state_status ON user_vocab_state(status)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_user_vocab_state_cefr ON user_vocab_state(cefr)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_user_vocab_state_last_seen ON user_vocab_state(last_seen_at)")
             }
         }
 

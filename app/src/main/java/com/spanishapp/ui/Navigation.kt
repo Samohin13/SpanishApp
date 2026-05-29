@@ -415,6 +415,7 @@ object Navigation {
             composable("profile")      { ProfileScreen(navController) }
             composable("achievements") { AchievementsScreen(navController) }
             composable("stats")        { com.spanishapp.ui.stats.StatsScreen(navController) }
+            composable("vocab")        { com.spanishapp.ui.vocab.VocabScreen(navController) }
             composable("settings")     { SettingsScreen(navController) }
             composable("settings_voice") { com.spanishapp.ui.settings.SettingsVoiceScreen(navController) }
             // ── Paywall PRO ─────────────────────────────────

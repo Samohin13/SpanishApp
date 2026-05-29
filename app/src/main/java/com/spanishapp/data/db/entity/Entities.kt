@@ -368,3 +368,49 @@ data class TheoryProgressEntity(
     /** Сколько раз открывал (для статистики). */
     @ColumnInfo(name = "read_count")    val readCount: Int = 0,
 )
+
+/**
+ * v1.25.28 — «Мой словарный запас».
+ *
+ * Агрегированное состояние знания слова. Считается VocabAggregator'ом
+ * из нескольких источников (WordEntity SM-2, UserWordFrequency чат-usage,
+ * lesson_progress, game_mistakes и т.д.) и материализуется здесь для
+ * быстрых запросов в VocabScreen.
+ *
+ * Связь с WordEntity:
+ *  - `word` (PK) = lowercase spanish form
+ *  - `wordId` = optional FK на words.id (null если слово только в чате,
+ *    нет в основном словаре)
+ *
+ * status:
+ *  - "UNKNOWN"    — никогда не встречал (обычно не пишем в эту таблицу)
+ *  - "SEEN"       — видел в уроке, не закреплено
+ *  - "LEARNING"   — в SM-2 пуле, EF растёт
+ *  - "PRODUCING"  — использует сам в чате
+ *  - "MASTERED"   — EF≥2.5 + usage≥10
+ *
+ * См. docs/VOCAB_TRACKING_PLAN.md.
+ */
+@Entity(tableName = "user_vocab_state")
+data class UserVocabStateEntity(
+    /** Lowercased испанская форма слова. */
+    @PrimaryKey @ColumnInfo(name = "word") val word: String,
+    /** FK на words.id если слово в основном словаре, null иначе. */
+    @ColumnInfo(name = "word_id") val wordId: Int? = null,
+    /** CEFR уровень из WordEntity.level или null. */
+    @ColumnInfo(name = "cefr") val cefr: String? = null,
+    /** VocabStatus enum как String (для портабельности). */
+    @ColumnInfo(name = "status") val status: String,
+    /** Итоговый score 0.0 — 1.0 после weighted aggregation. */
+    @ColumnInfo(name = "score") val score: Float,
+    /** Скольких раз юзер сам написал в чате (из UserWordFrequency unigram). */
+    @ColumnInfo(name = "usage_count") val usageCount: Int = 0,
+    /** Скольких раз AI поправил юзера (из chat_messages corrections JSON). */
+    @ColumnInfo(name = "corrections_count") val correctionsCount: Int = 0,
+    /** SM-2 ease factor (1.3 — 2.5+) если слово во флэшкартах. */
+    @ColumnInfo(name = "flashcard_ef") val flashcardEf: Float = 0f,
+    /** Когда последний раз юзер взаимодействовал со словом (any source). */
+    @ColumnInfo(name = "last_seen_at") val lastSeenAt: Long = 0L,
+    /** Timestamp последнего пересчёта VocabAggregator'ом. */
+    @ColumnInfo(name = "updated_at") val updatedAt: Long = 0L,
+)
