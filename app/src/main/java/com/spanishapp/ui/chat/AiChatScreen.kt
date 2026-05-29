@@ -83,6 +83,9 @@ fun AiChatScreen(
     // tap-to-position cursor и selection-by-long-press — как в S26 Ultra.
     var inputValue by remember { mutableStateOf(androidx.compose.ui.text.input.TextFieldValue("")) }
     val input = inputValue.text
+    // v1.25.68: keyboard collapsed state поднят на уровень chat — тап по
+    // input pill раскрывает клаву в свёрнутом состоянии.
+    var kbCollapsed by remember { mutableStateOf(false) }
 
     // v1.24.17: приём scenario id из ChatArchiveScreen через savedStateHandle.
     // v1.24.18: если PRO-сценарий и free-юзер → paywall, не выбор.
@@ -187,6 +190,7 @@ fun AiChatScreen(
                     },
                     isListening = isListening,
                     voiceAmplitude = voiceAmplitude,
+                    onPillTap = { if (kbCollapsed) kbCollapsed = false },
                 )
                 // v1.24.6: pro-уровень клавиатура с курсором, swipe-space, suggestions
                 // v1.24.19: подсказки = user-learned (приоритет) + static dictionary.
@@ -234,6 +238,8 @@ fun AiChatScreen(
                     onValueChange = { inputValue = it },
                     layout = keyboardLayout,
                     onLayoutChange = { keyboardLayout = it },
+                    collapsed = kbCollapsed,
+                    onCollapsedChange = { kbCollapsed = it },
                     // v1.25.44: glide-typing убран. userWordFreq остаётся для autocorrect.
                     userWordFreq = userFreqSnapshot,
                     onSend = {
@@ -1021,6 +1027,8 @@ private fun ChatComposer(
     onMic: () -> Unit,
     isListening: Boolean,
     voiceAmplitude: Float,
+    // v1.25.68: тап по input pill (когда клава свёрнута) → раскрыть клаву
+    onPillTap: () -> Unit = {},
 ) {
     val sendActive = inputValue.text.isNotBlank()
 
@@ -1047,7 +1055,8 @@ private fun ChatComposer(
                 color = MaterialTheme.colorScheme.surfaceContainerHighest,
                 modifier = Modifier
                     .weight(1f)
-                    .heightIn(min = 42.dp),
+                    .heightIn(min = 42.dp)
+                    .clickable(onClick = onPillTap),  // v1.25.68: тап = развернуть клаву
             ) {
                 if (isListening) {
                     VoiceWaveform(

@@ -91,6 +91,10 @@ fun SpanishKeyboard(
     // v1.25.44: glideDictionary убран вместе с glide-typing.
     // userWordFreq оставлен — нужен для SpellChecker autocorrect.
     userWordFreq: Map<String, Int> = emptyMap(),
+    // v1.25.68: collapsed state поднят наверх — внешний caller (ChatComposer)
+    // может развернуть клаву тапом по input pill.
+    collapsed: Boolean = false,
+    onCollapsedChange: (Boolean) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     // v1.24.20: позиции клавиш для glide-typing.
@@ -98,7 +102,6 @@ fun SpanishKeyboard(
     val keyPositions = remember { mutableStateMapOf<String, androidx.compose.ui.geometry.Rect>() }
     var shifted by remember { mutableStateOf(true) }
     var capsLock by remember { mutableStateOf(false) }
-    var collapsed by remember { mutableStateOf(false) }
     var lastShiftTap by remember { mutableStateOf(0L) }
 
     val haptic = LocalHapticFeedback.current
@@ -162,7 +165,7 @@ fun SpanishKeyboard(
                         .height(28.dp)
                         .clickable {
                             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                            collapsed = false
+                            onCollapsedChange(false)
                         },
                     contentAlignment = Alignment.Center,
                 ) {
@@ -416,7 +419,7 @@ fun SpanishKeyboard(
                         .size(width = 40.dp, height = 20.dp)
                         .clickable {
                             haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
-                            collapsed = true
+                            onCollapsedChange(true)
                         },
                     contentAlignment = Alignment.Center,
                 ) {
