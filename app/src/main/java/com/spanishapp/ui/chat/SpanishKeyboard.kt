@@ -390,21 +390,20 @@ fun SpanishKeyboard(
                     onTap = emit,
                     haptic = haptic,
                 )
+                // v1.25.16: bottom-right ВСЕГДА Enter (newline), не Send.
+                // Send только на input pill справа — двух кнопок отправки нет.
                 SpecialKey(
-                    bg = if (canSend) accent else specialKeyBg,
+                    bg = specialKeyBg,
                     modifier = Modifier.weight(1.6f),
                     onClick = {
-                        if (canSend) {
-                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                            onSend()
-                        }
+                        haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                        emit("\n")
                     },
                 ) {
                     Icon(
-                        if (canSend) Icons.AutoMirrored.Filled.Send
-                        else Icons.AutoMirrored.Filled.KeyboardReturn,
-                        contentDescription = if (canSend) "Send" else "Enter",
-                        tint = if (canSend) Color.White else textColor,
+                        Icons.AutoMirrored.Filled.KeyboardReturn,
+                        contentDescription = "Перенос строки",
+                        tint = textColor,
                         modifier = Modifier.size(20.dp),
                     )
                 }

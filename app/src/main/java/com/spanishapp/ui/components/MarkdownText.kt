@@ -11,7 +11,10 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.TextUnit
 
@@ -64,35 +67,88 @@ private fun LocalTextStyleOrDefault(): TextStyle =
     androidx.compose.material3.LocalTextStyle.current
 
 /**
- * Парсит строку: пары `**` → текст между ними получает Bold.
- * Несогласованные `**` (без пары) остаются как литералы.
+ * v1.25.16: расширен с **bold** на 4 типа inline-форматирования:
+ *  • `**bold**` → жирный
+ *  • `_italic_` → курсив
+ *  • `~strike~` → зачёркнутый
+ *  • `` `mono` `` → моноширинный
+ * Plus line-level: строки начинающиеся на `> ` → цитата (отступ + italic).
  *
- * Алгоритм линейный O(n). Не поддерживает вложенность (она нам не нужна),
- * не поддерживает `_italic_` (контент не использует).
+ * Несогласованные маркеры остаются как литералы. Алгоритм линейный.
  */
 internal fun parseInlineMarkdown(text: String): AnnotatedString = buildAnnotatedString {
-    val marker = "**"
+    // Сначала обрабатываем quote per-line, потом inline-маркеры
+    val lines = text.split("\n")
+    for ((idx, line) in lines.withIndex()) {
+        if (line.startsWith("> ")) {
+            // Quote: italic + индент + светлее
+            pushStyle(SpanStyle(
+                fontStyle = FontStyle.Italic,
+                color = Color(0xFF9CA3AF),
+            ))
+            append("  ")
+            renderInline(this, line.substring(2))
+            pop()
+        } else {
+            renderInline(this, line)
+        }
+        if (idx < lines.size - 1) append("\n")
+    }
+}
+
+private fun renderInline(builder: androidx.compose.ui.text.AnnotatedString.Builder, text: String) {
     var i = 0
     while (i < text.length) {
-        val open = text.indexOf(marker, i)
-        if (open < 0) {
-            append(text.substring(i))
-            break
+        // Жирный (** двойные звёздочки) — приоритет наивысший
+        if (i + 1 < text.length && text[i] == '*' && text[i + 1] == '*') {
+            val close = text.indexOf("**", i + 2)
+            if (close > i + 2) {
+                builder.pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
+                builder.append(text.substring(i + 2, close))
+                builder.pop()
+                i = close + 2
+                continue
+            }
         }
-        // Append plain text перед маркером
-        if (open > i) append(text.substring(i, open))
-        // Ищем закрывающую пару
-        val close = text.indexOf(marker, open + marker.length)
-        if (close < 0) {
-            // Не нашли пару — литералим остаток как обычный текст
-            append(text.substring(open))
-            break
+        // Моноширинный (`backtick`)
+        if (text[i] == '`') {
+            val close = text.indexOf('`', i + 1)
+            if (close > i + 1) {
+                builder.pushStyle(SpanStyle(
+                    fontFamily = FontFamily.Monospace,
+                    color = Color(0xFFFFB85C),
+                ))
+                builder.append(text.substring(i + 1, close))
+                builder.pop()
+                i = close + 1
+                continue
+            }
         }
-        // Применяем Bold к контенту между **
-        val boldContent = text.substring(open + marker.length, close)
-        pushStyle(SpanStyle(fontWeight = FontWeight.Bold))
-        append(boldContent)
-        pop()
-        i = close + marker.length
+        // Зачёркнутый (~tilde~)
+        if (text[i] == '~') {
+            val close = text.indexOf('~', i + 1)
+            if (close > i + 1) {
+                builder.pushStyle(SpanStyle(textDecoration = TextDecoration.LineThrough))
+                builder.append(text.substring(i + 1, close))
+                builder.pop()
+                i = close + 1
+                continue
+            }
+        }
+        // Курсив (_underscore_)
+        if (text[i] == '_' &&
+            (i == 0 || !text[i - 1].isLetterOrDigit())) {
+            val close = text.indexOf('_', i + 1)
+            if (close > i + 1 &&
+                (close + 1 >= text.length || !text[close + 1].isLetterOrDigit())) {
+                builder.pushStyle(SpanStyle(fontStyle = FontStyle.Italic))
+                builder.append(text.substring(i + 1, close))
+                builder.pop()
+                i = close + 1
+                continue
+            }
+        }
+        builder.append(text[i])
+        i++
     }
 }
