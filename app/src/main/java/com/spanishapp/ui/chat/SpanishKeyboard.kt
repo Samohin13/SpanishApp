@@ -145,8 +145,8 @@ fun SpanishKeyboard(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 4.dp),
-            verticalArrangement = Arrangement.spacedBy(5.dp),
+                .padding(horizontal = 6.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             // v1.24.14: collapsed handle переехал ВНИЗ клавы (в самый низ).
             // Верхняя полоса теперь — ВСЕГДА зарезервированная 40dp слот
@@ -199,7 +199,7 @@ fun SpanishKeyboard(
             if (layout != KbLayout.NUM) {
                 Row(
                     modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
                     listOf("1","2","3","4","5","6","7","8","9","0").forEach { d ->
                         KeyButton(
@@ -229,11 +229,11 @@ fun SpanishKeyboard(
                 isLetterLayout = layout != KbLayout.NUM,
                 haptic = haptic,
             ) {
-                Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     rows.take(2).forEach { row ->
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(5.dp),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
                         ) {
                             row.forEach { key ->
                                 KeyButton(
@@ -259,7 +259,7 @@ fun SpanishKeyboard(
             // 3-й ряд: shift + буквы + backspace
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 if (layout != KbLayout.NUM) {
                     SpecialKey(
@@ -325,7 +325,7 @@ fun SpanishKeyboard(
             // 4-й ряд: 123 + globe + space (swipe) + . + send
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(5.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
             ) {
                 SpecialKey(
                     bg = specialKeyBg,
@@ -668,7 +668,7 @@ private fun KeyButton(
                 ) {
                     Row(
                         modifier = Modifier.padding(6.dp),
-                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
                     ) {
                         accents.forEachIndexed { idx, variant ->
                             val isHovered = idx == hoveredAccentIdx
