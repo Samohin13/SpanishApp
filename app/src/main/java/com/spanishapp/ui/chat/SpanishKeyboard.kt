@@ -542,6 +542,10 @@ private fun KeyButton(
                         val startTime = System.currentTimeMillis()
                         var enteredAccentMode = false
                         var lastPos = down.position
+                        var swipedDown = false  // v1.25.21: swipe-down → instant hint insert
+
+                        // v1.25.21: swipe-down threshold (Samsung gesture)
+                        val swipeDownThresholdPx = with(density) { 18.dp.toPx() }
 
                         try {
                             while (true) {
@@ -552,7 +556,9 @@ private fun KeyButton(
 
                                 if (!change.pressed) {
                                     // UP — финализируем
-                                    if (enteredAccentMode) {
+                                    if (swipedDown) {
+                                        // Уже вставили hint при свайпе вниз — ничего не делаем
+                                    } else if (enteredAccentMode) {
                                         if (hoveredAccentIdx in currentAccents.indices) {
                                             val variant = currentAccents[hoveredAccentIdx]
                                             // Применяем shift если label был uppercase
@@ -572,9 +578,31 @@ private fun KeyButton(
                                     break
                                 }
 
-                                // Pressed — check long-press timer и accent mode
+                                // v1.25.21: Samsung-style swipe-DOWN gesture — мгновенная
+                                // вставка первого accent без long-press. Палец сдвинулся
+                                // вниз на >18dp в первые ~200ms → вставляем accents.first().
+                                val dy = change.position.y - down.position.y
+                                val dx = change.position.x - down.position.x
                                 val elapsed = System.currentTimeMillis() - startTime
-                                if (!enteredAccentMode && elapsed > 320 && currentAccents.isNotEmpty()) {
+                                if (!swipedDown && !enteredAccentMode &&
+                                    currentAccents.isNotEmpty() &&
+                                    dy > swipeDownThresholdPx &&
+                                    dy > kotlin.math.abs(dx) &&  // именно вниз, не вбок
+                                    elapsed < 400) {
+                                    swipedDown = true
+                                    val variant = currentAccents.first()
+                                    val out = if (label != label.lowercase())
+                                        variant.uppercase() else variant
+                                    currentOnTap(out)
+                                    haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    pressed = false
+                                    change.consume()
+                                    continue
+                                }
+
+                                // Pressed — check long-press timer и accent mode
+                                // v1.25.21: ускорено 320ms → 220ms (Samsung-like responsiveness)
+                                if (!swipedDown && !enteredAccentMode && elapsed > 220 && currentAccents.isNotEmpty()) {
                                     enteredAccentMode = true
                                     showAccents = true
                                     hoveredAccentIdx = currentAccents.size / 2  // дефолт — средняя клавиша
