@@ -597,30 +597,22 @@ private fun KeyButton(
                                         if (!enteredAccentMode && dist > movementCancelPx) {
                                             longPressJob.cancel()
                                         }
-                                        // v1.25.52: row selection — по dy-relative от down,
-                                        // col — distance-to-cell-center в попап-координатах.
-                                        // Самсунг работает так: popup физически далеко, но
-                                        // gesture-relative mapping делает row переключаемым
-                                        // коротким swipe upward (20dp). Это критично UX.
+                                        // v1.25.53: hit-test через pure function AccentPickerHitTest
+                                        // (тестируемая, см. AccentPickerHitTestTest)
                                         if (enteredAccentMode && popupRect != androidx.compose.ui.geometry.Rect.Zero) {
-                                            val rowsCount = if (currentAccents.size > 3) 2 else 1
-                                            val cellsPerRow = (currentAccents.size + rowsCount - 1) / rowsCount
-                                            val cellW = accentKeyWidthPx
-                                            val padPx = with(density) { 6.dp.toPx() }
-                                            val upThresholdPx = with(density) { 20.dp.toPx() }
-                                            // dy от точки нажатия (local coords KeyButton)
-                                            val dy = change.position.y - downPos.y
-                                            // Row: dy < -20dp → top row (0), иначе bottom row (последний)
-                                            val rowIdx = if (rowsCount > 1 && dy < -upThresholdPx) 0
-                                                         else (rowsCount - 1)
-                                            // Col: absolute finger x в popup-координатах
-                                            val fingerRootX = change.position.x + keyRootOffset.x
-                                            val relX = fingerRootX - popupRect.left - padPx
-                                            val colIdx = (relX / cellW).toInt().coerceIn(0, cellsPerRow - 1)
-                                            val flatIdx = (rowIdx * cellsPerRow + colIdx)
-                                                .coerceIn(0, currentAccents.size - 1)
-                                            if (flatIdx != hoveredAccentIdx) {
-                                                hoveredAccentIdx = flatIdx
+                                            val newIdx = AccentPickerHitTest.computeHoveredIdx(
+                                                accentsCount = currentAccents.size,
+                                                fingerLocalX = change.position.x,
+                                                fingerLocalY = change.position.y,
+                                                downLocalY = downPos.y,
+                                                keyRootX = keyRootOffset.x,
+                                                popupLeftX = popupRect.left,
+                                                cellWidthPx = accentKeyWidthPx,
+                                                padPx = with(density) { 6.dp.toPx() },
+                                                upThresholdPx = with(density) { 20.dp.toPx() },
+                                            )
+                                            if (newIdx != hoveredAccentIdx) {
+                                                hoveredAccentIdx = newIdx
                                                 haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                             }
                                         }
