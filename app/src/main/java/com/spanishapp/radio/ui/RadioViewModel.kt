@@ -36,6 +36,47 @@ class RadioViewModel @Inject constructor(
         .map { it / 60 }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0L)
 
+    /**
+     * v1.25.6: listening streak — consecutive days where юзер слушал радио
+     * хоть какое-то время. Вычисляется из activeDayBuckets() (distinct days).
+     * Без freeze-логики (для радио проще). Recalc'ится при подписке на StateFlow.
+     */
+    private val _listeningStreak = MutableStateFlow(0)
+    val listeningStreak: StateFlow<Int> = _listeningStreak.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            // Реfresh streak каждый раз при load + после новой сессии
+            refreshListeningStreak()
+        }
+    }
+
+    suspend fun refreshListeningStreak() {
+        val buckets = listeningDao.activeDayBuckets().toMutableList()
+        if (buckets.isEmpty()) {
+            _listeningStreak.value = 0
+            return
+        }
+        val today = System.currentTimeMillis() / 86_400_000L
+        buckets.sortDescending()
+        var streak = 0
+        var expectedDay = today
+        for (day in buckets) {
+            when {
+                day == expectedDay -> {
+                    streak++
+                    expectedDay--
+                }
+                day < expectedDay -> {
+                    // gap detected → streak broken
+                    break
+                }
+                // day > expectedDay (future bucket — weird) skip
+            }
+        }
+        _listeningStreak.value = streak
+    }
+
     /** Состояние подбора станций. */
     enum class DiscoveryState { IDLE, LOADING, READY, ERROR }
 

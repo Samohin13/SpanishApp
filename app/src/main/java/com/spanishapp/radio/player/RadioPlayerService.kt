@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
+import android.media.audiofx.Equalizer
 import android.media.audiofx.LoudnessEnhancer
 import android.os.Build
 import android.util.Log
@@ -52,6 +53,7 @@ class RadioPlayerService : MediaSessionService() {
      * (без анализа потока), но решает 80% проблемы.
      */
     private var loudnessEnhancer: LoudnessEnhancer? = null
+    private var voiceEqualizer: Equalizer? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -125,7 +127,24 @@ class RadioPlayerService : MediaSessionService() {
                 setTargetGain(400)  // +4 dB
                 enabled = true
             }
-            Log.d("RadioService", "LoudnessEnhancer enabled at +4dB, sessionId=$sessionId")
+            // v1.25.6: Voice EQ — boost mid frequencies (1-3 kHz) для TALK
+            // станций (новости, ток-шоу). Включается только когда нужно;
+            // по умолчанию OFF (хорошо для music).
+            runCatching {
+                voiceEqualizer = Equalizer(0, sessionId).apply {
+                    enabled = false  // default OFF
+                    // Найдём band ближайший к 2 kHz и подбустим
+                    val bands = numberOfBands
+                    for (b in 0 until bands) {
+                        val freq = getCenterFreq(b.toShort()) / 1000  // Hz
+                        // Бэндw 800Hz-3kHz: подбустим до +6 dB (600 mB)
+                        if (freq in 800..3000) {
+                            setBandLevel(b.toShort(), 600)
+                        }
+                    }
+                }
+            }
+            Log.d("RadioService", "LoudnessEnhancer +4dB, Voice EQ prepared (off by default), sessionId=$sessionId")
         }.onFailure { e ->
             Log.w("RadioService", "LoudnessEnhancer init failed: ${e.message}", e)
             // Не критично — играем без normalization
@@ -133,6 +152,14 @@ class RadioPlayerService : MediaSessionService() {
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaSession? = mediaSession
+
+    /** Включить/выключить voice EQ извне (RadioPlayerController). */
+    fun setVoiceEqEnabled(enabled: Boolean) {
+        runCatching {
+            voiceEqualizer?.enabled = enabled
+            Log.d("RadioService", "Voice EQ ${if (enabled) "ON" else "OFF"}")
+        }
+    }
 
     /**
      * При свайпе из recent apps НЕ убиваем сервис если плеер играет.
@@ -150,7 +177,12 @@ class RadioPlayerService : MediaSessionService() {
             loudnessEnhancer?.enabled = false
             loudnessEnhancer?.release()
         }
+        runCatching {
+            voiceEqualizer?.enabled = false
+            voiceEqualizer?.release()
+        }
         loudnessEnhancer = null
+        voiceEqualizer = null
         mediaSession?.run {
             this.player.release()  // player из session — тот же что мы создали
             release()

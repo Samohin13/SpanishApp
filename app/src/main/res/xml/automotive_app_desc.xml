@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<automotiveApp>
+    <!-- Радио воспроизведение через Android Auto. MediaSessionService
+         (RadioPlayerService) экспортирует sessions, AA автоматически
+         показывает controls + browse tree. -->
+    <uses name="media" />
+</automotiveApp>
