@@ -72,7 +72,7 @@ import kotlinx.coroutines.launch
 
 enum class KbLayout { ES, RU, NUM }
 
-private data class KbKey(
+internal data class KbKey(
     val label: String,
     val output: String = label,
     val accents: List<String> = emptyList(),
@@ -1103,7 +1103,7 @@ private fun GlobeKey(
 // либо спец-символ (+, ×, ÷, !, @, #, $, % и т.д.) доступный
 // через long-press. Юзер видит маленькую подсказку в углу каждой
 // клавиши — как на Samsung Keyboard.
-private fun esLetterRows(): List<List<KbKey>> = listOf(
+internal fun esLetterRows(): List<List<KbKey>> = listOf(
     listOf("q","w","e","r","t","y","u","i","o","p").map {
         KbKey(it, accents = esAccents(it))
     },
@@ -1122,7 +1122,7 @@ private fun esLetterRows(): List<List<KbKey>> = listOf(
 // показывает accent-marker ´, мы показываем готовый é/á/í/ó/ú чтобы
 // юзер видел useful char), Samsung-символ ВТОРЫМ.
 // Для согласных — точно Samsung mapping.
-private fun esAccents(letter: String): List<String> = when (letter) {
+internal fun esAccents(letter: String): List<String> = when (letter) {
     // ── Row 1: Q W E R T Y U I O P ────────────────────
     "q" -> listOf("+")
     "w" -> listOf("×")
@@ -1165,7 +1165,7 @@ private fun esAccents(letter: String): List<String> = when (letter) {
 // "ъ" теперь доступен через long-press на "ь" (это стандарт мобильных
 // клавиатур RU). Юзер: "у самсунга 11 кнопок, у нас 12 — компьютерная
 // раскладка надо мобильную".
-private fun ruLetterRows(): List<List<KbKey>> = listOf(
+internal fun ruLetterRows(): List<List<KbKey>> = listOf(
     listOf("й","ц","у","к","е","н","г","ш","щ","з","х").map {
         KbKey(it, accents = ruAccents(it))
     },
@@ -1178,7 +1178,7 @@ private fun ruLetterRows(): List<List<KbKey>> = listOf(
 )
 
 // v1.25.46: RU как Samsung mobile RU (из скрина). Многие совпадают с ES.
-private fun ruAccents(letter: String): List<String> = when (letter) {
+internal fun ruAccents(letter: String): List<String> = when (letter) {
     // ── Row 1: Й Ц У К Е Н Г Ш Щ З Х ─────────────────
     "й" -> listOf("+")
     "ц" -> listOf("÷")                          // было ×, Samsung: ÷
@@ -1219,7 +1219,7 @@ private fun ruAccents(letter: String): List<String> = when (letter) {
 // v1.25.18: NUM-раскладка расширена — _, =, |, \\, [, ], {, },
 // европейская валюта, типографские кавычки и др.
 // Доступно через long-press accents (как у Samsung).
-private fun numRows(): List<List<KbKey>> = listOf(
+internal fun numRows(): List<List<KbKey>> = listOf(
     listOf(
         KbKey("1", accents = listOf("!", "¹")),
         KbKey("2", accents = listOf("@", "²")),
