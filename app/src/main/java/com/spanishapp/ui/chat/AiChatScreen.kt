@@ -153,6 +153,9 @@ fun AiChatScreen(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
+        // v1.25.72: убираем все default insets — иначе Scaffold добавляет
+        // системные insets к контенту, и bubble не доходит до края.
+        contentWindowInsets = androidx.compose.foundation.layout.WindowInsets(0),
         topBar = {
             ChatHeader(
                 scenarioEmoji = scenario.emoji,
