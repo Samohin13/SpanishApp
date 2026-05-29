@@ -193,12 +193,39 @@ fun AiChatScreen(
                 // Юзер набирает "ho" → если он уже отправлял "hola" много раз —
                 // оно появится первым; иначе fallback на топ-частотные слова.
                 val userFreqSnapshot by vm.userWordFrequency.freq.collectAsStateWithLifecycle()
-                val suggestions = remember(input, userFreqSnapshot) {
-                    val lastWord = input
+                val bigramSnapshot by vm.userWordFrequency.bigrams.collectAsStateWithLifecycle()
+                // v1.25.27: bigram-based phrase prediction.
+                // - Конец фразы пробелом → предсказываем СЛЕДУЮЩЕЕ слово
+                //   (suggestNext по bigram[prevWord]).
+                // - Печатает префикс → suggestWithContext комбинирует
+                //   bigram + unigram counts → ранжирует точнее.
+                val suggestions = remember(input, userFreqSnapshot, bigramSnapshot) {
+                    val endsWithSpace = input.endsWith(' ') || input.endsWith('\n')
+                    // Текущее слово (которое юзер печатает)
+                    val curWord = if (endsWithSpace) "" else input
                         .substringAfterLast(' ', missingDelimiterValue = input)
                         .substringAfterLast('\n', missingDelimiterValue = "")
                         .ifBlank { input.substringAfterLast(' ', missingDelimiterValue = input) }
-                    val userSuggestions = vm.userWordFrequency.suggest(lastWord, 3)
+                    // Предыдущее слово (для bigram)
+                    val trimmed = input.trimEnd()
+                    val prevWord = if (endsWithSpace) {
+                        trimmed.substringAfterLast(' ', missingDelimiterValue = trimmed)
+                            .substringAfterLast('\n', missingDelimiterValue = "")
+                            .ifBlank { trimmed }
+                    } else {
+                        // Юзер в середине слова — берём слово ДО текущего
+                        val beforeCur = input.dropLast(curWord.length).trimEnd()
+                        beforeCur.substringAfterLast(' ', missingDelimiterValue = beforeCur)
+                            .substringAfterLast('\n', missingDelimiterValue = "")
+                            .ifBlank { beforeCur }
+                    }
+                    val userSuggestions = if (curWord.isBlank() && prevWord.isNotBlank()) {
+                        // После пробела — предсказываем следующее слово фразы
+                        vm.userWordFrequency.suggestNext(prevWord, 3)
+                    } else {
+                        // Печатает префикс — bigram-усиленный prefix match
+                        vm.userWordFrequency.suggestWithContext(prevWord, curWord, 3)
+                    }
                     val staticSuggestions = WordSuggester.suggest(input, 3)
                     (userSuggestions + staticSuggestions).distinct().take(3)
                 }
