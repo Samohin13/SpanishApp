@@ -597,24 +597,35 @@ private fun KeyButton(
                                         if (!enteredAccentMode && dist > movementCancelPx) {
                                             longPressJob.cancel()
                                         }
-                                        // Slide tracking ВНУТРИ picker'а — используем
-                                        // АБСОЛЮТНЫЕ screen coords + popupRect для
-                                        // правильного hit-test (popup мог сдвинуться у края)
+                                        // v1.25.51: distance-to-cell-center hit test
+                                        // (вместо strict y-band). Юзер не мог переключиться
+                                        // на верхний ряд — застревал в bottom. Теперь
+                                        // выбирается БЛИЖАЙШАЯ cell по 2D дистанции.
                                         if (enteredAccentMode && popupRect != androidx.compose.ui.geometry.Rect.Zero) {
                                             val rowsCount = if (currentAccents.size > 3) 2 else 1
                                             val cellsPerRow = (currentAccents.size + rowsCount - 1) / rowsCount
                                             val cellW = accentKeyWidthPx
-                                            val cellH = with(density) { 46.dp.toPx() }  // 40dp + 6dp gap
+                                            val cellH = with(density) { 46.dp.toPx() }
+                                            val padPx = with(density) { 6.dp.toPx() }
                                             val fingerRootX = change.position.x + keyRootOffset.x
                                             val fingerRootY = change.position.y + keyRootOffset.y
-                                            val relX = fingerRootX - popupRect.left - with(density) { 6.dp.toPx() }
-                                            val relY = fingerRootY - popupRect.top - with(density) { 6.dp.toPx() }
-                                            val rowIdx = (relY / cellH).toInt().coerceIn(0, rowsCount - 1)
-                                            val colIdx = (relX / cellW).toInt().coerceIn(0, cellsPerRow - 1)
-                                            val flatIdx = (rowIdx * cellsPerRow + colIdx)
-                                                .coerceIn(0, currentAccents.size - 1)
-                                            if (flatIdx != hoveredAccentIdx) {
-                                                hoveredAccentIdx = flatIdx
+                                            var bestIdx = 0
+                                            var bestDist = Float.MAX_VALUE
+                                            for (i in currentAccents.indices) {
+                                                val row = i / cellsPerRow
+                                                val col = i % cellsPerRow
+                                                val cellCenterX = popupRect.left + padPx + col * cellW + cellW / 2f
+                                                val cellCenterY = popupRect.top + padPx + row * cellH + cellH / 2f
+                                                val dx = fingerRootX - cellCenterX
+                                                val dy = fingerRootY - cellCenterY
+                                                val d = dx * dx + dy * dy  // squared, monotonic
+                                                if (d < bestDist) {
+                                                    bestDist = d
+                                                    bestIdx = i
+                                                }
+                                            }
+                                            if (bestIdx != hoveredAccentIdx) {
+                                                hoveredAccentIdx = bestIdx
                                                 haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                                             }
                                         }
@@ -698,7 +709,8 @@ private fun KeyButton(
                     ): androidx.compose.ui.unit.IntOffset {
                         val x = (anchorBounds.left + (anchorBounds.width - popupContentSize.width) / 2)
                             .coerceIn(8, (windowSize.width - popupContentSize.width - 8).coerceAtLeast(8))
-                        val y = (anchorBounds.top - popupContentSize.height - 12).coerceAtLeast(8)
+                        // v1.25.51: gap 12dp → 4dp (popup ближе к key — меньше slide)
+                        val y = (anchorBounds.top - popupContentSize.height - 4).coerceAtLeast(8)
                         return androidx.compose.ui.unit.IntOffset(x, y)
                     }
                 }
