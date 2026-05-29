@@ -213,9 +213,8 @@ fun SpanishKeyboard(
                             textColor = textColor.copy(alpha = 0.85f),
                             accent = accent,
                             modifier = Modifier.weight(1f),
-                            // v1.25.29: цифры 32→38dp, 18→20sp — но всё ещё компактнее
-                            // буквенного ряда (цифры реже нужны → не съедают вертикаль)
-                            heightDp = 38,
+                            // v1.25.38: цифры 38→34dp (синхронно с уменьшением букв 49→44).
+                            heightDp = 34,
                             fontSp = 20,
                             onTap = emit,
                             haptic = haptic,
@@ -488,11 +487,10 @@ private fun KeyButton(
     textColor: Color,
     accent: Color,
     modifier: Modifier = Modifier,
-    // v1.25.29: высота 40→49dp (между iOS 46-50 и Samsung 50-55),
-    // шрифт 21→23sp (среднее iOS 22 / Samsung 24). Закрывает Material
-    // accessibility minimum 48dp + перестаёт смотреться мелко рядом с
-    // системными клавиатурами.
-    heightDp: Int = 49,
+    // v1.25.38: высота 49→44dp (юзер: "у самсунга меньше"). 44dp = iOS
+    // minimum touch target (44pt), визуально ближе к Samsung'у. Чуть ниже
+    // Material 48dp guideline — компромисс ради proportional aspect ratio.
+    heightDp: Int = 44,
     fontSp: Int = 23,
     haptic: androidx.compose.ui.hapticfeedback.HapticFeedback,
     onTap: (String) -> Unit,
@@ -643,28 +641,28 @@ private fun KeyButton(
             .background(bgColor),
         contentAlignment = Alignment.Center,
     ) {
-        // v1.25.37: Samsung-style layout — hint и буква в Column,
-        // оба горизонтально по центру. Hint компактный, буква нормального
-        // веса. Если accents пуст — только буква, по центру key.
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-        ) {
-            if (accents.isNotEmpty()) {
+        // v1.25.38: буква по центру + hint обратно в TOP-END угол (юзер вернул).
+        // Шрифт Normal (не Medium) + hint мелкий и бледный — как у Samsung.
+        Text(
+            label,
+            color = textColor,
+            fontSize = fontSp.sp,
+            fontWeight = FontWeight.Normal,
+        )
+        if (accents.isNotEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(top = 2.dp, end = 4.dp),
+                contentAlignment = Alignment.TopEnd,
+            ) {
                 Text(
                     accents.first(),
                     color = textColor.copy(alpha = 0.5f),
                     fontSize = 10.sp,
                     fontWeight = FontWeight.Normal,
-                    lineHeight = 10.sp,
                 )
             }
-            Text(
-                label,
-                color = textColor,
-                fontSize = fontSp.sp,
-                fontWeight = FontWeight.Normal,  // не Medium — как Samsung
-            )
         }
 
         if (showAccents && accents.isNotEmpty()) {
@@ -765,7 +763,7 @@ private fun BackspaceKey(
 
     Box(
         modifier = modifier
-            .height(49.dp)  // v1.25.29: 40→49dp синхронно с буквенными
+            .height(44.dp)  // v1.25.38: 49→44dp ближе к Samsung
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
@@ -825,7 +823,7 @@ private fun SpaceKey(
 
     Box(
         modifier = modifier
-            .height(49.dp)  // v1.25.29: 40→49dp синхронно с буквенными
+            .height(44.dp)  // v1.25.38: 49→44dp ближе к Samsung
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
@@ -907,7 +905,7 @@ private fun SpecialKey(
     val haptic = LocalHapticFeedback.current
     Box(
         modifier = modifier
-            .height(49.dp)  // v1.25.29: 40→49dp синхронно с буквенными
+            .height(44.dp)  // v1.25.38: 49→44dp ближе к Samsung
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
@@ -1142,7 +1140,7 @@ private fun GlobeKey(
 
     Box(
         modifier = modifier
-            .height(49.dp)  // v1.25.29: 40→49dp синхронно с буквенными
+            .height(44.dp)  // v1.25.38: 49→44dp ближе к Samsung
             .clip(RoundedCornerShape(7.dp))
             .background(bgColor)
             .pointerInput(Unit) {
