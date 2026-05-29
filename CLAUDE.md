@@ -543,6 +543,11 @@ UI → AiChatRepository → Cloudflare Worker proxy
 15. «T» button флип карточки → перевод (обсуждали, отменили)
 16. **Google Play Billing для PRO** — план есть, не реализовано
 17. Озвучка Libros актёрами
+18. **«Мой словарный запас»** — агрегация всех сигналов обучения в единое
+    представление (X слов знаешь, breakdown по CEFR, mastered/learning/weak).
+    Дизайн-док готов: [docs/VOCAB_TRACKING_PLAN.md](docs/VOCAB_TRACKING_PLAN.md).
+    Юзер одобрил концепт 2026-05-29, реализацию отложил. Эффорт ~1.5 дня.
+    Триггер для начала: явное "делай словарь" от юзера.
 
 ---
 
