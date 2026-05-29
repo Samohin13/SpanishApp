@@ -620,17 +620,19 @@ private fun KeyButton(
         // Показывает первый accent (что появится по long-press) — даёт
         // визуальный сигнал юзеру что доступно скрытое.
         if (accents.isNotEmpty()) {
+            // v1.25.14: hint крупнее (9→12sp) + alpha 0.45→0.75 + SemiBold.
+            // Юзер видит á/é/í/ó/ú ярче — заметно что доступно по long-press.
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(top = 3.dp, end = 5.dp),
+                    .padding(top = 2.dp, end = 4.dp),
                 contentAlignment = Alignment.TopEnd,
             ) {
                 Text(
                     accents.first(),
-                    color = textColor.copy(alpha = 0.45f),
-                    fontSize = 9.sp,
-                    fontWeight = FontWeight.Normal,
+                    color = textColor.copy(alpha = 0.75f),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.SemiBold,
                 )
             }
         }
