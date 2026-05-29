@@ -165,7 +165,29 @@ class AiChatViewModel @Inject constructor(
     }
 
     // ── TTS озвучка ────────────────────────────────────────────
-    fun speak(text: String) { tts.speak(text) }
+    // v1.25.60: sanitize text перед TTS — диктор не должен произносить
+    // markdown-маркеры (** _ ` ~ > [ ] и т.д.), эмодзи, code blocks.
+    fun speak(text: String) { tts.speak(sanitizeForTts(text)) }
+
+    private fun sanitizeForTts(raw: String): String {
+        var t = raw
+        // Markdown bold/italic/strike/inline-code
+        t = t.replace(Regex("\\*\\*(.+?)\\*\\*"), "$1")  // **bold**
+        t = t.replace(Regex("(?<![a-zа-я0-9])_(.+?)_(?![a-zа-я0-9])", RegexOption.IGNORE_CASE), "$1") // _italic_
+        t = t.replace(Regex("~(.+?)~"), "$1")            // ~strike~
+        t = t.replace(Regex("`([^`]+)`"), "$1")          // `code`
+        // Quote prefix ">"
+        t = t.replace(Regex("(?m)^>\\s*"), "")
+        // Markdown links [text](url) → text
+        t = t.replace(Regex("\\[(.+?)\\]\\([^)]+\\)"), "$1")
+        // Эмодзи и pictograph диапазоны (грубая sanitization, не идеально)
+        t = t.replace(Regex("[\\u2600-\\u27BF\\uD83C-\\uDBFF\\uDC00-\\uDFFF\\uFE0F]"), "")
+        // Скобки и одиночные спец-символы которые TTS читает дословно
+        t = t.replace(Regex("[\\[\\]{}<>|]"), "")
+        // Множественные пробелы / переводы строк → одиночный пробел
+        t = t.replace(Regex("\\s+"), " ").trim()
+        return t
+    }
 
     // ── Очистка сценария ───────────────────────────────────────
     fun clearCurrentSession() {
