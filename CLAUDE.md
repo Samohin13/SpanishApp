@@ -1,8 +1,99 @@
 # SpanishApp / ESPEAK — единый источник правды
 
 > Android-приложение для изучения испанского языка русскоязычными пользователями (CEFR A1→B2).
-> **Версия:** v1.11.7 (versionCode 65), AAB подан на закрытое тестирование Play.
-> **Последний апдейт документа:** 2026-05-23. Все цифры верифицированы grep-проверкой кода.
+> **Версия:** v1.25.6 (versionCode 181), v1.22.30 в манифесте — обновить.
+> **Последний апдейт документа:** 2026-05-29.
+
+## 🆕 v1.25.x Chat / Voice / Billing batch (2026-05-28..29)
+
+Самый большой sprint после v1.22 — переработка чата и подписки.
+
+### Voice messages (v1.25.0)
+- Полный stack: VoiceRecorder (MediaRecorder AAC-LC m4a 64kbps mono 22050Hz)
+  + VoiceMessageStorage (filesDir/voice_messages/) + VoicePlayer (MediaPlayer)
+- ChatMessageEntity + audioPath: String?, audioDurationMs: Long
+- Room v27 → v28 — `MIGRATION_27_28` зарегистрирована в 6 местах
+- ChatComposer recording overlay: ✗ cancel | ● pulse dot | mm:ss | waveform
+- ActionButton: tap во время recording → stopAndSend
+- VoiceMessagePlayer composable в bubble: play/pause + progress + duration
+- Permission flow: RECORD_AUDIO через rememberLauncherForActivityResult
+
+### Per-scenario characters (v1.25.1)
+ChatScenario + welcomeEs, welcomeRu, characterName.
+Каждый сценарий = живой персонаж:
+- **Carlos** (Travel) — гид Madrid, vale/venga/tío
+- **Marta** (Restaurant) — официантка, paella/jamón/sangría
+- **Sr. López** (Interview) — HR Telefónica/BBVA, CV/sueldo
+- **Lucía** (Shopping) — Zara dependiente, talla/probador
+- **Dr. Ramírez** (Doctor) — médico, síntomas/receta (только language practice)
+
+System prompt: "Ты — $characterName, дружелюбный собеседник из Мадрида".
+WelcomeBubble показывает welcomeEs + welcomeRu из сценария.
+
+### Glide-typing polish (v1.25.2)
+- Row 3 (z-m / ячсмитьбю) теперь в glide
+- First-tap rollback: valueAtDown snapshot, накладывается matched word
+- Visual trail (Canvas drawLine) с alpha gradient 0.15→0.8 за курсором
+
+### Audit IMPORTANT (v1.25.3)
+- rememberSaveable на Login/Register/ForgotPassword email+password
+- Lint --release: 1 Error fixed (SuspiciousIndentation в AiChatScreen)
+
+### Google Play Billing (v1.25.4)
+- libs.versions.toml: billing = "7.1.1"
+- PlayBillingManager: connect/queryProducts/launchPurchase/restore/acknowledge
+- PaywallViewModel.startPurchase(activity) — реальный launchBillingFlow
+- SubscriptionPreferences.setPro(active) — production setter
+- SpanishApp.onCreate → playBillingManager.start() в runCatching
+
+**Play Console setup нужен:** product `espeak_pro` + base plans
+`monthly` ($4.99) + `yearly` ($34.99) + Internal testing track.
+
+### StreakFreezePopup + restore purchases (v1.25.5)
+- StreakFreezePopupHost — баннер "❄ Стрик сохранён!" когда freeze срабатывает
+  (раньше юзер не знал что freeze тратится)
+- Settings → Премиум → "Восстановить покупки" (для переустановки app)
+
+### Radio batch (v1.25.6)
+- RadioViewModel.listeningStreak: consecutive days с активным прослушиванием
+- RadioPlayerService: Equalizer для voice EQ (boost 800Hz-3kHz при включении)
+- Android Auto: MediaBrowserService action + automotive_app_desc.xml meta-data,
+  RadioPlayerService exported=true. AA автоматически читает MediaSessionService
+
+## 🆕 Chat AI rewrite (v1.24.x, более ранний этой же сессии)
+
+### Структура
+- AiChatScreen + AiChatViewModel + AiChatRepository (Gemini Flash через Cloudflare Worker)
+- ChatArchiveScreen + ChatArchiveViewModel + DAO `observeSessionsMeta`
+- SpanishKeyboard (1100+ LOC) — full custom Compose клавиатура
+- KeyboardLogic — pure functions (60 unit tests)
+- GlideMatcher + WordSuggester + UserWordFrequency + KeyboardLogic
+
+### Клавиатура features (v1.24.x → v1.25.x)
+- Fire-on-DOWN отклик (Gboard-стиль) через detectTapGestures(onPress)
+- rememberUpdatedState на все callbacks (фикс stale closure после 3 chars)
+- Custom blinking cursor через onTextLayout (readOnly BasicTextField не рисует свой)
+- Continuous accent gesture: hold → slide → release (iOS-стиль)
+- Swipe-cursor на space + tap-without-drag = пробел
+- Caps lock через double-tap shift
+- Auto-cap after . ! ?
+- Double-space → period (iOS standard)
+- Long-press globe → меню раскладок ES/RU/NUM
+- Word frequency learning (DataStore JSON, in-memory cache, top 500 words)
+- Suggestions: 3 чипа, user-learned + static dict
+- Smart quick chips (Объясни проще / Дай пример / Дай упражнение / etc.)
+- Glide-typing MVP (Levenshtein + frequency boost, row 1-2-3)
+
+### Архив + сценарии
+- 6 сценариев в ChatScenarios (default + 5 PRO)
+- Auto-scroll к активному chip в ScenarioStrip
+- PRO-gating: free + PRO chip → paywall
+
+## 78+ unit tests
+- KeyboardLogicTest: 60 (insertAt, backspaceChar, moveCursor, shouldAutoCapAfter,
+  applyShift, ES/RU/NUM rows, accents, симуляции, double-space)
+- GlideMatcherTest: 18 (levenshtein, dedupeConsecutive, matchBestWord,
+  topMatches, freq boost, симуляции)
 
 ## 🆕 Stats v2 — точная интеграция данных (2026-05-23)
 
