@@ -1099,37 +1099,44 @@ private fun esLetterRows(): List<List<KbKey>> = listOf(
     },
 )
 
+// v1.25.45: расположение спец-символов как у Samsung mobile ES.
+// Юзер: "нужно как на скриншоте, это вариант и стандарт мировой".
+//
+// Для гласных и Ñ — испанский accent ПЕРВЫМ (Samsung на гласных тоже
+// показывает accent-marker ´, мы показываем готовый é/á/í/ó/ú чтобы
+// юзер видел useful char), Samsung-символ ВТОРЫМ.
+// Для согласных — точно Samsung mapping.
 private fun esAccents(letter: String): List<String> = when (letter) {
-    // Гласные — испанский accent ПЕРВЫМ (для удобства Spanish typing),
-    // затем варианты и спец-символ в хвосте.
-    "a" -> listOf("á","à","ä","â","!")
-    "e" -> listOf("é","è","ë","ê","€")
-    "i" -> listOf("í","ï","î","*")
-    "o" -> listOf("ó","ò","ö","ô")
-    "u" -> listOf("ú","ü","û")
-    "n" -> listOf("ñ","?")
-    // Согласные — Samsung-style спец-символы.
+    // ── Row 1: Q W E R T Y U I O P ────────────────────
     "q" -> listOf("+")
     "w" -> listOf("×")
+    "e" -> listOf("é","è","ë","ê")           // Samsung: ´
     "r" -> listOf("÷")
-    "t" -> listOf("—","–")
-    "y" -> listOf("~")
-    "p" -> listOf("[","]")
+    "t" -> listOf("=")                          // было —
+    "y" -> listOf("/")                          // было ~
+    "u" -> listOf("ú","ü","û","<")           // Samsung: <
+    "i" -> listOf("í","ï","î",">")           // Samsung: >
+    "o" -> listOf("ó","ò","ö","ô","[")       // Samsung: [
+    "p" -> listOf("]")                          // было [
+    // ── Row 2: A S D F G H J K L Ñ ────────────────────
+    "a" -> listOf("á","à","ä","â","!")       // Samsung: !
     "s" -> listOf("@")
     "d" -> listOf("#")
-    "f" -> listOf("$","£","¥")
+    "f" -> listOf("€")                          // было $ £ ¥
     "g" -> listOf("%")
-    "h" -> listOf("\\","|")
+    "h" -> listOf("^")                          // было \
     "j" -> listOf("&")
-    "k" -> listOf("(","{")
-    "l" -> listOf(")","}")
-    "ñ" -> listOf("=","≠")
-    "z" -> listOf("\"","«","»")
-    "x" -> listOf("'","`")
+    "k" -> listOf("*")                          // было ( {
+    "l" -> listOf("(")                          // было ) }
+    "ñ" -> listOf(")")                          // было = ≠
+    // ── Row 3: Z X C V B N M ──────────────────────────
+    "z" -> listOf("\"")
+    "x" -> listOf("'")
     "c" -> listOf(":")
     "v" -> listOf(";")
     "b" -> listOf("/")
-    "m" -> listOf("!","¡")
+    "n" -> listOf("ñ","?")                   // Samsung: ?
+    "m" -> listOf("?")                          // было ! ¡
     else -> emptyList()
 }
 
