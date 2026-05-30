@@ -9,6 +9,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -41,6 +42,8 @@ class SubscriptionPreferences @Inject constructor(
         val PURCHASED_AT = longPreferencesKey("purchased_at") // ms
         val IN_TRIAL = booleanPreferencesKey("in_trial")
         val TRIAL_ENDS_AT = longPreferencesKey("trial_ends_at") // ms
+        /** v1.25.76 SEC-1: когда последний раз сервер подтвердил PRO. ms. */
+        val VERIFIED_AT = longPreferencesKey("verified_at")
     }
 
     /** Снапшот всех полей одним объектом. Источник для остальных Flow. */
@@ -50,6 +53,7 @@ class SubscriptionPreferences @Inject constructor(
         val expiresAt: Long = 0L,
         val inTrial: Boolean = false,
         val trialEndsAt: Long = 0L,
+        val verifiedAt: Long = 0L,
     )
 
     /** Единый Flow на всё состояние подписки. Один collector на DataStore. */
@@ -60,6 +64,7 @@ class SubscriptionPreferences @Inject constructor(
             expiresAt = p[Keys.EXPIRES_AT] ?: 0L,
             inTrial = p[Keys.IN_TRIAL] ?: false,
             trialEndsAt = p[Keys.TRIAL_ENDS_AT] ?: 0L,
+            verifiedAt = p[Keys.VERIFIED_AT] ?: 0L,
         )
     }
 
@@ -118,6 +123,24 @@ class SubscriptionPreferences @Inject constructor(
             }
         }
     }
+
+    /**
+     * v1.25.76 SEC-1: server-side verified PRO setter.
+     * Вызывается из [SubscriptionVerifier] после ответа от worker /verify-purchase.
+     * @param verifiedAt timestamp когда сервер подтвердил статус.
+     */
+    suspend fun setProVerified(active: Boolean, verifiedAt: Long) {
+        context.subscriptionDataStore.edit { p ->
+            p[Keys.IS_PRO] = active
+            p[Keys.VERIFIED_AT] = verifiedAt
+            if (active && (p[Keys.PURCHASED_AT] ?: 0L) == 0L) {
+                p[Keys.PURCHASED_AT] = System.currentTimeMillis()
+            }
+        }
+    }
+
+    /** Одноразовый snapshot для verifier (не Flow). */
+    suspend fun snapshot(): Snapshot = all.first()
 
     /** Debug-only: переключить PRO для QA gate-логики (без реальной покупки). */
     suspend fun debugSetPro(enabled: Boolean) {

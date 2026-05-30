@@ -1,8 +1,10 @@
 package com.spanishapp.service
 
 import com.spanishapp.data.prefs.SubscriptionPreferences
+import com.spanishapp.data.repository.SubscriptionVerifier
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -29,8 +31,31 @@ import javax.inject.Singleton
 class SubscriptionManager @Inject constructor(
     private val prefs: SubscriptionPreferences,
 ) {
-    /** Главный флаг — PRO активен прямо сейчас. */
-    val isProActive: Flow<Boolean> = prefs.isPro
+    /**
+     * Главный флаг — PRO активен прямо сейчас.
+     *
+     * v1.25.76 SEC-1: PRO = (locally is_pro) AND (verifiedAt не старше 30 дней)
+     *
+     * Логика grace period:
+     *  - Новая покупка: setPro(true) делает isPro=true сразу (verifiedAt=0
+     *    некоторое время, пока SubscriptionVerifier не ответит). Это окно
+     *    ~5 сек — приемлемо.
+     *  - PRO юзер: verifiedAt обновляется при каждом app start через
+     *    restorePurchases → handlePurchase → verifyPurchase.
+     *  - Юзер выключил интернет на месяц: isPro=true работает.
+     *  - Юзер выключил интернет > 30 дней: isPro выключается до подключения.
+     *  - Юзер был free и не покупал ничего: isPro=false (verifiedAt=0 не
+     *    спасает потому что (false AND any) = false).
+     */
+    val isProActive: Flow<Boolean> = prefs.all.map { snap ->
+        if (!snap.isPro) return@map false
+        // Если verifiedAt=0 — это либо свежая покупка (ещё не успели verify),
+        // либо upgrade с прошлой версии без verifiedAt. Доверяем до первого
+        // verify (handlePurchase его триггерит сразу после setPro).
+        if (snap.verifiedAt == 0L) return@map true
+        val age = System.currentTimeMillis() - snap.verifiedAt
+        age < SubscriptionVerifier.GRACE_PERIOD_MS
+    }
 
     /** Тип подписки: "MONTH" | "YEAR" | "" */
     val plan: Flow<String> = prefs.plan

@@ -109,6 +109,10 @@ class SpanishApp : Application() {
         // v1.25.4: подключаемся к Google Play Billing. Это инициирует
         // запрос детальей подписки + restore existing purchases →
         // isPro state из SubscriptionPreferences автоматически синхронизируется.
+        // v1.25.76 SEC-1: restorePurchases() внутри start() сам триггерит
+        // handlePurchase() для каждой активной подписки → каждая идёт через
+        // SubscriptionVerifier на server-side validation. Дополнительный
+        // periodic refresh не нужен — Play сам сообщает свежее состояние.
         runCatching { playBillingManager.start() }.onFailure { e ->
             com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
                 .recordException(RuntimeException("[SpanishApp] PlayBilling start failed", e))

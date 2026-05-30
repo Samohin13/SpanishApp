@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Бэкап включает только пользовательские preferences (голос, тема, язык).
-  БД spanish_app.db в Auto-Backup НЕ ПОПАДАЕТ автоматически — Android
-  по умолчанию резервирует только то, что явно указано в <include>.
-  Прогресс пользователя (XP, серия, ачивки) синхронизируется через
-  Firestore — БД восстановления при переустановке не нужно.
+  SEC-5 (v1.25.76): backup rules ужесточены.
+
+  Прогресс пользователя (XP, серия, ачивки, PRO статус) синхронизируется
+  через Firestore (см. SEC-1) — БД и preferences не бэкапятся.
+
+  Явные <exclude> для DataStore preferences с чувствительными данными:
+   - subscription_prefs — PRO статус (защита от копирования бэкапа на
+     другое устройство для активации PRO без оплаты)
+   - ai_chat_limit — счётчик чат-запросов (защита от обхода лимита)
+   - auth_prefs — Firebase auth state
 -->
 <full-backup-content>
-    <include domain="sharedpref" path="voice_prefs.xml"/>
-    <include domain="sharedpref" path="theme_prefs.xml"/>
-    <include domain="sharedpref" path="user_settings.xml"/>
+    <exclude domain="file" path="datastore/subscription_prefs.preferences_pb"/>
+    <exclude domain="file" path="datastore/ai_chat_limit.preferences_pb"/>
+    <exclude domain="file" path="datastore/auth_prefs.preferences_pb"/>
+    <exclude domain="database" path="spanish_app.db"/>
 </full-backup-content>

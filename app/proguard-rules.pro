@@ -142,3 +142,34 @@
 -dontwarn java.lang.management.**
 -dontwarn org.codehaus.mojo.**
 -dontwarn javax.naming.**
+
+# ── SEC-3 (v1.25.76): обфускация PRO-gate ──────────────────────────
+# Защита от reverse engineering: затрудняет патч isPro=true в jadx.
+# R8 переименует имена классов в a/b/c/... вместо SubscriptionPreferences.
+# Без этого жадоводный реверсер за 5 минут находит setPro() и патчит APK.
+
+# Repackage всех минифицированных классов в единый короткий пакет.
+# Полностью убирает иерархию пакетов com.spanishapp.* в jadx output.
+-repackageclasses 'o'
+-allowaccessmodification
+
+# Google Play Billing — НЕЛЬЗЯ обфусцировать (Play SDK ожидает имена).
+-keep class com.android.billingclient.** { *; }
+-dontwarn com.android.billingclient.**
+
+# AndroidX BillingResult parser
+-keep class com.google.androidbrowserhelper.** { *; }
+-dontwarn com.google.androidbrowserhelper.**
+
+# Но НАШ PlayBillingManager + SubscriptionPreferences — обфусцируются.
+# Hilt-аннотации сохраняются автоматически через @Singleton/@Inject.
+# Класс SubscriptionPreferences в release станет o.a/o.b — патчить
+# конкретно «setPro» как метод уже не получится без полного reverse'а
+# всей DI-инфраструктуры.
+
+# Удалить Log.d/Log.v вызовы из release APK (меньше информации для реверсера).
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+}
+

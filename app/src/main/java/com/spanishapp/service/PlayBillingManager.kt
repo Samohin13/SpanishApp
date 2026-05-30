@@ -18,6 +18,8 @@ import com.android.billingclient.api.acknowledgePurchase
 import com.android.billingclient.api.queryProductDetails
 import com.android.billingclient.api.queryPurchasesAsync
 import com.spanishapp.data.prefs.SubscriptionPreferences
+import com.spanishapp.data.repository.SubscriptionVerifier
+import dagger.Lazy
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -55,6 +57,8 @@ import javax.inject.Singleton
 class PlayBillingManager @Inject constructor(
     @ApplicationContext private val context: Context,
     private val subscriptionPrefs: SubscriptionPreferences,
+    // Lazy чтобы избежать циклической зависимости (Verifier → OkHttp → ...).
+    private val verifier: Lazy<SubscriptionVerifier>,
 ) {
     private val TAG = "PlayBillingManager"
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -182,10 +186,34 @@ class PlayBillingManager @Inject constructor(
         if (purchase.purchaseState != Purchase.PurchaseState.PURCHASED) return
         if (!purchase.products.contains(PRODUCT_ID)) return
 
-        // Активируем PRO в DataStore
+        // 1. Активируем PRO в DataStore (оптимистично, чтоб UI не ждал сервер)
         scope.launch { subscriptionPrefs.setPro(true) }
 
-        // Acknowledgement в течение 3 дней — обязательно
+        // 2. SEC-1 (v1.25.76): server-side verification.
+        //    Шлём purchaseToken на worker → worker проверяет через Google Play
+        //    Developer API → пишет PRO в Cloudflare KV (привязка к Firebase UID).
+        //    Если verify не прошёл (token подделан / refunded / expired) —
+        //    setProVerified(false) перетрёт setPro(true).
+        scope.launch {
+            try {
+                val result = verifier.get().verifyPurchase(
+                    purchaseToken = purchase.purchaseToken,
+                    productId = PRODUCT_ID,
+                )
+                if (!result.valid) {
+                    Log.w(TAG, "Server verify FAILED: ${result.error}, revoking PRO")
+                    subscriptionPrefs.setProVerified(false, System.currentTimeMillis())
+                } else {
+                    Log.d(TAG, "Server verify OK: state=${result.state} expires=${result.expiryTime}")
+                }
+            } catch (e: Exception) {
+                Log.w(TAG, "Server verify exception (network?), trusting Play locally", e)
+                // При сетевой ошибке — доверяем Google Play локально (оптимизм).
+                // verifier при следующем app start попробует ещё раз.
+            }
+        }
+
+        // 3. Acknowledgement в течение 3 дней — обязательно (Play rule)
         if (!purchase.isAcknowledged) {
             scope.launch {
                 val ackParams = AcknowledgePurchaseParams.newBuilder()

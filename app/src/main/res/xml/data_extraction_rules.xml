@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Cloud + device-transfer бэкап включает только указанные preferences.
-  БД (spanish_app.db) не попадает — Android резервирует только то, что
-  явно перечислено в <include>. Прогресс синхронизируется через Firestore.
-  Аутентификационные токены Firebase хранятся в Google Play Services
-  и в Auto-Backup не попадают.
+  SEC-5 (v1.25.76): cloud-backup и device-transfer ужесточены.
+
+  Чувствительные DataStore prefs явно исключены из бэкапа и transfer'а:
+   - subscription_prefs — PRO статус (источник правды = Firestore через SEC-1)
+   - ai_chat_limit — счётчик AI запросов
+   - auth_prefs — Firebase tokens (всё равно хранятся в Google Play Services
+     и в Auto-Backup не попадают, но дублируем для defense-in-depth)
+
+  Аутентификационные токены Firebase хранятся в Google Play Services и в
+  Auto-Backup не попадают (Google security model).
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <include domain="sharedpref" path="voice_prefs.xml"/>
-        <include domain="sharedpref" path="theme_prefs.xml"/>
-        <include domain="sharedpref" path="user_settings.xml"/>
+        <exclude domain="file" path="datastore/subscription_prefs.preferences_pb"/>
+        <exclude domain="file" path="datastore/ai_chat_limit.preferences_pb"/>
+        <exclude domain="file" path="datastore/auth_prefs.preferences_pb"/>
+        <exclude domain="database" path="spanish_app.db"/>
     </cloud-backup>
     <device-transfer>
-        <include domain="sharedpref" path="voice_prefs.xml"/>
-        <include domain="sharedpref" path="theme_prefs.xml"/>
-        <include domain="sharedpref" path="user_settings.xml"/>
+        <exclude domain="file" path="datastore/subscription_prefs.preferences_pb"/>
+        <exclude domain="file" path="datastore/ai_chat_limit.preferences_pb"/>
+        <exclude domain="file" path="datastore/auth_prefs.preferences_pb"/>
+        <exclude domain="database" path="spanish_app.db"/>
     </device-transfer>
 </data-extraction-rules>
