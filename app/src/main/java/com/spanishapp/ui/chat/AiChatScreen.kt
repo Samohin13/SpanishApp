@@ -78,6 +78,17 @@ fun AiChatScreen(
     val error          by vm.error.collectAsStateWithLifecycle()
     val remaining      by vm.remainingMessages.collectAsStateWithLifecycle()
     val isPro          by vm.isPro.collectAsStateWithLifecycle()
+
+    // v1.25.73: AI Chat = PRO-only. Free юзеры видят paywall stub
+    // вместо чата. Trial 7 дней даётся при подписке (Google Play handles).
+    if (!isPro) {
+        ChatPaywallStub(
+            onSubscribe = { navController.navigate("paywall") { launchSingleTop = true } },
+            onBack = { navController.popBackStack() },
+        )
+        return
+    }
+
     // v1.24.6: TextFieldValue для полноценной поддержки курсора/выделения.
     // BasicTextField(readOnly=true) НЕ вызывает системную клаву, но позволяет
     // tap-to-position cursor и selection-by-long-press — как в S26 Ultra.
@@ -1216,6 +1227,93 @@ private fun VoiceWaveform(amplitude: Float, modifier: Modifier = Modifier) {
                     .height((30 * finalHeight).dp.coerceAtLeast(6.dp))
                     .clip(RoundedCornerShape(2.dp))
                     .background(EspeakChat.primary)
+            )
+        }
+    }
+}
+
+// ═══════════════════════════════════════════════════════════
+//  v1.25.73 — Paywall stub для free юзеров вместо чата
+// ═══════════════════════════════════════════════════════════
+@Composable
+private fun ChatPaywallStub(
+    onSubscribe: () -> Unit,
+    onBack: () -> Unit,
+) {
+    androidx.compose.material3.Scaffold(
+        containerColor = MaterialTheme.colorScheme.background,
+        topBar = {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp, vertical = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                androidx.compose.material3.IconButton(onClick = onBack) {
+                    Icon(
+                        androidx.compose.material.icons.Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Назад",
+                        tint = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
+                Text(
+                    "AI Чат",
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.SemiBold,
+                )
+            }
+        },
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+        ) {
+            Text("💬", fontSize = 72.sp)
+            Spacer(Modifier.height(20.dp))
+            Text(
+                "AI Чат — это PRO",
+                fontSize = 26.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            )
+            Spacer(Modifier.height(12.dp))
+            Text(
+                "Болтай на испанском с живым AI собеседником.\nИсправляет ошибки, объясняет грамматику,\nпомогает понять язык.",
+                fontSize = 15.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+                lineHeight = 22.sp,
+            )
+            Spacer(Modifier.height(28.dp))
+            androidx.compose.material3.Button(
+                onClick = onSubscribe,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 56.dp),
+                colors = androidx.compose.material3.ButtonDefaults.buttonColors(
+                    containerColor = EspeakChat.primary,
+                ),
+                shape = RoundedCornerShape(28.dp),
+            ) {
+                Text(
+                    "Попробовать 7 дней бесплатно",
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color.White,
+                )
+            }
+            Spacer(Modifier.height(12.dp))
+            Text(
+                "Потом ${'$'}9.99/мес или ${'$'}49.99/год. Отмена в любой момент.",
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             )
         }
     }

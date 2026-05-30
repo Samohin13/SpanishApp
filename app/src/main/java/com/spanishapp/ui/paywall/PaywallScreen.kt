@@ -706,9 +706,11 @@ private fun PaywallBottomBar(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            // v1.25.74: цены подняты до рыночных $9.99/$49.99
+            // (Duolingo $13.99, Babbel $13.95, Lingvist $9.99).
             PlanCard(
                 title = "Месяц",
-                price = "\$4.99",
+                price = "\$9.99",
                 per = "в месяц",
                 note = "гибко · без обязательств",
                 isActive = selectedPlan == PaywallPlan.MONTH,
@@ -718,12 +720,12 @@ private fun PaywallBottomBar(
             )
             PlanCard(
                 title = "Год",
-                price = "\$34.99",
-                per = "\$2.92/мес",
-                oldPer = "\$59.88",
-                note = "выгода \$24.89",
+                price = "\$49.99",
+                per = "\$4.17/мес",
+                oldPer = "\$119.88",
+                note = "выгода \$69.89",
                 isActive = selectedPlan == PaywallPlan.YEAR,
-                badge = "−42%",
+                badge = "−58%",
                 onClick = { onSelectPlan(PaywallPlan.YEAR) },
                 modifier = Modifier.weight(1f)
             )
@@ -758,9 +760,8 @@ private fun PaywallBottomBar(
                     )
                 } else {
                     Text(
-                        if (selectedPlan == PaywallPlan.YEAR)
-                            "Начать 7 дней бесплатно"
-                        else "Начать за \$4.99/мес",
+                        // v1.25.74: оба плана начинаются с 7-дневного trial
+                        "Начать 7 дней бесплатно",
                         color = Color.White, fontSize = 15.sp,
                         fontWeight = FontWeight.ExtraBold, letterSpacing = 0.3.sp
                     )
@@ -770,8 +771,8 @@ private fun PaywallBottomBar(
         Spacer(Modifier.height(8.dp))
         Text(
             if (selectedPlan == PaywallPlan.YEAR)
-                "далее \$34.99/год · отмена в Google Play"
-            else "списание ежемесячно · отмена в Google Play",
+                "далее \$49.99/год · отмена в любой момент"
+            else "далее \$9.99/мес · отмена в любой момент",
             color = TextDim, fontSize = 10.sp,
             textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()
         )
