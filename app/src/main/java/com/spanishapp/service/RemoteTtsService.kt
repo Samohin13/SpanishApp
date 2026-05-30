@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -221,6 +222,16 @@ class RemoteTtsService @Inject constructor(
             val proxyUrl = BuildConfig.AI_PROXY_URL.trim().trimEnd('/')
             val url = "$proxyUrl/tts"
             val bodyJson = """{"text":${jsonStr(text)},"voice":${jsonStr(voice)},"speed":$speed,"pitch":$pitch}"""
+            // v1.25.77: worker v6 требует Firebase token для всех endpoints
+            // (включая /tts — для per-UID rate limit). Без токена → 401.
+            // sign-in anonymously если currentUser=null (как в AiChatRepository).
+            val idToken = runCatching {
+                val auth = com.google.firebase.auth.FirebaseAuth.getInstance()
+                val user = auth.currentUser
+                    ?: auth.signInAnonymously().await().user
+                user?.getIdToken(false)?.await()?.token
+            }.onFailure { Log.w(TAG, "Firebase token error", it) }
+                .getOrNull()
             val request = Request.Builder()
                 .url(url)
                 .post(bodyJson.toRequestBody("application/json".toMediaType()))
@@ -228,6 +239,7 @@ class RemoteTtsService @Inject constructor(
                 .apply {
                     val secret = BuildConfig.AI_PROXY_SECRET.trim()
                     if (secret.isNotEmpty()) header("X-App-Secret", secret)
+                    if (!idToken.isNullOrEmpty()) header("Authorization", "Bearer $idToken")
                 }
                 .build()
 
