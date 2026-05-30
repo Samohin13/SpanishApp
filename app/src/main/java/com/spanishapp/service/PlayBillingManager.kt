@@ -177,7 +177,16 @@ class PlayBillingManager @Inject constructor(
                 p.purchaseState == Purchase.PurchaseState.PURCHASED &&
                     p.products.contains(PRODUCT_ID)
             }
-            scope.launch { subscriptionPrefs.setPro(active) }
+            // v1.25.79 fix: в debug-сборках НЕ перетираем PRO статус через
+            // setPro(false). Иначе debug PRO toggle сбрасывался при каждом
+            // app start (restorePurchases вызывается из start()) → юзер
+            // включал PRO в Settings и сразу терял его после перезапуска.
+            // В release setPro(active) работает как раньше.
+            if (com.spanishapp.BuildConfig.DEBUG && !active) {
+                Log.d(TAG, "Debug build: skip setPro(false) to preserve debug toggle")
+            } else {
+                scope.launch { subscriptionPrefs.setPro(active) }
+            }
             result.purchasesList.forEach { handlePurchase(it) }
         }
     }
