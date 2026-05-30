@@ -115,7 +115,7 @@ fun VerbTrainingScreen(
     ) { padding ->
         Box(Modifier.fillMaxSize().padding(padding).background(BgGray)) {
             when {
-                state.showSetup  -> SetupContent(state, viewModel)
+                state.showSetup  -> SetupContent(state, viewModel, navController)
                 state.isGameOver -> ResultsContent(state, viewModel) { navController.popBackStack() }
                 else             -> TrainingContent(state, viewModel)
             }
@@ -129,7 +129,7 @@ fun VerbTrainingScreen(
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-private fun SetupContent(state: VerbTrainingState, vm: VerbViewModel) {
+private fun SetupContent(state: VerbTrainingState, vm: VerbViewModel, navController: androidx.navigation.NavHostController) {
     val cfg = state.config
     Column(
         modifier = Modifier
@@ -139,6 +139,52 @@ private fun SetupContent(state: VerbTrainingState, vm: VerbViewModel) {
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
         Text(stringResource(R.string.verb_settings), fontSize = 22.sp, fontWeight = FontWeight.Bold, color = TextMain)
+
+        // v1.25.78 VERB-4: Кнопка «Слабые глаголы»
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { navController.navigate("weak_verbs") },
+            shape = RoundedCornerShape(14.dp),
+            color = Color(0xFF2A1F0F),
+            border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF8A6A3D)),
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 14.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text("💪", fontSize = 22.sp)
+                Spacer(Modifier.width(12.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Text("Слабые глаголы", fontWeight = FontWeight.SemiBold, color = TextMain)
+                    Text("Формы где ты ошибся — повтори", fontSize = 12.sp, color = TextGray)
+                }
+                Text("›", fontSize = 22.sp, color = TextGray)
+            }
+        }
+
+        // v1.25.78 VERB-3: Рекомендуемая тренировка по CEFR
+        SectionCard(title = "🎯 Рекомендуемая тренировка") {
+            Text(
+                "Подбирает времена и сложность под твой уровень — без долгой настройки.",
+                fontSize = 12.sp,
+                color = TextGray,
+                modifier = Modifier.padding(bottom = 8.dp)
+            )
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                listOf("A1", "A2", "B1", "B2").forEach { level ->
+                    OutlinedButton(
+                        onClick = { vm.applyRecommended(level) },
+                        shape = RoundedCornerShape(20.dp),
+                        modifier = Modifier.height(36.dp),
+                        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp, vertical = 0.dp),
+                    ) {
+                        Text("Для $level", fontSize = 13.sp)
+                    }
+                }
+            }
+        }
 
         SectionCard(title = stringResource(R.string.verb_section_mode)) {
             VerbTrainingMode.entries.forEach { mode ->
@@ -328,6 +374,9 @@ private fun prettyTense(t: String): String = when (t) {
     "futuro"      -> "Futuro"
     "condicional" -> "Condicional"
     "subjuntivo"  -> "Subjuntivo"
+    // v1.25.78: B2 времена
+    "subjuntivo_imperfecto" -> "Subj. Imperf."
+    "imperativo"  -> "Imperativo"
     else          -> t
 }
 
@@ -623,10 +672,30 @@ private fun FeedbackBanner(q: VerbQuestion) {
         color = color.copy(alpha = 0.12f),
         border = androidx.compose.foundation.BorderStroke(1.dp, color)
     ) {
-        Row(modifier = Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, null, tint = color)
-            Spacer(Modifier.width(8.dp))
-            Text(text, color = color, fontWeight = FontWeight.SemiBold)
+        Column(modifier = Modifier.padding(12.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(icon, null, tint = color)
+                Spacer(Modifier.width(8.dp))
+                Text(text, color = color, fontWeight = FontWeight.SemiBold)
+            }
+            // v1.25.78 VERB-2: explanation после ошибки — показываем правило
+            if (q.isCorrect == false && q.explanation.isNotBlank()) {
+                Spacer(Modifier.height(8.dp))
+                Surface(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(10.dp),
+                    color = androidx.compose.ui.graphics.Color(0xFF1A1A20),
+                    border = androidx.compose.foundation.BorderStroke(1.dp, color.copy(alpha = 0.3f))
+                ) {
+                    Text(
+                        q.explanation,
+                        modifier = Modifier.padding(12.dp),
+                        color = androidx.compose.ui.graphics.Color(0xFFE5E5E5),
+                        fontSize = 13.sp,
+                        lineHeight = 18.sp,
+                    )
+                }
+            }
         }
     }
 }

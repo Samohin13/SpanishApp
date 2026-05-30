@@ -38,8 +38,9 @@ import com.spanishapp.data.db.entity.*
         LessonCompletionEventEntity::class,
         ActivityTimeLogEntity::class,
         UserVocabStateEntity::class,
+        WeakVerbEntity::class,  // v1.25.78 VERB-4
     ],
-    version = 30,
+    version = 31,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -69,6 +70,7 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun lessonCompletionHistoryDao(): LessonCompletionHistoryDao
     abstract fun activityTimeLogDao(): ActivityTimeLogDao
     abstract fun userVocabStateDao(): UserVocabStateDao
+    abstract fun weakVerbDao(): WeakVerbDao  // v1.25.78 VERB-4
     // radioWordCatchDao() удалён в v1.11.7 — фича «Поймал слово!» выпилена в v1.9.0.
     // Абстрактный метод оставался без Hilt-провайдера → ЛЮБОЙ @Inject его =
     // crash на старте (Dagger graph MissingBinding). Entity RadioWordCatchEntity
@@ -398,6 +400,27 @@ abstract class AppDatabase : RoomDatabase() {
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_user_vocab_state_status ON user_vocab_state(status)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_user_vocab_state_cefr ON user_vocab_state(cefr)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_user_vocab_state_last_seen ON user_vocab_state(last_seen_at)")
+            }
+        }
+
+        // ── v31: weak_verbs — VERB-4 (v1.25.78). Пул ошибочных глагольных
+        //   форм для переучивания. Заполняется из VerbViewModel.submitAnswer
+        //   при неверном ответе. WeakVerbsScreen читает топ через DAO. ──
+        val MIGRATION_30_31 = object : Migration(30, 31) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("""
+                    CREATE TABLE IF NOT EXISTS weak_verbs (
+                        `key` TEXT NOT NULL PRIMARY KEY,
+                        verb TEXT NOT NULL,
+                        tense TEXT NOT NULL,
+                        pronoun_index INTEGER NOT NULL,
+                        correct_form TEXT NOT NULL,
+                        error_count INTEGER NOT NULL,
+                        last_error_at INTEGER NOT NULL
+                    )
+                """.trimIndent())
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_weak_verbs_last_error_at ON weak_verbs(last_error_at)")
+                db.execSQL("CREATE INDEX IF NOT EXISTS index_weak_verbs_error_count ON weak_verbs(error_count)")
             }
         }
 

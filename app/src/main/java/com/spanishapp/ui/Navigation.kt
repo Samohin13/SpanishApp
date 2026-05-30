@@ -385,6 +385,7 @@ object Navigation {
             ) { ConjugationScreen(navController) }
 
             composable("conjugation_quiz") { VerbTrainingScreen(navController) }
+            composable("weak_verbs") { com.spanishapp.ui.games.WeakVerbsScreen(navController) }
 
             // ── Диалоги ───────────────────────────────────────
             // Detail-экран не нужен: DialoguesScreen раскрывает реплики inline + TTS.

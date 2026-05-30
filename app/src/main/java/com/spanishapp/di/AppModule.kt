@@ -54,6 +54,7 @@ object AppModule {
                 AppDatabase.MIGRATION_27_28,
                 AppDatabase.MIGRATION_28_29,
                 AppDatabase.MIGRATION_29_30,
+                AppDatabase.MIGRATION_30_31,
             )
         // fallbackToDestructiveMigration ТОЛЬКО в debug. Раньше было всегда —
         // любая будущая ошибка миграции в release молча wipe'ала весь прогресс
@@ -83,6 +84,7 @@ object AppModule {
     @Provides fun provideLessonCompletionHistoryDao(db: AppDatabase): com.spanishapp.data.db.dao.LessonCompletionHistoryDao = db.lessonCompletionHistoryDao()
     @Provides fun provideActivityTimeLogDao(db: AppDatabase): com.spanishapp.data.db.dao.ActivityTimeLogDao = db.activityTimeLogDao()
     @Provides fun provideUserVocabStateDao(db: AppDatabase): com.spanishapp.data.db.dao.UserVocabStateDao = db.userVocabStateDao()
+    @Provides fun provideWeakVerbDao(db: AppDatabase): com.spanishapp.data.db.dao.WeakVerbDao = db.weakVerbDao()
     @Provides fun provideDailyXpDao(db: AppDatabase): DailyXpDao = db.dailyXpDao()
     @Provides fun provideFlashcardSetProgressDao(db: AppDatabase): FlashcardSetProgressDao = db.flashcardSetProgressDao()
     @Provides fun provideRecentSearchDao(db: AppDatabase): RecentSearchDao = db.recentSearchDao()

@@ -20,6 +20,9 @@ object SpanishConjugator {
     val supportedTenses = listOf(
         "presente", "preterito", "imperfecto", "futuro",
         "condicional", "subjuntivo",
+        // v1.25.78: B2 времена
+        "subjuntivo_imperfecto",  // hablara/hablase — основа B2 для Si conditionals
+        "imperativo",             // ¡habla! — для команд и инструкций
     )
 
     /**
@@ -194,6 +197,47 @@ object SpanishConjugator {
             // ── CONDICIONAL ──
             "condicional" -> listOf("ía","ías","ía","íamos","íais","ían").map { inf + it }
 
+            // ── SUBJUNTIVO IMPERFECTO (-ra forms) ──
+            // v1.25.78: образуется от 3-го лица мн. ч. Pretérito Indefinido
+            // путём замены "-ron" на "-ra/ras/ra/ramos(акцент)/rais/ran".
+            // Используется в Si type 2 (Si tuviera tiempo, viajaría), Ojalá,
+            // como si, после verbos в прошедшем времени.
+            "subjuntivo_imperfecto" -> {
+                // Получаем форму ellos из претерита через рекурсию.
+                val pret = conjugateByKind(verb, kind, "preterito") ?: return null
+                val ellos3 = pret.ellos.lowercase()
+                if (!ellos3.endsWith("ron")) return null
+                val base = ellos3.dropLast(3)  // hablaron → habla
+                // Для -ar: hablaron → habla + ra/ras/ra/'ramos/rais/ran
+                // Для -er/-ir: comieron → comie + ra/ras/ra/'ramos/rais/ran (но с акцентом é)
+                // Универсально: base + ra, base + ras, base + ra,
+                //                base(last-vowel-acc) + ramos, base + rais, base + ran
+                val nosAcc = addAcuteToLastVowel(base)
+                listOf(
+                    base + "ra", base + "ras", base + "ra",
+                    nosAcc + "ramos", base + "rais", base + "ran"
+                )
+            }
+
+            // ── IMPERATIVO (positive — tú/usted/nosotros/vosotros/ustedes) ──
+            // v1.25.78: только утвердительный (positive). Отрицательный
+            // imperativo = subjuntivo presente с "no" впереди и в коде не
+            // дублируется. yo формы у imperativo нет, кладём пустую строку.
+            //
+            // tú (positive)  = 3-е лицо ед. ч. presente (habla, come, vive)
+            //                  ИРРЕГ глаголы (ven, di, ten, pon, sal, haz) — AUTHORED
+            // usted          = 3-е лицо ед. ч. subjuntivo (hable, coma, viva)
+            // nosotros       = 1-е лицо мн. ч. subjuntivo (hablemos, comamos)
+            // vosotros (pos) = infinitivo без -r + -d (hablad, comed, vivid)
+            // ustedes        = 3-е лицо мн. ч. subjuntivo (hablen, coman, vivan)
+            "imperativo" -> {
+                val pres = conjugateByKind(verb, kind, "presente") ?: return null
+                val subj = conjugateByKind(verb, kind, "subjuntivo") ?: return null
+                val vosotrosPos = inf.dropLast(1) + "d"   // hablar→hablad, comer→comed
+                // Layout: yo(empty), tú, él(usted), nos, vos(vosotros pos), ellos(ustedes)
+                listOf("", pres.el, subj.el, subj.nosotros, vosotrosPos, subj.ellos)
+            }
+
             // ── SUBJUNTIVO PRESENTE ──
             "subjuntivo" -> when {
                 isZc || isDucir -> {
@@ -255,5 +299,48 @@ object SpanishConjugator {
         val idx = stem.lastIndexOf(from)
         if (idx < 0) return stem
         return stem.substring(0, idx) + replacement + stem.substring(idx + 1)
+    }
+
+    /**
+     * v1.25.78: ставит акут на последнюю гласную в slove.
+     * Используется в Subjuntivo Imperfecto для nosotros формы:
+     *   habla → háblá (habláramos), comie → comié (comiéramos).
+     */
+    private fun addAcuteToLastVowel(stem: String): String {
+        val vowels = "aeiou"
+        for (i in stem.indices.reversed()) {
+            if (stem[i] in vowels) {
+                val acc = when (stem[i]) {
+                    'a' -> 'á'; 'e' -> 'é'; 'i' -> 'í'; 'o' -> 'ó'; 'u' -> 'ú'
+                    else -> stem[i]
+                }
+                return stem.substring(0, i) + acc + stem.substring(i + 1)
+            }
+        }
+        return stem
+    }
+
+    /**
+     * v1.25.78: возвращает короткое русское объяснение правила глагола
+     * для показа после ошибки в тренажёре.
+     *
+     * @param kind тип спряжения из VerbKind
+     * @param tense время для уточнения контекста (опционально)
+     * @return текст в 1-2 предложениях, например "e→ie в 1,2,3,6 лицах"
+     */
+    fun explainKind(kind: VerbKind, tense: String = ""): String = when (kind) {
+        VerbKind.REGULAR_AR -> "Регулярный глагол на -ar. Окончания: -o, -as, -a, -amos, -áis, -an."
+        VerbKind.REGULAR_ER -> "Регулярный глагол на -er. Окончания: -o, -es, -e, -emos, -éis, -en."
+        VerbKind.REGULAR_IR -> "Регулярный глагол на -ir. Окончания: -o, -es, -e, -imos, -ís, -en."
+        VerbKind.STEM_E_IE -> "Глагол с изменением корня e→ie в 1, 2, 3, 6 лицах. Пример: pensar → pienso, piensas, piensa, pensamos, pensáis, piensan."
+        VerbKind.STEM_O_UE -> "Глагол с изменением корня o→ue в 1, 2, 3, 6 лицах. Пример: contar → cuento, cuentas, cuenta, contamos, contáis, cuentan."
+        VerbKind.STEM_E_I -> "Глагол с изменением корня e→i в 1, 2, 3, 6 лицах (только -ir). Пример: pedir → pido, pides, pide, pedimos, pedís, piden."
+        VerbKind.SPELL_CAR -> "Орфографическое изменение c→qu перед e. Пример: buscar → busqué (yo, претерит), busque (subjuntivo)."
+        VerbKind.SPELL_GAR -> "Орфографическое изменение g→gu перед e. Пример: llegar → llegué (yo, претерит), llegue (subjuntivo)."
+        VerbKind.SPELL_ZAR -> "Орфографическое изменение z→c перед e. Пример: empezar → empecé (yo, претерит), empiece (subjuntivo)."
+        VerbKind.ZC -> "В 1-м лице ед. ч. presente и во всём subjuntivo вставляется -zc-. Пример: parecer → parezco, parezca."
+        VerbKind.DUCIR -> "В претерите основа на -j-: conducir → conduje, condujiste, condujo, condujimos, condujisteis, condujeron."
+        VerbKind.UIR -> "Между гласными вставляется -y- (кроме nosotros/vosotros). Пример: huir → huyo, huyes, huimos, huyen."
+        VerbKind.AUTHORED -> "Полностью неправильный глагол — формы нужно запомнить отдельно."
     }
 }

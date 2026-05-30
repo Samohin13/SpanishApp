@@ -421,3 +421,30 @@ data class UserVocabStateEntity(
     /** Timestamp последнего пересчёта VocabAggregator'ом. */
     @ColumnInfo(name = "updated_at") val updatedAt: Long = 0L,
 )
+
+
+/**
+ * v1.25.78 VERB-4: пул слабых глагольных форм для повторения.
+ *
+ * После ошибки в Verbos-тренажёре формируется запись (verb+tense+pronounIdx).
+ * При успешном повторе errorCount уменьшается; при errorCount<=0 запись
+ * удаляется из пула. Экран WeakVerbsScreen предлагает сессию из этого пула
+ * (приоритет — последние ошибки).
+ */
+@Entity(
+    tableName = "weak_verbs",
+    indices = [
+        Index(value = ["last_error_at"]),
+        Index(value = ["error_count"]),
+    ],
+)
+data class WeakVerbEntity(
+    /** Композитный ключ: "verb|tense|pronounIdx", например "hablar|preterito|2". */
+    @PrimaryKey @ColumnInfo(name = "key") val key: String,
+    @ColumnInfo(name = "verb") val verb: String,
+    @ColumnInfo(name = "tense") val tense: String,
+    @ColumnInfo(name = "pronoun_index") val pronounIndex: Int,
+    @ColumnInfo(name = "correct_form") val correctForm: String,
+    @ColumnInfo(name = "error_count") val errorCount: Int = 1,
+    @ColumnInfo(name = "last_error_at") val lastErrorAt: Long = System.currentTimeMillis(),
+)

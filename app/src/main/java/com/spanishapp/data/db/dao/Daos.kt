@@ -989,3 +989,28 @@ data class CefrCount(
     val cefr: String?,
     val cnt: Int,
 )
+
+/**
+ * v1.25.78 VERB-4: DAO для пула слабых глагольных форм.
+ */
+@Dao
+interface WeakVerbDao {
+
+    @Query("SELECT * FROM weak_verbs ORDER BY error_count DESC, last_error_at DESC LIMIT :limit")
+    suspend fun topWeak(limit: Int = 30): List<WeakVerbEntity>
+
+    @Query("SELECT * FROM weak_verbs ORDER BY last_error_at DESC")
+    fun observeAll(): Flow<List<WeakVerbEntity>>
+
+    @Query("SELECT COUNT(*) FROM weak_verbs")
+    fun observeCount(): Flow<Int>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(entity: WeakVerbEntity)
+
+    @Query("DELETE FROM weak_verbs WHERE `key` = :key")
+    suspend fun deleteByKey(key: String)
+
+    @Query("DELETE FROM weak_verbs")
+    suspend fun deleteAll()
+}
