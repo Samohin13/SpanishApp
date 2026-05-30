@@ -41,6 +41,11 @@ class SpanishApp : Application() {
     /** v1.25.4: Google Play Billing — реальные PRO подписки. */
     @Inject lateinit var playBillingManager: com.spanishapp.service.PlayBillingManager
 
+    /** v1.25.80: в debug сборках PRO включается автоматически на старте app —
+     *  чтоб разработчик не тыкал toggle в Settings вручную при каждой
+     *  переустановке. В release не выполняется (BuildConfig.DEBUG=false). */
+    @Inject lateinit var subscriptionPrefs: com.spanishapp.data.prefs.SubscriptionPreferences
+
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     /**
@@ -116,6 +121,15 @@ class SpanishApp : Application() {
         runCatching { playBillingManager.start() }.onFailure { e ->
             com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
                 .recordException(RuntimeException("[SpanishApp] PlayBilling start failed", e))
+        }
+        // v1.25.80: debug-сборка → PRO автоматически включён на старте.
+        // Облегчает разработку: после переустановки app сразу доступен весь
+        // PRO контент без ручного toggle в Settings → Premium. Не работает
+        // в release — BuildConfig.DEBUG=false, ветка не выполняется.
+        if (BuildConfig.DEBUG) {
+            appScope.launch {
+                runCatching { subscriptionPrefs.setPro(true) }
+            }
         }
         appScope.launch {
             runCatching {
