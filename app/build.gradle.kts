@@ -88,8 +88,8 @@ android {
         applicationId = "com.espeak.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 183
-        versionName = "1.25.81"
+        versionCode = 184
+        versionName = "1.25.82"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // Proxy URL for production: hides the API key from the APK.
         // When non-empty, AiChatRepository routes requests through it.
@@ -141,6 +141,16 @@ android {
             // AiChatRepository.apiUrl() в release требует AI_PROXY_URL (через
             // require(BuildConfig.DEBUG)), иначе крашит — это намеренная защита.
             buildConfigField("String", "GEMINI_API_KEY", "\"\"")
+            // v1.25.82: native debug symbols в AAB.
+            // Без этого Play Console показывает warning «Этот объект (App
+            // Bundle) содержит нативный код. Рекомендуем загрузить файл с
+            // отладочными символами». Зависимости вроде ExoPlayer / Firebase
+            // приносят .so файлы — Google хочет их symbol table для anrs.
+            // FULL = полные DWARF символы (~10-30 MB в AAB, но Play
+            // распакует, в APK не попадает). Чистый AAB без warnings.
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
         }
         debug {
             // Debug-сборка не минифицируется — быстрее и удобнее отлаживать.
