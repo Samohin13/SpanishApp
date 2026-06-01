@@ -24,9 +24,14 @@ package com.spanishapp.ui.home
  *
  * ## Прогресс
  *
- * Блок 1.1 «Взлёт» — ✅ заполнен (15 уроков u1_l0..u1_l13_5).
- * Блок 1.2 «Мой мир» — pending.
- * ...
+ * ✅ Все 16 блоков заполнены (260 уроков, 1690 упражнений).
+ * A1.1, A1.2, A1.3, A1.4, A2.1, A2.2, A2.3, A2.4,
+ * B1.1, B1.2, B1.3, B1.4, B2.1, B2.2, B2.3, B2.4.
+ *
+ * Среднее: 6.5 упражнений на урок, 13 типов упражнений
+ * распределены равномерно (TRANSLATE 16%, TAP_MISSING_WORD 15%,
+ * BUILD_SENTENCE 14%, MULTIPLE_CHOICE 14%, SPOT_THE_ERROR 12%,
+ * LISTEN_TYPE 11%, MATCH_PAIRS 8%, остальные ≤4%).
  */
 object LessonContentDataV2 {
 
