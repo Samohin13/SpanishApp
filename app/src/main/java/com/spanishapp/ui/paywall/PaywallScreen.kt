@@ -109,12 +109,42 @@ fun PaywallScreen(navController: NavHostController) {
     val state by vm.state.collectAsStateWithLifecycle()
     val pagerState = rememberPagerState(initialPage = 0) { 5 }
 
+    // v1.25.84 ANL-1: paywall funnel events.
+    // Tracking max viewed page → используем для paywall_dismissed на onDispose.
+    val maxViewedPage = remember { mutableStateOf(0) }
+    var purchased by remember { mutableStateOf(false) }
+
+    // paywall_viewed — один раз при заходе.
+    LaunchedEffect(Unit) {
+        com.spanishapp.service.Analytics.paywallViewed(source = "unknown")
+    }
+
+    // paywall_page_swiped — каждый раз когда юзер переключает страницу.
+    LaunchedEffect(pagerState) {
+        snapshotFlow { pagerState.currentPage }.collect { page ->
+            com.spanishapp.service.Analytics.paywallPageSwiped(page)
+            if (page > maxViewedPage.value) maxViewedPage.value = page
+        }
+    }
+
+    // paywall_dismissed — на onDispose, если юзер ушёл БЕЗ покупки.
+    androidx.compose.runtime.DisposableEffect(Unit) {
+        onDispose {
+            if (!purchased) {
+                com.spanishapp.service.Analytics.paywallDismissed(maxViewedPage.value)
+            }
+        }
+    }
+
     // v1.23.1 (audit Bug 10): слушаем purchased event через LaunchedEffect —
     // навигация только в alive lifecycle, никаких race conditions.
     LaunchedEffect(Unit) {
         vm.events.collect { event ->
             when (event) {
-                is PurchaseEvent.Purchased -> navController.popBackStack()
+                is PurchaseEvent.Purchased -> {
+                    purchased = true  // флаг для onDispose чтоб НЕ слать dismissed
+                    navController.popBackStack()
+                }
             }
         }
     }

@@ -45,8 +45,13 @@ class PaywallViewModel @Inject constructor(
         viewModelScope.launch {
             subscriptionManager.isProActive.collect { active ->
                 if (active && _state.value.isLoading) {
+                    val plan = _state.value.selectedPlan
                     _state.update { it.copy(isLoading = false, purchased = true) }
                     _events.send(PurchaseEvent.Purchased)
+                    // v1.25.84 ANL-1: успешная покупка
+                    com.spanishapp.service.Analytics.paywallPurchaseSuccess(
+                        if (plan == PaywallPlan.MONTH) "monthly" else "yearly"
+                    )
                 }
             }
         }
@@ -54,6 +59,10 @@ class PaywallViewModel @Inject constructor(
 
     fun selectPlan(plan: PaywallPlan) {
         _state.update { it.copy(selectedPlan = plan) }
+        // v1.25.84 ANL-1: paywall funnel analytics
+        com.spanishapp.service.Analytics.paywallPlanSelected(
+            if (plan == PaywallPlan.MONTH) "monthly" else "yearly"
+        )
     }
 
     /**
@@ -66,16 +75,25 @@ class PaywallViewModel @Inject constructor(
     fun startPurchase(activity: Activity) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
-            val basePlanId = when (state.value.selectedPlan) {
+            val plan = state.value.selectedPlan
+            val basePlanId = when (plan) {
                 PaywallPlan.MONTH -> PlayBillingManager.PLAN_MONTHLY
                 PaywallPlan.YEAR -> PlayBillingManager.PLAN_YEARLY
             }
+            // v1.25.84 ANL-1: log "trial_started" перед открытием Google Play UI
+            com.spanishapp.service.Analytics.paywallTrialStarted(
+                if (plan == PaywallPlan.MONTH) "monthly" else "yearly"
+            )
             billing.launchPurchase(activity, basePlanId)
             // если юзер отменит — state.isLoading=true остаётся блокированным
             // пока не вернётся snap из listener. Резервный timeout-сброс через 60s:
             kotlinx.coroutines.delay(60_000)
             if (_state.value.isLoading) {
                 _state.update { it.copy(isLoading = false) }
+                // v1.25.84 ANL-1: timeout = юзер закрыл Play UI без покупки
+                com.spanishapp.service.Analytics.paywallPurchaseCancelled(
+                    if (plan == PaywallPlan.MONTH) "monthly" else "yearly"
+                )
             }
         }
     }

@@ -82,11 +82,53 @@ object Analytics {
             putString("language", toLang)
         }
 
-    // ── 7. Монетизация ────────────────────────────────────────────────
-    /** source: "profile", "settings", "home_banner" — где юзер кликнул */
+    // ── 7. Монетизация (paywall funnel) ───────────────────────────────
+    /** source: "profile", "settings", "home_banner", "chat", "lesson_locked" — где юзер кликнул */
     fun subscriptionClicked(source: String) =
         log("subscription_clicked") {
             putString("source", source)
+        }
+
+    /** v1.25.84 ANL-1: paywall открыт (юзер увидел экран подписки). */
+    fun paywallViewed(source: String) =
+        log("paywall_viewed") {
+            putString("source", source)
+        }
+
+    /** Юзер свайпнул на N-ю страницу paywall'а (0..4). */
+    fun paywallPageSwiped(pageIndex: Int) =
+        log("paywall_page_swiped") {
+            putLong("page", pageIndex.toLong())
+        }
+
+    /** Юзер выбрал план: "monthly" | "yearly". */
+    fun paywallPlanSelected(plan: String) =
+        log("paywall_plan_selected") {
+            putString("plan", plan)
+        }
+
+    /** Юзер нажал кнопку «Начать 7 дней бесплатно» — открывается Google Play. */
+    fun paywallTrialStarted(plan: String) =
+        log("paywall_trial_started") {
+            putString("plan", plan)
+        }
+
+    /** Покупка успешно завершена в Google Play (юзер прошёл оплату). */
+    fun paywallPurchaseSuccess(plan: String) =
+        log("paywall_purchase_success") {
+            putString("plan", plan)
+        }
+
+    /** Юзер отменил покупку в Google Play UI (USER_CANCELED). */
+    fun paywallPurchaseCancelled(plan: String) =
+        log("paywall_purchase_cancelled") {
+            putString("plan", plan)
+        }
+
+    /** Юзер закрыл paywall без покупки (свайп / крестик / back). */
+    fun paywallDismissed(viewedPagesMax: Int) =
+        log("paywall_dismissed") {
+            putLong("viewed_pages_max", viewedPagesMax.toLong())
         }
 
     // ── helpers ───────────────────────────────────────────────────────
