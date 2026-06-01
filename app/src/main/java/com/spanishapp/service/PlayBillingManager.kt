@@ -201,24 +201,45 @@ class PlayBillingManager @Inject constructor(
         // 2. SEC-1 (v1.25.76): server-side verification.
         //    Шлём purchaseToken на worker → worker проверяет через Google Play
         //    Developer API → пишет PRO в Cloudflare KV (привязка к Firebase UID).
-        //    Если verify не прошёл (token подделан / refunded / expired) —
-        //    setProVerified(false) перетрёт setPro(true).
+        //
+        //    v1.25.83 fix: НЕ отменяем PRO при unclear ответе сервера.
+        //    Reality:
+        //     - Play API часто отдаёт state=null если подписка свежая
+        //       (синхронизация занимает до 48ч после первой покупки)
+        //     - Service Account permissions распространяются 1-24ч
+        //     - Сетевые ошибки бывают
+        //    Если сервер не может однозначно сказать «это refund/expired/canceled»
+        //    — доверяем Google Play Billing локально. Это реальная покупка,
+        //    отменять её из-за лагов API = выстрелить себе в ногу.
+        //
+        //    Отзываем PRO ТОЛЬКО при явных negative state:
+        //     - SUBSCRIPTION_STATE_EXPIRED
+        //     - SUBSCRIPTION_STATE_CANCELED
+        //     - "valid":false с конкретным state, не null.
         scope.launch {
             try {
                 val result = verifier.get().verifyPurchase(
                     purchaseToken = purchase.purchaseToken,
                     productId = PRODUCT_ID,
                 )
-                if (!result.valid) {
-                    Log.w(TAG, "Server verify FAILED: ${result.error}, revoking PRO")
+                val isDefinitelyInvalid = !result.valid && result.state in setOf(
+                    "SUBSCRIPTION_STATE_EXPIRED",
+                    "SUBSCRIPTION_STATE_CANCELED",
+                    "SUBSCRIPTION_STATE_REVOKED",
+                )
+                if (result.valid) {
+                    Log.d(TAG, "Server verify OK: state=${result.state} expires=${result.expiryTime}")
+                } else if (isDefinitelyInvalid) {
+                    Log.w(TAG, "Server verify FAILED definitively: state=${result.state}, revoking PRO")
                     subscriptionPrefs.setProVerified(false, System.currentTimeMillis())
                 } else {
-                    Log.d(TAG, "Server verify OK: state=${result.state} expires=${result.expiryTime}")
+                    Log.w(TAG, "Server verify UNCLEAR (state=${result.state}, error=${result.error}) — trusting Google Play Billing locally")
+                    // Не отменяем PRO. Реальная покупка прошла — Play API
+                    // догонит через несколько часов и при следующем app start
+                    // verifyPurchase вернёт корректный SUBSCRIPTION_STATE_ACTIVE.
                 }
             } catch (e: Exception) {
                 Log.w(TAG, "Server verify exception (network?), trusting Play locally", e)
-                // При сетевой ошибке — доверяем Google Play локально (оптимизм).
-                // verifier при следующем app start попробует ещё раз.
             }
         }
 
