@@ -533,7 +533,7 @@
         },
         {
             "id": "u10_l14",
-            "intro": "🏁 Чекпоинт B1.2: «Если бы я...» — Si тип 2 + Cond + Imp.Subj. + советы.",
+            "intro": "🏁 Чекпоинт B1.2: «Если бы я...» — Si тип 1/2/3 + Cond + Imp.Subj. + Cond Compuesto + советы.",
             "sections": [
                 {
                     "heading": "Что повторяем",
@@ -547,8 +547,16 @@
                             "right": "hablara, tuviera, fuera"
                         },
                         {
+                            "left": "Si тип 1 = Pres Indic + Pres/Fut",
+                            "right": "Si llueve, me quedo"
+                        },
+                        {
                             "left": "Si тип 2 = Imp.Subj. + Cond",
                             "right": "Si tuviera, viajaría"
+                        },
+                        {
+                            "left": "Si тип 3 = Plusc.Subj + Cond.Comp",
+                            "right": "Si hubiera tenido, habría viajado"
                         },
                         {
                             "left": "Советы и вежливость",
@@ -582,7 +590,46 @@
                         "diría"
                     ],
                     "correctAnswer": "Si lo supiera lo diría",
-                    "explanation": "Si + Imp.Subj. + Cond."
+                    "explanation": "Si + Imp.Subj. + Cond (тип 2)."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Какой тип? «Si llueve, me quedo en casa»",
+                    "question": "",
+                    "options": [
+                        "Тип 1 (реальное)",
+                        "Тип 2 (гипотеза-сейчас)",
+                        "Тип 3 (прошлое-небывшее)",
+                        "Не Si"
+                    ],
+                    "correctAnswer": "Тип 1 (реальное)",
+                    "explanation": "Si + Pres Indic + Pres → тип 1."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Какой тип? «Si tuviera tiempo, leería más»",
+                    "question": "",
+                    "options": [
+                        "Тип 2 (гипотеза-сейчас)",
+                        "Тип 1 (реальное)",
+                        "Тип 3 (прошлое-небывшее)",
+                        "Не Si"
+                    ],
+                    "correctAnswer": "Тип 2 (гипотеза-сейчас)",
+                    "explanation": "Si + Imp.Subj + Cond → тип 2."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Какой тип? «Si hubiera estudiado, habría aprobado»",
+                    "question": "",
+                    "options": [
+                        "Тип 3 (прошлое-небывшее)",
+                        "Тип 1 (реальное)",
+                        "Тип 2 (гипотеза-сейчас)",
+                        "Не Si"
+                    ],
+                    "correctAnswer": "Тип 3 (прошлое-небывшее)",
+                    "explanation": "Si + Plusc.Subj + Cond.Comp → тип 3."
                 },
                 {
                     "type": "LISTEN_COMPREHEND",
@@ -1106,7 +1153,7 @@
                     "question": "",
                     "options": [
                         "vivieras",
-                        "vivieras",
+                        "vivirías",
                         "vives",
                         "viviste"
                     ],
@@ -1227,6 +1274,39 @@
                     "question": "",
                     "correctAnswer": "fuera",
                     "explanation": "ser Imp.Subj."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "«Si me ___ dinero, te ayudaría». Что верно?",
+                    "question": "",
+                    "options": [
+                        "sobrara",
+                        "sobrase",
+                        "ambos",
+                        "sobraría"
+                    ],
+                    "correctAnswer": "ambos",
+                    "explanation": "У Imp.Subj. есть ДВЕ равноценные формы: -ara и -ase (sobrara = sobrase). Обе грамматически верны и взаимозаменяемы."
+                },
+                {
+                    "type": "MATCH_PAIRS",
+                    "instruction": "Сопоставь -ara ↔ -ase эквиваленты",
+                    "question": "",
+                    "correctAnswer": "ok",
+                    "explanation": "Парные формы Imp.Subj.: -ara/-ase для -ar глаголов, -iera/-iese для -er/-ir. Полностью эквивалентны."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "В чём разница между -ara и -ase формами?",
+                    "question": "",
+                    "options": [
+                        "-ase чуть формальнее, -ara универсальна и преобладает в Лат.Америке",
+                        "-ase для прошлого, -ara для будущего",
+                        "-ara только в Испании, -ase только в Аргентине",
+                        "Разные значения: -ara=факт, -ase=гипотеза"
+                    ],
+                    "correctAnswer": "-ase чуть формальнее, -ara универсальна и преобладает в Лат.Америке",
+                    "explanation": "Формы взаимозаменяемы по смыслу. Стилистически: -ase звучит чуть книжнее/официальнее, -ara доминирует в разговорной речи и в Латинской Америке."
                 }
             ]
         },
@@ -1476,7 +1556,7 @@
         },
         {
             "id": "u11_l10",
-            "intro": "Acabar de / Volver a + infinitivo: только что (acabar de), снова (volver a).",
+            "intro": "Perífrasis verbales: acabar de (только что), volver a (снова), dejar de (перестать), empezar a (начать), ponerse a (приняться), soler (иметь обычай) + инфинитив.",
             "sections": [
                 {
                     "heading": "Acabar de / Volver a",
@@ -1496,6 +1576,27 @@
                         {
                             "left": "Vuelve a llover",
                             "right": "Снова идёт дождь"
+                        }
+                    ]
+                },
+                {
+                    "heading": "Dejar de / Empezar a / Ponerse a / Soler",
+                    "items": [
+                        {
+                            "left": "Dejé de fumar el año pasado",
+                            "right": "Бросил курить в прошлом году (перестал)"
+                        },
+                        {
+                            "left": "Empezó a llover",
+                            "right": "Начался дождь"
+                        },
+                        {
+                            "left": "Se puso a estudiar",
+                            "right": "Принялся за учёбу (резко начал)"
+                        },
+                        {
+                            "left": "Suelo levantarme temprano",
+                            "right": "Обычно встаю рано (имею обычай)"
                         }
                     ]
                 }
@@ -1526,17 +1627,59 @@
                     "explanation": "volver a + inf = снова."
                 },
                 {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Вставь: «Бросил курить»",
+                    "question": "___ fumar el año pasado.",
+                    "options": [
+                        "Dejé de",
+                        "Acabo de",
+                        "Suelo"
+                    ],
+                    "correctAnswer": "dejé de",
+                    "explanation": "dejar de + inf = перестать делать."
+                },
+                {
+                    "type": "BUILD_SENTENCE",
+                    "instruction": "Собери: «Начался дождь»",
+                    "question": "",
+                    "words": [
+                        "Empezó",
+                        "a",
+                        "llover"
+                    ],
+                    "correctAnswer": "Empezó a llover",
+                    "explanation": "empezar a + inf = начать."
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Вставь: «Принялся учиться» (резко)",
+                    "question": "___ estudiar de repente.",
+                    "options": [
+                        "Se puso a",
+                        "Acaba de",
+                        "Vuelve a"
+                    ],
+                    "correctAnswer": "se puso a",
+                    "explanation": "ponerse a + inf = резко приниматься за."
+                },
+                {
                     "type": "MULTIPLE_CHOICE",
-                    "instruction": "Что значит «acaba de»?",
+                    "instruction": "«Suelo levantarme temprano» — что значит?",
                     "question": "",
                     "options": [
-                        "только что",
-                        "снова",
-                        "будет",
-                        "уже"
+                        "Обычно встаю рано",
+                        "Я встал рано",
+                        "Встану рано",
+                        "Не встаю"
                     ],
-                    "correctAnswer": "только что",
-                    "explanation": "acabar de + inf = недавнее прошлое."
+                    "correctAnswer": "Обычно встаю рано",
+                    "explanation": "soler + inf = иметь обычай. Suelo = я обычно..."
+                },
+                {
+                    "type": "MATCH_PAIRS",
+                    "instruction": "Соедини perífrasis с переводом",
+                    "question": "",
+                    "correctAnswer": "ok"
                 },
                 {
                     "type": "SPOT_THE_ERROR",
@@ -1553,11 +1696,18 @@
                     "explanation": "acabar de + volver."
                 },
                 {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи: «Обычно завтракаю в восемь»",
+                    "question": "",
+                    "correctAnswer": "Suelo desayunar a las ocho",
+                    "explanation": "soler yo = suelo + inf."
+                },
+                {
                     "type": "LISTEN_TYPE",
                     "instruction": "Послушай",
                     "question": "",
-                    "correctAnswer": "acabo",
-                    "explanation": "yo acabo."
+                    "correctAnswer": "dejé de",
+                    "explanation": "dejar de + inf."
                 },
                 {
                     "type": "SPEAKING",
@@ -2136,7 +2286,7 @@
         },
         {
             "id": "u11_l4",
-            "intro": "Относительные предложения: que (что/который), quien (кто), donde (где), cuando (когда).",
+            "intro": "Относительные предложения: que (универсальное «который» в restrictive), quien (только в non-restrictive с запятыми или после предлога), donde (где), cuando (когда).",
             "sections": [
                 {
                     "heading": "Relativos",
@@ -2146,8 +2296,16 @@
                             "right": "Книга которую читаю"
                         },
                         {
-                            "left": "El hombre QUIEN viene",
-                            "right": "Человек который приходит"
+                            "left": "El hombre QUE viene es mi tío",
+                            "right": "Человек который приходит — мой дядя (restrictive → que)"
+                        },
+                        {
+                            "left": "Mi tío, QUIEN vive en Madrid, viene",
+                            "right": "Мой дядя, который живёт в Мадриде (non-restrictive → quien)"
+                        },
+                        {
+                            "left": "La persona con QUIEN hablo",
+                            "right": "Человек с которым говорю (после предлога → quien)"
                         },
                         {
                             "left": "La casa DONDE vivo",
@@ -2188,23 +2346,23 @@
                 },
                 {
                     "type": "MULTIPLE_CHOICE",
-                    "instruction": "«человек который...» — какое слово?",
+                    "instruction": "«El hombre ___ viene es mi tío» (restrictive, без запятых)",
                     "question": "",
                     "options": [
-                        "que (или quien для людей)",
-                        "donde",
-                        "cuando",
-                        "como"
+                        "que",
+                        "quien",
+                        "el cual",
+                        "donde"
                     ],
-                    "correctAnswer": "que (или quien для людей)",
-                    "explanation": "que — универс., quien — для людей."
+                    "correctAnswer": "que",
+                    "explanation": "В restrictive (без запятых) — ВСЕГДА que, даже для людей. quien только в non-restrictive (mi tío, quien...) или после предлога (con quien)."
                 },
                 {
                     "type": "SPOT_THE_ERROR",
                     "instruction": "Найди ошибку",
                     "question": "",
-                    "correctAnswer": "El libro donde leo",
-                    "explanation": "Книга — не место → que, не donde."
+                    "correctAnswer": "El hombre quien viene",
+                    "explanation": "В restrictive (без запятых) — только que. quien нужен после запятой или предлога: mi tío, quien vive en Madrid / la persona con quien hablo."
                 },
                 {
                     "type": "TRANSLATE",
@@ -2218,7 +2376,56 @@
                     "instruction": "Послушай",
                     "question": "",
                     "correctAnswer": "quien",
-                    "explanation": "quien = кто/который."
+                    "explanation": "quien — только в non-restrictive или после предлога."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "«El amigo ___ hablo es Andrés.»",
+                    "question": "",
+                    "options": [
+                        "con quien",
+                        "que",
+                        "donde",
+                        "cual"
+                    ],
+                    "correctAnswer": "con quien",
+                    "explanation": "После предлога + одушевлённый референт — обычно con quien (или con el que). Просто «que» после предлога — ошибка."
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи: «Это дом, в котором я живу»",
+                    "question": "",
+                    "correctAnswer": "Es la casa en la que vivo",
+                    "explanation": "После предлога + вещь — el/la que (с артиклем). «en que» без артикля разговорно допустимо, но книжная норма — «en la que»."
+                },
+                {
+                    "type": "BUILD_SENTENCE",
+                    "instruction": "Собери: «Человек, о котором я тебе говорил»",
+                    "question": "",
+                    "words": [
+                        "La",
+                        "persona",
+                        "del",
+                        "que",
+                        "te",
+                        "hablé"
+                    ],
+                    "correctAnswer": "La persona del que te hablé",
+                    "explanation": "hablar de + кто-то → del que (de+el que). Артикль обязателен после предлога."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Найди ошибку",
+                    "question": "",
+                    "correctAnswer": "El motivo por que vine",
+                    "explanation": "После «por» обязателен артикль: por LA que / por EL que. «por que» без артикля — ошибка (это уже союз «потому что» = porque)."
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи: «Друг, к которому я иду»",
+                    "question": "",
+                    "correctAnswer": "El amigo al que voy",
+                    "explanation": "ir a + кто → al que (a+el que) или a quien. Оба варианта верные: «El amigo al que voy» / «El amigo a quien voy»."
                 }
             ]
         },
@@ -4908,7 +5115,7 @@
                     "instruction": "Найди ошибку",
                     "question": "",
                     "correctAnswer": "Quiero que come",
-                    "explanation": "Без местоимения «que come» неполное. Нужно «que él coma»."
+                    "explanation": "После «Quiero que» нужен Subjuntivo (coma), а «come» — это Indicativo. Остальные варианты (coma, comas, comamos) — корректные формы Subj для разных лиц."
                 },
                 {
                     "type": "TRANSLATE",
@@ -5427,16 +5634,16 @@
                 },
                 {
                     "type": "BUILD_SENTENCE",
-                    "instruction": "Собери: «Жаль что не пришёл»",
+                    "instruction": "Собери: «Жаль что не приходишь»",
                     "question": "",
                     "words": [
                         "Siento",
                         "que",
                         "no",
-                        "vinieras"
+                        "vengas"
                     ],
-                    "correctAnswer": "Siento que no vinieras",
-                    "explanation": "siento + que + Imperfect Subj (vinieras)."
+                    "correctAnswer": "Siento que no vengas",
+                    "explanation": "siento + que + Presente Subj (vengas). Прошедшая форма (vinieras) — Imp.Subj. — будет в u10_l6."
                 },
                 {
                     "type": "MULTIPLE_CHOICE",

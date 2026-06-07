@@ -1348,8 +1348,8 @@
                     "type": "SPOT_THE_ERROR",
                     "instruction": "Найди ошибку",
                     "question": "",
-                    "correctAnswer": "Trabajo por dinero",
-                    "explanation": "На самом деле «por dinero» VALID — за деньги. Все правильные!  ☑ trick: «trabajo por dinero» = «работаю за деньги» — корректно."
+                    "correctAnswer": "Estudio por ser médico",
+                    "explanation": "Цель (стать врачом) → para: «Estudio para ser médico». por = причина/мотив/через/за (Gracias por todo, Pago por el café). para = цель/направление/получатель/срок (para vivir, para ti, para mañana)."
                 },
                 {
                     "type": "TRANSLATE",
@@ -2409,14 +2409,14 @@
         },
         {
             "id": "u6_l6",
-            "intro": "Превосходная степень: el / la / los / las + más + adj + de. Особое: el mejor / el peor.",
+            "intro": "Превосходная степень: el / la / los / las + más + adj + de. Особое: el mejor / el peor. Плюс абсолютная форма -ísimo («очень/чрезвычайно»).",
             "sections": [
                 {
-                    "heading": "Превосходная",
+                    "heading": "Относительная превосходная (el más...)",
                     "items": [
                         {
                             "left": "el más alto",
-                            "right": "самый высокий"
+                            "right": "самый высокий (из группы)"
                         },
                         {
                             "left": "la más barata",
@@ -2431,6 +2431,39 @@
                             "right": "худший / худшая"
                         }
                     ]
+                },
+                {
+                    "heading": "🆕 Абсолютная превосходная -ísimo («очень/чрезвычайно»)",
+                    "items": [
+                        {
+                            "left": "Правило",
+                            "right": "Берём прилагательное, отбрасываем последнюю гласную, добавляем -ísimo/-a/-os/-as. Это значит «очень/чрезвычайно X», БЕЗ сравнения с группой."
+                        },
+                        {
+                            "left": "alto → altísimo",
+                            "right": "очень высокий"
+                        },
+                        {
+                            "left": "bueno → buenísimo",
+                            "right": "очень хороший"
+                        },
+                        {
+                            "left": "fácil → facilísimo",
+                            "right": "очень лёгкий"
+                        },
+                        {
+                            "left": "cerca → cerquísima",
+                            "right": "очень близко (c → qu)"
+                        },
+                        {
+                            "left": "Орфография",
+                            "right": "c → qu (rico → riquísimo), g → gu (largo → larguísimo), z → c (feliz → felicísimo). Это сохраняет звук."
+                        },
+                        {
+                            "left": "Разница",
+                            "right": "«el más alto» = самый высокий ИЗ ГРУППЫ. «altísimo» = просто очень высокий (без сравнения)."
+                        }
+                    ]
                 }
             ],
             "exercises": [
@@ -2439,7 +2472,7 @@
                     "instruction": "Произнеси вслух",
                     "question": "Послушай и повтори",
                     "correctAnswer": "el más alto",
-                    "explanation": "el más alto — самый высокий"
+                    "explanation": "el más alto — самый высокий (из группы)"
                 },
                 {
                     "type": "TAP_MISSING_WORD",
@@ -2499,6 +2532,51 @@
                     "question": "",
                     "correctAnswer": "mejor",
                     "explanation": "el mejor."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "«alto» в форме -ísimo?",
+                    "question": "",
+                    "options": [
+                        "altísimo",
+                        "altoísimo",
+                        "más alto",
+                        "altisimo"
+                    ],
+                    "correctAnswer": "altísimo",
+                    "explanation": "alt-o → отбрасываем -o, добавляем -ísimo = altísimo. Ударение на í обязательно (тильда)."
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Вставь форму -ísimo от bueno",
+                    "question": "El café está ___ (очень хорош).",
+                    "options": [
+                        "buenísimo",
+                        "buenoísimo",
+                        "muy bueno más"
+                    ],
+                    "correctAnswer": "buenísimo",
+                    "explanation": "bueno → buenísimo. «Очень хороший», без сравнения с группой."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Форма -ísimo от «cerca» (рядом)?",
+                    "question": "",
+                    "options": [
+                        "cerquísima",
+                        "cercaísima",
+                        "cercísima",
+                        "más cerca"
+                    ],
+                    "correctAnswer": "cerquísima",
+                    "explanation": "cerca → cerqu-ísima: c перед í становится qu (для сохранения звука [к])."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Найди ошибку (-ísimo)",
+                    "question": "",
+                    "correctAnswer": "facilísimo más",
+                    "explanation": "-ísimo — уже сама по себе абсолютная форма. «más» не добавляем: просто facilísimo (очень лёгкий)."
                 }
             ]
         },
@@ -2743,6 +2821,27 @@
                             "right": "им/Вам (мн)"
                         }
                     ]
+                },
+                {
+                    "heading": "🌎 Leísmo — региональное «le» вместо «lo»",
+                    "items": [
+                        {
+                            "left": "Стандарт LatAm",
+                            "right": "«Вижу Хуана» → Lo veo (OD = lo, потому что Juan = м.р. винит.падеж)."
+                        },
+                        {
+                            "left": "Испания (leísmo)",
+                            "right": "В Испании часто говорят Le veo (используют le для людей-мужчин, даже когда это OD). Это называется leísmo de persona."
+                        },
+                        {
+                            "left": "DELE и учебники",
+                            "right": "Оба варианта понятны и приняты. Но в международных экзаменах (DELE) проверяют латиноамериканский стандарт: lo veo / la veo (OD), le hablo (OI)."
+                        },
+                        {
+                            "left": "Совет",
+                            "right": "Учим стандарт (lo/la для OD), но не пугаемся, если в испанских сериалах слышим «le veo» — это норма для Испании."
+                        }
+                    ]
                 }
             ],
             "exercises": [
@@ -2802,6 +2901,65 @@
                     "question": "",
                     "correctAnswer": "le",
                     "explanation": "le = ему/ей."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "«Вижу Хуана» — стандартный вариант (LatAm, DELE)?",
+                    "question": "",
+                    "options": [
+                        "Lo veo",
+                        "Le veo",
+                        "La veo",
+                        "Les veo"
+                    ],
+                    "correctAnswer": "Lo veo",
+                    "explanation": "Juan — м.р. OD (винит.падеж) → lo. «Le veo» допустимо в Испании (leísmo), но в DELE и учебниках — стандарт «Lo veo»."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Что такое leísmo?",
+                    "question": "",
+                    "options": [
+                        "Использование le вместо lo для людей-мужчин (норма в Испании)",
+                        "Грамматическая ошибка которую нельзя делать",
+                        "Использование lo вместо le всегда",
+                        "Особое наклонение глагола"
+                    ],
+                    "correctAnswer": "Использование le вместо lo для людей-мужчин (норма в Испании)",
+                    "explanation": "Leísmo — региональное явление: в Испании говорят «le veo a Juan» вместо стандартного «lo veo». DELE проверяет латиноамериканский стандарт."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Найди ошибку (DELE-стандарт)",
+                    "question": "",
+                    "correctAnswer": "Lo veo a Juan en el cine",
+                    "explanation": "«Le veo a Juan» — leísmo de cortesía (норма Испании). RAE и DELE рекомендуют «lo veo». Оба понятны, но на экзамене лучше «lo». В этом задании «правильный» = standard."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "«¿___ vi ayer?» — нейтральный DELE-вариант",
+                    "question": "",
+                    "options": [
+                        "Lo",
+                        "Le",
+                        "Los",
+                        "La"
+                    ],
+                    "correctAnswer": "Lo",
+                    "explanation": "«Lo vi ayer» — стандарт LatAm/DELE для OD м.р. ед.ч. В Испании «Le vi» тоже принято (leísmo), но для экзамена выбирай «lo»."
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи: «Я звоню ему каждый день»",
+                    "question": "",
+                    "correctAnswer": "Lo llamo todos los días",
+                    "explanation": "«Llamar a alguien» — verb of contact. RAE рекомендует «lo/la» для всех (DELE-стандарт). Альтернатива: «Le llamo todos los días» — повсеместно в Испании для людей муж. пола."
+                },
+                {
+                    "type": "MATCH_PAIRS",
+                    "instruction": "Соедини глагол и местоимение",
+                    "question": "",
+                    "correctAnswer": "ok"
                 }
             ]
         },
@@ -3615,6 +3773,61 @@
                     "question": "",
                     "correctAnswer": "he comido",
                     "explanation": "Perfecto."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Найди ошибку (ya no / todavía no)",
+                    "question": "",
+                    "correctAnswer": "Ya no he venido",
+                    "explanation": "«Ya no» = «уже нет, больше нет» (отрицание состояния). «Todavía/aún no» = «всё ещё не» (действие пока не сделано). «Ya no he venido» бессмысленно."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "«¿Has terminado el libro? — No, ___ no.»",
+                    "question": "",
+                    "options": [
+                        "aún",
+                        "ya",
+                        "siempre",
+                        "nunca"
+                    ],
+                    "correctAnswer": "aún",
+                    "explanation": "«Aún no» = всё ещё нет. Синоним «todavía no». «Ya no» означало бы «больше не»."
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи: «Я ещё не закончил работу»",
+                    "question": "",
+                    "correctAnswer": "Aún no he terminado el trabajo",
+                    "explanation": "«Aún» и «todavía» взаимозаменяемы. С Perfecto — естественно. Альтернативы: «Todavía no he terminado el trabajo», «No he terminado el trabajo aún»."
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Вставь",
+                    "question": "¿___ has comido? — Sí, ya he comido.",
+                    "options": [
+                        "Ya",
+                        "Aún",
+                        "Todavía"
+                    ],
+                    "correctAnswer": "Ya",
+                    "explanation": "«¿Ya has comido?» — уже поел? Утвердительный вопрос. Ответ «Sí, ya» подтверждает."
+                },
+                {
+                    "type": "BUILD_SENTENCE",
+                    "instruction": "Собери: «Я уже поел, но всё ещё голоден»",
+                    "question": "",
+                    "words": [
+                        "Ya",
+                        "he",
+                        "comido",
+                        "pero",
+                        "todavía",
+                        "tengo",
+                        "hambre"
+                    ],
+                    "correctAnswer": "Ya he comido pero todavía tengo hambre",
+                    "explanation": "Сочетание «ya» (уже сделано) + «todavía» (всё ещё в состоянии) в одном предложении — типичный pattern."
                 }
             ]
         },
@@ -3750,6 +3963,43 @@
                             "right": "ты (сейчас) пьёшь"
                         }
                     ]
+                },
+                {
+                    "heading": "⚠ Нерегулярные gerundio",
+                    "items": [
+                        {
+                            "left": "leer → leyendo",
+                            "right": "i между гласных → y"
+                        },
+                        {
+                            "left": "oír → oyendo",
+                            "right": "i между гласных → y"
+                        },
+                        {
+                            "left": "dormir → durmiendo",
+                            "right": "o → u (изменение основы)"
+                        },
+                        {
+                            "left": "morir → muriendo",
+                            "right": "o → u"
+                        },
+                        {
+                            "left": "pedir → pidiendo",
+                            "right": "e → i"
+                        },
+                        {
+                            "left": "servir → sirviendo",
+                            "right": "e → i"
+                        },
+                        {
+                            "left": "decir → diciendo",
+                            "right": "e → i"
+                        },
+                        {
+                            "left": "venir → viniendo",
+                            "right": "e → i"
+                        }
+                    ]
                 }
             ],
             "exercises": [
@@ -3791,13 +4041,6 @@
                     "explanation": "-IR → -iendo: viviendo."
                 },
                 {
-                    "type": "SPEAKING",
-                    "instruction": "Произнеси вслух",
-                    "question": "Послушай и повтори",
-                    "correctAnswer": "hablar → hablando",
-                    "explanation": "hablar → hablando — говорящий"
-                },
-                {
                     "type": "SPOT_THE_ERROR",
                     "instruction": "Найди ошибку",
                     "question": "",
@@ -3812,11 +4055,63 @@
                     "explanation": "ver → viendo."
                 },
                 {
+                    "type": "SPEAKING",
+                    "instruction": "Произнеси вслух",
+                    "question": "Послушай и повтори",
+                    "correctAnswer": "hablar → hablando",
+                    "explanation": "hablar → hablando — говорящий"
+                },
+                {
                     "type": "LISTEN_TYPE",
                     "instruction": "Послушай",
                     "question": "",
                     "correctAnswer": "comiendo",
                     "explanation": "comer → comiendo."
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Вставь gerundio от leer",
+                    "question": "Está ___ un libro.",
+                    "options": [
+                        "leyendo",
+                        "leiendo",
+                        "leando"
+                    ],
+                    "correctAnswer": "leyendo",
+                    "explanation": "leer: i между гласных переходит в y. Не «leiendo»."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Gerundio от dormir?",
+                    "question": "",
+                    "options": [
+                        "durmiendo",
+                        "dormiendo",
+                        "dormando",
+                        "durmido"
+                    ],
+                    "correctAnswer": "durmiendo",
+                    "explanation": "dormir: o переходит в u в gerundio = durmiendo."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Gerundio от pedir?",
+                    "question": "",
+                    "options": [
+                        "pidiendo",
+                        "pediendo",
+                        "pedando",
+                        "pidando"
+                    ],
+                    "correctAnswer": "pidiendo",
+                    "explanation": "pedir: e переходит в i в gerundio = pidiendo. То же: servir → sirviendo, decir → diciendo."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Найди ошибку (gerundio)",
+                    "question": "",
+                    "correctAnswer": "Está dormiendo",
+                    "explanation": "dormir → durmiendo (o → u), не «dormiendo»."
                 }
             ]
         },
@@ -4052,6 +4347,39 @@
                             "right": "открой!"
                         }
                     ]
+                },
+                {
+                    "heading": "Местоимения + утвердительный императив",
+                    "items": [
+                        {
+                            "left": "Правило",
+                            "right": "В УТВЕРДИТЕЛЬНОМ императиве местоимения (me, te, lo, la, se) ПРИКЛЕИВАЮТСЯ к глаголу сзади (одним словом)."
+                        },
+                        {
+                            "left": "¡Dámelo!",
+                            "right": "Дай мне его! (da + me + lo)"
+                        },
+                        {
+                            "left": "¡Cómelo!",
+                            "right": "Съешь его!"
+                        },
+                        {
+                            "left": "¡Siéntate!",
+                            "right": "Сядь! (от sentarse — возвратный)"
+                        },
+                        {
+                            "left": "¡Dímelo!",
+                            "right": "Скажи мне это!"
+                        },
+                        {
+                            "left": "Сравни (отриц.)",
+                            "right": "В ОТРИЦАТЕЛЬНОМ — местоимение ПЕРЕД глаголом: ¡no me lo des!, ¡no te sientes! (см. u7_l8)."
+                        },
+                        {
+                            "left": "Ударение",
+                            "right": "При приклеивании пишем тильду чтобы сохранить ударение: da → dámelo, come → cómelo."
+                        }
+                    ]
                 }
             ],
             "exercises": [
@@ -4092,13 +4420,6 @@
                     "explanation": "-IR → -e: escribe."
                 },
                 {
-                    "type": "SPEAKING",
-                    "instruction": "Произнеси вслух",
-                    "question": "Послушай и повтори",
-                    "correctAnswer": "hablar → ¡habla!",
-                    "explanation": "hablar → ¡habla! — говори!"
-                },
-                {
                     "type": "SPOT_THE_ERROR",
                     "instruction": "Найди ошибку",
                     "question": "",
@@ -4113,11 +4434,55 @@
                     "explanation": "abrir → abre."
                 },
                 {
+                    "type": "SPEAKING",
+                    "instruction": "Произнеси вслух",
+                    "question": "Послушай и повтори",
+                    "correctAnswer": "hablar → ¡habla!",
+                    "explanation": "hablar → ¡habla! — говори!"
+                },
+                {
                     "type": "LISTEN_TYPE",
                     "instruction": "Послушай",
                     "question": "",
                     "correctAnswer": "habla",
                     "explanation": "habla Imperativo."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "«Дай мне его!» — как одним словом?",
+                    "question": "",
+                    "options": [
+                        "dámelo",
+                        "me lo da",
+                        "lo me da",
+                        "me da lo"
+                    ],
+                    "correctAnswer": "dámelo",
+                    "explanation": "Утв.императив: da + me + lo = ¡dámelo! Местоимения приклеиваются сзади, ударение через тильду на «á»."
+                },
+                {
+                    "type": "BUILD_SENTENCE",
+                    "instruction": "Собери: «Сядь!» (от sentarse)",
+                    "question": "",
+                    "words": [
+                        "¡Siéntate!"
+                    ],
+                    "correctAnswer": "¡Siéntate!",
+                    "explanation": "Возвратный глагол sentarse → tú: siéntate. te приклеивается к sienta."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Найди ошибку",
+                    "question": "",
+                    "correctAnswer": "¡Me lo da!",
+                    "explanation": "В утв.императиве местоимения должны быть приклеены СЗАДИ: ¡Dámelo! (а не ¡Me lo da!). Перед глаголом — только в отрицательном (¡no me lo des!)."
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи: «Скажи мне это!»",
+                    "question": "",
+                    "correctAnswer": "¡Dímelo!",
+                    "explanation": "decir tú Imperativo = di + me + lo → ¡dímelo! (тильда обязательна)."
                 }
             ]
         },
@@ -4126,23 +4491,52 @@
             "intro": "Императив отрицательный (no + Subjuntivo): ¡no hables! ¡no comas! ¡no escribas!",
             "sections": [
                 {
-                    "heading": "Imperativo NEGATIVO",
+                    "heading": "⚠ Важно: откуда эти формы",
                     "items": [
                         {
-                            "left": "hablar → ¡no hables!",
-                            "right": "не говори!"
+                            "left": "Тайна форм",
+                            "right": "Отрицательный императив на самом деле использует формы Subjuntivo (особое наклонение). Глубоко его вы изучите в B1, а пока — просто запомните набор форм ниже."
                         },
                         {
-                            "left": "comer → ¡no comas!",
-                            "right": "не ешь!"
+                            "left": "Логика",
+                            "right": "Утвердительный: ¡habla! — другая форма. Отрицательный: ¡no hables! — берём «зеркальную» форму. Поэтому говорим «no comas» (а не «no comes»)."
+                        }
+                    ]
+                },
+                {
+                    "heading": "Imperativo NEGATIVO — формы для tú/usted",
+                    "items": [
+                        {
+                            "left": "hablar → ¡no hables! / ¡no hable!",
+                            "right": "не говори! / не говорите (Вы)!"
                         },
                         {
-                            "left": "escribir → ¡no escribas!",
-                            "right": "не пиши!"
+                            "left": "comer → ¡no comas! / ¡no coma!",
+                            "right": "не ешь! / не ешьте!"
                         },
                         {
-                            "left": "hacer → ¡no hagas!",
-                            "right": "не делай!"
+                            "left": "escribir → ¡no escribas! / ¡no escriba!",
+                            "right": "не пиши! / не пишите!"
+                        },
+                        {
+                            "left": "hacer → ¡no hagas! / ¡no haga!",
+                            "right": "не делай! / не делайте!"
+                        },
+                        {
+                            "left": "ir → ¡no vayas! / ¡no vaya!",
+                            "right": "не ходи! / не ходите!"
+                        },
+                        {
+                            "left": "ser → ¡no seas! / ¡no sea!",
+                            "right": "не будь! / не будьте!"
+                        },
+                        {
+                            "left": "dar → ¡no des! / ¡no dé!",
+                            "right": "не давай! / не давайте!"
+                        },
+                        {
+                            "left": "estar → ¡no estés! / ¡no esté!",
+                            "right": "не будь (там)! / не будьте!"
                         }
                     ]
                 }
@@ -5244,12 +5638,12 @@
                     "question": "",
                     "options": [
                         "vendría",
-                        "vendría",
-                        "venir",
-                        "vine"
+                        "vendiría",
+                        "venderá",
+                        "vendía"
                     ],
                     "correctAnswer": "vendría",
-                    "explanation": "venir → vendr- + ía = vendría."
+                    "explanation": "venir → vendr- + ía = vendría. Не «vendiría» (без -e- между vend и r) и не «vendía» (это Imperfecto)."
                 },
                 {
                     "type": "SPOT_THE_ERROR",
@@ -5276,10 +5670,10 @@
         },
         {
             "id": "u8_l4",
-            "intro": "Условные предложения 1 типа: SI + presente + futuro/imperativo. «Если завтра дождь, не пойду».",
+            "intro": "Условные предложения. Тип 1 (реальные): SI + presente + futuro/imperativo. Тип 2 (гипотетические): SI + прошлая особая форма + Condicional. Знакомимся с обоими.",
             "sections": [
                 {
-                    "heading": "Si + Presente",
+                    "heading": "Тип 1 — РЕАЛЬНЫЕ условия (Si + Presente)",
                     "items": [
                         {
                             "left": "Si llueve, no iré",
@@ -5292,6 +5686,39 @@
                         {
                             "left": "Si tengo dinero, viajo",
                             "right": "Если есть деньги, путешествую"
+                        },
+                        {
+                            "left": "Когда",
+                            "right": "Используем когда условие реалистично, может произойти в будущем."
+                        }
+                    ]
+                },
+                {
+                    "heading": "🆕 Тип 2 — ГИПОТЕТИЧЕСКИЕ (Si + особая прошлая форма + Condicional)",
+                    "items": [
+                        {
+                            "left": "Si tuviera dinero, viajaría",
+                            "right": "Если бы у меня были деньги, я бы путешествовал"
+                        },
+                        {
+                            "left": "Si pudiera, te ayudaría",
+                            "right": "Если бы я мог, я бы тебе помог"
+                        },
+                        {
+                            "left": "Si fuera rico, compraría una casa",
+                            "right": "Если бы я был богат, купил бы дом"
+                        },
+                        {
+                            "left": "Si hiciera sol, iríamos al parque",
+                            "right": "Если бы было солнце, мы бы пошли в парк"
+                        },
+                        {
+                            "left": "Когда",
+                            "right": "Гипотеза о настоящем/будущем («если бы…»). Условие нереальное или маловероятное."
+                        },
+                        {
+                            "left": "Особые формы",
+                            "right": "tuviera (tener), pudiera (poder), fuera (ser/ir), hiciera (hacer), quisiera (querer). Глубоко эти формы (Imperfecto Subjuntivo) — в блоке B1. Сейчас — просто запомни как «прошлая форма для условий»."
                         }
                     ]
                 }
@@ -5299,7 +5726,7 @@
             "exercises": [
                 {
                     "type": "TAP_MISSING_WORD",
-                    "instruction": "Вставь",
+                    "instruction": "Вставь (Тип 1)",
                     "question": "Si ___ mañana, no saldré.",
                     "options": [
                         "llueve",
@@ -5307,7 +5734,7 @@
                         "llovería"
                     ],
                     "correctAnswer": "llueve",
-                    "explanation": "После SI — Presente (не Futuro!)."
+                    "explanation": "Тип 1: после SI — Presente (не Futuro!)."
                 },
                 {
                     "type": "BUILD_SENTENCE",
@@ -5320,11 +5747,11 @@
                         "diré"
                     ],
                     "correctAnswer": "Si vengo, te diré",
-                    "explanation": "Si + presente, + futuro."
+                    "explanation": "Тип 1: Si + presente, + futuro."
                 },
                 {
                     "type": "MULTIPLE_CHOICE",
-                    "instruction": "Что после SI в 1 типе?",
+                    "instruction": "Что после SI в Типе 1?",
                     "question": "",
                     "options": [
                         "Presente",
@@ -5333,7 +5760,7 @@
                         "Imperfecto"
                     ],
                     "correctAnswer": "Presente",
-                    "explanation": "Si + Presente, главная часть Futuro / Imperativo."
+                    "explanation": "Тип 1: Si + Presente, главная часть Futuro / Imperativo."
                 },
                 {
                     "type": "SPOT_THE_ERROR",
@@ -5355,6 +5782,60 @@
                     "question": "",
                     "correctAnswer": "si",
                     "explanation": "si — без тильды."
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Тип 2: вставь форму tener",
+                    "question": "Si yo ___ dinero, viajaría.",
+                    "options": [
+                        "tuviera",
+                        "tengo",
+                        "tendría"
+                    ],
+                    "correctAnswer": "tuviera",
+                    "explanation": "Тип 2: «Если БЫ у меня были деньги…» → Si + tuviera (особая прошлая форма) + viajaría (Condicional)."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Тип 2: «Если бы я мог…»",
+                    "question": "",
+                    "options": [
+                        "Si pudiera",
+                        "Si puedo",
+                        "Si podría",
+                        "Si pude"
+                    ],
+                    "correctAnswer": "Si pudiera",
+                    "explanation": "Гипотеза → Si + pudiera (от poder). Не Condicional после Si!"
+                },
+                {
+                    "type": "BUILD_SENTENCE",
+                    "instruction": "Собери: «Если бы я был богат, купил бы дом»",
+                    "question": "",
+                    "words": [
+                        "Si",
+                        "fuera",
+                        "rico,",
+                        "compraría",
+                        "una",
+                        "casa"
+                    ],
+                    "correctAnswer": "Si fuera rico, compraría una casa",
+                    "explanation": "Тип 2: fuera (от ser) + compraría (Condicional)."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Найди ошибку (Тип 2)",
+                    "question": "",
+                    "correctAnswer": "Si tendría dinero, viajaría",
+                    "explanation": "После SI в Типе 2 — особая прошлая форма (tuviera), а НЕ Condicional (tendría). Condicional идёт только в главной части."
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи: «Если бы я хотел, я бы пришёл»",
+                    "question": "",
+                    "correctAnswer": "Si quisiera, vendría",
+                    "explanation": "Si + quisiera (от querer) + vendría (Condicional venir)."
                 }
             ]
         },

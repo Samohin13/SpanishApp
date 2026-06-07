@@ -120,6 +120,8 @@ class SubscriptionPreferences @Inject constructor(
             p[Keys.IS_PRO] = active
             if (active) {
                 p[Keys.PURCHASED_AT] = System.currentTimeMillis()
+                // v1.25.85 FIX: Сбрасываем проверку, чтобы Manager сразу открыл контент
+                p[Keys.VERIFIED_AT] = 0L
             }
         }
     }

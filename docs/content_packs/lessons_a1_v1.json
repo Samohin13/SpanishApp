@@ -706,60 +706,121 @@
         },
         {
             "id": "u1_l14",
-            "intro": "Чекпоинт Блока 1: Паспортный контроль — представь себя",
-            "sections": [],
+            "intro": "🏁 Чекпоинт блока 1.1 — «Паспортный контроль». Ты прилетел в Мадрид. Офицер задаёт вопросы — отвечай по-испански.",
+            "sections": [
+                {
+                    "heading": "Что повторяем",
+                    "items": [
+                        {
+                            "left": "Приветствия",
+                            "right": "Hola, Buenos días"
+                        },
+                        {
+                            "left": "SER (быть)",
+                            "right": "soy, eres, es",
+                            "note": "представление"
+                        },
+                        {
+                            "left": "Национальности",
+                            "right": "ruso/rusa, español/española",
+                            "note": "согласование рода"
+                        },
+                        {
+                            "left": "Числа 0–10",
+                            "right": "cero, uno, dos…"
+                        },
+                        {
+                            "left": "Артикли + род",
+                            "right": "el / la, un / una"
+                        },
+                        {
+                            "left": "Тильда и ударение",
+                            "right": "café, música"
+                        }
+                    ]
+                }
+            ],
             "exercises": [
                 {
-                    "type": "MULTIPLE_CHOICE",
-                    "instruction": "Как ответить на вопрос о национальности?",
-                    "question": "¿De dónde eres? — ___ ruso/a, de Rusia.",
+                    "type": "DIALOGUE_FILL",
+                    "instruction": "Офицер спрашивает имя",
+                    "question": "",
+                    "options": [
+                        "llamo",
+                        "llama",
+                        "llamas"
+                    ],
+                    "correctAnswer": "llamo",
+                    "explanation": "yo me llamo = меня зовут. llamarse — возвратный."
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Заполни: «Я из России» (мужчина)",
+                    "question": "___ de Rusia.",
                     "options": [
                         "Soy",
-                        "Estoy",
-                        "Tengo",
-                        "Voy"
+                        "Eres",
+                        "Es"
                     ],
                     "correctAnswer": "Soy",
-                    "explanation": "SER для национальности и происхождения. Soy ruso de Rusia = я русский из России."
+                    "explanation": "yo soy de + страна. Местоимение yo обычно опускают."
                 },
                 {
                     "type": "MULTIPLE_CHOICE",
-                    "instruction": "Как сказать фамилию?",
-                    "question": "Me llamo Juan García. García es mi ___.",
+                    "instruction": "Девушка говорит национальность. Какая форма?",
+                    "question": "Soy ___ . (Россия)",
                     "options": [
-                        "apellido",
-                        "nombre",
-                        "país",
-                        "número"
+                        "rusa",
+                        "ruso",
+                        "rusos",
+                        "rusas"
                     ],
-                    "correctAnswer": "apellido",
-                    "explanation": "apellido = фамилия. nombre = имя. Me llamo = мне зовут."
+                    "correctAnswer": "rusa",
+                    "explanation": "Женщина → ruso → rusa (с маленькой буквы, в исп. национальности не пишут с заглавной)."
                 },
                 {
-                    "type": "MULTIPLE_CHOICE",
-                    "instruction": "Артикли: выбери правильный",
-                    "question": "___ pasaporte es azul. ___ país de origen es Rusia.",
-                    "options": [
-                        "El / El",
-                        "La / El",
-                        "El / La",
-                        "Los / El"
+                    "type": "BUILD_SENTENCE",
+                    "instruction": "Собери ответ: «Меня зовут Андреа»",
+                    "question": "",
+                    "words": [
+                        "Me",
+                        "llamo",
+                        "Andrea"
                     ],
-                    "correctAnswer": "El / El",
-                    "explanation": "el pasaporte (м.р.) = паспорт. el país (м.р.) = страна."
+                    "correctAnswer": "Me llamo Andrea",
+                    "explanation": "llamarse — возвратный: yo me llamo / tú te llamas / él se llama."
                 },
                 {
-                    "type": "MULTIPLE_CHOICE",
-                    "instruction": "Как назвать своё имя по-испански?",
-                    "question": "Сказать имя: «My name is Vladimir» → «___ Vladimir»",
+                    "type": "DIALOGUE_FILL",
+                    "instruction": "Цель поездки",
+                    "question": "",
                     "options": [
-                        "Me llamo",
                         "Soy",
-                        "Tengo",
-                        "Estoy"
+                        "Es",
+                        "Eres"
                     ],
-                    "correctAnswer": "Me llamo",
-                    "explanation": "Me llamo + nombre = мне зовут. Me llamo Vladimir = меня зовут Владимир."
+                    "correctAnswer": "Soy",
+                    "explanation": "SER для постоянной идентичности / роли: Soy turista."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Найди ошибку в ответе пассажира",
+                    "question": "",
+                    "correctAnswer": "Yo es turista",
+                    "explanation": "yo требует soy, не es. Правильно: Yo soy turista."
+                },
+                {
+                    "type": "MATCH_PAIRS",
+                    "instruction": "Соедини всё блока 1.1",
+                    "question": "",
+                    "correctAnswer": "ok"
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи: «Доброе утро, я Мария»",
+                    "question": "",
+                    "correctAnswer": "Buenos días, soy María",
+                    "explanation": "Buenos días — до 13:00. soy + имя для представления."
                 }
             ]
         },
@@ -936,7 +997,7 @@
                         {
                             "left": "Любая другая согласная",
                             "right": "ударение на последний",
-                            "note": "hablar — а-БЛЯР"
+                            "note": "hablar — а-БЛАР"
                         },
                         {
                             "left": "Тильда (´)",
@@ -1073,12 +1134,12 @@
                     "instruction": "Собери фразу: «Привет, как ты?»",
                     "question": "",
                     "words": [
-                        "Hola",
+                        "Hola,",
                         "¿Cómo",
                         "estás?"
                     ],
-                    "correctAnswer": "Hola ¿Cómo estás?",
-                    "explanation": "Стандартное разговорное приветствие."
+                    "correctAnswer": "Hola, ¿Cómo estás?",
+                    "explanation": "В испанском перед прямым вопросом ставится перевёрнутый ¿ и в конце ?. После приветствия — запятая."
                 },
                 {
                     "type": "TAP_MISSING_WORD",
@@ -1176,12 +1237,12 @@
                     "instruction": "Собери: «До завтра, Мария!»",
                     "question": "",
                     "words": [
-                        "Hasta",
-                        "mañana",
-                        "María"
+                        "¡Hasta",
+                        "mañana,",
+                        "María!"
                     ],
-                    "correctAnswer": "Hasta mañana María",
-                    "explanation": "Конструкция «Hasta + время» = «до …»."
+                    "correctAnswer": "¡Hasta mañana, María!",
+                    "explanation": "Конструкция «Hasta + время» = «до …». В исп. восклицание оформляется ¡ … ! с обеих сторон, и запятая перед обращением."
                 },
                 {
                     "type": "SPEAKING",
@@ -3994,8 +4055,8 @@
                     "type": "TRANSLATE",
                     "instruction": "Переведи: «Счёт, пожалуйста»",
                     "question": "",
-                    "correctAnswer": "La cuenta por favor",
-                    "explanation": "Стандартная просьба в ресторане."
+                    "correctAnswer": "La cuenta, por favor.",
+                    "explanation": "Стандартная просьба в ресторане. Запятая перед «por favor», точка в конце."
                 }
             ]
         },
@@ -4080,14 +4141,14 @@
                 {
                     "type": "TAP_MISSING_WORD",
                     "instruction": "Заполни",
-                    "question": "Voy al ___ (ванная).",
+                    "question": "Necesito el ___ (ванная).",
                     "options": [
                         "baño",
                         "balcón",
                         "dormitorio"
                     ],
                     "correctAnswer": "baño",
-                    "explanation": "baño = ванная."
+                    "explanation": "baño = ванная. (IR будет в блоке 1.4 — пока используем necesitar / estar.)"
                 },
                 {
                     "type": "DIALOGUE_FILL",
@@ -4415,10 +4476,10 @@
                         "La",
                         "cuenta,",
                         "por",
-                        "favor"
+                        "favor."
                     ],
-                    "correctAnswer": "La cuenta por favor",
-                    "explanation": "Стандартная фраза."
+                    "correctAnswer": "La cuenta, por favor.",
+                    "explanation": "Стандартная фраза. Запятая перед «por favor», точка в конце."
                 },
                 {
                     "type": "SPEAKING",
@@ -4671,7 +4732,7 @@
         },
         {
             "id": "u3_l8",
-            "intro": "¿Qué hora es? — Сколько времени? Es la una (1 час). Son las dos (2+).",
+            "intro": "¿Qué hora es? — Сколько времени? Es la una (1 час). Son las dos (2+). Чтобы указать утро/день/ночь: de la mañana, de la tarde, de la noche.",
             "sections": [
                 {
                     "heading": "Время",
@@ -4703,6 +4764,31 @@
                         {
                             "left": "Son las seis y cuarto",
                             "right": "6:15"
+                        }
+                    ]
+                },
+                {
+                    "heading": "Утро / день / ночь (AM / PM)",
+                    "items": [
+                        {
+                            "left": "de la mañana",
+                            "right": "утра (AM)",
+                            "note": "Son las 8 de la mañana — 8 утра"
+                        },
+                        {
+                            "left": "de la tarde",
+                            "right": "дня / вечера",
+                            "note": "Son las 5 de la tarde — 5 дня (≈13:00–20:00)"
+                        },
+                        {
+                            "left": "de la noche",
+                            "right": "ночи / поздн. вечер",
+                            "note": "Son las 10 de la noche — 10 вечера"
+                        },
+                        {
+                            "left": "del mediodía",
+                            "right": "полдня",
+                            "note": "Es mediodía = 12:00"
                         }
                     ]
                 }
@@ -4762,6 +4848,38 @@
                     ],
                     "correctAnswer": "las",
                     "explanation": "Перед числом часов — артикль las (или la для 1)."
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Заполни: «Сейчас 8 утра»",
+                    "question": "Son las ocho ___ la mañana.",
+                    "options": [
+                        "de",
+                        "en",
+                        "por"
+                    ],
+                    "correctAnswer": "de",
+                    "explanation": "de la mañana = «утра» (AM). Стандартная конструкция «time + de la mañana/tarde/noche»."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Как сказать «10 вечера»?",
+                    "question": "",
+                    "options": [
+                        "Son las diez de la noche",
+                        "Son las diez de la mañana",
+                        "Son las diez de la tarde",
+                        "Es la diez de la noche"
+                    ],
+                    "correctAnswer": "Son las diez de la noche",
+                    "explanation": "de la noche = поздний вечер / ночь (примерно после 21:00). de la tarde — до заката."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Найди неверное сочетание времени суток",
+                    "question": "",
+                    "correctAnswer": "Son las dos de la mañana de la noche",
+                    "explanation": "Нельзя добавлять и «de la mañana», и «de la noche». Используй только ОДИН маркер времени суток."
                 },
                 {
                     "type": "TRANSLATE",
@@ -5320,7 +5438,7 @@
         },
         {
             "id": "u4_l12",
-            "intro": "Распорядок дня: me levanto (встаю), desayuno (завтракаю), trabajo, como, ceno (ужинаю), me acuesto.",
+            "intro": "Распорядок дня: me levanto (встаю), desayuno (завтракаю), trabajo, como, ceno (ужинаю), me acuesto. Формы me/se/nos — это возвратные глаголы; правила полностью разберём в следующем уроке (u4_l13). Сейчас просто запоминаем фразы.",
             "sections": [
                 {
                     "heading": "Мой день",
@@ -5518,6 +5636,26 @@
                     "question": "",
                     "correctAnswer": "Me acuesto",
                     "explanation": "acostarse — возвратный, me acuesto."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "muy vs mucho — найди ошибку",
+                    "question": "",
+                    "correctAnswer": "mucho bueno",
+                    "explanation": "muy + прилагательное / наречие (muy bueno = очень хороший). mucho + существительное (mucho dinero = много денег). Никогда «mucho bueno»."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Какой вариант правильный?",
+                    "question": "«Я очень устал»",
+                    "options": [
+                        "Estoy muy cansado",
+                        "Estoy mucho cansado",
+                        "Estoy muy mucho cansado",
+                        "Soy mucho cansado"
+                    ],
+                    "correctAnswer": "Estoy muy cansado",
+                    "explanation": "cansado — прилагательное → muy (а не mucho). Усталость — временное состояние → ESTAR."
                 },
                 {
                     "type": "LISTEN_TYPE",
@@ -6248,8 +6386,8 @@
                     "type": "SPOT_THE_ERROR",
                     "instruction": "Найди ошибку",
                     "question": "",
-                    "correctAnswer": "Le gustamos",
-                    "explanation": "Глагол gustar согласуется с тем ЧТО нравится, а не с местоимением. С инфинитивом / ед. — le gusta."
+                    "correctAnswer": "Le gusto los gatos",
+                    "explanation": "Глагол gustar согласуется с тем ЧТО нравится. los gatos — мн.ч. → должно быть gustan. Правильно: Le gustan los gatos."
                 },
                 {
                     "type": "TRANSLATE",
@@ -6257,6 +6395,26 @@
                     "question": "",
                     "correctAnswer": "Te gusta bailar",
                     "explanation": "te + gusta + bailar (инфинитив)."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "«Мне совсем не нравится» — как сказать?",
+                    "question": "",
+                    "options": [
+                        "No me gusta nada",
+                        "No me gusta no",
+                        "Nunca me gusta nada",
+                        "Me no gusta"
+                    ],
+                    "correctAnswer": "No me gusta nada",
+                    "explanation": "no me gusta nada — стандартное усиленное отрицание («совсем не нравится»). Двойное отрицание норма."
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи: «Мне тоже не нравится»",
+                    "question": "",
+                    "correctAnswer": "A mí tampoco me gusta",
+                    "explanation": "tampoco = «тоже не». A mí tampoco me gusta — стандартный ответ согласия в отрицании."
                 },
                 {
                     "type": "LISTEN_TYPE",

@@ -3,6 +3,8 @@ package com.spanishapp.service
 import android.app.Activity
 import android.content.Context
 import android.util.Log
+import androidx.compose.ui.test.filter
+import androidx.privacysandbox.tools.core.generator.build
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -146,17 +148,22 @@ class PlayBillingManager @Inject constructor(
             Log.e(TAG, "Product not loaded yet")
             return
         }
-        val offer = product.subscriptionOfferDetails
-            ?.firstOrNull { it.basePlanId == basePlanId }
-            ?: product.subscriptionOfferDetails?.firstOrNull()
-            ?: run {
-                Log.e(TAG, "No subscription offers")
-                return
-            }
-        val params = BillingFlowParams.newBuilder()
+
+        // v1.25.85 FIX: Ищем оффер с бесплатным триалом (цена == 0).
+        val offer = product.subscriptionOfferDetails?.let { offers ->
+            offers.filter { it.basePlanId == basePlanId }
+                .find { off ->
+                    off.pricingPhases.pricingPhaseList.any { it.priceAmountMicros == 0L }
+                } ?: offers.firstOrNull { it.basePlanId == basePlanId }
+        } ?: product.subscriptionOfferDetails?.firstOrNull() ?: run {
+            Log.e(TAG, "No subscription offers for $basePlanId")
+            return
+        }
+
+        val params = com.android.billingclient.api.BillingFlowParams.newBuilder()
             .setProductDetailsParamsList(
                 listOf(
-                    BillingFlowParams.ProductDetailsParams.newBuilder()
+                    com.android.billingclient.api.BillingFlowParams.ProductDetailsParams.newBuilder()
                         .setProductDetails(product)
                         .setOfferToken(offer.offerToken)
                         .build()

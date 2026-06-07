@@ -254,6 +254,72 @@
                     "explanation": "aunque = хотя."
                 },
                 {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Aunque + гипотеза о будущем (mañana)",
+                    "question": "Aunque ___ frío mañana, voy a salir.",
+                    "options": [
+                        "hace",
+                        "haga",
+                        "hizo",
+                        "hará"
+                    ],
+                    "correctAnswer": "haga",
+                    "explanation": "Aunque + Subj когда речь о гипотезе/будущем («даже если будет холодно»). Aunque + Indic — для уже известного факта."
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Por más que + Subj (всегда)",
+                    "question": "Por más que ___, no puedes cambiarlo.",
+                    "options": [
+                        "intentes",
+                        "intentas",
+                        "intentarás",
+                        "intentaste"
+                    ],
+                    "correctAnswer": "intentes",
+                    "explanation": "`Por más que` = «как бы ни» — всегда требует Subjuntivo, без исключений."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "A pesar de que + факт прошлого",
+                    "question": "A pesar de que ___ ayer, no llegó a tiempo.",
+                    "options": [
+                        "vino",
+                        "venga",
+                        "viniera",
+                        "ha venido"
+                    ],
+                    "correctAnswer": "vino",
+                    "explanation": "A pesar de que + Indic для уже свершившихся фактов прошлого. A pesar de que + Subj — только если гипотетика или неуверенность."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Mientras: Subj только для будущего",
+                    "question": "",
+                    "correctAnswer": "Mientras estudie ayer",
+                    "explanation": "`Mientras + Subj` — только для будущего/гипотетики. С `ayer` (прошлое) Subj невозможен — нужен Indic (estudiaba)."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Cuando + Subj для будущего",
+                    "question": "Cuando ___, avísame.",
+                    "options": [
+                        "llegas",
+                        "lleguas",
+                        "llegues",
+                        "llegabas"
+                    ],
+                    "correctAnswer": "llegues",
+                    "explanation": "`Cuando + Subj` для будущего гипотетического действия, `cuando + Indic` — для привычки или прошлого."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Найди перепутанный Subj/Ind",
+                    "question": "",
+                    "correctAnswer": "Por más que intentas, no funcionará",
+                    "explanation": "`Por más que` ВСЕГДА требует Subj → intentes. Остальные три корректны: aunque+Subj (гипотеза), cuando+Indic (привычка), cuando+Subj (будущее)."
+                },
+                {
                     "type": "SPEAKING",
                     "instruction": "Произнеси вслух",
                     "question": "Послушай и повтори",
@@ -1542,284 +1608,284 @@
         },
         {
             "id": "u14_l10",
-            "intro": "Relativos повтор: que/quien/cuyo/donde/lo cual.",
+            "intro": "Relativos формальные: el cual / la cual / lo cual / cuyo. Только для formal/literary.",
             "sections": [
                 {
-                    "heading": "Relativos",
+                    "heading": "El cual vs que (formal)",
                     "items": [
                         {
-                            "left": "que",
-                            "right": "который"
+                            "left": "El presidente, el cual habló ayer...",
+                            "right": "Формальная альтернатива «que»"
                         },
                         {
-                            "left": "quien",
-                            "right": "кто"
+                            "left": "La razón por la cual vine",
+                            "right": "Причина, по которой я пришёл"
                         },
                         {
-                            "left": "cuyo",
-                            "right": "чей"
+                            "left": "Lo cual me sorprendió",
+                            "right": "Что меня удивило (всё предыдущее)"
                         },
                         {
-                            "left": "donde",
-                            "right": "где"
-                        },
-                        {
-                            "left": "lo cual",
-                            "right": "что (всё)"
+                            "left": "El hombre cuyo coche es rojo",
+                            "right": "cuyo = «чей» — согласуется с владеемым"
                         }
                     ]
                 }
             ],
             "exercises": [
                 {
-                    "type": "TAP_MISSING_WORD",
-                    "instruction": "Вставь",
-                    "question": "La mujer ___ casa es grande.",
-                    "options": [
-                        "cuya",
-                        "que",
-                        "donde"
-                    ],
-                    "correctAnswer": "cuya",
-                    "explanation": "cuya = чья."
-                },
-                {
-                    "type": "BUILD_SENTENCE",
-                    "instruction": "Собери: «Это место где живу»",
-                    "question": "",
-                    "words": [
-                        "Es",
-                        "el",
-                        "lugar",
-                        "donde",
-                        "vivo"
-                    ],
-                    "correctAnswer": "Es el lugar donde vivo",
-                    "explanation": "donde — место."
-                },
-                {
                     "type": "MULTIPLE_CHOICE",
-                    "instruction": "После предлога — quien или que?",
-                    "question": "",
+                    "instruction": "Формальная альтернатива «que» в придаточном",
+                    "question": "El director, ___ tomó la decisión, no está aquí.",
                     "options": [
-                        "quien (для людей)",
-                        "que всегда",
-                        "donde",
-                        "cuyo"
+                        "el cual",
+                        "que",
+                        "quien",
+                        "lo cual"
                     ],
-                    "correctAnswer": "quien (для людей)",
-                    "explanation": "Con quien hablo."
-                },
-                {
-                    "type": "SPOT_THE_ERROR",
-                    "instruction": "Ошибка",
-                    "question": "",
-                    "correctAnswer": "El libro donde leo",
-                    "explanation": "Книга — не место → que."
+                    "correctAnswer": "el cual",
+                    "explanation": "El cual — formal, non-restrictive, особенно после запятой и предлогов."
                 },
                 {
                     "type": "TRANSLATE",
-                    "instruction": "Переведи: «друг с которым работаю»",
+                    "instruction": "Переведи: «Причина, по которой я пришёл...»",
                     "question": "",
-                    "correctAnswer": "el amigo con quien trabajo",
-                    "explanation": "quien."
+                    "correctAnswer": "La razón por la cual vine",
+                    "explanation": "После предлогов por/sin/con в formal стиле — el/la cual."
                 },
                 {
-                    "type": "LISTEN_TYPE",
-                    "instruction": "Послушай",
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи: «Что меня удивило»",
                     "question": "",
-                    "correctAnswer": "cuyo",
-                    "explanation": "cuyo — формальное."
+                    "correctAnswer": "Lo cual me sorprendió",
+                    "explanation": "Lo cual — нейтрально, относится ко всему предыдущему высказыванию."
                 },
                 {
-                    "type": "SPEAKING",
-                    "instruction": "Произнеси вслух",
-                    "question": "Послушай и повтори",
-                    "correctAnswer": "quien",
-                    "explanation": "quien — кто"
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Найди ошибку согласования cuyo",
+                    "question": "",
+                    "correctAnswer": "La mujer cuyo casa es bonita",
+                    "explanation": "Cuyo согласуется с тем, ЧТО владеется: casa ж.ед → cuya."
+                },
+                {
+                    "type": "BUILD_SENTENCE",
+                    "instruction": "Собери: «Мужчина, чья жена — врач»",
+                    "question": "",
+                    "words": [
+                        "El",
+                        "hombre",
+                        "cuya",
+                        "esposa",
+                        "es",
+                        "médica"
+                    ],
+                    "correctAnswer": "El hombre cuya esposa es médica",
+                    "explanation": "Cuya — потому что esposa (жена) — ж.ед."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Cuyo формально согласуется с:",
+                    "question": "",
+                    "options": [
+                        "владельцем",
+                        "тем что владеется",
+                        "обоими",
+                        "не согласуется"
+                    ],
+                    "correctAnswer": "тем что владеется",
+                    "explanation": "Cuyo берёт род/число от объекта владения, не от владельца."
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи: «Программа, благодаря которой мы выиграли»",
+                    "question": "",
+                    "correctAnswer": "El programa gracias al cual ganamos",
+                    "explanation": "После сложного предлога gracias a — el cual (formal)."
                 }
             ]
         },
         {
             "id": "u14_l11",
-            "intro": "Косв.речь: сдвиг времён повтор. Hoy → ese día, mañana → al día siguiente.",
+            "intro": "Subjuntivo в косвенной речи: сдвиг времён + новые ситуации B2.",
             "sections": [
                 {
-                    "heading": "Сдвиг указателей",
+                    "heading": "Сдвиг Pres Subj → Imp Subj",
                     "items": [
                         {
-                            "left": "hoy → ese día",
-                            "right": ""
+                            "left": "Quiero que vengas → Le pedí que viniera",
+                            "right": "Pres Subj → Imp Subj"
                         },
                         {
-                            "left": "mañana → al día siguiente",
-                            "right": ""
+                            "left": "Espero que estudies → Esperé que estudiaras",
+                            "right": "Сдвиг при глаголе в прошлом"
                         },
                         {
-                            "left": "ayer → el día anterior",
-                            "right": ""
-                        },
-                        {
-                            "left": "este → ese / aquel",
-                            "right": ""
+                            "left": "Es importante que sepan → Era importante que supieran",
+                            "right": "Безличные обороты тоже двигают"
                         }
                     ]
                 }
             ],
             "exercises": [
                 {
-                    "type": "TAP_MISSING_WORD",
-                    "instruction": "Сдвиг hoy",
-                    "question": "Dijo: «Vine hoy» → Dijo que había venido ___.",
-                    "options": [
-                        "ese día",
-                        "hoy",
-                        "ayer"
-                    ],
-                    "correctAnswer": "ese día",
-                    "explanation": "hoy → ese día."
-                },
-                {
-                    "type": "BUILD_SENTENCE",
-                    "instruction": "Собери: «Сказал что придёт на следующий день»",
+                    "type": "TRANSLATE",
+                    "instruction": "Pres Subj → Imp Subj: Quiero que vengas → Quería que ___ (venir, 2sg)",
                     "question": "",
-                    "words": [
-                        "Dijo",
-                        "que",
-                        "vendría",
-                        "al",
-                        "día",
-                        "siguiente"
-                    ],
-                    "correctAnswer": "Dijo que vendría al día siguiente",
-                    "explanation": "mañana → al día siguiente."
+                    "correctAnswer": "vinieras",
+                    "explanation": "Глагол venir, 2sg Imp Subj. Главное в Imperfecto → придаточное в Imp Subj."
                 },
                 {
                     "type": "MULTIPLE_CHOICE",
-                    "instruction": "este → ?",
-                    "question": "",
+                    "instruction": "Выбери форму после прошедшего",
+                    "question": "Le pedí que ___ a la fiesta.",
                     "options": [
-                        "ese или aquel",
-                        "este (без изменений)",
-                        "uno",
-                        "otro"
+                        "viniera",
+                        "venga",
+                        "venía",
+                        "vino"
                     ],
-                    "correctAnswer": "ese или aquel",
-                    "explanation": "Дистанцирование."
-                },
-                {
-                    "type": "SPOT_THE_ERROR",
-                    "instruction": "Ошибка",
-                    "question": "",
-                    "correctAnswer": "Dijo que viene mañana (косв.речь)",
-                    "explanation": "В косв.речи нужен сдвиг."
+                    "correctAnswer": "viniera",
+                    "explanation": "Pedí — Indefinido → требует Imp Subj в придаточном."
                 },
                 {
                     "type": "TRANSLATE",
-                    "instruction": "Переведи: «Сказал что был в тот день»",
+                    "instruction": "Переведи: «Я сказал, чтобы он подождал»",
                     "question": "",
-                    "correctAnswer": "Dijo que había estado ese día",
-                    "explanation": "Indef → Pluscuamp в косв."
+                    "correctAnswer": "Le dije que esperara",
+                    "explanation": "Imperative в косв.речи → que + Imp Subj."
                 },
                 {
-                    "type": "LISTEN_TYPE",
-                    "instruction": "Послушай",
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Найди ошибку согласования времён",
                     "question": "",
-                    "correctAnswer": "siguiente",
-                    "explanation": "следующий."
+                    "correctAnswer": "Esperaba que vengan",
+                    "explanation": "После Imperfecto нельзя Pres Subj — нужен Imp Subj (vinieran)."
+                },
+                {
+                    "type": "BUILD_SENTENCE",
+                    "instruction": "Собери: «Было важно, чтобы они пришли вовремя»",
+                    "question": "",
+                    "words": [
+                        "Era",
+                        "importante",
+                        "que",
+                        "llegaran",
+                        "a",
+                        "tiempo"
+                    ],
+                    "correctAnswer": "Era importante que llegaran a tiempo",
+                    "explanation": "Безличное в Imperfecto + Imp Subj в придаточном."
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Es necesario que sepas → past: Fue necesario que ___ (saber, 2sg)",
+                    "question": "",
+                    "correctAnswer": "supieras",
+                    "explanation": "Saber, 2sg Imp Subj. Главное в Indefinido → Imp Subj."
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи: «Меня попросили, чтобы я пришёл»",
+                    "question": "",
+                    "correctAnswer": "Me pidieron que viniera",
+                    "explanation": "Pidieron — Indefinido → que viniera (Imp Subj 1sg)."
                 }
             ]
         },
         {
             "id": "u14_l12",
-            "intro": "Ser vs Estar нюансы: ser+adj=характер, estar+adj=состояние. + специальные пары.",
+            "intro": "Согласование participio с подлежащим. Verbos psicológicos (gustar/sorprender + Subj).",
             "sections": [
                 {
-                    "heading": "Тонкости",
+                    "heading": "Participio согласование",
                     "items": [
                         {
-                            "left": "ser bueno",
-                            "right": "хороший человек"
+                            "left": "Las cartas están escritas",
+                            "right": "cartas ж.мн → escritas"
                         },
                         {
-                            "left": "estar bueno",
-                            "right": "вкусный/здоровый"
+                            "left": "Los problemas están resueltos",
+                            "right": "м.мн → resueltos"
                         },
                         {
-                            "left": "ser listo",
-                            "right": "умный"
+                            "left": "La casa fue construida",
+                            "right": "ж.ед → construida"
                         },
                         {
-                            "left": "estar listo",
-                            "right": "готов"
+                            "left": "Me sorprende que vengas",
+                            "right": "Verbos psicológicos требуют Subj"
                         }
                     ]
                 }
             ],
             "exercises": [
                 {
-                    "type": "TAP_MISSING_WORD",
-                    "instruction": "Готов",
-                    "question": "El café ya ___ listo.",
-                    "options": [
-                        "está",
-                        "es",
-                        "fue"
-                    ],
-                    "correctAnswer": "está",
-                    "explanation": "estar listo = готов."
-                },
-                {
                     "type": "MULTIPLE_CHOICE",
-                    "instruction": "«es bueno» vs «está bueno»?",
-                    "question": "",
+                    "instruction": "Согласование participio с подлежащим",
+                    "question": "Las cartas ___ ya.",
                     "options": [
-                        "хороший vs вкусный",
-                        "одинаково",
-                        "оба «хороший»",
-                        "ошибочны"
+                        "están escritas",
+                        "están escrito",
+                        "están escritos",
+                        "está escritas"
                     ],
-                    "correctAnswer": "хороший vs вкусный",
-                    "explanation": "Разные значения."
-                },
-                {
-                    "type": "BUILD_SENTENCE",
-                    "instruction": "Собери: «Я готов»",
-                    "question": "",
-                    "words": [
-                        "Estoy",
-                        "listo"
-                    ],
-                    "correctAnswer": "Estoy listo",
-                    "explanation": "estar listo = готов."
-                },
-                {
-                    "type": "SPEAKING",
-                    "instruction": "Произнеси вслух",
-                    "question": "Послушай и повтори",
-                    "correctAnswer": "ser bueno",
-                    "explanation": "ser bueno — хороший человек"
+                    "correctAnswer": "están escritas",
+                    "explanation": "Cartas — ж.мн → participio escritas (ж.мн)."
                 },
                 {
                     "type": "SPOT_THE_ERROR",
-                    "instruction": "Ошибка",
+                    "instruction": "Найди ошибку согласования participio",
                     "question": "",
-                    "correctAnswer": "Soy listo (= готов сейчас)",
-                    "explanation": "ser listo = умный, estar listo = готов."
+                    "correctAnswer": "Los problemas están resuelto",
+                    "explanation": "Problemas — м.мн → нужно resueltos, а не resuelto."
                 },
                 {
                     "type": "TRANSLATE",
-                    "instruction": "Переведи: «Этот суп вкусный»",
+                    "instruction": "Pasiva с ser: «El libro ___ por García Márquez» (впиши m.sg форму)",
                     "question": "",
-                    "correctAnswer": "Esta sopa está buena",
-                    "explanation": "Вкус → estar bueno."
+                    "correctAnswer": "fue escrito",
+                    "explanation": "Libro — м.ед → fue escrito. Согласование participio в пассиве обязательно."
                 },
                 {
-                    "type": "LISTEN_TYPE",
-                    "instruction": "Послушай",
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Verbos psicológicos требуют:",
+                    "question": "Me sorprende que ___ tan rápido.",
+                    "options": [
+                        "aprendas",
+                        "aprendes",
+                        "aprenderás",
+                        "aprendías"
+                    ],
+                    "correctAnswer": "aprendas",
+                    "explanation": "Sorprender выражает эмоцию → que + Subjuntivo."
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи: «Меня удивляет, что ты пришёл вовремя»",
                     "question": "",
-                    "correctAnswer": "está bueno",
-                    "explanation": "вкусный/здоровый."
+                    "correctAnswer": "Me sorprende que hayas llegado a tiempo",
+                    "explanation": "Sorprender + Pres Perfect Subj (hayas llegado) для законченного действия."
+                },
+                {
+                    "type": "BUILD_SENTENCE",
+                    "instruction": "Собери: «Решения уже приняты»",
+                    "question": "",
+                    "words": [
+                        "Las",
+                        "decisiones",
+                        "ya",
+                        "están",
+                        "tomadas"
+                    ],
+                    "correctAnswer": "Las decisiones ya están tomadas",
+                    "explanation": "Decisiones ж.мн → tomadas (ж.мн)."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Найди verbo psicológico без Subjuntivo",
+                    "question": "",
+                    "correctAnswer": "Me alegra que viniste",
+                    "explanation": "Alegrar — verbo psicológico, нужен Subj: que vinieras / hayas venido."
                 }
             ]
         },
@@ -2001,18 +2067,26 @@
         },
         {
             "id": "u14_l2",
-            "intro": "SE-пассив и SE-безличное: «Se vende coche», «Se habla español».",
+            "intro": "SE-пассив (pasiva refleja) и SE-безличное: «Se vende coche», «Se habla español». В pasiva refleja глагол СОГЛАСУЕТСЯ с подлежащим; в impersonal — всегда singular.",
             "sections": [
                 {
                     "heading": "SE",
                     "items": [
                         {
                             "left": "Se vende",
-                            "right": "продаётся (пассив)"
+                            "right": "продаётся (пассив, sg)"
                         },
                         {
-                            "left": "Se dice",
-                            "right": "говорят (безличн)"
+                            "left": "Se venden",
+                            "right": "продаются (пассив, pl)"
+                        },
+                        {
+                            "left": "Se dice que",
+                            "right": "говорят что (impersonal)"
+                        },
+                        {
+                            "left": "Se vive bien",
+                            "right": "живётся хорошо (impersonal)"
                         }
                     ]
                 }
@@ -2023,7 +2097,7 @@
                     "instruction": "Произнеси вслух",
                     "question": "Послушай и повтори",
                     "correctAnswer": "Se vende",
-                    "explanation": "Se vende — продаётся (пассив)"
+                    "explanation": "Se vende — продаётся (пассив, sg)"
                 },
                 {
                     "type": "TAP_MISSING_WORD",
@@ -2083,6 +2157,82 @@
                     "question": "",
                     "correctAnswer": "se vende",
                     "explanation": "Объявление."
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Pasiva refleja: глагол СОГЛАСУЕТСЯ с подлежащим (мн.ч.)",
+                    "question": "Se ___ coches usados.",
+                    "options": [
+                        "venden",
+                        "vende",
+                        "vendo"
+                    ],
+                    "correctAnswer": "venden",
+                    "explanation": "Pasiva refleja: «coches» pl → venden pl."
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Pasiva refleja: подлежащее в ед.ч.",
+                    "question": "Se ___ coche barato.",
+                    "options": [
+                        "vende",
+                        "venden",
+                        "vendo"
+                    ],
+                    "correctAnswer": "vende",
+                    "explanation": "Pasiva refleja: «coche» sg → vende sg."
+                },
+                {
+                    "type": "BUILD_SENTENCE",
+                    "instruction": "Собери: «Ищутся официанты» (pasiva refleja)",
+                    "question": "",
+                    "words": [
+                        "Se",
+                        "buscan",
+                        "camareros"
+                    ],
+                    "correctAnswer": "Se buscan camareros",
+                    "explanation": "«camareros» pl → buscan pl."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Impersonal: глагол всегда…",
+                    "question": "",
+                    "options": [
+                        "в 3-м лице singular",
+                        "согласуется с дополнением",
+                        "во множ.ч.",
+                        "в инфинитиве"
+                    ],
+                    "correctAnswer": "в 3-м лице singular",
+                    "explanation": "SE impersonal — всегда singular (нет подлежащего)."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Где НЕВЕРНОЕ согласование pasiva refleja?",
+                    "question": "",
+                    "correctAnswer": "Se vende casas",
+                    "explanation": "«casas» pl → должен быть «se venden casas». «Se vende» только с sg."
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи (impersonal): «Здесь живётся хорошо»",
+                    "question": "",
+                    "correctAnswer": "Aquí se vive bien",
+                    "explanation": "Impersonal — нет подлежащего, vive всегда sg."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "«Se dice que llegan mañana» — это…",
+                    "question": "",
+                    "options": [
+                        "impersonal (singular)",
+                        "pasiva refleja (plural)",
+                        "pasiva ser",
+                        "estar+part"
+                    ],
+                    "correctAnswer": "impersonal (singular)",
+                    "explanation": "«Se dice que…» — классический impersonal, всегда dice (sg)."
                 }
             ]
         },
@@ -2340,7 +2490,7 @@
         },
         {
             "id": "u14_l6",
-            "intro": "Perífrasis: seguir+ger (продолжать), dejar de+inf (перестать), ponerse a+inf (взяться).",
+            "intro": "Perífrasis B2: seguir+ger, dejar de+inf, ponerse a+inf; deber+inf (долг) vs deber de+inf (предположение); estar a punto de+inf, ir+ger, llevar+participio.",
             "sections": [
                 {
                     "heading": "Ещё perífrasis",
@@ -2356,6 +2506,26 @@
                         {
                             "left": "Se puso a llorar",
                             "right": "разрыдался"
+                        },
+                        {
+                            "left": "Debes estudiar",
+                            "right": "ты должен (долг)"
+                        },
+                        {
+                            "left": "Debe de tener 30",
+                            "right": "ему лет 30 (предположение)"
+                        },
+                        {
+                            "left": "Está a punto de salir",
+                            "right": "вот-вот выйдет"
+                        },
+                        {
+                            "left": "Voy entendiendo",
+                            "right": "потихоньку понимаю"
+                        },
+                        {
+                            "left": "Llevo escritas 10 páginas",
+                            "right": "написано 10 страниц (на данный момент)"
                         }
                     ]
                 }
@@ -2400,13 +2570,6 @@
                     "explanation": "Прекращение."
                 },
                 {
-                    "type": "SPEAKING",
-                    "instruction": "Произнеси вслух",
-                    "question": "Послушай и повтори",
-                    "correctAnswer": "Sigo trabajando",
-                    "explanation": "Sigo trabajando — продолжаю"
-                },
-                {
                     "type": "SPOT_THE_ERROR",
                     "instruction": "Ошибка",
                     "question": "",
@@ -2426,6 +2589,138 @@
                     "question": "",
                     "correctAnswer": "dejé",
                     "explanation": "dejar Indef yo."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "«Debes estudiar más» — это…",
+                    "question": "",
+                    "options": [
+                        "обязанность / долг",
+                        "предположение / вероятность",
+                        "запрет",
+                        "разрешение"
+                    ],
+                    "correctAnswer": "обязанность / долг",
+                    "explanation": "deber + inf (без de) = obligación: «ты должен»."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "«Debe de tener treinta años» — это…",
+                    "question": "",
+                    "options": [
+                        "предположение / вероятность",
+                        "приказ",
+                        "обязанность",
+                        "запрет"
+                    ],
+                    "correctAnswer": "предположение / вероятность",
+                    "explanation": "deber DE + inf = probabilidad: «наверное, ему 30»."
+                },
+                {
+                    "type": "SPEAKING",
+                    "instruction": "Произнеси вслух",
+                    "question": "Послушай и повтори",
+                    "correctAnswer": "Sigo trabajando",
+                    "explanation": "Sigo trabajando — продолжаю"
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Вставь (обязанность)",
+                    "question": "___ estudiar más para el examen.",
+                    "options": [
+                        "Debes",
+                        "Debes de",
+                        "Debías de"
+                    ],
+                    "correctAnswer": "Debes",
+                    "explanation": "Obligación → deber (без de)."
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Вставь (догадка)",
+                    "question": "No contesta el móvil. ___ estar durmiendo.",
+                    "options": [
+                        "Debe de",
+                        "Debe",
+                        "Tiene"
+                    ],
+                    "correctAnswer": "Debe de",
+                    "explanation": "Probabilidad → deber DE + inf."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Ошибка (обязанность ≠ догадка)",
+                    "question": "",
+                    "correctAnswer": "Debes de pagar los impuestos antes del 30",
+                    "explanation": "Налоги — это обязанность → debes (без de). С «de» было бы предположение."
+                },
+                {
+                    "type": "BUILD_SENTENCE",
+                    "instruction": "Собери: «Поезд вот-вот отойдёт»",
+                    "question": "",
+                    "words": [
+                        "El",
+                        "tren",
+                        "está",
+                        "a",
+                        "punto",
+                        "de",
+                        "salir"
+                    ],
+                    "correctAnswer": "El tren está a punto de salir",
+                    "explanation": "estar a punto de + inf = вот-вот сделать."
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи: «Я уже почти закончил»",
+                    "question": "",
+                    "correctAnswer": "Estoy a punto de terminar",
+                    "explanation": "estar a punto de + inf — действие на грани."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "«Voy entendiendo poco a poco» — оттенок?",
+                    "question": "",
+                    "options": [
+                        "постепенно, шаг за шагом",
+                        "уже закончил",
+                        "буду делать",
+                        "запретил"
+                    ],
+                    "correctAnswer": "постепенно, шаг за шагом",
+                    "explanation": "ir + gerundio = gradual progress."
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Вставь (постепенно)",
+                    "question": "___ aprendiendo español poco a poco.",
+                    "options": [
+                        "Voy",
+                        "Vengo",
+                        "Llevo"
+                    ],
+                    "correctAnswer": "Voy",
+                    "explanation": "ir + ger — постепенное действие."
+                },
+                {
+                    "type": "BUILD_SENTENCE",
+                    "instruction": "Собери: «Уже написал 10 страниц»",
+                    "question": "",
+                    "words": [
+                        "Llevo",
+                        "escritas",
+                        "diez",
+                        "páginas"
+                    ],
+                    "correctAnswer": "Llevo escritas diez páginas",
+                    "explanation": "llevar + participio: «escritas» СОГЛАСУЕТСЯ с páginas (f.pl)."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Ошибка согласования llevar+participio",
+                    "question": "",
+                    "correctAnswer": "Llevo escrito diez páginas",
+                    "explanation": "«páginas» f.pl → escritas (а не escrito). Participio согласуется."
                 }
             ]
         },
@@ -2604,89 +2899,98 @@
         },
         {
             "id": "u14_l9",
-            "intro": "Infinitivo как сущ: «El comer es importante». Может быть подлежащим.",
+            "intro": "Voz media — пассив без агента. Se rompió el vaso (само разбилось).",
             "sections": [
                 {
-                    "heading": "Inf as noun",
+                    "heading": "Voz media vs pasiva refleja",
                     "items": [
                         {
-                            "left": "El fumar es malo",
-                            "right": "Курение вредно"
+                            "left": "Se rompió el vaso",
+                            "right": "Стакан разбился (само)"
                         },
                         {
-                            "left": "Comer es necesario",
-                            "right": "Есть необходимо"
+                            "left": "Se cayó el libro",
+                            "right": "Книга упала"
+                        },
+                        {
+                            "left": "Se cerró la puerta",
+                            "right": "Дверь закрылась"
+                        },
+                        {
+                            "left": "Se abrió de repente",
+                            "right": "Открылось внезапно"
                         }
                     ]
                 }
             ],
             "exercises": [
                 {
-                    "type": "TAP_MISSING_WORD",
-                    "instruction": "Вставь",
-                    "question": "___ fumar es malo.",
-                    "options": [
-                        "El",
-                        "Lo",
-                        "Un"
-                    ],
-                    "correctAnswer": "El",
-                    "explanation": "Inf как сущ → el."
-                },
-                {
-                    "type": "BUILD_SENTENCE",
-                    "instruction": "Собери: «Курение вредит здоровью»",
-                    "question": "",
-                    "words": [
-                        "El",
-                        "fumar",
-                        "daña",
-                        "la",
-                        "salud"
-                    ],
-                    "correctAnswer": "El fumar daña la salud",
-                    "explanation": "El + inf — обобщение."
-                },
-                {
                     "type": "MULTIPLE_CHOICE",
-                    "instruction": "Что значит «Es importante estudiar»?",
-                    "question": "",
+                    "instruction": "Воз медиа: само случилось",
+                    "question": "El vaso ___ ayer.",
                     "options": [
-                        "Важно учиться",
-                        "Важный учитель",
-                        "Учу",
-                        "Изучаю"
+                        "se rompió",
+                        "rompió",
+                        "fue roto",
+                        "estaba roto"
                     ],
-                    "correctAnswer": "Важно учиться",
-                    "explanation": "Inf как доп."
-                },
-                {
-                    "type": "SPEAKING",
-                    "instruction": "Произнеси вслух",
-                    "question": "Послушай и повтори",
-                    "correctAnswer": "Comer es necesario",
-                    "explanation": "Comer es necesario — Есть необходимо"
+                    "correctAnswer": "se rompió",
+                    "explanation": "Voz media: SE + глагол — действие без виновника."
                 },
                 {
                     "type": "SPOT_THE_ERROR",
-                    "instruction": "Ошибка",
+                    "instruction": "Найди вариант, где смысл иной (намеренное действие)",
                     "question": "",
-                    "correctAnswer": "Es importante estudia",
-                    "explanation": "После «importante» — инфинитив, не лич.форма."
+                    "correctAnswer": "Cayó el libro a propósito",
+                    "explanation": "Без SE значит «уронил намеренно», без voz media."
                 },
                 {
                     "type": "TRANSLATE",
-                    "instruction": "Переведи: «Жить хорошо»",
+                    "instruction": "Переведи: «Дверь сама открылась»",
                     "question": "",
-                    "correctAnswer": "Vivir bien",
-                    "explanation": "Inf как тема."
+                    "correctAnswer": "La puerta se abrió",
+                    "explanation": "Voz media — SE + глагол, без агента."
                 },
                 {
-                    "type": "LISTEN_TYPE",
-                    "instruction": "Послушай",
+                    "type": "MATCH_PAIRS",
+                    "instruction": "Соедини глаголы voz media",
                     "question": "",
-                    "correctAnswer": "fumar",
-                    "explanation": "Инфинитив."
+                    "correctAnswer": "ok"
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи: «Стакан разбился»",
+                    "question": "",
+                    "correctAnswer": "Se rompió el vaso",
+                    "explanation": "Voz media — стакан сам разбился."
+                },
+                {
+                    "type": "BUILD_SENTENCE",
+                    "instruction": "Собери: «Ключи потерялись в поездке»",
+                    "question": "",
+                    "words": [
+                        "Las",
+                        "llaves",
+                        "se",
+                        "perdieron",
+                        "en",
+                        "el",
+                        "viaje"
+                    ],
+                    "correctAnswer": "Las llaves se perdieron en el viaje",
+                    "explanation": "Voz media с perderse — само потерялось."
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Вставь SE",
+                    "question": "El libro ___ cayó al suelo.",
+                    "options": [
+                        "se",
+                        "le",
+                        "lo"
+                    ],
+                    "correctAnswer": "se",
+                    "explanation": "Caerse — voz media, без SE нельзя."
                 }
             ]
         },
@@ -5069,7 +5373,7 @@
         },
         {
             "id": "u16_l6",
-            "intro": "Latinoamericano: vos, ustedes (без vosotros), zumo→jugo, móvil→celular.",
+            "intro": "Latinoamericano: vos, ustedes (без vosotros), zumo→jugo, móvil→celular. Voseo (Аргентина, Уругвай, Парагвай, часть ЦА): vos sos, vos tenés, vos podés — ударение на последнем слоге.",
             "sections": [
                 {
                     "heading": "Latam vs España",
@@ -5093,6 +5397,35 @@
                         {
                             "left": "ordenador → computador",
                             "right": "комп"
+                        }
+                    ]
+                },
+                {
+                    "heading": "Voseo (presente)",
+                    "items": [
+                        {
+                            "left": "vos sos",
+                            "right": "ты есть (ser)"
+                        },
+                        {
+                            "left": "vos tenés",
+                            "right": "ты имеешь (tener)"
+                        },
+                        {
+                            "left": "vos podés",
+                            "right": "ты можешь (poder)"
+                        },
+                        {
+                            "left": "vos querés",
+                            "right": "ты хочешь (querer)"
+                        },
+                        {
+                            "left": "vos venís",
+                            "right": "ты приходишь (venir)"
+                        },
+                        {
+                            "left": "vos comés",
+                            "right": "ты ешь (comer)"
                         }
                     ]
                 }
@@ -5130,13 +5463,6 @@
                     "explanation": "vosotros — только Испания."
                 },
                 {
-                    "type": "SPEAKING",
-                    "instruction": "Произнеси вслух",
-                    "question": "Послушай и повтори",
-                    "correctAnswer": "tú/vos",
-                    "explanation": "tú/vos — ты"
-                },
-                {
                     "type": "SPOT_THE_ERROR",
                     "instruction": "В Мексике скорее",
                     "question": "",
@@ -5156,6 +5482,82 @@
                     "question": "",
                     "correctAnswer": "vos",
                     "explanation": "Аргентинское «ты»."
+                },
+                {
+                    "type": "SPEAKING",
+                    "instruction": "Произнеси вслух",
+                    "question": "Послушай и повтори",
+                    "correctAnswer": "tú/vos",
+                    "explanation": "tú/vos — ты"
+                },
+                {
+                    "type": "MATCH_PAIRS",
+                    "instruction": "Соедини: tú-форма ↔ vos-форма",
+                    "question": "",
+                    "correctAnswer": "ok"
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Voseo: ser",
+                    "question": "¿De dónde ___ vos?",
+                    "options": [
+                        "sos",
+                        "eres",
+                        "es"
+                    ],
+                    "correctAnswer": "sos",
+                    "explanation": "vos + ser → sos (не eres)."
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Voseo: tener",
+                    "question": "Vos ___ mucho talento.",
+                    "options": [
+                        "tenés",
+                        "tienes",
+                        "tiene"
+                    ],
+                    "correctAnswer": "tenés",
+                    "explanation": "vos + tener → tenés (ударение на é)."
+                },
+                {
+                    "type": "TAP_MISSING_WORD",
+                    "instruction": "Voseo: poder",
+                    "question": "Vos ___ venir mañana, ¿no?",
+                    "options": [
+                        "podés",
+                        "puedes",
+                        "puede"
+                    ],
+                    "correctAnswer": "podés",
+                    "explanation": "vos + poder → podés (без e→ie дифтонга)."
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи на argentino: «Ты имеешь много таланта»",
+                    "question": "",
+                    "correctAnswer": "Vos tenés mucho talento",
+                    "explanation": "voseo: «vos tenés» вместо «tú tienes»."
+                },
+                {
+                    "type": "TRANSLATE",
+                    "instruction": "Переведи на argentino: «Ты можешь прийти завтра?»",
+                    "question": "",
+                    "correctAnswer": "¿Vos podés venir mañana?",
+                    "explanation": "vos podés (sin diptongo)."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Ключевая черта voseo в presente?",
+                    "question": "",
+                    "options": [
+                        "ударение на последнем слоге, без дифтонгов",
+                        "всегда -ar инфинитив",
+                        "только в прошедшем",
+                        "только с usted"
+                    ],
+                    "correctAnswer": "ударение на последнем слоге, без дифтонгов",
+                    "explanation": "tenés / podés / sos — ударение на конце, дифтонг e→ie исчезает."
                 }
             ]
         },
@@ -5349,7 +5751,7 @@
         },
         {
             "id": "u16_l9",
-            "intro": "Современная лексика: startup, sostenibilidad, branding, networking.",
+            "intro": "Современная лексика + coloquialismos (España): startup, sostenibilidad, branding, networking. Разговорные: joder, coño, qué fuerte, tía/tío, flipar — только в неформальном регистре, НЕ с usted/в работе.",
             "sections": [
                 {
                     "heading": "Modern",
@@ -5373,6 +5775,31 @@
                         {
                             "left": "marketing",
                             "right": "маркетинг"
+                        }
+                    ]
+                },
+                {
+                    "heading": "Coloquialismos (España, только receptivo!)",
+                    "items": [
+                        {
+                            "left": "joder",
+                            "right": "блин / чёрт (вульг.)"
+                        },
+                        {
+                            "left": "coño",
+                            "right": "блин (очень вульг.)"
+                        },
+                        {
+                            "left": "qué fuerte",
+                            "right": "офигеть / вот это да"
+                        },
+                        {
+                            "left": "tío / tía",
+                            "right": "чувак / чувиха"
+                        },
+                        {
+                            "left": "flipar",
+                            "right": "офигевать / тащиться"
                         }
                     ]
                 }
@@ -5410,13 +5837,6 @@
                     "explanation": "Эко-термин."
                 },
                 {
-                    "type": "SPEAKING",
-                    "instruction": "Произнеси вслух",
-                    "question": "Послушай и повтори",
-                    "correctAnswer": "startup",
-                    "explanation": "startup — стартап"
-                },
-                {
                     "type": "BUILD_SENTENCE",
                     "instruction": "Собери: «Конференция по маркетингу»",
                     "question": "",
@@ -5436,11 +5856,70 @@
                     "explanation": "Заимств."
                 },
                 {
+                    "type": "SPEAKING",
+                    "instruction": "Произнеси вслух",
+                    "question": "Послушай и повтори",
+                    "correctAnswer": "startup",
+                    "explanation": "startup — стартап"
+                },
+                {
                     "type": "LISTEN_TYPE",
                     "instruction": "Послушай",
                     "question": "",
                     "correctAnswer": "branding",
                     "explanation": "Бизнес."
+                },
+                {
+                    "type": "MATCH_PAIRS",
+                    "instruction": "Соедини разговорное ↔ значение",
+                    "question": "",
+                    "correctAnswer": "ok"
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "«¡Qué fuerte!» — реакция на…",
+                    "question": "",
+                    "options": [
+                        "шокирующую новость",
+                        "тихий звук",
+                        "вкусную еду",
+                        "холод"
+                    ],
+                    "correctAnswer": "шокирующую новость",
+                    "explanation": "qué fuerte = «офигеть, вот это да»."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "«Flipar» означает…",
+                    "question": "",
+                    "options": [
+                        "сильно удивляться, тащиться",
+                        "ронять",
+                        "переворачивать страницу",
+                        "флиппер"
+                    ],
+                    "correctAnswer": "сильно удивляться, тащиться",
+                    "explanation": "Me flipa esta canción — «я тащусь от этой песни»."
+                },
+                {
+                    "type": "SPOT_THE_ERROR",
+                    "instruction": "Неправильный регистр (вульг. + usted)",
+                    "question": "",
+                    "correctAnswer": "Hola, doctora. Joder, qué dolor de cabeza tengo.",
+                    "explanation": "С врачом — formal. «Joder» — вульг. coloquial, НЕ к незнакомым/usted."
+                },
+                {
+                    "type": "MULTIPLE_CHOICE",
+                    "instruction": "Где НЕЛЬЗЯ говорить «tío/joder/coño»?",
+                    "question": "",
+                    "options": [
+                        "На работе с шефом, на экзамене, к незнакомым старшим",
+                        "С друзьями в баре",
+                        "В чате с приятелем",
+                        "На вечеринке у одногруппников"
+                    ],
+                    "correctAnswer": "На работе с шефом, на экзамене, к незнакомым старшим",
+                    "explanation": "Coloquialismos — только informal с близкими. В работе/с usted — нельзя."
                 }
             ]
         }

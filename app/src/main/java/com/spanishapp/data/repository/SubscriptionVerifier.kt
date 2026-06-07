@@ -113,13 +113,24 @@ class SubscriptionVerifier @Inject constructor(
                     subscriptionPrefs.setProVerified(true, System.currentTimeMillis())
                     Log.d(TAG, "Purchase verified: state=$state expires=$expiryTime")
                 } else {
-                    // v1.25.90 fix: НЕ отзываем PRO здесь. Раньше любой valid=false
-                    // (включая HTTP 5xx, сетевые ошибки, 48ч лаг Play API со state=null)
-                    // ронял isPro у реального платящего юзера. Теперь решение об
-                    // отзыве PRO принимает ТОЛЬКО PlayBillingManager.handlePurchase
-                    // через свой isDefinitelyInvalid check (state in EXPIRED/CANCELED/
-                    // REVOKED). Сюда просто отдаём VerifyResult — пусть caller решает.
-                    Log.w(TAG, "Purchase NOT valid: state=$state — caller decides revocation")
+                    // v1.25.85 + v1.25.90 merged: отзываем PRO ТОЛЬКО при чётких сигналах
+                    // об отмене/истечении (EXPIRED/CANCELED/REVOKED). На transient errors
+                    // (HTTP 5xx, network timeout, 48ч лаг Play API со state=null) НЕ трогаем
+                    // подписку — это раньше ронял isPro у реальных платящих юзеров.
+                    // Defense-in-depth: тот же isDefinitelyInvalid check есть и в
+                    // PlayBillingManager.handlePurchase. Если кто-то добавит нового
+                    // caller'а verifyPurchase, защита всё равно работает.
+                    val isDefinitelyInvalid = state in setOf(
+                        "SUBSCRIPTION_STATE_EXPIRED",
+                        "SUBSCRIPTION_STATE_CANCELED",
+                        "SUBSCRIPTION_STATE_REVOKED"
+                    )
+                    if (isDefinitelyInvalid) {
+                        subscriptionPrefs.setProVerified(false, System.currentTimeMillis())
+                        Log.w(TAG, "Purchase NOT valid: state=$state. PRO revoked.")
+                    } else {
+                        Log.w(TAG, "Purchase status unclear (state=$state). Trusting local billing for now.")
+                    }
                 }
                 VerifyResult(valid, state, expiryTime)
             }

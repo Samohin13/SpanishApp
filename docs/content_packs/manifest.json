@@ -12,32 +12,32 @@
             "id": "lessons_a1",
             "version": 1,
             "url": "content/lessons_a1_v1.json",
-            "sizeBytes": 267499,
-            "sha256": "a57b5190508b408d1f0cbb50bcf4f0779ea6f76dd65e6b32427f38b8b41adb43",
+            "sizeBytes": 276274,
+            "sha256": "00686aa6a8180f60c4300bfbef4776734e9869a204cf4795db031487d156457d",
             "displayName": "Уроки A1"
         },
         {
             "id": "lessons_a2",
             "version": 1,
             "url": "content/lessons_a2_v1.json",
-            "sizeBytes": 237456,
-            "sha256": "ad471da2bd647eaccc3c153476a9fe0ceaacaee4189d516f951636541e32ec53",
+            "sizeBytes": 264654,
+            "sha256": "e899209acda103e92db0d7a2c44699d68fc81de588eadc02a9f3071e7a329a00",
             "displayName": "Уроки A2"
         },
         {
             "id": "lessons_b1",
             "version": 1,
             "url": "content/lessons_b1_v1.json",
-            "sizeBytes": 231501,
-            "sha256": "0ed012e1dc29494d3a073ef20940e098b491842114a7b991d57ac0648f3b8323",
+            "sizeBytes": 243467,
+            "sha256": "36a7428ea49714271f3ef2368617278357bb304e7cde953526d4e0fa67f74fa6",
             "displayName": "Уроки B1"
         },
         {
             "id": "lessons_b2",
             "version": 1,
             "url": "content/lessons_b2_v1.json",
-            "sizeBytes": 220101,
-            "sha256": "aabd0cf81ae6a811e47c60722c7b7bf8c38f6cd2b08bd654e8007ce3fb8a7024",
+            "sizeBytes": 246758,
+            "sha256": "545084af328b031fa14f53992a3a2c2a38e3fa4b2c84a4f61ecf3b7e5c541021",
             "displayName": "Уроки B2"
         },
         {
