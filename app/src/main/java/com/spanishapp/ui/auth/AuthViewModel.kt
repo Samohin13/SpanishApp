@@ -41,6 +41,8 @@ data class AuthUiState(
 class AuthViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val syncRepository: com.spanishapp.data.repository.SyncRepository,
+    // v1.25.88: sync displayName в user_progress для leaderboard
+    private val userProgressDao: com.spanishapp.data.db.dao.UserProgressDao,
     @ApplicationContext private val appContext: Context,
 ) : ViewModel() {
 
@@ -250,6 +252,16 @@ class AuthViewModel @Inject constructor(
     fun updateName(name: String) {
         viewModelScope.launch {
             authRepository.setUserName(name)
+            // v1.25.88: ОБЯЗАТЕЛЬНО синхронизируем в user_progress.displayName.
+            // Раньше имя писалось только в auth_prefs DataStore. LeaderboardRepository
+            // читает progress.displayName из Room → было пусто → fallback "Estudiante".
+            // Все тестеры в leaderboard были безымянные («Estudiante» × N).
+            runCatching {
+                val current = userProgressDao.getProgressOnce()
+                if (current != null) {
+                    userProgressDao.update(current.copy(displayName = name))
+                }
+            }
             saveUserDataToFirestore()
         }
     }

@@ -46,6 +46,13 @@ class SpanishApp : Application() {
      *  переустановке. В release не выполняется (BuildConfig.DEBUG=false). */
     @Inject lateinit var subscriptionPrefs: com.spanishapp.data.prefs.SubscriptionPreferences
 
+    /** v1.25.88: backfill displayName из auth_prefs → user_progress на старте.
+     *  Все существующие тестеры были безымянные в leaderboard ("Estudiante")
+     *  потому что имя писалось только в auth_prefs, а Leaderboard читает
+     *  из user_progress.displayName. */
+    @Inject lateinit var authRepository: com.spanishapp.data.repository.AuthRepository
+    @Inject lateinit var userProgressDao: com.spanishapp.data.db.dao.UserProgressDao
+
     private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     /**
@@ -128,9 +135,38 @@ class SpanishApp : Application() {
         // в release — BuildConfig.DEBUG=false, ветка не выполняется.
         if (BuildConfig.DEBUG) {
             appScope.launch {
-                runCatching { subscriptionPrefs.setPro(true) }
+                runCatching {
+                    subscriptionPrefs.setPro(true)
+                    // v1.25.81: также проставляем verifiedAt чтобы SEC-1
+                    // grace check сработал (snap.isPro && (verifiedAt==0
+                    // или age<30d) → true). Дополнительная страховка.
+                    subscriptionPrefs.setProVerified(true, System.currentTimeMillis())
+                    android.util.Log.d("SpanishApp", "DEBUG auto-PRO activated")
+                }.onFailure {
+                    android.util.Log.e("SpanishApp", "DEBUG auto-PRO failed", it)
+                }
             }
         }
+        // v1.25.88: backfill displayName — fix для существующих тестеров.
+        // Если в auth_prefs есть имя (из Onboarding), а user_progress.displayName
+        // пустой — копируем имя в user_progress, чтобы leaderboard показывал
+        // настоящее имя юзера а не "Estudiante".
+        appScope.launch {
+            runCatching {
+                val authName = authRepository.userName.first().orEmpty()
+                if (authName.isNotBlank()) {
+                    val progress = userProgressDao.getProgressOnce()
+                    if (progress != null && progress.displayName.isBlank()) {
+                        userProgressDao.update(progress.copy(displayName = authName))
+                        android.util.Log.d("SpanishApp", "Backfilled displayName='$authName' into user_progress")
+                    }
+                }
+            }.onFailure { e ->
+                com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+                    .recordException(RuntimeException("[SpanishApp] displayName backfill failed", e))
+            }
+        }
+
         appScope.launch {
             runCatching {
                 databaseSeeder.seedIfNeeded()
