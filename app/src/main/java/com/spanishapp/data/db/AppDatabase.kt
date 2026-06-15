@@ -40,7 +40,7 @@ import com.spanishapp.data.db.entity.*
         UserVocabStateEntity::class,
         WeakVerbEntity::class,  // v1.25.78 VERB-4
     ],
-    version = 31,
+    version = 32,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -400,6 +400,18 @@ abstract class AppDatabase : RoomDatabase() {
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_user_vocab_state_status ON user_vocab_state(status)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_user_vocab_state_cefr ON user_vocab_state(cefr)")
                 db.execSQL("CREATE INDEX IF NOT EXISTS index_user_vocab_state_last_seen ON user_vocab_state(last_seen_at)")
+            }
+        }
+
+        // ── v32: AUTO-ENROLL в leaderboard (v1.25.87). Раньше default=0
+        //   (opt-out) → большинство тестеров не доходили до Leaderboard
+        //   tab и не нажимали «Присоединиться». Из 23 в лиге было 2.
+        //   Теперь default=1 (opt-in) + миграция: всем существующим
+        //   юзерам тоже выставляем opt_in=1. Opt-out через кнопку
+        //   «Выйти из лидерборда». ──
+        val MIGRATION_31_32 = object : Migration(31, 32) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("UPDATE user_progress SET leaderboard_opt_in = 1")
             }
         }
 

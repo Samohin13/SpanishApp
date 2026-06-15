@@ -257,12 +257,13 @@ private fun PodiumColumn(
             )
         }
         if (isMe) {
-            // Подсветка «ты» через outline на всю колонку
+            // v1.25.87: подсветка «ты» — рамка на ВСЮ карточку (а не только сверху).
+            // Раньше padding(bottom=18) обрезал низ и скругление было только
+            // сверху → визуально выглядело как обломанная коробка.
             Box(
                 modifier = Modifier
                     .matchParentSize()
-                    .padding(bottom = 18.dp)
-                    .border(2.dp, LbPrimary, RoundedCornerShape(topStart = 14.dp, topEnd = 14.dp))
+                    .border(2.dp, LbPrimary, RoundedCornerShape(14.dp))
             )
         }
     }

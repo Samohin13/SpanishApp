@@ -122,7 +122,11 @@ data class UserProgressEntity(
     @ColumnInfo(name = "last_rating_update") val lastRatingUpdate: Long = 0L,
     @ColumnInfo(name = "current_league") val currentLeague: Int = 1,
     @ColumnInfo(name = "peak_league") val peakLeague: Int = 1,
-    @ColumnInfo(name = "leaderboard_opt_in") val leaderboardOptIn: Boolean = false,
+    // v1.25.87: AUTO-ENROLL в leaderboard. Раньше юзер должен был сам тыкнуть
+    // «Присоединиться» — большинство тестеров не доходили (23 тестера → 2 в
+    // leaderboard). Теперь новые юзеры автоматически в рейтинге. Opt-out через
+    // кнопку «Выйти из лидерборда» в LeaderboardScreen.
+    @ColumnInfo(name = "leaderboard_opt_in") val leaderboardOptIn: Boolean = true,
     // ── Streak freezes (added in v14) ────────────────────────
     @ColumnInfo(name = "streak_freezes_available") val streakFreezesAvailable: Int = 2,
     @ColumnInfo(name = "last_streak_update_date") val lastStreakUpdateDate: String = "",
