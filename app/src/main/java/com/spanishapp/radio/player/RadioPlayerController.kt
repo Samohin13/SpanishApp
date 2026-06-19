@@ -432,7 +432,7 @@ class RadioPlayerController(private val context: Context) {
      * Играть станцию. Загружает ВСЮ карусель (stationContext) как playlist,
      * выбирая нужную как стартовую. Это даёт:
      *  - Media3 показывает skip prev/next кнопки в notification (queue > 1)
-     *  - Bluetooth headset / Android Auto navigation работает
+     *  - Bluetooth headset navigation работает
      *  - seekToNext/Previous переключают между станциями
      *
      * Если stationContext пуст или станция не в нём — играем как single item.

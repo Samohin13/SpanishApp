@@ -66,23 +66,25 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
-        <!-- Радио: MediaSessionService для фонового воспроизведения + Android Auto -->
+        <!-- Радио: MediaSessionService для фонового воспроизведения.
+             v1.25.89: убрана интеграция Android Auto. В v1.25.6 были
+             добавлены manifest-декларации (MediaBrowserService action +
+             automotive_app_desc.xml meta-data), но browse tree сам по себе
+             не реализован — RadioPlayerService extends MediaSessionService,
+             а не MediaLibraryService. AA host видел пустое дерево и
+             рейл-ревью Google отклоняло релиз ("No items"). Когда вернёмся —
+             нужна полноценная MediaLibraryService с onGetLibraryRoot +
+             onGetChildren, возвращающими browseable нодыstations / favorites.
+             android:exported="true" оставлен — нужен для in-app MediaController
+             и lockscreen/notification controls. -->
         <service
             android:name="com.spanishapp.radio.player.RadioPlayerService"
             android:foregroundServiceType="mediaPlayback"
             android:exported="true">
             <intent-filter>
                 <action android:name="androidx.media3.session.MediaSessionService" />
-                <!-- v1.25.6: Android Auto MediaBrowserService — позволяет
-                     управлять радио из автомобильного UI -->
-                <action android:name="android.media.browse.MediaBrowserService" />
             </intent-filter>
         </service>
-
-        <!-- v1.25.6: Android Auto — registration metadata. -->
-        <meta-data
-            android:name="com.google.android.gms.car.application"
-            android:resource="@xml/automotive_app_desc" />
 
         <!-- Виджет «Слово дня» -->
         <receiver

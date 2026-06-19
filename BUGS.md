@@ -264,7 +264,7 @@ DataStore в `MainActivity.attachBaseContext()` (известный IMPORTANT и
 - 22 IMPORTANT из audit 2026-05-17 (rememberSaveable, popUpTo safety, etc.)
 
 **Средний:**
-- Sleep timer радио, Lockscreen artwork, Recently played, Voice EQ, Listening streak, Radio achievements, Android Auto
+- Sleep timer радио, Lockscreen artwork, Recently played, Voice EQ, Listening streak, Radio achievements, Android Auto (попытка v1.25.6 откачана в v1.25.89 — Google reject "No items"; нужен полноценный `MediaLibraryService` с browse tree)
 
 **Бизнес:**
 - Google Play Billing для PRO (план в CLAUDE.md §9)

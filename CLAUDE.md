@@ -57,8 +57,13 @@ WelcomeBubble показывает welcomeEs + welcomeRu из сценария.
 ### Radio batch (v1.25.6)
 - RadioViewModel.listeningStreak: consecutive days с активным прослушиванием
 - RadioPlayerService: Equalizer для voice EQ (boost 800Hz-3kHz при включении)
-- Android Auto: MediaBrowserService action + automotive_app_desc.xml meta-data,
-  RadioPlayerService exported=true. AA автоматически читает MediaSessionService
+- ~~Android Auto~~ — добавлены manifest-декларации, но без `MediaLibraryService` /
+  browse-tree. Google отклонил v1.25.88 (versionCode 190) с reject «No items»
+  в AA browse. В **v1.25.89** интеграция полностью убрана из manifest +
+  удалён `res/xml/automotive_app_desc.xml`. Когда будем возвращать —
+  нужна полноценная `MediaLibraryService` с `onGetLibraryRoot` +
+  `onGetChildren`, возвращающими browseable nodes (Stations / Favorites /
+  Genres) → playable `MediaItem` со `setIsBrowsable(true)` для категорий.
 
 ## 🆕 Chat AI rewrite (v1.24.x, более ранний этой же сессии)
 
@@ -451,7 +456,8 @@ UI (RadioScreen / RadioMiniPlayer)
 - Recently played карусель
 - Listening streak отдельный
 - Achievements за радио
-- Android Auto support
+- Android Auto support (попытка v1.25.6 откачана в v1.25.89 — нужен полный
+  MediaLibraryService с browse tree, не просто intent-filter)
 - Whisper транскрипция (holdback — $1000/мес ongoing cost)
 - Локализация ~478 русских литералов в `radio/*` на en/uk/es
 
@@ -532,7 +538,11 @@ UI → AiChatRepository → Cloudflare Worker proxy
 7. **Voice EQ для TALK станций** (boost mid)
 8. **Listening streak** отдельный от learning
 9. **Achievements за радио** («1 час», «10 часов»)
-10. **Android Auto** через MediaBrowserService (~2ч)
+10. **Android Auto** через `MediaLibraryService` + browse tree (Stations /
+    Favorites / Genres). НЕ просто intent-filter — нужен реальный
+    `onGetLibraryRoot` + `onGetChildren` с browseable нодами. Прежняя
+    попытка v1.25.6 откачана в v1.25.89 (см. §6). Эффорт ~4-6ч + тестирование
+    в Android Auto Desktop Head Unit.
 11. ~~**Локализация radio модуля**~~ — 🧊 заморожено вместе с локализацией контента (см. #1)
 12. **CLAUDE.md периодический sync с кодом**
 
