@@ -3009,7 +3009,7 @@ object LibrosData {
                 ),
                 LibroQuestion(
                     "¿Por qué piensa que el silencio del pueblo sería peor?",
-                    listOf("Porque no podría imaginar que los demás se sienten como él... espera, sí podría", "Porque allí no encontraría la evidencia brutal de la fiesta ajena, pero la realidad sería otra", "Porque allí la evidencia de no pertenecer no estaría visible y sería aún peor"),
+                    listOf("Porque allí podría imaginar que todos se sienten igual de solos que él", "Porque la soledad sería igual de intensa pero invisible", "Porque allí la evidencia de no pertenecer no estaría visible y sería aún peor"),
                     correctIndex = 2
                 ),
                 LibroQuestion(

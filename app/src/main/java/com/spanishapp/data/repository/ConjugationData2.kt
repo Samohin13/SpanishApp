@@ -84,7 +84,7 @@ object ConjugationData2 {
         add("cocinar","imperfecto","cocinaba","cocinabas","cocinaba","cocinábamos","cocinabais","cocinaban")
         add("cocinar","futuro","cocinaré","cocinarás","cocinará","cocinaremos","cocinaréis","cocinarán")
         add("cocinar","condicional","cocinaría","cocinarías","cocinaría","cocinaríamos","cocinaríais","cocinarían")
-        add("cocinar","subjuntivo","cocine","cocines","cocine","cocinemos","coci néis","cocinen")
+        add("cocinar","subjuntivo","cocine","cocines","cocine","cocinemos","cocinéis","cocinen")
 
         // ── COMPRAR (покупать) ────────────────────────────────
         add("comprar","presente","compro","compras","compra","compramos","compráis","compran")
@@ -340,7 +340,7 @@ object ConjugationData2 {
         // ── PREFERIR (предпочитать) e→ie/i ───────────────────
         add("preferir","presente","prefiero","prefieres","prefiere","preferimos","preferís","prefieren",true,"e→ie")
         add("preferir","preterito","preferí","preferiste","prefirió","preferimos","preferisteis","prefirieron",true,"e→i en 3")
-        add("preferir","imperfecto","prefería","preferías","prefería","prefería mos","preferíais","preferían")
+        add("preferir","imperfecto","prefería","preferías","prefería","preferíamos","preferíais","preferían")
         add("preferir","futuro","preferiré","preferirás","preferirá","preferiremos","preferiréis","preferirán")
         add("preferir","condicional","preferiría","preferirías","preferiría","preferiríamos","preferiríais","preferirían")
         add("preferir","subjuntivo","prefiera","prefieras","prefiera","prefiramos","prefiráis","prefieran",true)

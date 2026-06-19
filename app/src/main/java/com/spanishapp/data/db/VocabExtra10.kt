@@ -235,7 +235,7 @@ object VocabExtra10 {
         w("la salsa tabasco", "соус табаско", "Salsa Tabasco picante.", "B1", "comida"),
         w("la vinagreta", "винегретная заправка", "Una vinagreta clásica.", "B1", "comida"),
         w("el acrónimo", "акроним", "Un acrónimo institucional.", "B1", "comunicacion"),
-        w("el almohadilla", "решётка #", "El símbolo almohadilla.", "B1", "comunicacion"),
+        w("la almohadilla", "решётка #", "El símbolo almohadilla.", "B1", "comunicacion"),
         w("el asterisco", "звёздочка", "Un asterisco indicador.", "B1", "comunicacion"),
         w("el paréntesis", "скобки (круглые)", "Entre paréntesis.", "B1", "comunicacion"),
         w("el pronombre demostrativo", "указательное местоимение", "Pronombres demostrativos.", "B1", "comunicacion"),

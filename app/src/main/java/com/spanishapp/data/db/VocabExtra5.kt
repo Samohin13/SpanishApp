@@ -115,7 +115,7 @@ object VocabExtra5 {
         w("la perfumería", "парфюмерия", "La perfumería del centro.", "A2", "ciudad"),
         w("la pescadería", "рыбный магазин", "Comprar en la pescadería.", "A2", "ciudad"),
         w("la plaza mayor", "главная площадь", "La Plaza Mayor de Madrid.", "A2", "ciudad"),
-        w("la rascacielos", "небоскрёб", "Un rascacielos moderno.", "A2", "ciudad"),
+        w("el rascacielos", "небоскрёб", "Un rascacielos moderno.", "A2", "ciudad"),
         w("la óptica", "оптика", "La óptica del oculista.", "A2", "ciudad"),
         w("el antónimo", "антоним", "Antónimos contrarios.", "A2", "comunicacion"),
         w("el sinónimo", "синоним", "Buscar sinónimos.", "A2", "comunicacion"),

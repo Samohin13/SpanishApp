@@ -117,7 +117,7 @@ object SpanishVerbBank {
         VerbInfo("crear", 2, VerbKind.REGULAR_AR),
         VerbInfo("abrir", 2, VerbKind.REGULAR_IR),
         VerbInfo("considerar", 2, VerbKind.REGULAR_AR),
-        VerbInfo("oir", 2, VerbKind.AUTHORED),
+        VerbInfo("oír", 2, VerbKind.AUTHORED),
         VerbInfo("acabar", 2, VerbKind.REGULAR_AR),
         VerbInfo("convertir", 2, VerbKind.STEM_E_IE),
         VerbInfo("ganar", 2, VerbKind.REGULAR_AR),
