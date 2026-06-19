@@ -159,7 +159,7 @@ object GrammarContent {
               "rules": [
                 "levantarse (вставать): me levanto, te levantas, se levanta...",
                 "llamarse (называться): me llamo, te llamas, se llama...",
-                "ducharse (душ): me ducho, te duchas, se ducha..."
+                "ducharse (принимать душ): me ducho, te duchas, se ducha..."
               ],
               "tip": "Если глагол оканчивается на -se в инфинитиве — он возвратный. Местоимение меняется по лицу.",
               "examples": [
@@ -278,9 +278,10 @@ object GrammarContent {
                 "Больше/меньше: más alto que, menos alto que",
                 "Одинаково: tan alto como (такой же высокий как)",
                 "Превосходная: el más alto de la clase (самый высокий в классе)",
-                "Неправильные: bueno→mejor, malo→peor, grande→mayor, pequeño→menor"
+                "Неправильные: bueno→mejor, malo→peor",
+                "grande/pequeño: для ВОЗРАСТА → mayor/menor (mi hermano mayor = старший); для размера — más grande/más pequeño (Madrid es más grande, NO *Madrid es mayor)"
               ],
-              "tip": "Ловушка: 'más bueno' допустимо для морального качества (más bueno que el pan = очень добрый), но обычно говорят 'mejor'.",
+              "tip": "Ловушка: «más bueno que el pan» — фиксированное выражение «добрейшей души». В обычной речи всё равно говори «mejor».",
               "examples": [
                 {"es": "Madrid es más grande que Barcelona.", "ru": "Мадрид больше, чем Барселона."},
                 {"es": "Este libro es el más interesante de todos.", "ru": "Эта книга самая интересная из всех."},
@@ -418,7 +419,7 @@ object GrammarContent {
               "theory": "В испанском есть два способа выражения страдательного залога: с глаголом ser (формально) и с местоимением se (более естественно).",
               "rules": [
                 "Ser + participio: 'La carta fue escrita por Juan' (письмо было написано Хуаном)",
-                "Pasiva refleja с se: 'Se vende coche' (продаётся машина)",
+                "Pasiva refleja с se: 'Se vende un coche' (продаётся машина) — с артиклем; bare 'Se vende coche' — стиль газетных объявлений",
                 "Se impersonal: 'Se habla español aquí' (здесь говорят по-испански)"
               ],
               "tip": "В разговорной речи испанцы редко используют ser + participio — предпочитают активный залог или se-конструкции.",
@@ -1119,7 +1120,7 @@ object GrammarContent {
                 "hacer: hice, hiciste, hizo, hicimos, hicisteis, hicieron (зам. c→z в 'hizo')",
                 "decir: dije, dijiste, dijo, dijimos, dijisteis, dijeron (без -i- в 3 л. мн.ч.)"
               ],
-              "tip": "Неправильные глаголы Indefinido не имеют ударения на окончании в 1 и 3 лице ед.ч.: TÚve, TÚvo, а не 'tuvé' / 'tuvó'.",
+              "tip": "Неправильные глаголы Indefinido пишутся БЕЗ acento на окончании в 1 и 3 лице ед.ч.: «tuve», «tuvo» (ударение на первый слог, но не пишется), а не «tuvé» / «tuvó».",
               "examples": [
                 {"es": "Ayer fui al cine con María.", "ru": "Вчера я ходил в кино с Марией."},
                 {"es": "¿Qué hiciste el fin de semana?", "ru": "Что ты делал в выходные?"},
