@@ -259,9 +259,10 @@ private fun ArchiveRow(
 private fun formatTime(ts: Long): String {
     val now = System.currentTimeMillis()
     val diff = now - ts
-    val today = SimpleDateFormat("HH:mm", Locale("ru"))
-    val withinWeek = SimpleDateFormat("EEEE", Locale("ru"))
-    val older = SimpleDateFormat("d MMM", Locale("ru"))
+    // v1.25.95: Locale.getDefault() — для EN/UK/ES юзеров корректные weekday names.
+    val today = SimpleDateFormat("HH:mm", Locale.getDefault())
+    val withinWeek = SimpleDateFormat("EEEE", Locale.getDefault())
+    val older = SimpleDateFormat("d MMM", Locale.getDefault())
     return when {
         diff < 24L * 60 * 60 * 1000 -> today.format(Date(ts))
         diff < 7L * 24 * 60 * 60 * 1000 -> withinWeek.format(Date(ts)).replaceFirstChar { it.uppercase() }

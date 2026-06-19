@@ -1,8 +1,50 @@
 # SpanishApp / ESPEAK — единый источник правды
 
 > Android-приложение для изучения испанского языка русскоязычными пользователями (CEFR A1→B2).
-> **Версия:** v1.25.6 (versionCode 181), v1.22.30 в манифесте — обновить.
-> **Последний апдейт документа:** 2026-05-29.
+> **Версия:** v1.25.95 (versionCode 197). Канон диалекта: **Spain Madrid**.
+> **Последний апдейт документа:** 2026-06-19.
+
+> ⚠️ **Документ частично stale.** Header + §1 «Текущее состояние» + §12 «Версии релизов»
+> обновлены до v1.25.95. Остальные секции (§2 Контент-инвентарь, §4 БД, §8 Roadmap,
+> § «🆕 v1.25.x batch») описывают код от v1.25.6 / Room v24 / 23 миграций — реальность
+> v1.25.95 / Room v32 / 31 миграция / 27 entities / 24 DAO. Подробности дрифта в
+> [audit-доке]. Не цитируй числа из § ниже без перепроверки grep'ом.
+
+## 🆕 Что произошло за v1.25.89 → v1.25.95 (краткая хронология)
+
+- **v1.25.89** — убран Android Auto (закрытие Play Console reject «No items» в AA browse).
+- **v1.25.90** — 6 групп блокеров: email-login Firestore sync, logout/deleteAccount
+  очищает auth_prefs целиком, SubscriptionVerifier больше не silent revoke PRO на
+  transient errors (defense-in-depth + PlayBillingManager.isDefinitelyInvalid),
+  v1.25.88 displayName backfill починен (sentinel "Estudiante"), Grammar+Theory PRO gate,
+  Dialogues +40 XP, RoadmapData u14/u15 B2 контент маппинг (3 урока u14 + 6 уроков u15
+  показывали не тот V2 content).
+- **v1.25.91** — Tier-1 educational fixes (15): u5_l8 «Hizo un error»→«Cometió un error»
+  (CRITICAL calque), u6_l9 leísmo SPOT_THE_ERROR correctAnswer flipped, u8_l5 cyrillic
+  «ир»→latin «ir», TheoryContentData «БЛЯР»→«БЛАР», + 11 LISTEN_PICK duplicate option
+  fixes, missing comma «por favor», la mano «рука/кисть», etc.
+- **v1.25.92** — Tier-2 (11): u11_l4 «el día CUANDO fui»→«en que fui», u13_l10 non-word
+  «lleguas»→«llegaras», u14_l6_5 «debe haber»→«debe DE haber», u15_l1 «Le ruego solucionar»
+  →«Le ruego que solucione», u15_l14 «agradezco POR»→«agradezco SU», Grammar A2
+  Comparativo age vs size, Grammar A2 «tuve/tuvo» tip fix, и др.
+- **v1.25.93** — Phase 2 finish: Theory dialect Spain (Z как [θ] вместо [с] во всех
+  карточках, greetings tabla до la comida ~14-15ч, Adiós-as-greeting overstatement
+  убран); u6_l2 ОГРОМНОЕ расширение Indef vs Imperf (interruption + 9 semantic shifts
+  sabía/supe + 5 новых упражнений — главный A2 gap для русских); u8_l4 Type-2 conditional
+  помечен recognition-only; u14_l11 estilo indirecto добавлены Indicative shifts +
+  Pres reporting + deixis + 5 новых упражнений (biggest B2 gap); Grammar id=17
+  Subj Imperfecto перенесён B2→B1 (CEFR ordering break).
+- **v1.25.94** — Phase B audit: ConjugationData2 cocinar/preferir critical typos с
+  пробелами внутри слов (trainer отвергал правильные ответы!), oír/oir lookup
+  mismatch в VerbBank, vocab fixes (mañana без ñ, trigre→tigre, diciembre перевод
+  был «diciembre», 5 wrong genders rascacielos/castaña/almohadilla/triple/merengue),
+  Libro #81 quiz AI editing artifact «...espera, sí podría» убран.
+- **v1.25.95** — Tier 1 technical audit fixes (date locale, fake PerformanceLoadTest
+  assertions, broken androidTest package name).
+
+⚠️ Educational backlog: ~120 medium/low findings из Phase 1+2 audit'ов (verb imperativo
+data для 60 AUTHORED, generator g→j/c→z rules, vocab ~30 entries cleanup, libros
+CEFR re-leveling, pronunciation redesign, theory ~190 duplicate Map keys).
 
 ## 🆕 v1.25.x Chat / Voice / Billing batch (2026-05-28..29)
 
@@ -168,34 +210,46 @@ ProfileScreen теперь **кликабельны** → открывают н�
 
 ### Identity
 - `applicationId = "com.espeak.app"` (изначально был `com.spanishapp`, сменён в v1.0.0 из-за конфликта в Play Store)
-- `versionCode = 65`, `versionName = "1.11.7"`
+- `versionCode = 197`, `versionName = "1.25.95"` (актуально 2026-06-19)
 - `minSdk = 26`, `targetSdk = 35`, `compileSdk = 35`
+  - ⚠ Play Console потребует targetSdk=36 к августу 2026 для обновлений
 - Подписан собственным release.keystore (alias **ESPEAK**), V2-signed
 
 ### Технический стек
 - **Язык:** Kotlin 2.0.21
 - **UI:** Jetpack Compose + Material3 (composeBom 2024.12.01)
-- **Архитектура:** MVVM + Clean (ui / domain / data)
-- **DI:** Hilt 2.51.1
-- **БД:** Room 2.6.1 (version=24, 23 миграции, 25 entities, 23 DAO)
+- **Архитектура:** MVVM + Clean (ui / domain / data) — claim; **аудит 2026-06-19** показал
+  что 21 ViewModel инжектят 59 DAO напрямую (Repository pattern violation; god VMs
+  HomeViewModel 11 DAOs, StatsViewModel 12 DAOs).
+- **DI:** Hilt 2.51.1 — 3 dagger.Lazy маскируют Hilt cycles (PlayBillingManager → Verifier,
+  XpTracker → LeaderboardRepo, StreakService → AchievementManager).
+- **БД:** Room 2.6.1 — **version=32**, **31 миграция**, **27 entities**, **24 DAO**
+  (отличается от ниже §4 — та секция stale)
 - **Навигация:** Navigation Compose 2.8.4
 - **Async:** Coroutines 1.9.0 + Flow
 - **Медиа:** Media3 1.4.1 (ExoPlayer + MediaSession + HLS)
-- **WorkManager:** 5 worker'ов фоновых задач
-- **Виджет:** Glance AppWidget
+- **WorkManager:** **5** worker'ов: DailyReminder, RatingDecay, ContentSync,
+  RadioCatalogRefresh, VocabAggregator
+- **Виджет:** Glance AppWidget (5 виджетов: WordOfDay, DictionarySearch,
+  MissionTracker, Radio, StreakFlame)
 - **HTTP:** OkHttp 4.12.0
 - **Storage:** DataStore (8+ preferences-файлов)
 - **ИИ:** Gemini Flash API через Cloudflare Worker proxy
 - **Firebase:** Auth (Anonymous + Google), Firestore, Storage, Analytics, Crashlytics
+- **Billing:** Google Play Billing Library 7 — ✅ реализован (v1.25.4+)
 
-### Кодовая база (grep-факты)
-- **54** Composable Screens
-- **43** ViewModels (@HiltViewModel)
-- **25** Room entities
-- **23** Room DAOs
-- **23** Room миграции (v1→v24)
-- **5** WorkManager worker'ов: DailyReminder, RatingDecay, ContentSync, RadioCatalogRefresh, [+1]
-- **236** unit-тестов в 26 файлах
+### Кодовая база (grep-факты, обновлено 2026-06-19)
+- **~58** Composable Screen-файлов
+- **~53** @HiltViewModel-аннотированных классов
+- **27** Room entities (CleanVocab + WeeklyLeagueStateEntity + RecentSearchEntity +
+  GameMistakeEntity + LessonCompletionEventEntity + ActivityTimeLogEntity +
+  UserVocabStateEntity + WeakVerbEntity + остальные)
+- **24** Room DAOs
+- **31** Room миграции (v1→v32)
+- **5** WorkManager worker'ов
+- **~315** @Test (24 файла) — НО **0 Room migration tests** (главный риск!), **0 billing
+  tests**, **0 ViewModel tests**, **0 DAO tests**. testImplementation объявлены mockk +
+  turbine + coroutines-test но не используются.
 
 ### Локализация UI
 - `values/`: 900 строк (ru — основной)
@@ -681,7 +735,19 @@ Comment'нуто: CAMERA (убрана т.к. PickVisualMedia без permission)
 | 1.10.0-1.10.9 | 48-57 | Audio focus, ICY metadata, Media3 refactor, brand dedup |
 | 1.11.0-1.11.5 | 58-63 | Top-5 polish (haptic, loudness, animations, blocklist persist) |
 | 1.11.6 | 64 | AI Chat security (Gemini proxy enforced) |
-| **1.11.7** | **65** | **Текущая** — 10 critical из audit + AAB подан в Play |
+| 1.11.7 | 65 | 10 critical из audit + AAB подан в Play |
+| **v1.12 – v1.25.6** | **~66-181** | Tablet adaptive, V2 курс, Stats v2, Theory расширение, AI chat rewrite, Voice messages (потом reverted в v1.25.7), Glide-typing (удалён в v1.25.44), Android Auto (удалён в v1.25.89), Billing v1.25.4, ... (детали выпали из этой таблицы — см. git log) |
+| 1.25.84 | 186 | bump после v1.25.83 |
+| 1.25.86 | 188 | Локальный fix билда (не зарелизен) |
+| 1.25.87 | 189 | Auto-enroll в leaderboard + фикс кривой рамки |
+| 1.25.88 | 190 | Leaderboard nicknames — sync displayName из Onboarding |
+| 1.25.89 | 191 | Убран Android Auto — фикс Play Console reject |
+| 1.25.90 | 192 | 6 групп блокеров (auth, billing, B2 content, PRO, Dialogues XP) |
+| 1.25.91 | 193 | 15 Tier-1 educational (calques, broken exercises, cyrillic) |
+| 1.25.92 | 194 | 11 Tier-2 educational (B1/B2 + Grammar) |
+| 1.25.93 | 195 | Theory dialect Spain + A2 Indef/Imperf big + B2 estilo indirecto + Grammar id=17→B1 |
+| 1.25.94 | 196 | Phase B audit: verbs typos, vocab gender/spelling, libros AI artifact |
+| **1.25.95** | **197** | **Текущая** — Tier-1 technical audit (date locale, fake test asserts, broken androidTest) |
 
 ---
 

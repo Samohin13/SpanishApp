@@ -135,7 +135,8 @@ class ShareViewModel @Inject constructor(
 
         val progress = userProgressDao.getProgressOnce()
         val name = progress?.displayName?.takeIf { it.isNotBlank() } ?: "Студент"
-        val today = SimpleDateFormat("d MMMM yyyy", Locale("ru")).format(Date())
+        // v1.25.95: Locale.getDefault() — share image на UI-локали юзера, не всегда RU.
+        val today = SimpleDateFormat("d MMMM yyyy", Locale.getDefault()).format(Date())
 
         return ProgressShareData(
             userName = name,

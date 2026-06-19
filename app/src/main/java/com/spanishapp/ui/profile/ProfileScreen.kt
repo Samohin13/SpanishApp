@@ -776,8 +776,10 @@ private fun HeroBlock(
         if (isPro && proExpiresAt > 0L) {
             Spacer(Modifier.height(6.dp))
             val dateStr = remember(proExpiresAt) {
+                // v1.25.95: Locale.getDefault() вместо hardcoded "ru". EN/UK/ES юзеры
+                // больше не видят «15 марта 2026» на paywall expiry sub-banner.
                 java.text.SimpleDateFormat("d MMMM yyyy",
-                    java.util.Locale("ru")).format(java.util.Date(proExpiresAt))
+                    java.util.Locale.getDefault()).format(java.util.Date(proExpiresAt))
             }
             Text(
                 "✦ $proPlanLabel · до $dateStr",
