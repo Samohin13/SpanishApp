@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -69,6 +70,12 @@ fun TheoryLibraryScreen(
             return@Scaffold
         }
 
+        // v1.25.90: PRO gate. A1 = free, A2/B1/B2 = PRO.
+        // Uses the same rememberIsProState() helper as games + grammar.
+        // v1.25.95: вынесено из LazyListScope в @Composable scope — иначе
+        // компилятор падает с «@Composable invocations can only happen from
+        // the context of a @Composable function».
+        val isPro by com.spanishapp.ui.games.common.rememberIsProState()
         LazyColumn(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
@@ -90,9 +97,6 @@ fun TheoryLibraryScreen(
                     )
                 }
 
-                // v1.25.90: PRO gate. A1 = free, A2/B1/B2 = PRO.
-                // Uses the same rememberIsProState() helper as games + grammar.
-                val isPro by com.spanishapp.ui.games.common.rememberIsProState()
                 items(cards, key = { it.lessonId }) { card ->
                     val locked = card.cefr != "A1" && !isPro
                     TheoryLibraryCard(
