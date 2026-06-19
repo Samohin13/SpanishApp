@@ -385,9 +385,12 @@ object GrammarContent {
             """.trimIndent()
         ),
 
-        // ── B2 ─────────────────────────────────────────────────
+        // ── B1 (перенесено из B2 в v1.25.93 — CEFR ordering fix) ─────
+        // Subjuntivo Imperfecto обязателен для B1 lessons 14 (Condicional),
+        // 26 (Si + condicional), 60 (Ojalá) — без B1 lesson 17 студенты
+        // встречали морфологию tuviera/fuera без объяснения.
         LessonEntity(
-            id = 17, level = "B2", category = "grammar",
+            id = 17, level = "B1", category = "grammar",
             title = "Subjuntivo Imperfecto",
             topic = "Сослагательное прошедшее",
             xpReward = 35,

@@ -46,7 +46,7 @@ object TheoryContentData {
                     examples = listOf(
                         TheoryExample("agua", "вода (на A)", "А — «а»: всегда чистое"),
                         TheoryExample("bueno", "хороший (на B)", "B — «бэ»: [б] / [в] между гласных"),
-                        TheoryExample("casa", "дом (на C)", "C — «сэ»: [к] или [с] перед e/i"),
+                        TheoryExample("casa", "дом (на C)", "C — «сэ»: [к] перед a/o/u, [θ] (как th в think) перед e/i — Spain"),
                         TheoryExample("día", "день (на D)", "D — «дэ»: [д] / мягкое [ð] между гласных"),
                         TheoryExample("elefante", "слон (на E)", "E — «э»: всегда чистое"),
                         TheoryExample("foto", "фото (на F)", "F — «эфэ»: [ф]"),
@@ -63,7 +63,7 @@ object TheoryContentData {
                 TheorySection(
                     type = TheorySectionType.TIP,
                     heading = "💡 Лайфхак про C и G",
-                    body = "C и G — «хамелеоны»:\n• C + a/o/u = [к]: casa, cosa, cuna\n• C + e/i = [с]: cinco, cero\n• G + a/o/u = [г]: gato, gusto\n• G + e/i = [х]: gente, gigante",
+                    body = "C и G — «хамелеоны»:\n• C + a/o/u = [к]: casa, cosa, cuna\n• C + e/i = [θ] (как th в think) в Spain: cinco, cero. В Лат.Америке — [s]\n• G + a/o/u = [г]: gato, gusto\n• G + e/i = [х]: gente, gigante\n\nКурс ориентирован на испанский Испании — учим звук [θ].",
                 ),
             ),
             keyTakeaways = listOf(
@@ -190,14 +190,14 @@ object TheoryContentData {
                 TheorySection(
                     type = TheorySectionType.WARNING,
                     heading = "Z — это НЕ [з]",
-                    body = "Русские часто читают Z как [з] (как в «зебра»). По-испански Z = [с]: zapato звучит «са-па-то», zorro — «со-рро». Никаких [з]!",
+                    body = "Русские часто читают Z как [з] (как в «зебра») — НЕ верно.\n• В Испании Z = [θ] (как th в английском think): zapato = «θа-па-то», zorro = «θо-рро».\n• В Латинской Америке Z = [с]: «са-па-то». Это явление называется seseo.\n• Никогда [з]!\n\nКурс ориентирован на испанский Испании — учим [θ] (межзубный).",
                 ),
             ),
             keyTakeaways = listOf(
                 "9 букв: R S T U V W X Y Z",
                 "V = B (один звук!)",
                 "R в начале слова = длинное RR",
-                "Z = [с], НЕ [з]",
+                "Z = [θ] в Spain (как th), [s] в Лат.Ам — никогда [з]",
                 "pero (но) ≠ perro (собака)",
             ),
             relatedTheory = listOf("u1_l0", "u1_l1"),
@@ -236,8 +236,8 @@ object TheoryContentData {
                     type = TheorySectionType.EXAMPLES,
                     examples = listOf(
                         TheoryExample("hablar", "говорить", "а-БЛАР"),
-                        TheoryExample("ciudad", "город", "си-у-ДАД"),
-                        TheoryExample("feliz", "счастливый", "фэ-ЛИС"),
+                        TheoryExample("ciudad", "город", "θью-ДАД (Spain) / сью-ДАД (Лат.Ам)"),
+                        TheoryExample("feliz", "счастливый", "фэ-ЛИθ (Spain) / фэ-ЛИС (Лат.Ам)"),
                     ),
                 ),
                 TheorySection(
@@ -295,9 +295,9 @@ object TheoryContentData {
                     table = TheoryTable(
                         headers = listOf("Время", "Приветствие", "Когда"),
                         rows = listOf(
-                            listOf("Утро / день", "Buenos días", "до 13:00 (до обеда)"),
-                            listOf("День / вечер", "Buenas tardes", "13:00 — закат"),
-                            listOf("Вечер / ночь", "Buenas noches", "после заката"),
+                            listOf("Утро / день", "Buenos días", "до la comida (~14-15ч)"),
+                            listOf("День / вечер", "Buenas tardes", "после обеда — до заката"),
+                            listOf("Вечер / ночь", "Buenas noches", "после заката (и при встрече, и при прощании)"),
                         ),
                         highlightedColumns = listOf(1),
                     ),
@@ -370,7 +370,7 @@ object TheoryContentData {
                 TheorySection(
                     type = TheorySectionType.TIP,
                     heading = "💡 Лайфхак",
-                    body = "В Испании в неформальной речи **«Adiós»** часто говорят и при встрече, и при прощании — как русское «Привет» и «Пока» вместе. Не пугайся, если услышишь «Adiós» от соседа в подъезде утром.",
+                    body = "В Испании самое нейтральное прощание — **«Hasta luego»**. Используется ВЕЗДЕ (в магазине, лифте, такси), даже если больше никогда не увидитесь.\n\n**«Adiós»** воспринимается чуть формальнее или окончательнее — как «прощайте». В разговоре между друзьями чаще говорят hasta luego / hasta pronto / venga, нос vemos.",
                 ),
                 TheorySection(
                     type = TheorySectionType.EXAMPLES,
@@ -1556,7 +1556,7 @@ object TheoryContentData {
         t("u5_l8", "Indef irreg: hacer→hice, querer→quise",
             "Группа с -i- в основе. hacer→hic-, querer→quis-",
             emoji = "📅", cefr = "A2", minutes = 4,
-            rule = "Группа с -i- основой: hacer→hic-, querer→quis-, venir→vin-, decir→dij-. ВНИМАНИЕ: él hizo (с z!) — звуковое правило: hic+o → hizo (звук [исо]).",
+            rule = "Группа с -i- основой: hacer→hic-, querer→quis-, venir→vin-, decir→dij-. ВНИМАНИЕ: él hizo (с z!) — орфографическое правило: hic+o → hizo (буква c заменяется на z, чтобы сохранить звук [θ] в Spain / [s] в Лат.Ам).",
             tableHeaders = listOf("Глагол", "yo", "él"),
             tableRows = listOf(listOf("hacer", "hice", "hizo"), listOf("querer", "quise", "quiso"),
                 listOf("venir", "vine", "vino"), listOf("decir", "dije", "dijo")),
