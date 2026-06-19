@@ -235,7 +235,7 @@ object TheoryContentData {
                 TheorySection(
                     type = TheorySectionType.EXAMPLES,
                     examples = listOf(
-                        TheoryExample("hablar", "говорить", "а-БЛЯР"),
+                        TheoryExample("hablar", "говорить", "а-БЛАР"),
                         TheoryExample("ciudad", "город", "си-у-ДАД"),
                         TheoryExample("feliz", "счастливый", "фэ-ЛИС"),
                     ),
