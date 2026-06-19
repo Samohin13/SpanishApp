@@ -28,6 +28,8 @@ import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.filled.Wallpaper
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -81,13 +83,31 @@ fun AiChatScreen(
 
     // v1.25.73: AI Chat = PRO-only. Free юзеры видят paywall stub
     // вместо чата. Trial 7 дней даётся при подписке (Google Play handles).
-    if (!isPro) {
+
+    // Новая логика: ждем немного перед тем, как показать блокировку
+    var isCheckingPro by remember { mutableStateOf(true) }
+    LaunchedEffect(isPro) {
+        if (!isPro) {
+            kotlinx.coroutines.delay(800)
+        }
+        isCheckingPro = false
+    }
+
+    if (!isPro && !isCheckingPro) {
         ChatPaywallStub(
             onSubscribe = { navController.navigate("paywall") { launchSingleTop = true } },
             onBack = { navController.popBackStack() },
         )
         return
     }
+
+    // Пока идет проверка, можно показать просто фон чата
+    if (isCheckingPro) {
+        Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+        return
+    }
+
+    // ✅ ВСЕ ОСТАЛЬНОЕ НАХОДИТСЯ ВНУТРИ ФУНКЦИИ
 
     // v1.24.6: TextFieldValue для полноценной поддержки курсора/выделения.
     // BasicTextField(readOnly=true) НЕ вызывает системную клаву, но позволяет
@@ -323,8 +343,8 @@ fun AiChatScreen(
             }
         }
     }
+} // ✅ ПРАВИЛЬНОЕ ЗАКРЫТИЕ ФУНКЦИИ
 
-}
 
 /* ============================================================
    HEADER — чистый Material3-стиль в фирменных цветах ESPEAK
@@ -650,7 +670,7 @@ private fun VoiceMessagePlayer(
     val fg = if (tintForUser) Color.White else MaterialTheme.colorScheme.onSurface
     val accent = if (tintForUser) Color.White else EspeakChat.primary
     val trackBg = if (tintForUser) Color.White.copy(alpha = 0.3f)
-                  else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+    else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
 
     Row(
         modifier = Modifier.widthIn(min = 180.dp).padding(vertical = 2.dp),
@@ -720,7 +740,7 @@ private fun BilingualText(
 ) {
     val esColor = if (isUser) Color.White else MaterialTheme.colorScheme.onSurface
     val ruColor = if (isUser) Color.White.copy(alpha = 0.85f)
-                  else MaterialTheme.colorScheme.onSurfaceVariant
+    else MaterialTheme.colorScheme.onSurfaceVariant
 
     BoldClickableText(
         text = es,
@@ -735,7 +755,7 @@ private fun BilingualText(
         HorizontalDivider(
             thickness = 0.5.dp,
             color = if (isUser) Color.White.copy(alpha = 0.28f)
-                    else MaterialTheme.colorScheme.outlineVariant,
+            else MaterialTheme.colorScheme.outlineVariant,
         )
         Spacer(Modifier.height(7.dp))
         Text(
@@ -966,31 +986,31 @@ private val QUICK_CHIPS = listOf(
         emoji = "💡",
         label = "Объясни проще",
         prompt = "Объясни своё последнее сообщение проще: короткими фразами на уровне A1. " +
-            "Используй базовую лексику и продублируй ключевые слова на русском.",
+                "Используй базовую лексику и продублируй ключевые слова на русском.",
     ),
     QuickChip(
         emoji = "📝",
         label = "Дай пример",
         prompt = "Приведи 2–3 конкретных коротких примера на испанском по теме нашего разговора. " +
-            "После каждого — перевод в [скобках].",
+                "После каждого — перевод в [скобках].",
     ),
     QuickChip(
         emoji = "🎯",
         label = "Дай упражнение",
         prompt = "Дай мне небольшое упражнение на испанском по нашей текущей теме. " +
-            "Один вопрос или мини-задание (заполнить пропуск, выбрать форму, перевести фразу).",
+                "Один вопрос или мини-задание (заполнить пропуск, выбрать форму, перевести фразу).",
     ),
     QuickChip(
         emoji = "🐢",
         label = "Помедленнее",
         prompt = "Повтори свою мысль более простыми словами и короткими предложениями. " +
-            "Снизь сложность лексики до A2.",
+                "Снизь сложность лексики до A2.",
     ),
     QuickChip(
         emoji = "🔁",
         label = "Перефразируй",
         prompt = "Перефразируй своё последнее сообщение, используя другие слова и конструкции. " +
-            "Сохрани смысл, измени формулировку — это помогает мне видеть разные варианты.",
+                "Сохрани смысл, измени формулировку — это помогает мне видеть разные варианты.",
     ),
 )
 
@@ -1318,4 +1338,3 @@ private fun ChatPaywallStub(
         }
     }
 }
-

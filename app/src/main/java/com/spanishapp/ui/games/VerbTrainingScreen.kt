@@ -16,6 +16,8 @@ import androidx.compose.material.icons.filled.Replay
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -83,15 +85,25 @@ fun VerbTrainingScreen(
     // 1327 глаголов + 159 с таблицами 6 времён — это не A1-контент.
     // Free-юзер при попытке зайти сразу редиректится на paywall.
     val isPro by com.spanishapp.ui.games.common.rememberIsProState()
+    // Флаг, который подождет загрузки данных
+    var showPaywall by remember { mutableStateOf(false) }
+
     LaunchedEffect(isPro) {
         if (!isPro) {
+            kotlinx.coroutines.delay(600) // Ждем полсекунды, пока статус загрузится
+            if (!isPro) showPaywall = true
+        }
+    }
+
+    LaunchedEffect(showPaywall) {
+        if (showPaywall) {
             navController.navigate("paywall") {
                 popUpTo("games") { inclusive = false }
                 launchSingleTop = true
             }
         }
     }
-    if (!isPro) return  // не рендерим контент пока редиректим
+
 
     Scaffold(
         topBar = {

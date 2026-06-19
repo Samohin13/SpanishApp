@@ -3,8 +3,7 @@ package com.spanishapp.service
 import android.app.Activity
 import android.content.Context
 import android.util.Log
-import androidx.compose.ui.test.filter
-import androidx.privacysandbox.tools.core.generator.build
+
 import com.android.billingclient.api.AcknowledgePurchaseParams
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
