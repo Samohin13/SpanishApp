@@ -125,6 +125,26 @@ val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { it[ONBOARD
         }
     }
 
+    /**
+     * v1.25.90: полная очистка auth_prefs DataStore. Используется logout/deleteAccount,
+     * чтобы при повторной регистрации (особенно другого пользователя на том же
+     * устройстве) не оставалось унаследованного профиля предыдущего юзера.
+     *
+     * После вызова все Flow вернут default-значения:
+     *  - userName / userAge / userReason / userLevel / userPhotoUrl = null
+     *  - onboardingCompleted = false
+     *  - isLoggedIn = false
+     *  - userInterests / userGoal / userNotes / userGender = null
+     *  - tutorPersonality / voiceGender / selectedRuVoice / selectedEsVoice = null
+     *  - voiceSpeedMultiplier = 1.0f (default из .map)
+     *
+     * Вызывать ДО setLoggedIn(false) чтобы Navigation observers видели чистое
+     * состояние в одном tick'е.
+     */
+    suspend fun clearAllUserData() {
+        context.dataStore.edit { it.clear() }
+    }
+
     suspend fun setUserLevel(level: String) {
         context.dataStore.edit { preferences ->
             preferences[USER_LEVEL] = level

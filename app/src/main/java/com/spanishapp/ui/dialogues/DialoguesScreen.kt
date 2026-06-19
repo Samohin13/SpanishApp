@@ -49,7 +49,11 @@ class DialoguesViewModel @Inject constructor(
     private val dialogueDao: DialogueDao,
     private val tts: SpanishTts,
     private val userProgressDao: com.spanishapp.data.db.dao.UserProgressDao,
-    private val achievementManager: com.spanishapp.service.AchievementManager
+    private val achievementManager: com.spanishapp.service.AchievementManager,
+    // v1.25.90: award DIALOGUE_PERFECT=40 XP + touch streak on first completion.
+    // Раньше XpSystem.DIALOGUE_PERFECT существовал но никогда не вызывался.
+    private val xpTracker: com.spanishapp.service.XpTracker,
+    private val streakService: com.spanishapp.service.StreakService,
 ) : ViewModel() {
 
     private val _level = MutableStateFlow("A1")
@@ -71,6 +75,15 @@ class DialoguesViewModel @Inject constructor(
             userProgressDao.getProgressOnce()?.let { p ->
                 userProgressDao.update(p.copy(dialoguesCompleted = p.dialoguesCompleted + 1))
             }
+            // v1.25.90: первое прохождение диалога — XpSystem.DIALOGUE_PERFECT = 40 XP
+            // + touch streak. Раньше XP-константа существовала, но никогда не вызывалась.
+            // StreakService.touchStreak идемпотентен в пределах суток.
+            xpTracker.add(
+                xp = com.spanishapp.domain.algorithm.XpSystem.DIALOGUE_PERFECT,
+                words = 0,
+            )
+            runCatching { streakService.touchStreak() }
+            // Achievement check goes last so it sees the bumped totalXp + streak.
             achievementManager.checkAndUnlock()
         }
     }

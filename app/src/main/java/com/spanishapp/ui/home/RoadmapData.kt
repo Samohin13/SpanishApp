@@ -634,19 +634,19 @@ object RoadmapData {
                 // 🆕 l6_5 вставка после Perífrasis seguir/dejar/ponerse
                 RoadmapLesson("🆕 Deber во временах: debe / debe de / debería",        "content", "general", id = "u14_l6_5"),
                 // l7
-                RoadmapLesson("⚙️ Participio como adjetivo: una puerta cerrada",       "content", "general"),
+                RoadmapLesson("⚙️ Participio como adjetivo: una puerta cerrada",       "content", "general", id = "u14_l7"),
                 // l8
-                RoadmapLesson("⚙️ Gerundio: usos avanzados — habiendo llegado",        "content", "general"),
+                RoadmapLesson("⚙️ Gerundio: usos avanzados — habiendo llegado",        "content", "general", id = "u14_l8"),
                 // l9
-                RoadmapLesson("⚙️ Infinitivo: como sujeto y complemento",              "content", "general"),
-                // 🆕 l9_5 вставка после Infinitivo
+                RoadmapLesson("⚙️ Voz media: pasiva sin agente — se rompió el vaso",   "content", "general", id = "u14_l9"),
+                // 🆕 l9_5 вставка после Voz media
                 RoadmapLesson("🔗 Сложные предлоги: a través de, en torno a",          "content", "general", id = "u14_l9_5"),
                 // l10
-                RoadmapLesson("💬 Cláusulas relativas: que, quien, cuyo, donde",       "content", "general", id = "u14_l10"),
+                RoadmapLesson("💬 Relativos formales: el cual, cuyo, lo cual (literario)","content", "general", id = "u14_l10"),
                 // l11
                 RoadmapLesson("💬 Estilo indirecto: cambio de tiempos verbales",       "content", "general", id = "u14_l11"),
                 // l12
-                RoadmapLesson("💬 Ser vs Estar: нюансы и сложные случаи",              "content", "general", id = "u14_l12"),
+                RoadmapLesson("💬 Concordancia del participio + verbos psicológicos",  "content", "general", id = "u14_l12"),
                 // l13
                 RoadmapLesson("💬 Nominalización: de verbo a sustantivo",              "content", "general", id = "u14_l13"),
                 // l14 чекпоинт
@@ -675,19 +675,19 @@ object RoadmapData {
                 // 🆕 l4_5 — sino vs sino que vs no sólo... sino también
                 RoadmapLesson("↔️ Sino, sino que, no sólo… sino también",              "content", "general", id = "u15_l4_5"),
                 // l5
-                RoadmapLesson("🎯 Мини-тест: Conectores y Registro",                   "quiz",    "all"),
+                RoadmapLesson("🎯 Мини-тест: Conectores y Registro",                   "quiz",    "all",     id = "u15_l5"),
                 // l6
-                RoadmapLesson("🔗 Коннекторы причины: dado que, puesto que, ya que",   "content", "general"),
+                RoadmapLesson("🔗 Коннекторы причины: dado que, puesto que, ya que",   "content", "general", id = "u15_l6"),
                 // l7
-                RoadmapLesson("🔗 Коннекторы следствия: de ahí que, de modo que",     "content", "general"),
+                RoadmapLesson("🔗 Коннекторы следствия: de ahí que, de modo que",     "content", "general", id = "u15_l7"),
                 // l8
-                RoadmapLesson("🔗 Коннекторы уступки: a pesar de que, si bien",       "content", "general"),
+                RoadmapLesson("🔗 Коннекторы уступки: a pesar de que, si bien",       "content", "general", id = "u15_l8"),
                 // l9
-                RoadmapLesson("🗣️ Аргументация: тезис, доказательство, вывод",        "content", "general"),
+                RoadmapLesson("🗣️ Аргументация: тезис, доказательство, вывод",        "content", "general", id = "u15_l9"),
                 // l10
-                RoadmapLesson("🗣️ Цитирование: según, de acuerdo con, a juicio de",   "content", "general"),
+                RoadmapLesson("🗣️ Цитирование: según, de acuerdo con, a juicio de",   "content", "general", id = "u15_l10"),
                 // l11
-                RoadmapLesson("📚 Latinismos y cultismos: per se, a posteriori",       "content", "general"),
+                RoadmapLesson("📚 Latinismos y cultismos: per se, a posteriori",       "content", "general", id = "u15_l11"),
                 // 🆕 l11_5 вставка после Latinismos
                 RoadmapLesson("↔️ Полусоюзы: mientras vs aunque",                       "content", "general", id = "u15_l11_5"),
                 // l12

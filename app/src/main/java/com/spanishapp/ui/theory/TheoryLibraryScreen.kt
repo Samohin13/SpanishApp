@@ -90,11 +90,22 @@ fun TheoryLibraryScreen(
                     )
                 }
 
+                // v1.25.90: PRO gate. A1 = free, A2/B1/B2 = PRO.
+                // Uses the same rememberIsProState() helper as games + grammar.
+                val isPro by com.spanishapp.ui.games.common.rememberIsProState()
                 items(cards, key = { it.lessonId }) { card ->
+                    val locked = card.cefr != "A1" && !isPro
                     TheoryLibraryCard(
                         card = card,
                         isRead = card.lessonId in readIds,
-                        onClick = { navController.navigate("theory/${card.lessonId}") },
+                        locked = locked,
+                        onClick = {
+                            if (locked) {
+                                navController.navigate("paywall") { launchSingleTop = true }
+                            } else {
+                                navController.navigate("theory/${card.lessonId}")
+                            }
+                        },
                     )
                 }
             }
@@ -103,7 +114,12 @@ fun TheoryLibraryScreen(
 }
 
 @Composable
-private fun TheoryLibraryCard(card: TheoryContent, isRead: Boolean, onClick: () -> Unit) {
+private fun TheoryLibraryCard(
+    card: TheoryContent,
+    isRead: Boolean,
+    locked: Boolean,
+    onClick: () -> Unit,
+) {
     Surface(
         shape = RoundedCornerShape(16.dp),
         color = if (isRead)
@@ -153,10 +169,23 @@ private fun TheoryLibraryCard(card: TheoryContent, isRead: Boolean, onClick: () 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text("⏱ ${card.readMinutes} мин", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Spacer(Modifier.width(10.dp))
-                    if (isRead) {
-                        Text("✅ прочитано", fontSize = 10.sp, color = Color(0xFF4CAF50), fontWeight = FontWeight.SemiBold)
-                    } else {
-                        Text("· ${card.lessonId}", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
+                    when {
+                        locked -> {
+                            androidx.compose.material3.Icon(
+                                androidx.compose.material.icons.Icons.Default.Lock,
+                                contentDescription = null,
+                                tint = Color(0xFFFF9500),
+                                modifier = Modifier.size(10.dp),
+                            )
+                            Spacer(Modifier.width(2.dp))
+                            Text("PRO", fontSize = 10.sp, color = Color(0xFFFF9500), fontWeight = FontWeight.Bold)
+                        }
+                        isRead -> {
+                            Text("✅ прочитано", fontSize = 10.sp, color = Color(0xFF4CAF50), fontWeight = FontWeight.SemiBold)
+                        }
+                        else -> {
+                            Text("· ${card.lessonId}", fontSize = 10.sp, color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f))
+                        }
                     }
                 }
             }

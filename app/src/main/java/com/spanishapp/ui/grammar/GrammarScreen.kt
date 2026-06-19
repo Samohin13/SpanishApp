@@ -13,6 +13,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ExpandLess
 import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -117,14 +118,20 @@ fun GrammarScreen(
                     }
                 }
             } else {
+                // v1.25.90: PRO gate. A1 = free (15 lessons), A2/B1/B2 = PRO (60 lessons).
+                // Uses the same rememberIsProState() helper as the 6 game screens.
+                val isPro by com.spanishapp.ui.games.common.rememberIsProState()
                 LazyColumn(
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     items(lessons, key = { it.id }) { lesson ->
+                        val locked = lesson.level != "A1" && !isPro
                         LessonCard(
                             lesson    = lesson,
+                            locked    = locked,
                             onComplete = { vm.markCompleted(lesson) },
+                            onPaywall  = { navController.navigate("paywall") { launchSingleTop = true } },
                             modifier   = Modifier.animateItem()
                         )
                     }
@@ -139,7 +146,9 @@ fun GrammarScreen(
 @Composable
 private fun LessonCard(
     lesson: LessonEntity,
+    locked: Boolean,
     onComplete: () -> Unit,
+    onPaywall: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -148,7 +157,10 @@ private fun LessonCard(
     }
 
     com.spanishapp.ui.components.PressableCard(
-        onClick = { expanded = !expanded },
+        onClick = {
+            // v1.25.90 PRO gate: locked cards не раскрываются — тап ведёт на paywall.
+            if (locked) onPaywall() else expanded = !expanded
+        },
         modifier = modifier.fillMaxWidth().animateContentSize(),
         shape = RoundedCornerShape(18.dp),
         backgroundColor = if (lesson.isCompleted)
@@ -177,8 +189,24 @@ private fun LessonCard(
                     Text(lesson.topic, style = MaterialTheme.typography.bodySmall,
                          color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        modifier = Modifier.padding(top = 4.dp)) {
-                        XpChip(lesson.xpReward)
+                        modifier = Modifier.padding(top = 4.dp),
+                        verticalAlignment = Alignment.CenterVertically) {
+                        if (locked) {
+                            Icon(
+                                Icons.Default.Lock,
+                                contentDescription = null,
+                                tint = AppColors.Gold,
+                                modifier = Modifier.size(13.dp)
+                            )
+                            Text(
+                                "PRO",
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = AppColors.GoldDark
+                            )
+                        } else {
+                            XpChip(lesson.xpReward)
+                        }
                     }
                 }
                 Icon(if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore,
@@ -256,7 +284,7 @@ private fun LessonCard(
                     }
                 }
 
-                if (!lesson.isCompleted) {
+                if (!lesson.isCompleted && !locked) {
                     Spacer(Modifier.height(14.dp))
                     Button(
                         onClick = onComplete,

@@ -23,7 +23,10 @@ import javax.inject.Singleton
  *  2. Worker проверяет токен через Google Play Developer API.
  *  3. Worker записывает PRO статус в Cloudflare KV (привязан к Firebase UID).
  *  4. Worker возвращает {valid, state, expiryTime}.
- *  5. Локально кэшируем результат + verifiedAt timestamp в SubscriptionPreferences.
+ *  5. v1.25.90: на УСПЕХЕ кэшируем PRO=true + verifiedAt в SubscriptionPreferences.
+ *     На неуспехе НИЧЕГО НЕ пишем — отзыв PRO целиком на совести caller'а
+ *     (PlayBillingManager.handlePurchase делает это через свой
+ *     isDefinitelyInvalid check, см. v1.25.83 fix).
  *
  * Offline-friendly поведение (Spotify-стиль):
  *  • Если intern — доверяем локальному кэшу до GRACE_PERIOD_MS (30 дней).
@@ -110,8 +113,13 @@ class SubscriptionVerifier @Inject constructor(
                     subscriptionPrefs.setProVerified(true, System.currentTimeMillis())
                     Log.d(TAG, "Purchase verified: state=$state expires=$expiryTime")
                 } else {
-                    subscriptionPrefs.setProVerified(false, System.currentTimeMillis())
-                    Log.w(TAG, "Purchase NOT valid: state=$state")
+                    // v1.25.90 fix: НЕ отзываем PRO здесь. Раньше любой valid=false
+                    // (включая HTTP 5xx, сетевые ошибки, 48ч лаг Play API со state=null)
+                    // ронял isPro у реального платящего юзера. Теперь решение об
+                    // отзыве PRO принимает ТОЛЬКО PlayBillingManager.handlePurchase
+                    // через свой isDefinitelyInvalid check (state in EXPIRED/CANCELED/
+                    // REVOKED). Сюда просто отдаём VerifyResult — пусть caller решает.
+                    Log.w(TAG, "Purchase NOT valid: state=$state — caller decides revocation")
                 }
                 VerifyResult(valid, state, expiryTime)
             }

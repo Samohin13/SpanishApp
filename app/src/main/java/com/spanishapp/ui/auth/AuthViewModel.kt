@@ -193,8 +193,18 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, generalError = null) }
             try {
-                auth.signInWithEmailAndPassword(email, pass).await()
+                val result = auth.signInWithEmailAndPassword(email, pass).await()
                 authRepository.setLoggedIn(true)
+                // v1.25.90: тянем профиль из Firestore + локальный прогресс из облака
+                // (зеркало loginWithGoogle). Раньше email-вход после переустановки
+                // оставлял auth_prefs пустыми → юзер уходил на onboarding и
+                // перезаписывал свои Firestore-данные.
+                if (result.user != null) {
+                    syncUserDataFromFirestore(result.user!!.uid)
+                    runCatching {
+                        if (syncRepository.isLocalEmpty()) syncRepository.downloadAll()
+                    }
+                }
                 _uiState.update { it.copy(isLoading = false) }
             } catch (e: Exception) {
                 Log.w("AuthViewModel", "login failed", e)
@@ -253,14 +263,14 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             authRepository.setUserName(name)
             // v1.25.88: ОБЯЗАТЕЛЬНО синхронизируем в user_progress.displayName.
-            // Раньше имя писалось только в auth_prefs DataStore. LeaderboardRepository
-            // читает progress.displayName из Room → было пусто → fallback "Estudiante".
-            // Все тестеры в leaderboard были безымянные («Estudiante» × N).
+            // v1.25.90: targeted UPDATE (Daos.kt:458) вместо copy()+update() —
+            // иначе lost-update race с RatingUpdater, который пишет в rating/xp
+            // колонки параллельно. Failure → Crashlytics, не silent swallow.
             runCatching {
-                val current = userProgressDao.getProgressOnce()
-                if (current != null) {
-                    userProgressDao.update(current.copy(displayName = name))
-                }
+                userProgressDao.updateDisplayName(name)
+            }.onFailure { e ->
+                com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+                    .recordException(RuntimeException("[AuthViewModel] updateDisplayName failed", e))
             }
             saveUserDataToFirestore()
         }

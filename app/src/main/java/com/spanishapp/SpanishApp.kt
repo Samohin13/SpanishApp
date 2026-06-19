@@ -156,8 +156,11 @@ class SpanishApp : Application() {
                 val authName = authRepository.userName.first().orEmpty()
                 if (authName.isNotBlank()) {
                     val progress = userProgressDao.getProgressOnce()
-                    if (progress != null && progress.displayName.isBlank()) {
-                        userProgressDao.update(progress.copy(displayName = authName))
+                    // v1.25.90: seed-default "Estudiante" тоже считается «не задано»,
+                    // иначе backfill v1.25.88 был мёртвым кодом для всех существующих
+                    // тестеров. Targeted UPDATE (Daos.kt:458) — без lost-update race.
+                    if (progress != null && (progress.displayName.isBlank() || progress.displayName == "Estudiante")) {
+                        userProgressDao.updateDisplayName(authName)
                         android.util.Log.d("SpanishApp", "Backfilled displayName='$authName' into user_progress")
                     }
                 }

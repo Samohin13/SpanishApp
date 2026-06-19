@@ -259,6 +259,15 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 authRepository.setUserName(name)
+                // v1.25.90: sync в user_progress.displayName, иначе leaderboard
+                // после переименования в Settings продолжит показывать старое имя.
+                // Converge с AuthViewModel.updateName + SpanishApp.backfill.
+                runCatching {
+                    userProgressDao.updateDisplayName(name)
+                }.onFailure { e ->
+                    com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+                        .recordException(RuntimeException("[SettingsVM] updateDisplayName failed", e))
+                }
                 auth.currentUser?.let { db.collection("users").document(it.uid).update("name", name).await() }
                 _nameError.value = null
             } catch (e: Exception) { _nameError.value = "Ошибка сохранения" }
@@ -329,10 +338,14 @@ class SettingsViewModel @Inject constructor(
         // Sign out from Firebase first; the leaderboard/sync code keys off the
         // current uid, so we must drop it before flipping the local flag.
         runCatching { FirebaseAuth.getInstance().signOut() }
-        runCatching {
-            authRepository.clearUserPhoto()
-            authRepository.setUserName("")
-        }
+        // v1.25.90: полная очистка auth_prefs. Раньше setUserName("") писал
+        // пустую строку (НЕ null) — Navigation.userName == null проверка
+        // пропускалась → новый юзер на shared-устройстве унаследовал
+        // userAge/userReason/userLevel/onboardingCompleted предыдущего.
+        runCatching { authRepository.clearAllUserData() }
+        // setLoggedIn(false) уже отработал clearAllUserData (ключ удалён →
+        // default false), но явно вызываем для гарантированного re-emit
+        // на flow для Navigation observers.
         authRepository.setLoggedIn(false)
     }
 
@@ -366,13 +379,14 @@ class SettingsViewModel @Inject constructor(
         // 4. Local Room: wipe everything user-generated, not just user_progress.
         runCatching { wipeAllUserData() }
 
-        // 5. DataStore: clear name, photo, level, login flag
-        runCatching {
-            authRepository.setUserName("")
-            authRepository.clearUserPhoto()
-            authRepository.setUserLevel("A1")
-            authRepository.setLoggedIn(false)
-        }
+        // 5. DataStore: wipe auth_prefs целиком + явно setLoggedIn(false).
+        // v1.25.90: старый код выставлял только name="" + photo + level="A1"
+        // — оставались USER_AGE / USER_REASON / ONBOARDING_COMPLETED /
+        // USER_INTERESTS / USER_GOAL / USER_NOTES / USER_GENDER / TUTOR /
+        // VOICE prefs. При re-register на том же устройстве новый юзер
+        // наследовал чужой профиль.
+        runCatching { authRepository.clearAllUserData() }
+        runCatching { authRepository.setLoggedIn(false) }
     }
 
     fun resetProgress() = viewModelScope.launch { wipeAllUserData() }
