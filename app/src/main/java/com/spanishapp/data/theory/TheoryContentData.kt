@@ -2778,7 +2778,7 @@ object TheoryContentData {
                 ),
                 TheorySection(
                     type = TheorySectionType.WARNING,
-                    heading = "⚠️ Donde русские ошибаются",
+                    heading = "⚠️ Где русские ошибаются",
                     body = "❌ **ОШИБКА 1:** Путают сдвиг указателей с изменением времени.\n✅ **ПРАВИЛЬНО:** Меняется И время глагола (hablo→hablaba), И указатель (hoy→ese día).\n\n❌ **ОШИБКА 2:** Забывают сдвигать дейксис в косвенной речи.\n✅ **ПРАВИЛЬНО:** Прямая: Hoy voy aquí. Косвенная: Dijo que ese día iba allí.\n\n❌ **ОШИБКА 3:** Путают aquí/allá (говорящий/слушатель) с este/ese (расстояние).\n✅ **ПРАВИЛЬНО:** aquí = где я, allá = где он был. При 1→3 лицо: aquí→allí.",
                 ),
                 TheorySection(
@@ -2789,7 +2789,7 @@ object TheoryContentData {
                 TheorySection(
                     type = TheorySectionType.TIP,
                     heading = "💡 Практический тест",
-                    body = "**Переведи в косвенную (сдвиги + время):**\n\n1. Hoy no vengo, mañana sí. / Dijo que... → esse día no vendría, al día siguiente sí\n2. Ayer me dolía la cabeza. / Confesó que... → el día anterior le había dolido\n3. Aquí hay un problema. / Insistió en que... → allí había un problema\n\nПроверь: если остались hoy/mañana/aquí в косвенной, ошибка!",
+                    body = "**Переведи в косвенную (сдвиги + время):**\n\n1. Hoy no vengo, mañana sí. / Dijo que... → ese día no vendría, al día siguiente sí\n2. Ayer me dolía la cabeza. / Confesó que... → el día anterior le había dolido\n3. Aquí hay un problema. / Insistió en que... → allí había un problema\n\nПроверь: если остались hoy/mañana/aquí в косвенной, ошибка!",
                 ),
             ),
             keyTakeaways = listOf(
