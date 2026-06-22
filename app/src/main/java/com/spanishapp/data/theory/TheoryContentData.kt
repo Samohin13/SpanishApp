@@ -1,4 +1,4 @@
-package com.spanishapp.data.theory
+﻿package com.spanishapp.data.theory
 
 /**
  * Реестр всех теорий-карточек. Связан 1-к-1 с LessonContentData по lessonId.
@@ -2587,11 +2587,92 @@ object TheoryContentData {
                 TheorySection(TheorySectionType.COMPARISON, "Estar vs Ser + participio",
                     comparison = TheoryComparison(
                         leftHeader = "Estar + part (состояние)",
-                        rightHeader = "Ser + part (действие)",
+
+        "u14_l10" to TheoryContent(
+            lessonId = "u14_l10",
+            title = "Relativos продвинутые: que, quien, cuyo, el cual, lo cual",
+            subtitle = "Когда выбирать между родственными союзами. Случаи, где один подходит лучше другого.",
+            emoji = "💬", cefr = "B2", readMinutes = 6,
+            sections = listOf(
+                TheorySection(TheorySectionType.RULE, "Основное правило: мир относительных",
+                    body = "В испанском 5 главных относительных местоимений:\n" +
+                        "• **que** — универсальный (лиц/неодуш, м/ж, ед/мн): «человек, который...» «дом, который...»\n" +
+                        "• **quien/quienes** — только люди; часто в придаточных с запятой: «mi hermano, quien vive en Sevilla\"\n" +
+                        "• **el cual/la cual/los cuales/las cuales** — формальный (согласуется!): письмо, в котором... (por lo cual из-за чего)\n" +
+                        "• **cuyo/cuya/cuyos/cuyas** — притяжательный «чей»: человек, чьи книги...\n" +
+                        "• **lo cual** — специально про целую ситуацию: She arrived late, lo cual nos sorprendió (что нас удивило)"),
+                ),
+                TheorySection(TheorySectionType.TABLE, "Сравнение основных форм",
+                    table = TheoryTable(
+                        headers = listOf("Местоимение", "Формат", "Род/Число", "Пример"),
+                        rows = listOf(
+                            listOf("que", "неформальный", "не согласуется", "el hombre que venía"),
+                            listOf("quien", "люди + запятая", "не согласуется", "mi padre, quien trabaja aquí"),
+                            listOf("el cual", "формальный + предлог", "полная согласованность", "la puerta por la cual entré"),
+                            listOf("cuyo", "притяжательный", "согласуется в роде/числе", "el científico cuyo descubrimiento ganó"),
+                            listOf("lo cual", "целая ситуация", "неодуш + всегда lo", "Llegó tarde, lo cual nos molestó"),
+                        ),
+                        highlightedColumns = listOf(0, 3),
+                    )),
+                TheorySection(TheorySectionType.COMPARISON, "Que vs Quien — когда что",
+                    comparison = TheoryComparison(
+                        leftHeader = "Que (универсальный)",
+                        rightHeader = "Quien (люди + запятая)",
                         pairs = listOf(
-                            "La ventana está abierta." to "La ventana fue abierta (por el jardinero).",
-                            "Состояние прямо сейчас" to "Завершённое действие",
-                            "Фокус на результате" to "Фокус на агенте / причине",
+                            "человек, который учится (без запятой)" to "мой брат, который учится (с запятой)",
+                            "яблоко, которое красное (неодуш)" to "только для людей",
+                            "близкая связь с антецедентом" to "пояснение, добавочная информация",
+                            "La chica que ves" to "La chica, quien te ayudó",
+                            "Обычно БЕЗ запятой" to "Обычно С запятой",
+                        ),
+                    )),
+                TheorySection(TheorySectionType.EXAMPLES, "Все варианты в контексте",
+                    examples = listOf(
+                        TheoryExample("El libro que leí fue interesante.", "Книга, которую я читал, была интересной.", "que — универсальный"),
+                        TheoryExample("Mi amigo, quien vive en Bilbao, es ingeniero.", "Мой друг, который живёт в Бильбао, — инженер.", "quien — люди + запятая"),
+                        TheoryExample("La puerta, por la cual entré, estaba rota.", "Дверь, через которую я вошёл, была сломана.", "el cual после предлога → formality"),
+                        TheoryExample("El profesor cuyo nombre es García enseña aquí.", "Преподаватель, чьё имя Гарсия, учит здесь.", "cuyo — притяжательный"),
+                        TheoryExample("No llegó a tiempo, lo cual nos sorprendió.", "Не пришёл вовремя, что нас удивило.", "lo cual — про ситуацию"),
+                        TheoryExample("Los niños, quienes jugaban en el parque, eran felices.", "Дети, которые играли в парке, были счастливы.", "quienes мн. + запятая"),
+                        TheoryExample("La fórmula sobre la cual basaste tu tesis.", "Формула, на которой основана твоя диссертация.", "sobre la cual — с предлогом"),
+                    )),
+                TheorySection(TheorySectionType.WARNING, "⚠️ Где русские ошибаются",
+                    body = "❌ «Мой друг quien es врач» (без запятой — неправильно!)\n" +
+                        "✅ «Мой друг, quien es врач» (с запятой — правильно!)\n\n" +
+                        "❌ «El problema por que vengo» (que без предлога — неправильно!)\n" +
+                        "✅ «El problema por el cual vengo» (el cual с предлогом — правильно!)\n\n" +
+                        "❌ «La casa cuyo puerta está abierta» (неправильное согласование)\n" +
+                        "✅ «La casa cuya puerta está abierta» (cuya — согласуется с puerta ж.ед)\n\n" +
+                        "❌ «El gato que su color es blanco» (неправильный порядок)\n" +
+                        "✅ «El gato cuyo color es blanco» (cuyo заменяет su в relativos)"),
+                ),
+                TheorySection(TheorySectionType.MNEMONIC, "🧠 Запомнить: КСПОЛ",
+                    body = "**К** — que (универсальный король)\n" +
+                        "**С** — cuyo (своего/притяжательный)\n" +
+                        "**П** — people/personas (quien для людей)\n" +
+                        "**О** — oficial (el cual — формальный)\n" +
+                        "**Л** — lo cual (целая ситуация, fact)\n\n" +
+                        "Пример: «Вот мужчина (quien), о котором я говорил (el cual), чьих (cuyo) идей я восхищаюсь»."),
+                ),
+                TheorySection(TheorySectionType.TIP, "💡 Практический тест",
+                    body = "Заполни пропуск:\n" +
+                        "1. «El edificio __ me vendiste» → который → **que** или **el cual**?\n" +
+                        "   ✅ Por el cual (с предлогом por нужен el cual)\n" +
+                        "2. «Mi hermana, __ vive en Madrid, es bióloga» → запятая + люди → **quien**\n" +
+                        "3. «El científico __ descubrimiento es famoso» → чьё → **cuyo**\n" +
+                        "4. «Nos dijeron una mentira, __ nos enfadó» → цел.ситуация → **lo cual**"),
+                ),
+            ),
+            keyTakeaways = listOf(
+                "Que — универсальный, без запятой обычно",
+                "Quien — только люди, с запятой (пояснение)",
+                "El cual — формальный, после предлогов, согласуется",
+                "Cuyo — притяжательный, согласуется с тем, кто владеет",
+                "Lo cual — про целую ситуацию (факт, событие)",
+                "Vosotros-форма: relativos не меняют форму в множественном",
+            ),
+            relatedTheory = listOf("u13_l10", "u14_l11"),
+        ),
                             "El café está preparado." to "El café fue preparado (por María).",
                             "Статус: готово/сделано" to "Процесс: делали",
                             "Estoy cansado." to "Fui cansado de trabajar (архаич.)",
@@ -4556,44 +4637,75 @@ object TheoryContentData {
             relatedTheory = listOf("u14_l0", "u14_l1", "u15_l1"),
         ),
 
-        "u14_l6_5" to TheoryContent(
+                "u14_l6_5" to TheoryContent(
             lessonId = "u14_l6_5",
-            title = "Deber vs Deber de — обязанность vs предположение",
-            subtitle = "Debes estudiar (должен). Debe de ser tarde (наверное).",
-            emoji = "🤷", cefr = "B2", readMinutes = 5,
+            title = "Deber vs Deber de vs Tener que — модальность B2",
+            subtitle = "Obligation vs Deduction: Debes [θ] estudiar. Debe de ser tarde. Tengo que trabajar.",
+            emoji = "🤷‍♂️", cefr = "B2", readMinutes = 7,
             sections = listOf(
-                TheorySection(TheorySectionType.RULE, "Два очень разных значения",
-                    body = "**Deber + infinitivo** = **обязанность, долженствование**:\n• Debes estudiar. (Ты должен учиться.)\n• Debemos respetar las reglas. (Мы должны соблюдать правила.)\n\n**Deber de + infinitivo** = **предположение, догадка**:\n• Debe de ser tarde. (Наверное, поздно.)\n• Deben de estar cansados. (Они, наверное, устали.)\n\n⚠ В разговоре границу часто **стирают** — носители смешивают. Но в письменной речи различай!"),
-                TheorySection(TheorySectionType.COMPARISON, "Обязанность vs Предположение",
+                TheorySection(TheorySectionType.RULE, "Три разные модальности",
+                    body = "**DEBER + infinitivo** → ОБЯЗАННОСТЬ (моральность, правило, долг):\n• Debes [θ] **respetar** a tus padres. (Ты **должен** уважать своих родителей — мораль.)\n• Debéis [θ] **llevar** uniforme. (Вы [мн] **должны** надевать форму — правило.)\n\n**DEBER DE + infinitivo** → ПРЕДПОЛОЖЕНИЕ (вероятность, вывод):\n• Debe de **estar** tarde. (Наверное, поздно — я не уверен.)\n• Deben de **tener** hambre. (Они, вероятно, голодные.)\n\n**TENER QUE + infinitivo** → НЕОБХОДИМОСТЬ (внешняя сила, дедлайн, обстоятельство):\n• Tengo que **ir** al médico. (Я **должен** пойти к врачу — запись, необходимость.)\n• Tienen que **terminar** hoy. (Они **должны** закончить сегодня — дедлайн.)\n\n🎯 **Ключ:** deber = моральное чувство (совесть), tener que = внешнее давление (обстоятельство), deber de = предположение (гадание)."),
+                TheorySection(TheorySectionType.TABLE, "Три модальности рядом",
+                    table = TheoryTable(
+                        headers = listOf("Формула", "Значение", "Пример", "Смысл"),
+                        rows = listOf(
+                            listOf("Deber + inf", "Долг / мораль", "Debes [θ] ser honesto", "Принцип / совесть"),
+                            listOf("Deber de + inf", "Предположение", "Debe de estar cansado", "Наверное / вероятно"),
+                            listOf("Tener que + inf", "Необходимость", "Tengo que trabajar mañana", "Дедлайн / обстоят."),
+                            listOf("Hay que + inf", "Нужно (общее)", "Hay que estudiar", "Совет / норма"),
+                            listOf("Poder + inf", "Возможность", "Puedes [θ] salir", "Разрешение / способность"),
+                        ),
+                        highlightedColumns = listOf(0, 1),
+                    )),
+                TheorySection(TheorySectionType.COMPARISON, "Deber vs Tener que в контексте",
                     comparison = TheoryComparison(
-                        leftHeader = "Deber (обязанность)",
-                        rightHeader = "Deber de (предположение)",
+                        leftHeader = "Deber [θ] (моральный долг)",
+                        rightHeader = "Tener que (внешняя необходимость)",
                         pairs = listOf(
-                            "Debes ir al médico." to "Debe de ir al médico (мне кажется, идёт).",
-                            "Debemos trabajar." to "Deben de trabajar mucho (наверное).",
-                            "= должен" to "= наверное / по-видимому",
-                            "Совет / обязанность" to "Догадка о факте",
+                            "Debería [θ] ayudar a mi hermano." to "Tengo que recoger a mi hermano a las 18h.",
+                            "(Ethically right)" to "(External deadline)",
+                            "No deberías [θ] mentir." to "No puedo mentir, me despiden.",
+                            "(Wrong by principle)" to "(Consequence: job loss)",
+                            "Debéis [θ] respetar las tradiciones." to "Tenéis [θ] que estar aquí a las 9.",
+                            "(Values/culture)" to "(Schedule/rule)",
                         ),
                     )),
-                TheorySection(TheorySectionType.EXAMPLES, "Контекст решает",
+                TheorySection(TheorySectionType.EXAMPLES, "Живые примеры Мадрида",
                     examples = listOf(
-                        TheoryExample("Debes estudiar más.", "Ты должен больше учиться.", "обязанность"),
-                        TheoryExample("Debe de estar enfermo.", "Он, наверное, болен.", "предположение"),
-                        TheoryExample("Debemos respetar a los demás.", "Мы должны уважать других.", "моральный долг"),
-                        TheoryExample("Deben de ser las diez ya.", "Наверное, уже 10.", "догадка о времени"),
-                        TheoryExample("No debes mentir.", "Ты не должен лгать.", "запрет"),
-                        TheoryExample("No debe de saberlo.", "Он, наверное, не знает.", "догадка отриц."),
+                        TheoryExample("Debes [θ] estudiar, es tu responsabilidad.", "Ты должен учиться — это твоя ответственность.", "deber = принцип"),
+                        TheoryExample("Tengo que trabajar hasta las seis, tengo una reunión.", "Я должен работать до 6 — у меня встреча.", "tener que = дедлайн"),
+                        TheoryExample("Debe de estar en la oficina, es su horario.", "Он, вероятно, в офисе — это его время.", "deber de = вывод"),
+                        TheoryExample("¿Dónde están? Deben de estar en el Retiro.", "Где они? Наверное, в парке Ретиро.", "deber de = догадка"),
+                        TheoryExample("Los estudiantes tienen que entregar el proyecto mañana.", "Студенты должны сдать проект завтра.", "tener que = срок"),
+                        TheoryExample("Aunque estoy cansado, tengo que terminar esto.", "Хотя я устал, я должен это закончить.", "tener que + aunque"),
                     )),
-                TheorySection(TheorySectionType.TIP, "💡 Как запомнить",
-                    body = "**De** — это «приблизительно, около». Когда добавляем «de» к deber — получается «около обязан» = «предположительно». Без «de» — чистая обязанность.\n\nАльтернативы для догадок:\n• Tiene que ser tarde. (Должно быть, поздно.)\n• Quizás sea tarde. (Может быть.)\n• Probablemente sea tarde."),
+                TheorySection(TheorySectionType.WARNING, "⚠️ Где русские ошибаются",
+                    body = "❌ **Ошибка 1:** путать deber и tener que\n   ✅ Tengo que trabajar. (внешняя сила — дедлайн)\n   ✅ Debo ser honesto. (внутренняя мораль)\n   ❌ Debo trabajar mañana a las 9. (это tener que — дедлайн!)\n\n❌ **Ошибка 2:** использовать deber de в утверждении вместо вероятности\n   ✅ Debe de estar en la reunión. (предположение: я не знаю)\n   ❌ Debe estar en la reunión. (грамм. неверно в Spain)\n\n❌ **Ошибка 3:** забывать про vosotros в Испании\n   ✅ Debéis [θ] traer el dinero. (You-plural must)\n   ❌ Ustedes deben traer... (это Latam)\n\n❌ **Ошибка 4:** произносить B как русский твёрдый Б\n   🎯 DEBER произносится [deˈβeɾ] — B мягкая, фрикативная (как португальский)\n   🎯 Z произносится [θ] — как английский *th* в *think*\n   Debéis = [deˈβeˈiθ]\n\n❌ **Ошибка 5:** смешивать отрицание\n   ✅ No debo mentir. (моральный запрет)\n   ✅ No tengo que ir. (я не обязан идти)\n   ✅ No debe de saber. (наверное, не знает)"),
+                TheorySection(TheorySectionType.TABLE, "Отрицание: deber vs tener que",
+                    table = TheoryTable(
+                        headers = listOf("Утверждение", "Отрицание", "Смысл отриц."),
+                        rows = listOf(
+                            listOf("Debo [θ] estudiar", "No debo [θ] estudiar", "Я не должен (запрет)"),
+                            listOf("Tengo que estudiar", "No tengo que estudiar", "Я не обязан (опция)"),
+                            listOf("Puedo [θ] estudiar", "No puedo [θ] estudiar", "Я не могу (невозможно)"),
+                            listOf("Debe de estar", "No debe de estar", "Наверное, не там"),
+                        ),
+                        highlightedColumns = listOf(0, 1),
+                    )),
+                TheorySection(TheorySectionType.MNEMONIC, "🧠 Как запомнить различие",
+                    body = "**DEBER** = голос совести. Когда **совесть говорит**, что это правильно.\n   Origen: latín dēbēre (ты «должен» по совести)\n   Пример: Debo ser honesto. (Совесть говорит: будь честным.)\n\n**TENER QUE** = внешняя сила. Когда **обстоятельства заставляют**.\n   Literal: «Tengo que ir» = «I **have** [tener] **to** [que] go» — принуждение\n   Пример: Tengo que ir al trabajo. (Работодатель: приходи к 9.)\n\n**DEBER DE** = гадание, предположение. Когда ты **угадываешь**, что произошло.\n   Логика: **DE** = «около, примерно» → debo + de = «я около-долженствую-гадаю»\n   Пример: Debe de estar en casa. (Я не знаю точно, но предполагаю.)\n\n**VOSOTROS в Spain:**\n   Debéis [θ] — вы (мн) должны (по совести)\n   Tenéis [θ] que — вы (мн) должны (внешняя сила)"),
+                TheorySection(TheorySectionType.TIP, "💡 Perífrasis: B2 grammar level",
+                    body = "Все три — **модальные периграсы** (modal auxiliary + infinitive):\n• **Deber + inf** — деонтическая модальность (долг, право, запрет)\n• **Tener que + inf** — модальность необходимости (внешняя)\n• **Poder + inf** — модальность возможности (способность, разрешение)\n\nВ испанском письме (газеты, литература) расширяют арсенал:\n• **Deber + inf** → **Deberías** (условное: advice «Ты бы должен отдохнуть»)\n• **Haber que + inf** (безличное: Hay que estudiar — нужно учиться)\n• **Soler + inf** (обычно: Suele llover — обычно идёт дождь)\n• **Necesitar + inf** (нужно: Necesito descansar)\n\n**Фонетика Мадрида:**\n   • Z = [θ] (theta), не [s]\n   • B inicial = [b] твёрдая, но B medial = [β] мягкая фрикативная\n   • V = [β] всегда (V и B одинаковые в испанском)"),
             ),
             keyTakeaways = listOf(
-                "Deber + inf = обязанность",
-                "Deber de + inf = предположение",
-                "В разговоре границу размывают",
-                "Tener que + inf — тоже для догадок",
+                "Deber = моральный долг (совесть)",
+                "Tener que = внешняя необходимость (дедлайн)",
+                "Deber de = предположение (вероятность)",
+                "Vosotros: Debéis [θ] / Tenéis [θ] (только Spain)",
+                "B≠V: [β] мягкая фрикативная; Z=[θ] (не [s])",
+                "Периграсы: модальные глаголы + инфинитив",
             ),
-            relatedTheory = listOf("u14_l6", "u14_l7"),
+            relatedTheory = listOf("u14_l6", "u14_l7", "u13_l10"),
         ),
 
         "u15_l4_5" to TheoryContent(
@@ -7303,3 +7415,4 @@ object TheoryContentData {
         ),
     )
 }
+
