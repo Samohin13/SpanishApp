@@ -2889,10 +2889,110 @@ object TheoryContentData {
             rule = "Тонкие пары значений: ser bueno (хороший человек) vs estar bueno (вкусный/здоровый). ser listo (умный) vs estar listo (готов). ser malo vs estar malo (плохой vs больной). Контекст определяет.",
             takeaways = listOf("Прилагательное может менять смысл", "Учить пары", "Нюансы B2")),
 
-        t("u14_l13", "Nominalización", "Глагол → сущ. decidir → decisión",
-            emoji = "💬", cefr = "B2", minutes = 3,
-            rule = "Превращение глагола в существительное: -ción (decidir→decisión, construir→construcción), -aje (aterrizar→aterrizaje), -encia (creer→creencia), -ido (sonido).",
-            takeaways = listOf("Деловой/научный стиль", "-ción / -aje / -encia", "Учить целиком")),
+        "u14_l13" to TheoryContent(
+            lessonId = "u14_l13",
+            title = "Nominalización — от действия к идее",
+            subtitle = "Глагол → существительное. Для деловых текстов, научного стиля, формальной речи.",
+            emoji = "📋", cefr = "B2", readMinutes = 6,
+            sections = listOf(
+                TheorySection(
+                    type = TheorySectionType.RULE,
+                    heading = "Что это такое — превращение действия в вещь",
+                    body = "**Nominalización** = берём глагол и делаем из него существительное. " +
+                        "Это мощный способ сделать речь более formales и científicas.\n\n" +
+                        "Вместо *«Decidimos esto»* говорим *«La decisión fue importante»*.\n\n" +
+                        "В тексте это звучит как отчёт, доклад, научная работа — очень B2.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.TABLE,
+                    heading = "4 основных суффикса для nominalización",
+                    table = TheoryTable(
+                        headers = listOf("Суффикс", "Глагол → Существительное", "Тип глагола / Правило"),
+                        rows = listOf(
+                            listOf("-ción / -sión", "decidir → decisión\nconstruir → construcción\nrecibir → recepción", "Верба на -ir/-ar\n(добавляй -ción)"),
+                            listOf("-aje", "aterrizar → aterrizaje\nviajar → viaje\npasar → pasaje", "Более живое, конкретное\n(часто движение/переход)"),
+                            listOf("-encia / -ancia", "creer → creencia\ninteligencia (adj inteligente)\nexistencia (existir)", "Абстрактные понятия\n(качество, явление)"),
+                            listOf("-idad", "responsable → responsabilidad\ncalidez (adj cálido)", "От прилагательного → качество\n(очень B2-academic)"),
+                        ),
+                        highlightedColumns = listOf(1, 2),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.EXAMPLES,
+                    heading = "Живые примеры — как это звучит в реальных текстах",
+                    examples = listOf(
+                        TheoryExample("La decisión fue tomada ayer.", "Решение было принято вчера.", "decidir → decisión"),
+                        TheoryExample("La construcción del puente tardó 3 años.", "Строительство моста заняло 3 года.", "construir → construcción"),
+                        TheoryExample("El aterrizaje fue suave.", "Приземление было мягким.", "aterrizar → aterrizaje"),
+                        TheoryExample("Su creencia en Dios es profunda.", "Его вера в Бога глубока.", "creer → creencia"),
+                        TheoryExample("La responsabilidad es mía.", "Ответственность — моя.", "responsable → responsabilidad"),
+                        TheoryExample("La inteligencia artificial evoluciona.", "Искусственный интеллект развивается.", "inteligente → inteligencia (noun)"),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.COMPARISON,
+                    heading = "Глагол vs Существительное — как меняется фраза",
+                    comparison = TheoryComparison(
+                        leftHeader = "С глаголом (живо, разговорно)",
+                        rightHeader = "С номиналем (формально, научно)",
+                        pairs = listOf(
+                            "Decidimos que no." to "La decisión fue negativa.",
+                            "Construyeron un puente." to "La construcción fue rápida.",
+                            "Creo en esto." to "Mi creencia es profunda.",
+                            "Aterrizamos sin problema." to "El aterrizaje fue exitoso.",
+                            "Viajamos mucho." to "Nuestros viajes fueron largos.",
+                        ),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.WARNING,
+                    heading = "⚠️ Donde los rusohablantes se equivocan",
+                    body = "**❌ Problema 1: sufijo incorrecto**\n" +
+                        "~~Decidación~~ / ~~Construimiento~~ — estas palabras no existen en español!\n" +
+                        "✅ Correcto: **decisión, construcción, creencia**.\n\n" +
+                        "**❌ Problema 2: mezclar estilos**\n" +
+                        "Los nominales son SOLO para lenguaje formal (cartas oficiales, reportes, artículos).\n" +
+                        "En conversación suenan raros:\n" +
+                        "✅ *¿Qué hiciste?* (en una conversación normal)\n" +
+                        "✅ *Se describe en el informe: La realización fue lenta.* (en un documento)\n\n" +
+                        "**❌ Problema 3: ignorar género y artículo**\n" +
+                        "Cada nominal tiene género fijo — debes recordarlo CON artículo!\n" +
+                        "✅ **la decisión, el viaje, la responsabilidad, el aterrizaje**.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.MNEMONIC,
+                    heading = "🧠 Cómo recordar los sufijos",
+                    body = "**-CIÓN** = el más común (verbos -ar e -ir → -ción)\n" +
+                        "**-AJE** = movimiento, tránsito (viaje, aterrizaje, pasaje)\n" +
+                        "**-ENCIA** = idea, cualidad abstracta (creencia, existencia, inteligencia)\n" +
+                        "**-IDAD** = de un adjetivo → cualidad (responsable→responsabilidad, creatividad)\n\n" +
+                        "Regla 70%: si el verbo termina en **-ar** o **-ir**, " +
+                        "casi siempre → **-ción**.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.TIP,
+                    heading = "💡 Cuándo usar nominales",
+                    body = "**Usa nominales cuando:**\n" +
+                        "• Escribes una carta formal, un informe, un artículo\n" +
+                        "• Quieres sonar como un profesional (periodista, abogado, científico)\n" +
+                        "• Describes un proceso de forma abstracta (no quién lo hace, sino el proceso mismo)\n\n" +
+                        "**Ejemplos en contexto B2:**\n" +
+                        "*El Gobierno anunció: «La construcción de la carretera comenzará en marzo». " +
+                        "La decisión fue unánime.*\n\n" +
+                        "¿Ves? Tres nominales seguidos — esto es normal en español formal. " +
+                        "(En ruso lo dirías: *Gobierno anunció el comienzo de construcción de la carretera en marzo — la decisión fue unánime*.) " +
+                        "Los nominales hacen que la frase se sienta profesional y académica.",
+                ),
+            ),
+            keyTakeaways = listOf(
+                "Verbo → sustantivo mediante sufijos (-ción, -aje, -encia, -idad)",
+                "Sufijos fijos — apréndetelos con artículo (decisión, viaje, creencia)",
+                "Nominales = estilo formal/académico SOLO (reportes, artículos, cartas oficiales)",
+                "Sufijo principal: -ción de verbos -ar/-ir",
+                "-aje para acciones/movimientos concretos (viaje, aterrizaje)",
+            ),
+            relatedTheory = listOf("u14_l0", "u14_l8", "u14_l9"),
+        ),
 
         t("u14_l14", "Чекпоинт «Журналистика»",
             "Pasiva + perífrasis + ger/inf + относит",
