@@ -2326,11 +2326,58 @@ object TheoryContentData {
         // ═══════════════════════════════════════════════════════════════
         //  B2 · БЛОК 4.1 «SUBJUNTIVO AVANZADO» — 16 теорий
         // ═══════════════════════════════════════════════════════════════
-        t("u13_l0", "Imp.Subj. — обзор", "-ra и -se формы. Для гипотез типа 2.",
-            emoji = "🔮", cefr = "B2", minutes = 3,
-            rule = "Imperfecto Subjuntivo — повторение формы и применения. -ra (популярнее) и -se (формальнее) — синонимы.",
-            takeaways = listOf("2 формы синонимичны", "Si тип 2: tuviera/tuviese", "Имел смысл «бы»")),
-
+        "u13_l0" to TheoryContent(
+            lessonId = "u13_l0",
+            title = "Imperfecto de Subjuntivo — полный обзор",
+            subtitle = "-ra и -se формы. Условные типы 2, согласование времён, невыполнимые желания.",
+            emoji = "🔮", cefr = "B2", readMinutes = 6,
+            sections = listOf(
+                TheorySection(TheorySectionType.RULE, "Две параллельные формы",
+                    body = "**Imperfecto de Subjuntivo** имеет две формы, полностью синонимичные по значению:\n\n• **-ra**: hablara, hablaras, hablara, habláramos, hablarais, hablaran\n• **-se**: hablase, hablases, hablase, hablásemos, hablaseis, hablasen\n\n**В Spain Madrid** обе формы используются примерно равно. **-ra** чуть более распространена в речи, **-se** чаще в литературе и формальном письме.\n\nЭто не значит, что они переходят друг в друга — это **две независимые парадигмы**, и говорящий выбирает одну, не смешивая."),
+                TheorySection(TheorySectionType.TABLE, "Три главных применения",
+                    table = TheoryTable(
+                        headers = listOf("Контекст", "Форма", "Пример"),
+                        rows = listOf(
+                            listOf("Si тип 2 (сейчас/скоро)", "Si + Imp.Subj + Cond", "Si tuviera dinero, viajaría."),
+                            listOf("Невыполнимое желание", "Ojalá + Imp.Subj", "Ojalá pudiera viajar."),
+                            listOf("Согласование времён", "Глаг.прошлое + Imp.Subj", "Quería que vinieras."),
+                        ),
+                        highlightedColumns = listOf(1),
+                    )),
+                TheorySection(TheorySectionType.COMPARISON, "-ra vs -se в практике",
+                    comparison = TheoryComparison(
+                        leftHeader = "-ra (речь + литература)",
+                        rightHeader = "-se (литература + формально)",
+                        pairs = listOf(
+                            "Si pudieras, ¿vendrías?" to "Si pudieses, ¿vendrías?",
+                            "Ojalá supiera la respuesta." to "Ojalá supiese la respuesta.",
+                            "Quería que me ayudaras." to "Quería que me ayudases.",
+                            "(Повседневнее, естеснее.)" to "(Книжнее, архаичнее.)",
+                        ),
+                    )),
+                TheorySection(TheorySectionType.EXAMPLES, "Живые примеры",
+                    examples = listOf(
+                        TheoryExample("Si tuviese/tuviera más tiempo, aprendería mejor.", "Если бы у меня было больше времени, учился бы лучше.", "условный тип 2"),
+                        TheoryExample("Ojalá hablara con soltura.", "Хоть бы я говорил бегло (но пока не говорю).", "невыполнимое желание"),
+                        TheoryExample("Pedí que vinieras/vinieses a la reunión.", "Попросил, чтобы ты пришёл на встречу.", "согласование (гл. в прошлом)"),
+                        TheoryExample("Me gustaría que estudiaras más.", "Мне нравилось бы, чтобы ты больше учился.", "вежливая просьба"),
+                        TheoryExample("Como si supieras todo.", "Как будто ты всё знаешь.", "нереальное сравнение"),
+                    )),
+                TheorySection(TheorySectionType.WARNING, "⚠️ Где русские ошибаются",
+                    body = "❌ Si tuviera, viajaré (будущее вместо условного).\n✅ Si tuviera, viajaría (Imp.Subj + Cond).\n\n❌ Ojalá podré.\n✅ Ojalá pudiera.\n\n❌ Si sabría, lo diría.\n✅ Si supiera, lo diría."),
+                TheorySection(TheorySectionType.MNEMONIC, "🧠 Запомнить быстро",
+                    body = "**Три кита Imp.Subj:** Si + Imp.Subj + Cond | Ojalá + Imp.Subj | Глаг.прошлое + Imp.Subj"),
+                TheorySection(TheorySectionType.TIP, "💡 -ra vs -se в Spain Madrid",
+                    body = "Обе формы равно распространены. **-ra** чуть в речи, **-se** в литературе, но граница не строгая. Главное — не смешивай в одном предложении."),
+            ),
+            keyTakeaways = listOf(
+                "-ra и -se — полные синонимы в Spain",
+                "Si тип 2: Si + Imp.Subj + Condicional",
+                "Согласование времён: прошлое → Imp.Subj",
+                "Ojalá + Imp.Subj = невыполнимое желание",
+            ),
+            relatedTheory = listOf("u9_l3", "u13_l1", "u13_l3"),
+        ),
         t("u13_l1", "Imp.Subj. образование", "От 3.л.мн.ч. Indef → -ron + -ra/-se",
             emoji = "🔮", cefr = "B2", minutes = 3,
             rule = "Алгоритм: берёшь 3.л.мн.ч. Pretérito Indefinido (-aron, -ieron), убираешь -ron, добавляешь -ra/-ras/-ra/-´ramos/-rais/-ran (или -se формы).",
@@ -2529,11 +2576,65 @@ object TheoryContentData {
             rule = "Pasiva con SER + part. Используется реже чем в англ — испанцы предпочитают SE-пассив или активный залог. Подходит для формальных текстов.",
             takeaways = listOf("Формально", "ser + part + (por + agent)", "Согласование part")),
 
-        t("u14_l1", "Estar + part = состояние",
-            "está hecho — готов. Не «как сделано», а «в каком состоянии»",
-            emoji = "⚙", cefr = "B2", minutes = 3,
-            rule = "estar + part — РЕЗУЛЬТАТ или состояние. NO про действие. La puerta está cerrada (закрыта сейчас) vs fue cerrada (была закрыта кем-то).",
-            takeaways = listOf("Состояние", "Не «кем»", "Можно с estar в любом времени")),
+        "u14_l1" to TheoryContent(
+            lessonId = "u14_l1",
+            title = "Estar + participio: el ESTADO, no la acción",
+            subtitle = "La puerta está cerrada (состояние). Vs. fue cerrada (действие/пассив).",
+            emoji = "⚙", cefr = "B2", readMinutes = 6,
+            sections = listOf(
+                TheorySection(TheorySectionType.RULE, "Главное различие: СОСТОЯНИЕ vs ДЕЙСТВИЕ",
+                    body = "**Estar + participio** = **РЕЗУЛЬТАТ или текущее состояние** предмета. Мы фокусируемся на том, **в каком состоянии находится предмет сейчас**, а НЕ на том, кто его сделал.\n\n• **La puerta está cerrada.** (Дверь закрыта [закрыта прямо сейчас].) — состояние\n• **La puerta fue cerrada.** (Дверь была закрыта [её закрыли].) — действие/пассив\n\n**Ключ различия:**\n- Estar + part = **где я это вижу** (состояние, переживание)\n- Ser + part = **кто это сделал** (действие, агент)")),
+                TheorySection(TheorySectionType.COMPARISON, "Estar vs Ser + participio",
+                    comparison = TheoryComparison(
+                        leftHeader = "Estar + part (состояние)",
+                        rightHeader = "Ser + part (действие)",
+                        pairs = listOf(
+                            "La ventana está abierta." to "La ventana fue abierta (por el jardinero).",
+                            "Состояние прямо сейчас" to "Завершённое действие",
+                            "Фокус на результате" to "Фокус на агенте / причине",
+                            "El café está preparado." to "El café fue preparado (por María).",
+                            "Статус: готово/сделано" to "Процесс: делали",
+                            "Estoy cansado." to "Fui cansado de trabajar (архаич.)",
+                        ),
+                    )),
+                TheorySection(TheorySectionType.TABLE, "Ser vs Estar — родственные примеры",
+                    table = TheoryTable(
+                        headers = listOf("Фраза", "Перевод", "Время/Смысл"),
+                        rows = listOf(
+                            listOf("El plato está roto.", "Тарелка разбита (состояние сейчас).", "Estar — результат"),
+                            listOf("El plato fue roto.", "Тарелка была разбита (кто-то сделал).", "Ser — действие"),
+                            listOf("La casa está construida.", "Дом построен (готов к жилью).", "Estar — состояние"),
+                            listOf("La casa fue construida en 1850.", "Дом был построен в 1850 г. (история).", "Ser — факт/историческое"),
+                            listOf("Estamos preparados.", "Мы готовы (Исп. nosotros).", "Estar — готовность"),
+                            listOf("Seréis considerados...", "Вас будут считать... (Исп. vosotros).", "Ser Futuro — пассив"),
+                        ),
+                        highlightedColumns = listOf(2),
+                    )),
+                TheorySection(TheorySectionType.WARNING, "⚠ Где русские ошибаются",
+                    body = "**Ошибка 1:** согласование причастия. Estar требует согласования как прилагательное!\n• La ventana está cerrada. (ж.р. ед.)\n• Las ventanas están cerradas. (ж.р. мн.)\n• El libro está cerrado. (м.р. ед.)\n• Los libros están cerrados. (м.р. мн.)\n\n**Ошибка 2:** путать Estar + part с Ser + part. Помни: **Estar фокусирует на результате-состоянии**, **Ser на действии**.\n\n**Ошибка 3:** игнорировать Estar в прошлом. Estar может быть в **любом времени**:\n• Estoy cansado (Present)\n• Estaba cansado (Imperfecto — было состояние усталости)\n• Estaré cansado (Futuro — буду в состоянии усталости)\n• Estaría cansado (Condicional — был бы в состоянии)"),
+                TheorySection(TheorySectionType.EXAMPLES, "Живые примеры (Spain Madrid)",
+                    examples = listOf(
+                        TheoryExample("¿Está abierto el restaurante?", "Ресторан открыт? (Открытое ли сейчас?)", "Состояние, Present"),
+                        TheoryExample("El ordenador estaba apagado cuando llegué.", "Компьютер был выключен, когда я пришёл.", "Imperfecto — прошлое состояние"),
+                        TheoryExample("Los trabajadores estaban cansados después de trabajar.", "Рабочие были утомлены после работы.", "Estar Imperfecto — усталость"),
+                        TheoryExample("Estaré listo a las 9.", "Я буду готов в 9.", "Estar Futuro — готовность"),
+                        TheoryExample("Mi hermano está decorado con una medalla.", "Мой брат награждён медалью (носит её).", "Estar + part — статус"),
+                        TheoryExample("Estáis invitados a la boda. (vosotros)", "Вы приглашены на свадьбу. (Исп.)", "Vosotros Estar — статус"),
+                    )),
+                TheorySection(TheorySectionType.TIP, "💡 Быстрый тест: Estar или Ser?",
+                    body = "**Вопрос:** Фокусируешься на **КАК ВЫГЛЯДИТ/В КАКОМ СОСТОЯНИИ** предмет ИЛИ на **ЧТО ПРОИЗОШЛО/КТО СДЕЛАЛ**?\n\n✅ **Estar** → Вижу **состояние, результат**:\n• «Estoy cansado.» (Я вижу себя в состоянии усталости.)\n• «La puerta está cerrada.» (Вижу закрытую дверь.)\n\n✅ **Ser** → Фокус на **процесс, историю, агента**:\n• «La puerta fue cerrada (por Juan).» (Повествование: Хуан закрыл дверь.)\n• «Fue construida por arquitectos griegos.» (Историческая справка.)")),
+                TheorySection(TheorySectionType.MNEMONIC, "🧠 Запомнить через аналогию",
+                    body = "**Estar** = **быть в состоянии** (русское выражение буквально!).\n• **Estoy triste.** = Я в печальном состоянии прямо сейчас.\n• **La puerta está abierta.** = Дверь находится в открытом состоянии.\n\n**Ser** = **быть по сущности или истории**.\n• **Soy triste.** = Я — грустный (мой характер, суть).\n• **La puerta fue construida en 1900.** = История постройки (факт, процесс прошлого)."),
+            ),
+            keyTakeaways = listOf(
+                "Estar + part = состояние, результат, визуальное впечатление",
+                "Ser + part = действие, процесс, историческое событие, агент",
+                "ОБЯЗАТЕЛЬНО согласование по роду/числу (está cerrada/cerrado/cerradas/cerrados)",
+                "Estar работает в любом времени (Present, Imperfecto, Futuro, Condicional)",
+                "La puerta está cerrada ≠ La puerta fue cerrada",
+            ),
+            relatedTheory = listOf("u14_l0", "u14_l2"),
+        ),
 
         t("u14_l2", "Se pasivo y se impersonal",
             "Se vende coche. Se dice que. Часто заменяет SER-пассив.",
@@ -2593,11 +2694,113 @@ object TheoryContentData {
             rule = "Повторение относительных местоимений с акцентом на разницу: el cual (формал), cuyo (чей), lo cual (про всю ситуацию).",
             takeaways = listOf("el cual — формал", "cuyo — согласование", "lo cual — про ситуацию")),
 
-        t("u14_l11", "Косв.речь: сдвиг указателей",
-            "hoy → ese día, mañana → al día siguiente, este → ese",
-            emoji = "💬", cefr = "B2", minutes = 4,
-            rule = "В косв.речи меняются НЕ ТОЛЬКО времена, но и указатели места/времени: hoy→ese día, ayer→el día anterior, mañana→al día siguiente, aquí→allí, este→ese/aquel.",
-            takeaways = listOf("Сдвиг указателей", "Время+место+указ", "Учить таблицу")),
+        "u14_l11" to TheoryContent(
+            lessonId = "u14_l11",
+            title = "Estilo indirecto: Сдвиг указателей (deixis)",
+            subtitle = "Прямая речь → косвенная: hoy→ese día, aquí→allí, este→ese. Дейктические маркеры меняются с позиции говорящего.",
+            emoji = "💬",
+            cefr = "B2",
+            readMinutes = 6,
+            sections = listOf(
+                TheorySection(
+                    type = TheorySectionType.RULE,
+                    heading = "Что такое дейксис (deixis)?",
+                    body = "Дейксис — это слова, значение которых зависит от позиции говорящего в пространстве и времени:\n\n**Временные указатели:** hoy (сегодня), mañana (завтра), ayer (вчера), esta semana (на этой неделе), ahora (сейчас).\n\n**Пространственные:** aquí (здесь), allá (там), este lugar (это место).\n\n**Местоимения:** este (этот — близко), ese (тот — далеко), aquel (там далеко).\n\nВ **прямой речи** используются дейксисы из позиции говорящего. В **косвенной речи** они сдвигаются, потому что мы рассказываем о чужих словах из другой позиции.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.TABLE,
+                    heading = "📊 Таблица сдвигов дейксиса",
+                    table = TheoryTable(
+                        headers = listOf("Тип", "Прямая речь (Speaker)", "Косвенная речь (Narrator)", "Пример"),
+                        rows = listOf(
+                            listOf("ВРЕМЯ", "Hoy es lunes", "Dijo que ese día era lunes", "Speaker: сегодня"),
+                            listOf("", "Mañana viajaré", "Dijo que al día siguiente viajaría", "Narrator: на следующий день"),
+                            listOf("", "Ayer fui al cine", "Dijo que el día anterior había ido", "Narrator: на предыдущий день"),
+                            listOf("", "Ahora estoy cansado", "Dijo que en ese momento estaba cansado", "Narrator: в тот момент"),
+                            listOf("МЕСТО", "Aquí hace frío", "Dijo que allí hacía frío", "Speaker: здесь → там"),
+                            listOf("", "Voy a ese café", "Dijo que iba a ese café", "Без изменения если ясен контекст"),
+                            listOf("УКАЗ.M.", "Este libro es mío", "Dijo que ese libro era suyo", "Speaker: этот → тот"),
+                            listOf("", "Esos papeles aquí", "Dijo que esos papeles estaban allí", "Space shift"),
+                        ),
+                        highlightedColumns = listOf(1, 2),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.EXAMPLES,
+                    heading = "Живые примеры: сдвиг дейксиса",
+                    examples = listOf(
+                        TheoryExample(
+                            spanish = "—Vienes hoy? / —Sí, hoy vengo.",
+                            russian = "Ты приходишь сегодня? / Да, сегодня приду.",
+                            note = "Прямая речь (из уст самого говорящего)"
+                        ),
+                        TheoryExample(
+                            spanish = "Preguntó si vendría ese día.",
+                            russian = "Спросил, приду ли я в тот день.",
+                            note = "Косвенная: hoy → ese día (сдвиг на день)"
+                        ),
+                        TheoryExample(
+                            spanish = "—Aquí hay un problema. / Me dijo que allí había un problema.",
+                            russian = "Здесь есть проблема. / Сказал, что там была проблема.",
+                            note = "aquí → allí (сдвиг из позиции говорящего)"
+                        ),
+                        TheoryExample(
+                            spanish = "—Este documento es importante. / Insistió en que ese documento era importante.",
+                            russian = "Этот документ важен. / Настаивал, что тот документ был важен.",
+                            note = "este → ese (близкое становится далёким)"
+                        ),
+                        TheoryExample(
+                            spanish = "—Ahora no tengo dinero. / Me confesó que en ese momento no tenía dinero.",
+                            russian = "Сейчас у меня нет денег. / Признался, что в тот момент не было.",
+                            note = "ahora → en ese momento (момент времени)"
+                        ),
+                        TheoryExample(
+                            spanish = "—Ayer llegué tarde. / Explicó que el día anterior había llegado tarde.",
+                            russian = "Вчера опоздал. / Объяснил, что накануне опоздал.",
+                            note = "ayer → el día anterior (прошлый день)"
+                        ),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.COMPARISON,
+                    heading = "Прямая ↔ Косвенная речь: полный цикл",
+                    comparison = TheoryComparison(
+                        leftHeader = "Прямая речь",
+                        rightHeader = "Косвенная речь",
+                        pairs = listOf(
+                            "Mañana empiezo el trabajo" to "Dijo que al día siguiente empezaba",
+                            "Estos libros son míos" to "Insistió en que esos libros eran suyos",
+                            "Aquí no se permite fumar" to "Informó que allí no se permitía fumar",
+                            "Hace una hora que espero" to "Se quejó de que hacía una hora que esperaba",
+                            "La próxima vez traré dinero" to "Prometió que la próxima vez traería dinero",
+                        ),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.WARNING,
+                    heading = "⚠️ Donde русские ошибаются",
+                    body = "❌ **ОШИБКА 1:** Путают сдвиг указателей с изменением времени.\n✅ **ПРАВИЛЬНО:** Меняется И время глагола (hablo→hablaba), И указатель (hoy→ese día).\n\n❌ **ОШИБКА 2:** Забывают сдвигать дейксис в косвенной речи.\n✅ **ПРАВИЛЬНО:** Прямая: Hoy voy aquí. Косвенная: Dijo que ese día iba allí.\n\n❌ **ОШИБКА 3:** Путают aquí/allá (говорящий/слушатель) с este/ese (расстояние).\n✅ **ПРАВИЛЬНО:** aquí = где я, allá = где он был. При 1→3 лицо: aquí→allí.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.MNEMONIC,
+                    heading = "🧠 Как запомнить сдвиг?",
+                    body = "**«Репортёрское правило»:**\n\nПредставь, ты репортёр:\n\n👤 **Человек:** Завтра приду сюда. Эти правила здесь странные.\n\n📰 **Ты пишешь:** На следующий день придёт туда. Те правила там странные.\n\nТы НЕ в его позиции — сдвигай ВСЕ дейксисы:\n• завтра (его будущее) → на следующий день\n• сюда (его место) → туда (мой взгляд)\n• эти (его близко) → те (далеко)\n• здесь (его координаты) → там (мой отчёт)",
+                ),
+                TheorySection(
+                    type = TheorySectionType.TIP,
+                    heading = "💡 Практический тест",
+                    body = "**Переведи в косвенную (сдвиги + время):**\n\n1. Hoy no vengo, mañana sí. / Dijo que... → esse día no vendría, al día siguiente sí\n2. Ayer me dolía la cabeza. / Confesó que... → el día anterior le había dolido\n3. Aquí hay un problema. / Insistió en que... → allí había un problema\n\nПроверь: если остались hoy/mañana/aquí в косвенной, ошибка!",
+                ),
+            ),
+            keyTakeaways = listOf(
+                "Дейксис = слова, зависящие от позиции говорящего (hoy, aquí, este)",
+                "В косвенной речи дейксис сдвигается: hoy→ese día, aquí→allí, este→ese",
+                "Сдвиг + изменение времени = два разных механизма",
+                "Сдвиг обязателен в косвенной речи",
+                "Репортёр-правило: представь себя наблюдателем чужих слов",
+            ),
+            relatedTheory = listOf("u14_l10", "u14_l12", "u15_l6"),
+        ),
 
         t("u14_l12", "Ser vs Estar — нюансы",
             "ser bueno vs estar bueno (хороший vs вкусный)",
@@ -4524,7 +4727,7 @@ object TheoryContentData {
                 "Ustedeo (Bogotá) — usted с близкими",
                 "Ahorita ≠ прямо сейчас (Mexico — через 30 мин)",
             ),
-            relatedTheory = listOf("u16_l10_voseo", "u16_l9_coloquial"),
+            relatedTheory = listOf("u15_l0", "u14_l0"),
         ),
 
     )
