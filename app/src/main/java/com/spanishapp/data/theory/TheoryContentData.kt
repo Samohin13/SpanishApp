@@ -2326,10 +2326,58 @@ object TheoryContentData {
         // ═══════════════════════════════════════════════════════════════
         //  B2 · БЛОК 4.1 «SUBJUNTIVO AVANZADO» — 16 теорий
         // ═══════════════════════════════════════════════════════════════
-        t("u13_l0", "Imp.Subj. — обзор", "-ra и -se формы. Для гипотез типа 2.",
-            emoji = "🔮", cefr = "B2", minutes = 3,
-            rule = "Imperfecto Subjuntivo — повторение формы и применения. -ra (популярнее) и -se (формальнее) — синонимы.",
-            takeaways = listOf("2 формы синонимичны", "Si тип 2: tuviera/tuviese", "Имел смысл «бы»")),
+        "u13_l0" to TheoryContent(
+            lessonId = "u13_l0",
+            title = "Imperfecto de Subjuntivo — полный обзор",
+            subtitle = "-ra и -se формы. Условные типы 2, согласование времён, невыполнимые желания.",
+            emoji = "🔮", cefr = "B2", readMinutes = 6,
+            sections = listOf(
+                TheorySection(TheorySectionType.RULE, "Две параллельные формы",
+                    body = "**Imperfecto de Subjuntivo** имеет две формы, полностью синонимичные по значению:\n\n• **-ra**: hablara, hablaras, hablara, habláramos, hablarais, hablaran\n• **-se**: hablase, hablases, hablase, hablásemos, hablaseis, hablasen\n\n**В Spain Madrid** обе формы используются примерно равно. **-ra** чуть более распространена в речи, **-se** чаще в литературе и формальном письме.\n\nЭто не значит, что они переходят друг в друга — это **две независимые парадигмы**, и говорящий выбирает одну, не смешивая."),
+                TheorySection(TheorySectionType.TABLE, "Три главных применения",
+                    table = TheoryTable(
+                        headers = listOf("Контекст", "Форма", "Пример"),
+                        rows = listOf(
+                            listOf("Si тип 2 (сейчас/скоро)", "Si + Imp.Subj + Cond", "Si tuviera dinero, viajaría."),
+                            listOf("Невыполнимое желание", "Ojalá + Imp.Subj", "Ojalá pudiera viajar."),
+                            listOf("Согласование времён", "Глаг.прошлое + Imp.Subj", "Quería que vinieras."),
+                        ),
+                        highlightedColumns = listOf(1),
+                    )),
+                TheorySection(TheorySectionType.COMPARISON, "-ra vs -se в практике",
+                    comparison = TheoryComparison(
+                        leftHeader = "-ra (речь + литература)",
+                        rightHeader = "-se (литература + формально)",
+                        pairs = listOf(
+                            "Si pudieras, ¿vendrías?" to "Si pudieses, ¿vendrías?",
+                            "Ojalá supiera la respuesta." to "Ojalá supiese la respuesta.",
+                            "Quería que me ayudaras." to "Quería que me ayudases.",
+                            "(Повседневнее, естеснее.)" to "(Книжнее, архаичнее.)",
+                        ),
+                    )),
+                TheorySection(TheorySectionType.EXAMPLES, "Живые примеры",
+                    examples = listOf(
+                        TheoryExample("Si tuviese/tuviera más tiempo, aprendería mejor.", "Если бы у меня было больше времени, учился бы лучше.", "условный тип 2"),
+                        TheoryExample("Ojalá hablara con soltura.", "Хоть бы я говорил бегло (но пока не говорю).", "невыполнимое желание"),
+                        TheoryExample("Pedí que vinieras/vinieses a la reunión.", "Попросил, чтобы ты пришёл на встречу.", "согласование (гл. в прошлом)"),
+                        TheoryExample("Me gustaría que estudiaras más.", "Мне нравилось бы, чтобы ты больше учился.", "вежливая просьба"),
+                        TheoryExample("Como si supieras todo.", "Как будто ты всё знаешь.", "нереальное сравнение"),
+                    )),
+                TheorySection(TheorySectionType.WARNING, "⚠️ Где русские ошибаются",
+                    body = "❌ Si tuviera, viajaré (будущее вместо условного).\n✅ Si tuviera, viajaría (Imp.Subj + Cond).\n\n❌ Ojalá podré.\n✅ Ojalá pudiera.\n\n❌ Si sabría, lo diría.\n✅ Si supiera, lo diría."),
+                TheorySection(TheorySectionType.MNEMONIC, "🧠 Запомнить быстро",
+                    body = "**Три кита Imp.Subj:** Si + Imp.Subj + Cond | Ojalá + Imp.Subj | Глаг.прошлое + Imp.Subj"),
+                TheorySection(TheorySectionType.TIP, "💡 -ra vs -se в Spain Madrid",
+                    body = "Обе формы равно распространены. **-ra** чуть в речи, **-se** в литературе, но граница не строгая. Главное — не смешивай в одном предложении."),
+            ),
+            keyTakeaways = listOf(
+                "-ra и -se — полные синонимы в Spain",
+                "Si тип 2: Si + Imp.Subj + Condicional",
+                "Согласование времён: прошлое → Imp.Subj",
+                "Ojalá + Imp.Subj = невыполнимое желание",
+            ),
+            relatedTheory = listOf("u9_l3", "u13_l1", "u13_l3"),
+        ),
 
         t("u13_l1", "Imp.Subj. образование", "От 3.л.мн.ч. Indef → -ron + -ra/-se",
             emoji = "🔮", cefr = "B2", minutes = 3,
