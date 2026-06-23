@@ -1004,7 +1004,7 @@ object TheoryContentData {
             ),
             relatedTheory = listOf("u1_l13"),
         ),
-    ) + extraTheories() + a2GapsTheories() + b1GapsTheories() + b2SyncTheories() + coverGapsTheories()
+    ) + extraTheoriesA1() + extraTheoriesA2() + extraTheoriesB1() + extraTheoriesB2() + a2GapsTheories() + b1GapsTheories() + b2SyncTheories() + coverGapsTheories()
 
     // ───────────────────────────────────────────────────────────────────
     //  Helper для краткого создания теорий блоков 1.2..4.4 (Phase 2).
@@ -1050,7 +1050,7 @@ object TheoryContentData {
         )
     }
 
-    private fun extraTheories(): Map<String, TheoryContent> = mapOf(
+    private fun extraTheoriesA1(): Map<String, TheoryContent> = mapOf(
 
         // ═══════════════════════════════════════════════════════════════
         //  БЛОК 1.2 «МОЙ МИР» — 15 теорий
@@ -2776,6 +2776,10 @@ object TheoryContentData {
             ),
             takeaways = listOf("4 группы yo-нерегулярных", "Только в 1.л.ед!", "Остальные лица — обычно регулярные")),
 
+    )
+
+    private fun extraTheoriesA2(): Map<String, TheoryContent> = mapOf(
+
         // ═══════════════════════════════════════════════════════════════
         //  A2 · БЛОК 2.1 «В ПРОШЛОМ» — Pretérito Indefinido (16 теорий)
         // ═══════════════════════════════════════════════════════════════
@@ -3204,6 +3208,10 @@ object TheoryContentData {
             rule = "Финальный чекпоинт A2: «Планирование путешествия». Все темы модуля.",
             takeaways = listOf("Завершение A2!", "190 уроков пройдено", "Готов к B1 (Subjuntivo)")),
 
+    )
+
+    private fun extraTheoriesB1(): Map<String, TheoryContent> = mapOf(
+
         // ═══════════════════════════════════════════════════════════════
         //  B1 · БЛОК 3.1 «SUBJUNTIVO» — 16 теорий
         // ═══════════════════════════════════════════════════════════════
@@ -3604,6 +3612,10 @@ object TheoryContentData {
             emoji = "🏆", cefr = "B1", minutes = 3,
             rule = "Финальный чекпоинт B1: применение всего материала в формальном контексте.",
             takeaways = listOf("Завершение B1", "254 урока пройдено!", "Готов к B2")),
+
+    )
+
+    private fun extraTheoriesB2(): Map<String, TheoryContent> = mapOf(
 
         // ═══════════════════════════════════════════════════════════════
         //  B2 · БЛОК 4.1 «SUBJUNTIVO AVANZADO» — 16 теорий
