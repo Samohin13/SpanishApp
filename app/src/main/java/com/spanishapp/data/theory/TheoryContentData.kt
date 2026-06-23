@@ -1,4 +1,4 @@
-﻿package com.spanishapp.data.theory
+package com.spanishapp.data.theory
 
 /**
  * Реестр всех теорий-карточек. Связан 1-к-1 с LessonContentData по lessonId.
@@ -2326,58 +2326,11 @@ object TheoryContentData {
         // ═══════════════════════════════════════════════════════════════
         //  B2 · БЛОК 4.1 «SUBJUNTIVO AVANZADO» — 16 теорий
         // ═══════════════════════════════════════════════════════════════
-        "u13_l0" to TheoryContent(
-            lessonId = "u13_l0",
-            title = "Imperfecto de Subjuntivo — полный обзор",
-            subtitle = "-ra и -se формы. Условные типы 2, согласование времён, невыполнимые желания.",
-            emoji = "🔮", cefr = "B2", readMinutes = 6,
-            sections = listOf(
-                TheorySection(TheorySectionType.RULE, "Две параллельные формы",
-                    body = "**Imperfecto de Subjuntivo** имеет две формы, полностью синонимичные по значению:\n\n• **-ra**: hablara, hablaras, hablara, habláramos, hablarais, hablaran\n• **-se**: hablase, hablases, hablase, hablásemos, hablaseis, hablasen\n\n**В Spain Madrid** обе формы используются примерно равно. **-ra** чуть более распространена в речи, **-se** чаще в литературе и формальном письме.\n\nЭто не значит, что они переходят друг в друга — это **две независимые парадигмы**, и говорящий выбирает одну, не смешивая."),
-                TheorySection(TheorySectionType.TABLE, "Три главных применения",
-                    table = TheoryTable(
-                        headers = listOf("Контекст", "Форма", "Пример"),
-                        rows = listOf(
-                            listOf("Si тип 2 (сейчас/скоро)", "Si + Imp.Subj + Cond", "Si tuviera dinero, viajaría."),
-                            listOf("Невыполнимое желание", "Ojalá + Imp.Subj", "Ojalá pudiera viajar."),
-                            listOf("Согласование времён", "Глаг.прошлое + Imp.Subj", "Quería que vinieras."),
-                        ),
-                        highlightedColumns = listOf(1),
-                    )),
-                TheorySection(TheorySectionType.COMPARISON, "-ra vs -se в практике",
-                    comparison = TheoryComparison(
-                        leftHeader = "-ra (речь + литература)",
-                        rightHeader = "-se (литература + формально)",
-                        pairs = listOf(
-                            "Si pudieras, ¿vendrías?" to "Si pudieses, ¿vendrías?",
-                            "Ojalá supiera la respuesta." to "Ojalá supiese la respuesta.",
-                            "Quería que me ayudaras." to "Quería que me ayudases.",
-                            "(Повседневнее, естеснее.)" to "(Книжнее, архаичнее.)",
-                        ),
-                    )),
-                TheorySection(TheorySectionType.EXAMPLES, "Живые примеры",
-                    examples = listOf(
-                        TheoryExample("Si tuviese/tuviera más tiempo, aprendería mejor.", "Если бы у меня было больше времени, учился бы лучше.", "условный тип 2"),
-                        TheoryExample("Ojalá hablara con soltura.", "Хоть бы я говорил бегло (но пока не говорю).", "невыполнимое желание"),
-                        TheoryExample("Pedí que vinieras/vinieses a la reunión.", "Попросил, чтобы ты пришёл на встречу.", "согласование (гл. в прошлом)"),
-                        TheoryExample("Me gustaría que estudiaras más.", "Мне нравилось бы, чтобы ты больше учился.", "вежливая просьба"),
-                        TheoryExample("Como si supieras todo.", "Как будто ты всё знаешь.", "нереальное сравнение"),
-                    )),
-                TheorySection(TheorySectionType.WARNING, "⚠️ Где русские ошибаются",
-                    body = "❌ Si tuviera, viajaré (будущее вместо условного).\n✅ Si tuviera, viajaría (Imp.Subj + Cond).\n\n❌ Ojalá podré.\n✅ Ojalá pudiera.\n\n❌ Si sabría, lo diría.\n✅ Si supiera, lo diría."),
-                TheorySection(TheorySectionType.MNEMONIC, "🧠 Запомнить быстро",
-                    body = "**Три кита Imp.Subj:** Si + Imp.Subj + Cond | Ojalá + Imp.Subj | Глаг.прошлое + Imp.Subj"),
-                TheorySection(TheorySectionType.TIP, "💡 -ra vs -se в Spain Madrid",
-                    body = "Обе формы равно распространены. **-ra** чуть в речи, **-se** в литературе, но граница не строгая. Главное — не смешивай в одном предложении."),
-            ),
-            keyTakeaways = listOf(
-                "-ra и -se — полные синонимы в Spain",
-                "Si тип 2: Si + Imp.Subj + Condicional",
-                "Согласование времён: прошлое → Imp.Subj",
-                "Ojalá + Imp.Subj = невыполнимое желание",
-            ),
-            relatedTheory = listOf("u9_l3", "u13_l1", "u13_l3"),
-        ),
+        t("u13_l0", "Imp.Subj. — обзор", "-ra и -se формы. Для гипотез типа 2.",
+            emoji = "🔮", cefr = "B2", minutes = 3,
+            rule = "Imperfecto Subjuntivo — повторение формы и применения. -ra (популярнее) и -se (формальнее) — синонимы.",
+            takeaways = listOf("2 формы синонимичны", "Si тип 2: tuviera/tuviese", "Имел смысл «бы»")),
+
         t("u13_l1", "Imp.Subj. образование", "От 3.л.мн.ч. Indef → -ron + -ra/-se",
             emoji = "🔮", cefr = "B2", minutes = 3,
             rule = "Алгоритм: берёшь 3.л.мн.ч. Pretérito Indefinido (-aron, -ieron), убираешь -ron, добавляешь -ra/-ras/-ra/-´ramos/-rais/-ran (или -se формы).",
@@ -2447,109 +2400,11 @@ object TheoryContentData {
             rule = "Aunque + Indic — факт известен. Aunque + Subj — гипотеза или нереализованное будущее. Тонкий выбор по контексту.",
             takeaways = listOf("Известно → Indic", "Неизвестно/будущее → Subj", "Похоже на cuando")),
 
-        "u13_l11" to TheoryContent(
-            lessonId = "u13_l11",
-            title = "Subjuntivo en oraciones de finalidad",
-            subtitle = "para que, a fin de que, con el objeto de que — всегда с Subjuntivo. Цель требует гипотетичности.",
-            emoji = "🎯",
-            cefr = "B2",
-            readMinutes = 6,
-            sections = listOf(
-                TheorySection(
-                    type = TheorySectionType.RULE,
-                    heading = "Почему цель требует Subjuntivo",
-                    body = "Придаточные цели (finalidad) всегда используют **Subjuntivo**, потому что ты говоришь о **чём-то, что ещё не произошло, что ты хочешь, чтобы произошло**. Это гипотеза, намерение, желаемое будущее. Отсюда — Subjuntivo (présent или imperfecto).",
-                ),
-                TheorySection(
-                    type = TheorySectionType.TABLE,
-                    heading = "Триггеры цели + Subjuntivo (испанский Мадрид)",
-                    table = TheoryTable(
-                        headers = listOf("Триггер", "Формальность", "Пример", "Перевод"),
-                        rows = listOf(
-                            listOf("para que", "нейтральный", "trabajo para que vosotros estudiéis", "работаю, чтобы вы учились"),
-                            listOf("a fin de que", "формальный", "te lo explico a fin de que entiendas", "объясню, чтобы понял"),
-                            listOf("con el objeto de que", "книжный", "vino con el objeto de que viésemos", "пришёл, чтобы мы видели"),
-                            listOf("con la intención de que", "формальный", "lo hizo con intención de que supiera", "сделал, чтобы узнала"),
-                            listOf("de modo que (+ Subj)", "универсальный", "lo escribo de modo que se entienda", "пишу так, чтобы было понятно"),
-                        ),
-                        highlightedColumns = listOf(0),
-                    ),
-                ),
-                TheorySection(
-                    type = TheorySectionType.RULE,
-                    heading = "Правило: один субъект → para + infinitivo",
-                    body = "Если в главном и придаточном **один и тот же субъект**, ты используешь **para + infinitivo**, а не para que:\n\n✅ **Trabajo para descansar** — я работаю, чтобы отдохнуть (тот же я).\n❌ Trabajo para que descanse (неправильно — зачем два раза я?)\n\n✅ **Estudiamos para aprender español** — мы учимся, чтобы выучить испанский (мы оба).\n❌ Estudiamos para que aprendamos español (лишняя для, так как субъект тот же).\n\nНо если субъекты **разные** — ОБЯЗАТЕЛЬНО para que + Subjuntivo:\n\n✅ **Te enseño esto para que aprendas** — я учу, чтобы ТЫ выучился (я vs ты).",
-                ),
-                TheorySection(
-                    type = TheorySectionType.EXAMPLES,
-                    heading = "Живые примеры из речи (всё про Мадрид)",
-                    examples = listOf(
-                        TheoryExample("Vengo para que veáis mi proyecto.", "Прихожу, чтобы вы видели мой проект.", "para que + vosotros (Испания)"),
-                        TheoryExample("Te lo repito para que no se te olvide.", "Повторяю, чтобы ты не забыл.", "para que + olvide"),
-                        TheoryExample("Salimos pronto a fin de que llegarais a casa antes del anochecer.", "Уходим рано, чтобы вы пришли домой до сумерек.", "a fin de que + vosotros (Imperfecto Subj)"),
-                        TheoryExample("Lo hice con la intención de que entendieses el tema.", "Сделал, чтобы вы понимали тему.", "imperfecto: entendieses"),
-                        TheoryExample("Mi abuela cocina para que toda la familia coma juntos.", "Бабушка готовит, чтобы вся семья ела вместе.", "finalidad в семье"),
-                        TheoryExample("Escondemos esto de modo que nadie lo encuentre.", "Прячем это так, чтобы никто не нашёл.", "de modo que"),
-                        TheoryExample("Trabajas para mejorar tu futuro.", "Работаешь, чтобы улучшить своё будущее.", "un sujeto: para + inf"),
-                        TheoryExample("La profesora enseña para que aprendáis vosotros.", "Учительница учит, чтобы вы учились.", "vosotros в классе в Мадриде"),
-                    ),
-                ),
-                TheorySection(
-                    type = TheorySectionType.COMPARISON,
-                    heading = "para + inf vs para que + Subj (критичная разница)",
-                    comparison = TheoryComparison(
-                        leftHeader = "para + infinitivo",
-                        rightHeader = "para que + Subjuntivo",
-                        pairs = listOf(
-                            "Один и тот же субъект" to "Два разных субъекта",
-                            "Trabajo para descansar" to "Trabajo para que descanses",
-                            "(я работаю, ЯЖЕ хочу отдохнуть)" to "(я работаю, чтобы ТЫ отдохнул)",
-                            "Leo para aprender" to "Leo para que aprendas",
-                            "Vamos para llegar a tiempo" to "Vamos para que lleguéis a tiempo",
-                        ),
-                    ),
-                ),
-                TheorySection(
-                    type = TheorySectionType.TABLE,
-                    heading = "Спряжение Presente Subjuntivo в придаточных цели",
-                    table = TheoryTable(
-                        headers = listOf("Лицо", "-AR (hablar)", "-ER (beber)", "-IR (escribir)"),
-                        rows = listOf(
-                            listOf("yo", "hable", "beba", "escriba"),
-                            listOf("tú", "hables", "bebas", "escribas"),
-                            listOf("él/ella", "hable", "beba", "escriba"),
-                            listOf("nosotros", "hablemos", "bebamos", "escribamos"),
-                            listOf("vosotros", "habléis", "bebáis", "escribáis"),
-                            listOf("ellos", "hablen", "beban", "escriban"),
-                        ),
-                        highlightedColumns = listOf(1, 2, 3),
-                    ),
-                ),
-                TheorySection(
-                    type = TheorySectionType.WARNING,
-                    heading = "⚠️ Где русские ошибаются",
-                    body = "❌ Trabajo para que trabajo — для самого себя → ✅ Trabajo para trabajar mejor (один субъект, para + inf).\n\n❌ Escribe para que pueda entender — странный порядок → ✅ Escribe para que entiendas (вы — объект).\n\n❌ Vengo para que vienes = неправильный порядок → ✅ Vengo para que vengas (я приходу, чтобы ТЫ пришёл).\n\n❌ Забывают про vosotros в Испании → ✅ Vengo para que vengáis vosotros (важно в Мадриде).\n\n❌ Путают para que с porque → ✅ porque = почему (причина), para que = чтобы (цель).",
-                ),
-                TheorySection(
-                    type = TheorySectionType.MNEMONIC,
-                    heading = "🧠 Запомнить",
-                    body = "**«Цель — это мечта» → Subjuntivo.** Finalidad = то, что ещё не произошло. Subj = страна мечты. Отсюда: para que + Subj.\n\n**«Один человек → para + inf»** (работаю para descansar — один я).\n\n**«Два человека → para que + Subj»** (работаю para QUE OTHERS работают).\n\n**«Триггеры нарастают»:** para que < a fin de que < con el objeto de que.",
-                ),
-                TheorySection(
-                    type = TheorySectionType.TIP,
-                    heading = "💡 Быстрый тест",
-                    body = "Вставь нужную форму:\n\n1. **Estudio __ que aprendas** (para / para que) → **para que aprendas** ✓\n2. **Ellos vienen __ nos ayuden** (para / para que) → **para que nos ayuden** ✓\n3. **Trabajo __ vivir mejor** (para / para que) → **para vivir mejor** ✓\n4. **Os lo cuento __ entendáis** (para que / a fin de) → **para que entendáis** ✓ (vosotros)\n5. **Ahorro dinero __ comprar casa** (para / para que) → **para comprar casa** ✓\n\nВсё правильно? Готов к другим придаточным (условие, время).",
-                ),
-            ),
-            keyTakeaways = listOf(
-                "Все триггеры цели → Subjuntivo: para que, a fin de que, con el objeto de que",
-                "Один субъект → para + infinitivo. Два субъекта → para que + Subjuntivo",
-                "Vosotros в Испании важен: para que vengáis, para que entiendáis",
-                "Триггеры по формальности: para que < a fin de que < con el objeto de que",
-                "Finalidad = мечта, желание, гипотеза → всегда Subjuntivo",
-            ),
-            relatedTheory = listOf("u13_l10", "u13_l12", "u13_l13"),
-        ),
+        t("u13_l11", "Subj в придаточных цели",
+            "para que, a fin de que, con el objeto de que → Subj",
+            emoji = "🔮", cefr = "B2", minutes = 3,
+            rule = "Все триггеры цели + Subj: para que (чтобы — нейтр), a fin de que (с тем чтобы — формал), con el objeto de que (книжн).",
+            takeaways = listOf("Все цели → Subj", "Если 1 субъект — para + inf", "Книжность нарастает")),
 
         t("u13_l12", "Subj в придаточных времени",
             "cuando/en cuanto/hasta que/mientras + Subj (для будущего)",
@@ -2576,146 +2431,11 @@ object TheoryContentData {
             rule = "Pasiva con SER + part. Используется реже чем в англ — испанцы предпочитают SE-пассив или активный залог. Подходит для формальных текстов.",
             takeaways = listOf("Формально", "ser + part + (por + agent)", "Согласование part")),
 
-        "u14_l1" to TheoryContent(
-            lessonId = "u14_l1",
-            title = "Estar + participio: el ESTADO, no la acción",
-            subtitle = "La puerta está cerrada (состояние). Vs. fue cerrada (действие/пассив).",
-            emoji = "⚙", cefr = "B2", readMinutes = 6,
-            sections = listOf(
-                TheorySection(TheorySectionType.RULE, "Главное различие: СОСТОЯНИЕ vs ДЕЙСТВИЕ",
-                    body = "**Estar + participio** = **РЕЗУЛЬТАТ или текущее состояние** предмета. Мы фокусируемся на том, **в каком состоянии находится предмет сейчас**, а НЕ на том, кто его сделал.\n\n• **La puerta está cerrada.** (Дверь закрыта [закрыта прямо сейчас].) — состояние\n• **La puerta fue cerrada.** (Дверь была закрыта [её закрыли].) — действие/пассив\n\n**Ключ различия:**\n- Estar + part = **где я это вижу** (состояние, переживание)\n- Ser + part = **кто это сделал** (действие, агент)")),
-                TheorySection(TheorySectionType.COMPARISON, "Estar vs Ser + participio",
-                    comparison = TheoryComparison(
-                        leftHeader = "Estar + part (состояние)",
-
-        "u14_l10" to TheoryContent(
-            lessonId = "u14_l10",
-            title = "Relativos продвинутые: que, quien, cuyo, el cual, lo cual",
-            subtitle = "Когда выбирать между родственными союзами. Случаи, где один подходит лучше другого.",
-            emoji = "💬", cefr = "B2", readMinutes = 6,
-            sections = listOf(
-                TheorySection(TheorySectionType.RULE, "Основное правило: мир относительных",
-                    body = "В испанском 5 главных относительных местоимений:\n" +
-                        "• **que** — универсальный (лиц/неодуш, м/ж, ед/мн): «человек, который...» «дом, который...»\n" +
-                        "• **quien/quienes** — только люди; часто в придаточных с запятой: «mi hermano, quien vive en Sevilla\"\n" +
-                        "• **el cual/la cual/los cuales/las cuales** — формальный (согласуется!): письмо, в котором... (por lo cual из-за чего)\n" +
-                        "• **cuyo/cuya/cuyos/cuyas** — притяжательный «чей»: человек, чьи книги...\n" +
-                        "• **lo cual** — специально про целую ситуацию: She arrived late, lo cual nos sorprendió (что нас удивило)"),
-                ),
-                TheorySection(TheorySectionType.TABLE, "Сравнение основных форм",
-                    table = TheoryTable(
-                        headers = listOf("Местоимение", "Формат", "Род/Число", "Пример"),
-                        rows = listOf(
-                            listOf("que", "неформальный", "не согласуется", "el hombre que venía"),
-                            listOf("quien", "люди + запятая", "не согласуется", "mi padre, quien trabaja aquí"),
-                            listOf("el cual", "формальный + предлог", "полная согласованность", "la puerta por la cual entré"),
-                            listOf("cuyo", "притяжательный", "согласуется в роде/числе", "el científico cuyo descubrimiento ganó"),
-                            listOf("lo cual", "целая ситуация", "неодуш + всегда lo", "Llegó tarde, lo cual nos molestó"),
-                        ),
-                        highlightedColumns = listOf(0, 3),
-                    )),
-                TheorySection(TheorySectionType.COMPARISON, "Que vs Quien — когда что",
-                    comparison = TheoryComparison(
-                        leftHeader = "Que (универсальный)",
-                        rightHeader = "Quien (люди + запятая)",
-                        pairs = listOf(
-                            "человек, который учится (без запятой)" to "мой брат, который учится (с запятой)",
-                            "яблоко, которое красное (неодуш)" to "только для людей",
-                            "близкая связь с антецедентом" to "пояснение, добавочная информация",
-                            "La chica que ves" to "La chica, quien te ayudó",
-                            "Обычно БЕЗ запятой" to "Обычно С запятой",
-                        ),
-                    )),
-                TheorySection(TheorySectionType.EXAMPLES, "Все варианты в контексте",
-                    examples = listOf(
-                        TheoryExample("El libro que leí fue interesante.", "Книга, которую я читал, была интересной.", "que — универсальный"),
-                        TheoryExample("Mi amigo, quien vive en Bilbao, es ingeniero.", "Мой друг, который живёт в Бильбао, — инженер.", "quien — люди + запятая"),
-                        TheoryExample("La puerta, por la cual entré, estaba rota.", "Дверь, через которую я вошёл, была сломана.", "el cual после предлога → formality"),
-                        TheoryExample("El profesor cuyo nombre es García enseña aquí.", "Преподаватель, чьё имя Гарсия, учит здесь.", "cuyo — притяжательный"),
-                        TheoryExample("No llegó a tiempo, lo cual nos sorprendió.", "Не пришёл вовремя, что нас удивило.", "lo cual — про ситуацию"),
-                        TheoryExample("Los niños, quienes jugaban en el parque, eran felices.", "Дети, которые играли в парке, были счастливы.", "quienes мн. + запятая"),
-                        TheoryExample("La fórmula sobre la cual basaste tu tesis.", "Формула, на которой основана твоя диссертация.", "sobre la cual — с предлогом"),
-                    )),
-                TheorySection(TheorySectionType.WARNING, "⚠️ Где русские ошибаются",
-                    body = "❌ «Мой друг quien es врач» (без запятой — неправильно!)\n" +
-                        "✅ «Мой друг, quien es врач» (с запятой — правильно!)\n\n" +
-                        "❌ «El problema por que vengo» (que без предлога — неправильно!)\n" +
-                        "✅ «El problema por el cual vengo» (el cual с предлогом — правильно!)\n\n" +
-                        "❌ «La casa cuyo puerta está abierta» (неправильное согласование)\n" +
-                        "✅ «La casa cuya puerta está abierta» (cuya — согласуется с puerta ж.ед)\n\n" +
-                        "❌ «El gato que su color es blanco» (неправильный порядок)\n" +
-                        "✅ «El gato cuyo color es blanco» (cuyo заменяет su в relativos)"),
-                ),
-                TheorySection(TheorySectionType.MNEMONIC, "🧠 Запомнить: КСПОЛ",
-                    body = "**К** — que (универсальный король)\n" +
-                        "**С** — cuyo (своего/притяжательный)\n" +
-                        "**П** — people/personas (quien для людей)\n" +
-                        "**О** — oficial (el cual — формальный)\n" +
-                        "**Л** — lo cual (целая ситуация, fact)\n\n" +
-                        "Пример: «Вот мужчина (quien), о котором я говорил (el cual), чьих (cuyo) идей я восхищаюсь»."),
-                ),
-                TheorySection(TheorySectionType.TIP, "💡 Практический тест",
-                    body = "Заполни пропуск:\n" +
-                        "1. «El edificio __ me vendiste» → который → **que** или **el cual**?\n" +
-                        "   ✅ Por el cual (с предлогом por нужен el cual)\n" +
-                        "2. «Mi hermana, __ vive en Madrid, es bióloga» → запятая + люди → **quien**\n" +
-                        "3. «El científico __ descubrimiento es famoso» → чьё → **cuyo**\n" +
-                        "4. «Nos dijeron una mentira, __ nos enfadó» → цел.ситуация → **lo cual**"),
-                ),
-            ),
-            keyTakeaways = listOf(
-                "Que — универсальный, без запятой обычно",
-                "Quien — только люди, с запятой (пояснение)",
-                "El cual — формальный, после предлогов, согласуется",
-                "Cuyo — притяжательный, согласуется с тем, кто владеет",
-                "Lo cual — про целую ситуацию (факт, событие)",
-                "Vosotros-форма: relativos не меняют форму в множественном",
-            ),
-            relatedTheory = listOf("u13_l10", "u14_l11"),
-        ),
-                            "El café está preparado." to "El café fue preparado (por María).",
-                            "Статус: готово/сделано" to "Процесс: делали",
-                            "Estoy cansado." to "Fui cansado de trabajar (архаич.)",
-                        ),
-                    )),
-                TheorySection(TheorySectionType.TABLE, "Ser vs Estar — родственные примеры",
-                    table = TheoryTable(
-                        headers = listOf("Фраза", "Перевод", "Время/Смысл"),
-                        rows = listOf(
-                            listOf("El plato está roto.", "Тарелка разбита (состояние сейчас).", "Estar — результат"),
-                            listOf("El plato fue roto.", "Тарелка была разбита (кто-то сделал).", "Ser — действие"),
-                            listOf("La casa está construida.", "Дом построен (готов к жилью).", "Estar — состояние"),
-                            listOf("La casa fue construida en 1850.", "Дом был построен в 1850 г. (история).", "Ser — факт/историческое"),
-                            listOf("Estamos preparados.", "Мы готовы (Исп. nosotros).", "Estar — готовность"),
-                            listOf("Seréis considerados...", "Вас будут считать... (Исп. vosotros).", "Ser Futuro — пассив"),
-                        ),
-                        highlightedColumns = listOf(2),
-                    )),
-                TheorySection(TheorySectionType.WARNING, "⚠ Где русские ошибаются",
-                    body = "**Ошибка 1:** согласование причастия. Estar требует согласования как прилагательное!\n• La ventana está cerrada. (ж.р. ед.)\n• Las ventanas están cerradas. (ж.р. мн.)\n• El libro está cerrado. (м.р. ед.)\n• Los libros están cerrados. (м.р. мн.)\n\n**Ошибка 2:** путать Estar + part с Ser + part. Помни: **Estar фокусирует на результате-состоянии**, **Ser на действии**.\n\n**Ошибка 3:** игнорировать Estar в прошлом. Estar может быть в **любом времени**:\n• Estoy cansado (Present)\n• Estaba cansado (Imperfecto — было состояние усталости)\n• Estaré cansado (Futuro — буду в состоянии усталости)\n• Estaría cansado (Condicional — был бы в состоянии)"),
-                TheorySection(TheorySectionType.EXAMPLES, "Живые примеры (Spain Madrid)",
-                    examples = listOf(
-                        TheoryExample("¿Está abierto el restaurante?", "Ресторан открыт? (Открытое ли сейчас?)", "Состояние, Present"),
-                        TheoryExample("El ordenador estaba apagado cuando llegué.", "Компьютер был выключен, когда я пришёл.", "Imperfecto — прошлое состояние"),
-                        TheoryExample("Los trabajadores estaban cansados después de trabajar.", "Рабочие были утомлены после работы.", "Estar Imperfecto — усталость"),
-                        TheoryExample("Estaré listo a las 9.", "Я буду готов в 9.", "Estar Futuro — готовность"),
-                        TheoryExample("Mi hermano está decorado con una medalla.", "Мой брат награждён медалью (носит её).", "Estar + part — статус"),
-                        TheoryExample("Estáis invitados a la boda. (vosotros)", "Вы приглашены на свадьбу. (Исп.)", "Vosotros Estar — статус"),
-                    )),
-                TheorySection(TheorySectionType.TIP, "💡 Быстрый тест: Estar или Ser?",
-                    body = "**Вопрос:** Фокусируешься на **КАК ВЫГЛЯДИТ/В КАКОМ СОСТОЯНИИ** предмет ИЛИ на **ЧТО ПРОИЗОШЛО/КТО СДЕЛАЛ**?\n\n✅ **Estar** → Вижу **состояние, результат**:\n• «Estoy cansado.» (Я вижу себя в состоянии усталости.)\n• «La puerta está cerrada.» (Вижу закрытую дверь.)\n\n✅ **Ser** → Фокус на **процесс, историю, агента**:\n• «La puerta fue cerrada (por Juan).» (Повествование: Хуан закрыл дверь.)\n• «Fue construida por arquitectos griegos.» (Историческая справка.)")),
-                TheorySection(TheorySectionType.MNEMONIC, "🧠 Запомнить через аналогию",
-                    body = "**Estar** = **быть в состоянии** (русское выражение буквально!).\n• **Estoy triste.** = Я в печальном состоянии прямо сейчас.\n• **La puerta está abierta.** = Дверь находится в открытом состоянии.\n\n**Ser** = **быть по сущности или истории**.\n• **Soy triste.** = Я — грустный (мой характер, суть).\n• **La puerta fue construida en 1900.** = История постройки (факт, процесс прошлого)."),
-            ),
-            keyTakeaways = listOf(
-                "Estar + part = состояние, результат, визуальное впечатление",
-                "Ser + part = действие, процесс, историческое событие, агент",
-                "ОБЯЗАТЕЛЬНО согласование по роду/числу (está cerrada/cerrado/cerradas/cerrados)",
-                "Estar работает в любом времени (Present, Imperfecto, Futuro, Condicional)",
-                "La puerta está cerrada ≠ La puerta fue cerrada",
-            ),
-            relatedTheory = listOf("u14_l0", "u14_l2"),
-        ),
+        t("u14_l1", "Estar + part = состояние",
+            "está hecho — готов. Не «как сделано», а «в каком состоянии»",
+            emoji = "⚙", cefr = "B2", minutes = 3,
+            rule = "estar + part — РЕЗУЛЬТАТ или состояние. NO про действие. La puerta está cerrada (закрыта сейчас) vs fue cerrada (была закрыта кем-то).",
+            takeaways = listOf("Состояние", "Не «кем»", "Можно с estar в любом времени")),
 
         t("u14_l2", "Se pasivo y se impersonal",
             "Se vende coche. Se dice que. Часто заменяет SER-пассив.",
@@ -2775,113 +2495,11 @@ object TheoryContentData {
             rule = "Повторение относительных местоимений с акцентом на разницу: el cual (формал), cuyo (чей), lo cual (про всю ситуацию).",
             takeaways = listOf("el cual — формал", "cuyo — согласование", "lo cual — про ситуацию")),
 
-        "u14_l11" to TheoryContent(
-            lessonId = "u14_l11",
-            title = "Estilo indirecto: Сдвиг указателей (deixis)",
-            subtitle = "Прямая речь → косвенная: hoy→ese día, aquí→allí, este→ese. Дейктические маркеры меняются с позиции говорящего.",
-            emoji = "💬",
-            cefr = "B2",
-            readMinutes = 6,
-            sections = listOf(
-                TheorySection(
-                    type = TheorySectionType.RULE,
-                    heading = "Что такое дейксис (deixis)?",
-                    body = "Дейксис — это слова, значение которых зависит от позиции говорящего в пространстве и времени:\n\n**Временные указатели:** hoy (сегодня), mañana (завтра), ayer (вчера), esta semana (на этой неделе), ahora (сейчас).\n\n**Пространственные:** aquí (здесь), allá (там), este lugar (это место).\n\n**Местоимения:** este (этот — близко), ese (тот — далеко), aquel (там далеко).\n\nВ **прямой речи** используются дейксисы из позиции говорящего. В **косвенной речи** они сдвигаются, потому что мы рассказываем о чужих словах из другой позиции.",
-                ),
-                TheorySection(
-                    type = TheorySectionType.TABLE,
-                    heading = "📊 Таблица сдвигов дейксиса",
-                    table = TheoryTable(
-                        headers = listOf("Тип", "Прямая речь (Speaker)", "Косвенная речь (Narrator)", "Пример"),
-                        rows = listOf(
-                            listOf("ВРЕМЯ", "Hoy es lunes", "Dijo que ese día era lunes", "Speaker: сегодня"),
-                            listOf("", "Mañana viajaré", "Dijo que al día siguiente viajaría", "Narrator: на следующий день"),
-                            listOf("", "Ayer fui al cine", "Dijo que el día anterior había ido", "Narrator: на предыдущий день"),
-                            listOf("", "Ahora estoy cansado", "Dijo que en ese momento estaba cansado", "Narrator: в тот момент"),
-                            listOf("МЕСТО", "Aquí hace frío", "Dijo que allí hacía frío", "Speaker: здесь → там"),
-                            listOf("", "Voy a ese café", "Dijo que iba a ese café", "Без изменения если ясен контекст"),
-                            listOf("УКАЗ.M.", "Este libro es mío", "Dijo que ese libro era suyo", "Speaker: этот → тот"),
-                            listOf("", "Esos papeles aquí", "Dijo que esos papeles estaban allí", "Space shift"),
-                        ),
-                        highlightedColumns = listOf(1, 2),
-                    ),
-                ),
-                TheorySection(
-                    type = TheorySectionType.EXAMPLES,
-                    heading = "Живые примеры: сдвиг дейксиса",
-                    examples = listOf(
-                        TheoryExample(
-                            spanish = "—Vienes hoy? / —Sí, hoy vengo.",
-                            russian = "Ты приходишь сегодня? / Да, сегодня приду.",
-                            note = "Прямая речь (из уст самого говорящего)"
-                        ),
-                        TheoryExample(
-                            spanish = "Preguntó si vendría ese día.",
-                            russian = "Спросил, приду ли я в тот день.",
-                            note = "Косвенная: hoy → ese día (сдвиг на день)"
-                        ),
-                        TheoryExample(
-                            spanish = "—Aquí hay un problema. / Me dijo que allí había un problema.",
-                            russian = "Здесь есть проблема. / Сказал, что там была проблема.",
-                            note = "aquí → allí (сдвиг из позиции говорящего)"
-                        ),
-                        TheoryExample(
-                            spanish = "—Este documento es importante. / Insistió en que ese documento era importante.",
-                            russian = "Этот документ важен. / Настаивал, что тот документ был важен.",
-                            note = "este → ese (близкое становится далёким)"
-                        ),
-                        TheoryExample(
-                            spanish = "—Ahora no tengo dinero. / Me confesó que en ese momento no tenía dinero.",
-                            russian = "Сейчас у меня нет денег. / Признался, что в тот момент не было.",
-                            note = "ahora → en ese momento (момент времени)"
-                        ),
-                        TheoryExample(
-                            spanish = "—Ayer llegué tarde. / Explicó que el día anterior había llegado tarde.",
-                            russian = "Вчера опоздал. / Объяснил, что накануне опоздал.",
-                            note = "ayer → el día anterior (прошлый день)"
-                        ),
-                    ),
-                ),
-                TheorySection(
-                    type = TheorySectionType.COMPARISON,
-                    heading = "Прямая ↔ Косвенная речь: полный цикл",
-                    comparison = TheoryComparison(
-                        leftHeader = "Прямая речь",
-                        rightHeader = "Косвенная речь",
-                        pairs = listOf(
-                            "Mañana empiezo el trabajo" to "Dijo que al día siguiente empezaba",
-                            "Estos libros son míos" to "Insistió en que esos libros eran suyos",
-                            "Aquí no se permite fumar" to "Informó que allí no se permitía fumar",
-                            "Hace una hora que espero" to "Se quejó de que hacía una hora que esperaba",
-                            "La próxima vez traré dinero" to "Prometió que la próxima vez traería dinero",
-                        ),
-                    ),
-                ),
-                TheorySection(
-                    type = TheorySectionType.WARNING,
-                    heading = "⚠️ Где русские ошибаются",
-                    body = "❌ **ОШИБКА 1:** Путают сдвиг указателей с изменением времени.\n✅ **ПРАВИЛЬНО:** Меняется И время глагола (hablo→hablaba), И указатель (hoy→ese día).\n\n❌ **ОШИБКА 2:** Забывают сдвигать дейксис в косвенной речи.\n✅ **ПРАВИЛЬНО:** Прямая: Hoy voy aquí. Косвенная: Dijo que ese día iba allí.\n\n❌ **ОШИБКА 3:** Путают aquí/allá (говорящий/слушатель) с este/ese (расстояние).\n✅ **ПРАВИЛЬНО:** aquí = где я, allá = где он был. При 1→3 лицо: aquí→allí.",
-                ),
-                TheorySection(
-                    type = TheorySectionType.MNEMONIC,
-                    heading = "🧠 Как запомнить сдвиг?",
-                    body = "**«Репортёрское правило»:**\n\nПредставь, ты репортёр:\n\n👤 **Человек:** Завтра приду сюда. Эти правила здесь странные.\n\n📰 **Ты пишешь:** На следующий день придёт туда. Те правила там странные.\n\nТы НЕ в его позиции — сдвигай ВСЕ дейксисы:\n• завтра (его будущее) → на следующий день\n• сюда (его место) → туда (мой взгляд)\n• эти (его близко) → те (далеко)\n• здесь (его координаты) → там (мой отчёт)",
-                ),
-                TheorySection(
-                    type = TheorySectionType.TIP,
-                    heading = "💡 Практический тест",
-                    body = "**Переведи в косвенную (сдвиги + время):**\n\n1. Hoy no vengo, mañana sí. / Dijo que... → ese día no vendría, al día siguiente sí\n2. Ayer me dolía la cabeza. / Confesó que... → el día anterior le había dolido\n3. Aquí hay un problema. / Insistió en que... → allí había un problema\n\nПроверь: если остались hoy/mañana/aquí в косвенной, ошибка!",
-                ),
-            ),
-            keyTakeaways = listOf(
-                "Дейксис = слова, зависящие от позиции говорящего (hoy, aquí, este)",
-                "В косвенной речи дейксис сдвигается: hoy→ese día, aquí→allí, este→ese",
-                "Сдвиг + изменение времени = два разных механизма",
-                "Сдвиг обязателен в косвенной речи",
-                "Репортёр-правило: представь себя наблюдателем чужих слов",
-            ),
-            relatedTheory = listOf("u14_l10", "u14_l12", "u15_l6"),
-        ),
+        t("u14_l11", "Косв.речь: сдвиг указателей",
+            "hoy → ese día, mañana → al día siguiente, este → ese",
+            emoji = "💬", cefr = "B2", minutes = 4,
+            rule = "В косв.речи меняются НЕ ТОЛЬКО времена, но и указатели места/времени: hoy→ese día, ayer→el día anterior, mañana→al día siguiente, aquí→allí, este→ese/aquel.",
+            takeaways = listOf("Сдвиг указателей", "Время+место+указ", "Учить таблицу")),
 
         t("u14_l12", "Ser vs Estar — нюансы",
             "ser bueno vs estar bueno (хороший vs вкусный)",
@@ -2889,110 +2507,10 @@ object TheoryContentData {
             rule = "Тонкие пары значений: ser bueno (хороший человек) vs estar bueno (вкусный/здоровый). ser listo (умный) vs estar listo (готов). ser malo vs estar malo (плохой vs больной). Контекст определяет.",
             takeaways = listOf("Прилагательное может менять смысл", "Учить пары", "Нюансы B2")),
 
-        "u14_l13" to TheoryContent(
-            lessonId = "u14_l13",
-            title = "Nominalización — от действия к идее",
-            subtitle = "Глагол → существительное. Для деловых текстов, научного стиля, формальной речи.",
-            emoji = "📋", cefr = "B2", readMinutes = 6,
-            sections = listOf(
-                TheorySection(
-                    type = TheorySectionType.RULE,
-                    heading = "Что это такое — превращение действия в вещь",
-                    body = "**Nominalización** = берём глагол и делаем из него существительное. " +
-                        "Это мощный способ сделать речь более formales и científicas.\n\n" +
-                        "Вместо *«Decidimos esto»* говорим *«La decisión fue importante»*.\n\n" +
-                        "В тексте это звучит как отчёт, доклад, научная работа — очень B2.",
-                ),
-                TheorySection(
-                    type = TheorySectionType.TABLE,
-                    heading = "4 основных суффикса для nominalización",
-                    table = TheoryTable(
-                        headers = listOf("Суффикс", "Глагол → Существительное", "Тип глагола / Правило"),
-                        rows = listOf(
-                            listOf("-ción / -sión", "decidir → decisión\nconstruir → construcción\nrecibir → recepción", "Верба на -ir/-ar\n(добавляй -ción)"),
-                            listOf("-aje", "aterrizar → aterrizaje\nviajar → viaje\npasar → pasaje", "Более живое, конкретное\n(часто движение/переход)"),
-                            listOf("-encia / -ancia", "creer → creencia\ninteligencia (adj inteligente)\nexistencia (existir)", "Абстрактные понятия\n(качество, явление)"),
-                            listOf("-idad", "responsable → responsabilidad\ncalidez (adj cálido)", "От прилагательного → качество\n(очень B2-academic)"),
-                        ),
-                        highlightedColumns = listOf(1, 2),
-                    ),
-                ),
-                TheorySection(
-                    type = TheorySectionType.EXAMPLES,
-                    heading = "Живые примеры — как это звучит в реальных текстах",
-                    examples = listOf(
-                        TheoryExample("La decisión fue tomada ayer.", "Решение было принято вчера.", "decidir → decisión"),
-                        TheoryExample("La construcción del puente tardó 3 años.", "Строительство моста заняло 3 года.", "construir → construcción"),
-                        TheoryExample("El aterrizaje fue suave.", "Приземление было мягким.", "aterrizar → aterrizaje"),
-                        TheoryExample("Su creencia en Dios es profunda.", "Его вера в Бога глубока.", "creer → creencia"),
-                        TheoryExample("La responsabilidad es mía.", "Ответственность — моя.", "responsable → responsabilidad"),
-                        TheoryExample("La inteligencia artificial evoluciona.", "Искусственный интеллект развивается.", "inteligente → inteligencia (noun)"),
-                    ),
-                ),
-                TheorySection(
-                    type = TheorySectionType.COMPARISON,
-                    heading = "Глагол vs Существительное — как меняется фраза",
-                    comparison = TheoryComparison(
-                        leftHeader = "С глаголом (живо, разговорно)",
-                        rightHeader = "С номиналем (формально, научно)",
-                        pairs = listOf(
-                            "Decidimos que no." to "La decisión fue negativa.",
-                            "Construyeron un puente." to "La construcción fue rápida.",
-                            "Creo en esto." to "Mi creencia es profunda.",
-                            "Aterrizamos sin problema." to "El aterrizaje fue exitoso.",
-                            "Viajamos mucho." to "Nuestros viajes fueron largos.",
-                        ),
-                    ),
-                ),
-                TheorySection(
-                    type = TheorySectionType.WARNING,
-                    heading = "⚠️ Donde los rusohablantes se equivocan",
-                    body = "**❌ Problema 1: sufijo incorrecto**\n" +
-                        "~~Decidación~~ / ~~Construimiento~~ — estas palabras no existen en español!\n" +
-                        "✅ Correcto: **decisión, construcción, creencia**.\n\n" +
-                        "**❌ Problema 2: mezclar estilos**\n" +
-                        "Los nominales son SOLO para lenguaje formal (cartas oficiales, reportes, artículos).\n" +
-                        "En conversación suenan raros:\n" +
-                        "✅ *¿Qué hiciste?* (en una conversación normal)\n" +
-                        "✅ *Se describe en el informe: La realización fue lenta.* (en un documento)\n\n" +
-                        "**❌ Problema 3: ignorar género y artículo**\n" +
-                        "Cada nominal tiene género fijo — debes recordarlo CON artículo!\n" +
-                        "✅ **la decisión, el viaje, la responsabilidad, el aterrizaje**.",
-                ),
-                TheorySection(
-                    type = TheorySectionType.MNEMONIC,
-                    heading = "🧠 Cómo recordar los sufijos",
-                    body = "**-CIÓN** = el más común (verbos -ar e -ir → -ción)\n" +
-                        "**-AJE** = movimiento, tránsito (viaje, aterrizaje, pasaje)\n" +
-                        "**-ENCIA** = idea, cualidad abstracta (creencia, existencia, inteligencia)\n" +
-                        "**-IDAD** = de un adjetivo → cualidad (responsable→responsabilidad, creatividad)\n\n" +
-                        "Regla 70%: si el verbo termina en **-ar** o **-ir**, " +
-                        "casi siempre → **-ción**.",
-                ),
-                TheorySection(
-                    type = TheorySectionType.TIP,
-                    heading = "💡 Cuándo usar nominales",
-                    body = "**Usa nominales cuando:**\n" +
-                        "• Escribes una carta formal, un informe, un artículo\n" +
-                        "• Quieres sonar como un profesional (periodista, abogado, científico)\n" +
-                        "• Describes un proceso de forma abstracta (no quién lo hace, sino el proceso mismo)\n\n" +
-                        "**Ejemplos en contexto B2:**\n" +
-                        "*El Gobierno anunció: «La construcción de la carretera comenzará en marzo». " +
-                        "La decisión fue unánime.*\n\n" +
-                        "¿Ves? Tres nominales seguidos — esto es normal en español formal. " +
-                        "(En ruso lo dirías: *Gobierno anunció el comienzo de construcción de la carretera en marzo — la decisión fue unánime*.) " +
-                        "Los nominales hacen que la frase se sienta profesional y académica.",
-                ),
-            ),
-            keyTakeaways = listOf(
-                "Verbo → sustantivo mediante sufijos (-ción, -aje, -encia, -idad)",
-                "Sufijos fijos — apréndetelos con artículo (decisión, viaje, creencia)",
-                "Nominales = estilo formal/académico SOLO (reportes, artículos, cartas oficiales)",
-                "Sufijo principal: -ción de verbos -ar/-ir",
-                "-aje para acciones/movimientos concretos (viaje, aterrizaje)",
-            ),
-            relatedTheory = listOf("u14_l0", "u14_l8", "u14_l9"),
-        ),
+        t("u14_l13", "Nominalización", "Глагол → сущ. decidir → decisión",
+            emoji = "💬", cefr = "B2", minutes = 3,
+            rule = "Превращение глагола в существительное: -ción (decidir→decisión, construir→construcción), -aje (aterrizar→aterrizaje), -encia (creer→creencia), -ido (sonido).",
+            takeaways = listOf("Деловой/научный стиль", "-ción / -aje / -encia", "Учить целиком")),
 
         t("u14_l14", "Чекпоинт «Журналистика»",
             "Pasiva + perífrasis + ger/inf + относит",
@@ -4677,135 +4195,82 @@ object TheoryContentData {
         "u14_l2" to TheoryContent(
             lessonId = "u14_l2",
             title = "Pasiva refleja vs SE impersonal",
-            subtitle = "Se vende casa (пассив) vs Se vive bien (безличный). Согласование — ключ.",
-            emoji = "🔄", cefr = "B2", readMinutes = 7,
+            subtitle = "Se vende casa (пассивный). Se vive bien (безличный).",
+            emoji = "🔄", cefr = "B2", readMinutes = 6,
             sections = listOf(
-                TheorySection(TheorySectionType.RULE, "Два структурно разных «se»",
-                    body = "**1) Pasiva refleja (passive voice с se)**\nSE + глагол в 3 л. + **подлежащее-вещь** (всегда неодушевлённое).\nГлагол **согласуется** по числу с подлежащим:\n• Se vende casa. (Продаётся дом — ед. ч.)\n• Se venden casas. (Продаются дома — мн. ч.)\n• Se construye una autopista. (Строится автомагистраль.)\n• Se construyen tres autopistas. (Строятся три магистрали.)\n\n**2) SE impersonal (existential se)**\nSE + глагол в **3 л. ед. ч. ВСЕГДА** (независимо от того, есть ли объект).\n**Подлежащего в структурном смысле нет** — это неопределённое действие (как англ. one does).\n• Se vive bien aquí. (Здесь хорошо живётся.)\n• Se trabaja mucho en esta empresa. (В этой компании много работают.)\n• Se habla español en Madrid. (На испанском говорят в Мадриде.)\n\n**Сцепка для распознавания:** Есть ли **числовое согласование** глагола? Да → pasiva. Нет (всегда 3 ед.) → impersonal."),
-                TheorySection(TheorySectionType.TABLE, "Практический паттерн",
-                    table = TheoryTable(
-                        headers = listOf("Структура", "Форма глагола", "Подлежащее", "Тип"),
-                        rows = listOf(
-                            listOf("Se vende el coche.", "vende (ед.)", "el coche", "pasiva"),
-                            listOf("Se venden los coches.", "venden (мн.)", "los coches", "pasiva"),
-                            listOf("Se vive bien.", "vive (ед. ВСЕГДА)", "нет", "impersonal"),
-                            listOf("Se trabaja aquí.", "trabaja (ед. ВСЕГДА)", "нет", "impersonal"),
-                            listOf("Se necesitan empleados.", "necesitan (мн.!)", "empleados", "pasiva"),
-                            listOf("Se necesita personal.", "necesita (ед.!)", "personal", "pasiva"),
-                        ),
-                        highlightedColumns = listOf(1, 2),
-                    )),
-                TheorySection(TheorySectionType.COMPARISON, "Визуальный контраст",
+                TheorySection(TheorySectionType.RULE, "Два разных «se»",
+                    body = "**1) Pasiva refleja**: SE + глагол в 3 л. (ед./мн. в зависимости от подлежащего).\n• Se vende casa. (Продаётся дом — casa = подлежащее ед.)\n• Se venden casas. (Продаются дома — casas = подлеж. мн.)\n\n**2) SE impersonal**: SE + глагол в 3 л. ед.ч. ВСЕГДА. Подлежащего нет.\n• Se vive bien aquí. (Здесь хорошо живётся.)\n• Se habla mucho de eso. (Об этом много говорят.)\n\nГлавная разница: pasiva — есть **подлежащее-вещь**, impersonal — нет подлежащего."),
+                TheorySection(TheorySectionType.COMPARISON, "Pasiva refleja vs SE impersonal",
                     comparison = TheoryComparison(
-                        leftHeader = "Pasiva refleja (пассив)",
-                        rightHeader = "SE impersonal (безличный)",
+                        leftHeader = "Pasiva refleja",
+                        rightHeader = "SE impersonal",
                         pairs = listOf(
-                            "Se vende piso en Moncloa." to "Se vive bien en Moncloa.",
-                            "Se rompieron tres copas." to "Se rompió accidentalmente.",
-                            "Se compra oro aquí. (¿Cuánto?) — мн." to "Se compra mucho aquí. (Условие место.)",
-                            "Подлежащее (вещь) видно в пред." to "Подлежащего нет, только действие",
-                            "Глагол берёт число подл." to "Глагол НИКОГДА не множ.",
-                            "Близко к passive → слышим tú/vosotros parallel: lo vendo" to "Близко к active → слышим generalizado (все/люди)",
+                            "Se vende casa." to "Se vive bien.",
+                            "Se construyen carreteras." to "Se trabaja mucho.",
+                            "Подлежащее есть (вещь)" to "Подлежащего нет",
+                            "Глагол согласуется с подл." to "Глагол всегда в 3 ед.",
+                            "Se rompió la copa." to "Se come bien en Italia.",
                         ),
                     )),
-                TheorySection(TheorySectionType.EXAMPLES, "На улицах и в объявлениях (Madrid real)",
+                TheorySection(TheorySectionType.EXAMPLES, "Реальные надписи",
                     examples = listOf(
-                        TheoryExample("Se alquila piso en Salamanca.", "Сдаётся квартира в Саламанке.", "pasiva: ед.ч., поиск подлежащего"),
-                        TheoryExample("Se alquilan pisos y estudios.", "Сдаются квартиры и студии.", "pasiva: мн.ч. (pisos, estudios)"),
-                        TheoryExample("Se busca camarero con experiencia.", "Ищут официанта с опытом.", "pasiva: ед. (camarero объект)"),
-                        TheoryExample("Se buscan camareros.", "Ищут официантов.", "pasiva: мн.ч."),
-                        TheoryExample("Se habla español aquí.", "Здесь говорят на испанском.", "impersonal (no object visible)"),
-                        TheoryExample("Se come bien en este restaurante.", "В этом ресторане хорошо кормят.", "impersonal (никого not specified)"),
-                        TheoryExample("¿Cómo se dice \"buenas noches\"?", "Как говорится \"добрый вечер\"?", "impersonal — fixed phrase"),
-                        TheoryExample("Se vive con miedo en algunas zonas.", "Живут в страхе в некоторых районах.", "impersonal (vague subject)"),
+                        TheoryExample("Se alquila piso.", "Сдаётся квартира.", "pasiva ед."),
+                        TheoryExample("Se buscan camareros.", "Требуются официанты.", "pasiva мн."),
+                        TheoryExample("Se habla español.", "Здесь говорят на испанском.", "impers"),
+                        TheoryExample("Se vive bien en España.", "В Испании хорошо живётся.", "impers"),
+                        TheoryExample("Se come bien aquí.", "Здесь хорошо кормят.", "impers"),
+                        TheoryExample("¿Cómo se dice esto?", "Как это говорится?", "impers — фикс. оборот"),
                     )),
-                TheorySection(TheorySectionType.WARNING, "⚠️ Где русские студенты ошибаются",
-                    body = "❌ *Se buscan **camarero**.* (Множ. глагол + ед. объект — перепутал!)\n✅ Se busca camarero. (Ед. глагол = impersonal, или pasiva если объект один)\n\n❌ *Se hablan en Madrid.* (Говорят — обязательно неличный, 3 ед.!)\n✅ Se habla español en Madrid. (Языки — всегда impersonal + ед.ч.)\n\n❌ *Se venden los estudios en el mercado.* (Перепутал согласование: estudios мн., глагол мн. — но это не совпадение!)\n✅ Se venden apartamentos y estudios. (Мн.ч. = оба в мн.ч., or ¿se vende apartamento? / ¿se venden apartamentos?)\n\n**Суть ошибки:** русский мозг ищет агентива (кто делает), но се-конструкции его не знают. Нужно привыкнуть к **пассивному взгляду** (что делается) или **безличному** (как делается)."),
-                TheorySection(TheorySectionType.TIP, "💡 С одушевлёнными объектами (люди) — добавляй **a**",
-                    body = "Это **личная a (a personal)** — маркер прямого объекта-человека:\n\n**Pasiva refleja + люди:**\n• Se despidió **a** los empleados. (Уволили сотрудников. — pasiva: ед., объект empleados мн.)\n• Se invitó **a** María. (Приглашена Мария.)\n\n**SE impersonal + люди (обязательно a):**\n• Se ve **a** los niños jugando. (Видны/видно детей, которые играют. — impersonal)\n• Se busca **a** personas con inglés. (Ищут людей с английским.)\n\nВ impersonal с люди всегда добавляется **a** — это отличает от pasiva и выражает «неопределённый субъект ищет / видит / берёт...» человека."),
-                TheorySection(TheorySectionType.MNEMONIC, "🧠 Алгоритм за 3 шага",
-                    body = "**Шаг 1:** Найди глагол. Это всегда 3 лицо (se habla, se venden).\n\n**Шаг 2:** Посмотри на остаток предложения — есть ли **логическое подлежащее-вещь** (существительное, с которым глагол чувствует согласование)?\n• «Se venden coches» — да, **coches** ← pasiva\n• «Se vive bien» — нет, только обстоятельство ← impersonal\n\n**Шаг 3:** Проверь согласование:\n• Глагол меняет форму вслед за подлежащим? (**se vende / se venden**) ← pasiva\n• Глагол ВСЕГДА ед. ч., даже если объект мн.? (**se necesita personaS**) ← impersonal с прямым объектом → добавь **a**"),
+                TheorySection(TheorySectionType.TIP, "💡 С людьми — добавляется «a»",
+                    body = "Если объект — **человек(и)**, в se-impersonal добавляется **a**:\n• Se ve **a** los niños. (Видны дети.)\n• Se busca **a** un sospechoso. (Ищут подозреваемого.)\n\nЭто различает «se ve a María» (видят Марию — impers) от «se ven María y Juan» (видны М. и Ю. — pasiva). С людьми чаще impers."),
             ),
             keyTakeaways = listOf(
-                "Pasiva refleja: подлежащее вещь, глагол согласуется",
-                "SE impersonal: нет подлежащего, глагол 3 ед. ВСЕГДА",
-                "Pasiva: Se vende casa / Se venden casas",
-                "Impersonal: Se vive bien / Se trabaja aquí",
-                "С людьми → добавляй a (se busca a personas)",
-                "Ключ распознавания — согласование глагола",
+                "Pasiva refleja: подлежащее есть, глагол согл.",
+                "SE impersonal: подлежащего нет, всегда 3 ед.",
+                "С людьми → «a + лицо», impersonal",
+                "«Se vende casa» vs «Se vive bien»",
             ),
-            relatedTheory = listOf("u14_l0", "u14_l1", "u15_l1"),
+            relatedTheory = listOf("u14_l0", "u14_l1"),
         ),
 
-                "u14_l6_5" to TheoryContent(
+        "u14_l6_5" to TheoryContent(
             lessonId = "u14_l6_5",
-            title = "Deber vs Deber de vs Tener que — модальность B2",
-            subtitle = "Obligation vs Deduction: Debes [θ] estudiar. Debe de ser tarde. Tengo que trabajar.",
-            emoji = "🤷‍♂️", cefr = "B2", readMinutes = 7,
+            title = "Deber vs Deber de — обязанность vs предположение",
+            subtitle = "Debes estudiar (должен). Debe de ser tarde (наверное).",
+            emoji = "🤷", cefr = "B2", readMinutes = 5,
             sections = listOf(
-                TheorySection(TheorySectionType.RULE, "Три разные модальности",
-                    body = "**DEBER + infinitivo** → ОБЯЗАННОСТЬ (моральность, правило, долг):\n• Debes [θ] **respetar** a tus padres. (Ты **должен** уважать своих родителей — мораль.)\n• Debéis [θ] **llevar** uniforme. (Вы [мн] **должны** надевать форму — правило.)\n\n**DEBER DE + infinitivo** → ПРЕДПОЛОЖЕНИЕ (вероятность, вывод):\n• Debe de **estar** tarde. (Наверное, поздно — я не уверен.)\n• Deben de **tener** hambre. (Они, вероятно, голодные.)\n\n**TENER QUE + infinitivo** → НЕОБХОДИМОСТЬ (внешняя сила, дедлайн, обстоятельство):\n• Tengo que **ir** al médico. (Я **должен** пойти к врачу — запись, необходимость.)\n• Tienen que **terminar** hoy. (Они **должны** закончить сегодня — дедлайн.)\n\n🎯 **Ключ:** deber = моральное чувство (совесть), tener que = внешнее давление (обстоятельство), deber de = предположение (гадание)."),
-                TheorySection(TheorySectionType.TABLE, "Три модальности рядом",
-                    table = TheoryTable(
-                        headers = listOf("Формула", "Значение", "Пример", "Смысл"),
-                        rows = listOf(
-                            listOf("Deber + inf", "Долг / мораль", "Debes [θ] ser honesto", "Принцип / совесть"),
-                            listOf("Deber de + inf", "Предположение", "Debe de estar cansado", "Наверное / вероятно"),
-                            listOf("Tener que + inf", "Необходимость", "Tengo que trabajar mañana", "Дедлайн / обстоят."),
-                            listOf("Hay que + inf", "Нужно (общее)", "Hay que estudiar", "Совет / норма"),
-                            listOf("Poder + inf", "Возможность", "Puedes [θ] salir", "Разрешение / способность"),
-                        ),
-                        highlightedColumns = listOf(0, 1),
-                    )),
-                TheorySection(TheorySectionType.COMPARISON, "Deber vs Tener que в контексте",
+                TheorySection(TheorySectionType.RULE, "Два очень разных значения",
+                    body = "**Deber + infinitivo** = **обязанность, долженствование**:\n• Debes estudiar. (Ты должен учиться.)\n• Debemos respetar las reglas. (Мы должны соблюдать правила.)\n\n**Deber de + infinitivo** = **предположение, догадка**:\n• Debe de ser tarde. (Наверное, поздно.)\n• Deben de estar cansados. (Они, наверное, устали.)\n\n⚠ В разговоре границу часто **стирают** — носители смешивают. Но в письменной речи различай!"),
+                TheorySection(TheorySectionType.COMPARISON, "Обязанность vs Предположение",
                     comparison = TheoryComparison(
-                        leftHeader = "Deber [θ] (моральный долг)",
-                        rightHeader = "Tener que (внешняя необходимость)",
+                        leftHeader = "Deber (обязанность)",
+                        rightHeader = "Deber de (предположение)",
                         pairs = listOf(
-                            "Debería [θ] ayudar a mi hermano." to "Tengo que recoger a mi hermano a las 18h.",
-                            "(Ethically right)" to "(External deadline)",
-                            "No deberías [θ] mentir." to "No puedo mentir, me despiden.",
-                            "(Wrong by principle)" to "(Consequence: job loss)",
-                            "Debéis [θ] respetar las tradiciones." to "Tenéis [θ] que estar aquí a las 9.",
-                            "(Values/culture)" to "(Schedule/rule)",
+                            "Debes ir al médico." to "Debe de ir al médico (мне кажется, идёт).",
+                            "Debemos trabajar." to "Deben de trabajar mucho (наверное).",
+                            "= должен" to "= наверное / по-видимому",
+                            "Совет / обязанность" to "Догадка о факте",
                         ),
                     )),
-                TheorySection(TheorySectionType.EXAMPLES, "Живые примеры Мадрида",
+                TheorySection(TheorySectionType.EXAMPLES, "Контекст решает",
                     examples = listOf(
-                        TheoryExample("Debes [θ] estudiar, es tu responsabilidad.", "Ты должен учиться — это твоя ответственность.", "deber = принцип"),
-                        TheoryExample("Tengo que trabajar hasta las seis, tengo una reunión.", "Я должен работать до 6 — у меня встреча.", "tener que = дедлайн"),
-                        TheoryExample("Debe de estar en la oficina, es su horario.", "Он, вероятно, в офисе — это его время.", "deber de = вывод"),
-                        TheoryExample("¿Dónde están? Deben de estar en el Retiro.", "Где они? Наверное, в парке Ретиро.", "deber de = догадка"),
-                        TheoryExample("Los estudiantes tienen que entregar el proyecto mañana.", "Студенты должны сдать проект завтра.", "tener que = срок"),
-                        TheoryExample("Aunque estoy cansado, tengo que terminar esto.", "Хотя я устал, я должен это закончить.", "tener que + aunque"),
+                        TheoryExample("Debes estudiar más.", "Ты должен больше учиться.", "обязанность"),
+                        TheoryExample("Debe de estar enfermo.", "Он, наверное, болен.", "предположение"),
+                        TheoryExample("Debemos respetar a los demás.", "Мы должны уважать других.", "моральный долг"),
+                        TheoryExample("Deben de ser las diez ya.", "Наверное, уже 10.", "догадка о времени"),
+                        TheoryExample("No debes mentir.", "Ты не должен лгать.", "запрет"),
+                        TheoryExample("No debe de saberlo.", "Он, наверное, не знает.", "догадка отриц."),
                     )),
-                TheorySection(TheorySectionType.WARNING, "⚠️ Где русские ошибаются",
-                    body = "❌ **Ошибка 1:** путать deber и tener que\n   ✅ Tengo que trabajar. (внешняя сила — дедлайн)\n   ✅ Debo ser honesto. (внутренняя мораль)\n   ❌ Debo trabajar mañana a las 9. (это tener que — дедлайн!)\n\n❌ **Ошибка 2:** использовать deber de в утверждении вместо вероятности\n   ✅ Debe de estar en la reunión. (предположение: я не знаю)\n   ❌ Debe estar en la reunión. (грамм. неверно в Spain)\n\n❌ **Ошибка 3:** забывать про vosotros в Испании\n   ✅ Debéis [θ] traer el dinero. (You-plural must)\n   ❌ Ustedes deben traer... (это Latam)\n\n❌ **Ошибка 4:** произносить B как русский твёрдый Б\n   🎯 DEBER произносится [deˈβeɾ] — B мягкая, фрикативная (как португальский)\n   🎯 Z произносится [θ] — как английский *th* в *think*\n   Debéis = [deˈβeˈiθ]\n\n❌ **Ошибка 5:** смешивать отрицание\n   ✅ No debo mentir. (моральный запрет)\n   ✅ No tengo que ir. (я не обязан идти)\n   ✅ No debe de saber. (наверное, не знает)"),
-                TheorySection(TheorySectionType.TABLE, "Отрицание: deber vs tener que",
-                    table = TheoryTable(
-                        headers = listOf("Утверждение", "Отрицание", "Смысл отриц."),
-                        rows = listOf(
-                            listOf("Debo [θ] estudiar", "No debo [θ] estudiar", "Я не должен (запрет)"),
-                            listOf("Tengo que estudiar", "No tengo que estudiar", "Я не обязан (опция)"),
-                            listOf("Puedo [θ] estudiar", "No puedo [θ] estudiar", "Я не могу (невозможно)"),
-                            listOf("Debe de estar", "No debe de estar", "Наверное, не там"),
-                        ),
-                        highlightedColumns = listOf(0, 1),
-                    )),
-                TheorySection(TheorySectionType.MNEMONIC, "🧠 Как запомнить различие",
-                    body = "**DEBER** = голос совести. Когда **совесть говорит**, что это правильно.\n   Origen: latín dēbēre (ты «должен» по совести)\n   Пример: Debo ser honesto. (Совесть говорит: будь честным.)\n\n**TENER QUE** = внешняя сила. Когда **обстоятельства заставляют**.\n   Literal: «Tengo que ir» = «I **have** [tener] **to** [que] go» — принуждение\n   Пример: Tengo que ir al trabajo. (Работодатель: приходи к 9.)\n\n**DEBER DE** = гадание, предположение. Когда ты **угадываешь**, что произошло.\n   Логика: **DE** = «около, примерно» → debo + de = «я около-долженствую-гадаю»\n   Пример: Debe de estar en casa. (Я не знаю точно, но предполагаю.)\n\n**VOSOTROS в Spain:**\n   Debéis [θ] — вы (мн) должны (по совести)\n   Tenéis [θ] que — вы (мн) должны (внешняя сила)"),
-                TheorySection(TheorySectionType.TIP, "💡 Perífrasis: B2 grammar level",
-                    body = "Все три — **модальные периграсы** (modal auxiliary + infinitive):\n• **Deber + inf** — деонтическая модальность (долг, право, запрет)\n• **Tener que + inf** — модальность необходимости (внешняя)\n• **Poder + inf** — модальность возможности (способность, разрешение)\n\nВ испанском письме (газеты, литература) расширяют арсенал:\n• **Deber + inf** → **Deberías** (условное: advice «Ты бы должен отдохнуть»)\n• **Haber que + inf** (безличное: Hay que estudiar — нужно учиться)\n• **Soler + inf** (обычно: Suele llover — обычно идёт дождь)\n• **Necesitar + inf** (нужно: Necesito descansar)\n\n**Фонетика Мадрида:**\n   • Z = [θ] (theta), не [s]\n   • B inicial = [b] твёрдая, но B medial = [β] мягкая фрикативная\n   • V = [β] всегда (V и B одинаковые в испанском)"),
+                TheorySection(TheorySectionType.TIP, "💡 Как запомнить",
+                    body = "**De** — это «приблизительно, около». Когда добавляем «de» к deber — получается «около обязан» = «предположительно». Без «de» — чистая обязанность.\n\nАльтернативы для догадок:\n• Tiene que ser tarde. (Должно быть, поздно.)\n• Quizás sea tarde. (Может быть.)\n• Probablemente sea tarde."),
             ),
             keyTakeaways = listOf(
-                "Deber = моральный долг (совесть)",
-                "Tener que = внешняя необходимость (дедлайн)",
-                "Deber de = предположение (вероятность)",
-                "Vosotros: Debéis [θ] / Tenéis [θ] (только Spain)",
-                "B≠V: [β] мягкая фрикативная; Z=[θ] (не [s])",
-                "Периграсы: модальные глаголы + инфинитив",
+                "Deber + inf = обязанность",
+                "Deber de + inf = предположение",
+                "В разговоре границу размывают",
+                "Tener que + inf — тоже для догадок",
             ),
-            relatedTheory = listOf("u14_l6", "u14_l7", "u13_l10"),
+            relatedTheory = listOf("u14_l6", "u14_l7"),
         ),
 
         "u15_l4_5" to TheoryContent(
@@ -4961,7 +4426,7 @@ object TheoryContentData {
                 "Ustedeo (Bogotá) — usted с близкими",
                 "Ahorita ≠ прямо сейчас (Mexico — через 30 мин)",
             ),
-            relatedTheory = listOf("u15_l0", "u14_l0"),
+            relatedTheory = listOf("u16_l10_voseo", "u16_l9_coloquial"),
         ),
 
     )
@@ -7515,4 +6980,3 @@ object TheoryContentData {
         ),
     )
 }
-
