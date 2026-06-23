@@ -2755,10 +2755,110 @@ object TheoryContentData {
             rule = "Тонкие пары значений: ser bueno (хороший человек) vs estar bueno (вкусный/здоровый). ser listo (умный) vs estar listo (готов). ser malo vs estar malo (плохой vs больной). Контекст определяет.",
             takeaways = listOf("Прилагательное может менять смысл", "Учить пары", "Нюансы B2")),
 
-        t("u14_l13", "Nominalización", "Глагол → сущ. decidir → decisión",
-            emoji = "💬", cefr = "B2", minutes = 3,
-            rule = "Превращение глагола в существительное: -ción (decidir→decisión, construir→construcción), -aje (aterrizar→aterrizaje), -encia (creer→creencia), -ido (sonido).",
-            takeaways = listOf("Деловой/научный стиль", "-ción / -aje / -encia", "Учить целиком")),
+        "u14_l13" to TheoryContent(
+            lessonId = "u14_l13",
+            title = "Nominalización — от действия к идее",
+            subtitle = "Глагол → существительное. Для деловых текстов, научного стиля, формальной речи.",
+            emoji = "📋", cefr = "B2", readMinutes = 6,
+            sections = listOf(
+                TheorySection(
+                    type = TheorySectionType.RULE,
+                    heading = "Что это такое — превращение действия в вещь",
+                    body = "**Nominalización** = берём глагол и делаем из него существительное. " +
+                        "Это мощный способ сделать речь более формальной и научной.\n\n" +
+                        "Вместо *«Decidimos esto»* говорим *«La decisión fue importante»*.\n\n" +
+                        "В тексте это звучит как отчёт, доклад, научная работа — очень B2.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.TABLE,
+                    heading = "4 основных суффикса для nominalización",
+                    table = TheoryTable(
+                        headers = listOf("Суффикс", "Глагол → Существительное", "Тип глагола / Правило"),
+                        rows = listOf(
+                            listOf("-ción / -sión", "decidir → decisión\nconstruir → construcción\nrecibir → recepción", "Глаголы на -ir/-ar\n(добавляй -ción)"),
+                            listOf("-aje", "aterrizar → aterrizaje\nviajar → viaje\npasar → pasaje", "Более живое, конкретное\n(часто движение/переход)"),
+                            listOf("-encia / -ancia", "creer → creencia\ninteligencia (adj inteligente)\nexistencia (existir)", "Абстрактные понятия\n(качество, явление)"),
+                            listOf("-idad", "responsable → responsabilidad\ncalidez (adj cálido)", "От прилагательного → качество\n(очень B2-academic)"),
+                        ),
+                        highlightedColumns = listOf(1, 2),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.EXAMPLES,
+                    heading = "Живые примеры — как это звучит в реальных текстах",
+                    examples = listOf(
+                        TheoryExample("La decisión fue tomada ayer.", "Решение было принято вчера.", "decidir → decisión"),
+                        TheoryExample("La construcción del puente tardó 3 años.", "Строительство моста заняло 3 года.", "construir → construcción"),
+                        TheoryExample("El aterrizaje fue suave.", "Приземление было мягким.", "aterrizar → aterrizaje"),
+                        TheoryExample("Su creencia en Dios es profunda.", "Его вера в Бога глубока.", "creer → creencia"),
+                        TheoryExample("La responsabilidad es mía.", "Ответственность — моя.", "responsable → responsabilidad"),
+                        TheoryExample("La inteligencia artificial evoluciona.", "Искусственный интеллект развивается.", "inteligente → inteligencia (noun)"),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.COMPARISON,
+                    heading = "Глагол vs Существительное — как меняется фраза",
+                    comparison = TheoryComparison(
+                        leftHeader = "С глаголом (живо, разговорно)",
+                        rightHeader = "С номиналем (формально, научно)",
+                        pairs = listOf(
+                            "Decidimos que no." to "La decisión fue negativa.",
+                            "Construyeron un puente." to "La construcción fue rápida.",
+                            "Creo en esto." to "Mi creencia es profunda.",
+                            "Aterrizamos sin problema." to "El aterrizaje fue exitoso.",
+                            "Viajamos mucho." to "Nuestros viajes fueron largos.",
+                        ),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.WARNING,
+                    heading = "⚠️ Где русские ошибаются",
+                    body = "**❌ Проблема 1: неправильный суффикс**\n" +
+                        "~~Decidación~~ / ~~Construimiento~~ — таких слов в испанском нет!\n" +
+                        "✅ Правильно: **decisión, construcción, creencia**.\n\n" +
+                        "**❌ Проблема 2: смешение стилей**\n" +
+                        "Номиналы — ТОЛЬКО для формального языка (письма, отчёты, статьи).\n" +
+                        "В разговоре звучат странно:\n" +
+                        "✅ *¿Qué hiciste?* (в обычной беседе)\n" +
+                        "✅ *Se describe en el informe: La realización fue lenta.* (в документе)\n\n" +
+                        "**❌ Проблема 3: игнорировать род и артикль**\n" +
+                        "У каждого номинала фиксированный род — запоминай С артиклем!\n" +
+                        "✅ **la decisión, el viaje, la responsabilidad, el aterrizaje**.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.MNEMONIC,
+                    heading = "🧠 Как запомнить суффиксы",
+                    body = "**-CIÓN** = самый частый (глаголы -ar и -ir → -ción)\n" +
+                        "**-AJE** = движение, переход (viaje, aterrizaje, pasaje)\n" +
+                        "**-ENCIA** = идея, абстрактное качество (creencia, existencia, inteligencia)\n" +
+                        "**-IDAD** = от прилагательного → качество (responsable→responsabilidad, creatividad)\n\n" +
+                        "Правило 70%: если глагол заканчивается на **-ar** или **-ir**, " +
+                        "почти всегда → **-ción**.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.TIP,
+                    heading = "💡 Когда использовать номиналы",
+                    body = "**Используй номиналы когда:**\n" +
+                        "• Пишешь официальное письмо, отчёт, статью\n" +
+                        "• Хочешь звучать как профессионал (журналист, юрист, учёный)\n" +
+                        "• Описываешь процесс абстрактно (не кто его делает, а сам процесс)\n\n" +
+                        "**Примеры в контексте B2:**\n" +
+                        "*El Gobierno anunció: «La construcción de la carretera comenzará en marzo». " +
+                        "La decisión fue unánime.*\n\n" +
+                        "Видишь? Три номинала подряд — это нормально в формальном испанском. " +
+                        "(По-русски ты бы сказал: *Правительство объявило о начале строительства дороги в марте — решение было единогласным*.) " +
+                        "Номиналы делают фразу профессиональной и академической.",
+                ),
+            ),
+            keyTakeaways = listOf(
+                "Глагол → существительное через суффиксы (-ción, -aje, -encia, -idad)",
+                "Суффиксы фиксированные — учи с артиклем (decisión, viaje, creencia)",
+                "Номиналы = формальный/академический стиль ТОЛЬКО (отчёты, статьи, письма)",
+                "Главный суффикс: -ción от глаголов -ar/-ir",
+                "-aje для конкретных действий/движений (viaje, aterrizaje)",
+            ),
+            relatedTheory = listOf("u14_l0", "u14_l8", "u14_l9"),
+        ),
 
         t("u14_l14", "Чекпоинт «Журналистика»",
             "Pasiva + perífrasis + ger/inf + относит",
