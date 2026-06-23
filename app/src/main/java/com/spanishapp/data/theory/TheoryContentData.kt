@@ -2641,11 +2641,113 @@ object TheoryContentData {
             rule = "Повторение относительных местоимений с акцентом на разницу: el cual (формал), cuyo (чей), lo cual (про всю ситуацию).",
             takeaways = listOf("el cual — формал", "cuyo — согласование", "lo cual — про ситуацию")),
 
-        t("u14_l11", "Косв.речь: сдвиг указателей",
-            "hoy → ese día, mañana → al día siguiente, este → ese",
-            emoji = "💬", cefr = "B2", minutes = 4,
-            rule = "В косв.речи меняются НЕ ТОЛЬКО времена, но и указатели места/времени: hoy→ese día, ayer→el día anterior, mañana→al día siguiente, aquí→allí, este→ese/aquel.",
-            takeaways = listOf("Сдвиг указателей", "Время+место+указ", "Учить таблицу")),
+        "u14_l11" to TheoryContent(
+            lessonId = "u14_l11",
+            title = "Estilo indirecto: Сдвиг указателей (deixis)",
+            subtitle = "Прямая речь → косвенная: hoy→ese día, aquí→allí, este→ese. Дейктические маркеры меняются с позиции говорящего.",
+            emoji = "💬",
+            cefr = "B2",
+            readMinutes = 6,
+            sections = listOf(
+                TheorySection(
+                    type = TheorySectionType.RULE,
+                    heading = "Что такое дейксис (deixis)?",
+                    body = "Дейксис — это слова, значение которых зависит от позиции говорящего в пространстве и времени:\n\n**Временные указатели:** hoy (сегодня), mañana (завтра), ayer (вчера), esta semana (на этой неделе), ahora (сейчас).\n\n**Пространственные:** aquí (здесь), allá (там), este lugar (это место).\n\n**Местоимения:** este (этот — близко), ese (тот — далеко), aquel (там далеко).\n\nВ **прямой речи** используются дейксисы из позиции говорящего. В **косвенной речи** они сдвигаются, потому что мы рассказываем о чужих словах из другой позиции.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.TABLE,
+                    heading = "📊 Таблица сдвигов дейксиса",
+                    table = TheoryTable(
+                        headers = listOf("Тип", "Прямая речь (Speaker)", "Косвенная речь (Narrator)", "Пример"),
+                        rows = listOf(
+                            listOf("ВРЕМЯ", "Hoy es lunes", "Dijo que ese día era lunes", "Speaker: сегодня"),
+                            listOf("", "Mañana viajaré", "Dijo que al día siguiente viajaría", "Narrator: на следующий день"),
+                            listOf("", "Ayer fui al cine", "Dijo que el día anterior había ido", "Narrator: на предыдущий день"),
+                            listOf("", "Ahora estoy cansado", "Dijo que en ese momento estaba cansado", "Narrator: в тот момент"),
+                            listOf("МЕСТО", "Aquí hace frío", "Dijo que allí hacía frío", "Speaker: здесь → там"),
+                            listOf("", "Voy a ese café", "Dijo que iba a ese café", "Без изменения если ясен контекст"),
+                            listOf("УКАЗ.M.", "Este libro es mío", "Dijo que ese libro era suyo", "Speaker: этот → тот"),
+                            listOf("", "Esos papeles aquí", "Dijo que esos papeles estaban allí", "Space shift"),
+                        ),
+                        highlightedColumns = listOf(1, 2),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.EXAMPLES,
+                    heading = "Живые примеры: сдвиг дейксиса",
+                    examples = listOf(
+                        TheoryExample(
+                            spanish = "—Vienes hoy? / —Sí, hoy vengo.",
+                            russian = "Ты приходишь сегодня? / Да, сегодня приду.",
+                            note = "Прямая речь (из уст самого говорящего)"
+                        ),
+                        TheoryExample(
+                            spanish = "Preguntó si vendría ese día.",
+                            russian = "Спросил, приду ли я в тот день.",
+                            note = "Косвенная: hoy → ese día (сдвиг на день)"
+                        ),
+                        TheoryExample(
+                            spanish = "—Aquí hay un problema. / Me dijo que allí había un problema.",
+                            russian = "Здесь есть проблема. / Сказал, что там была проблема.",
+                            note = "aquí → allí (сдвиг из позиции говорящего)"
+                        ),
+                        TheoryExample(
+                            spanish = "—Este documento es importante. / Insistió en que ese documento era importante.",
+                            russian = "Этот документ важен. / Настаивал, что тот документ был важен.",
+                            note = "este → ese (близкое становится далёким)"
+                        ),
+                        TheoryExample(
+                            spanish = "—Ahora no tengo dinero. / Me confesó que en ese momento no tenía dinero.",
+                            russian = "Сейчас у меня нет денег. / Признался, что в тот момент не было.",
+                            note = "ahora → en ese momento (момент времени)"
+                        ),
+                        TheoryExample(
+                            spanish = "—Ayer llegué tarde. / Explicó que el día anterior había llegado tarde.",
+                            russian = "Вчера опоздал. / Объяснил, что накануне опоздал.",
+                            note = "ayer → el día anterior (прошлый день)"
+                        ),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.COMPARISON,
+                    heading = "Прямая ↔ Косвенная речь: полный цикл",
+                    comparison = TheoryComparison(
+                        leftHeader = "Прямая речь",
+                        rightHeader = "Косвенная речь",
+                        pairs = listOf(
+                            "Mañana empiezo el trabajo" to "Dijo que al día siguiente empezaba",
+                            "Estos libros son míos" to "Insistió en que esos libros eran suyos",
+                            "Aquí no se permite fumar" to "Informó que allí no se permitía fumar",
+                            "Hace una hora que espero" to "Se quejó de que hacía una hora que esperaba",
+                            "La próxima vez traeré dinero" to "Prometió que la próxima vez traería dinero",
+                        ),
+                    ),
+                ),
+                TheorySection(
+                    type = TheorySectionType.WARNING,
+                    heading = "⚠️ Где русские ошибаются",
+                    body = "❌ **ОШИБКА 1:** Путают сдвиг указателей с изменением времени.\n✅ **ПРАВИЛЬНО:** Меняется И время глагола (hablo→hablaba), И указатель (hoy→ese día).\n\n❌ **ОШИБКА 2:** Забывают сдвигать дейксис в косвенной речи.\n✅ **ПРАВИЛЬНО:** Прямая: Hoy voy aquí. Косвенная: Dijo que ese día iba allí.\n\n❌ **ОШИБКА 3:** Путают aquí/allá (говорящий/слушатель) с este/ese (расстояние).\n✅ **ПРАВИЛЬНО:** aquí = где я, allá = где он был. При 1→3 лицо: aquí→allí.",
+                ),
+                TheorySection(
+                    type = TheorySectionType.MNEMONIC,
+                    heading = "🧠 Как запомнить сдвиг?",
+                    body = "**«Репортёрское правило»:**\n\nПредставь, ты репортёр:\n\n👤 **Человек:** Завтра приду сюда. Эти правила здесь странные.\n\n📰 **Ты пишешь:** На следующий день придёт туда. Те правила там странные.\n\nТы НЕ в его позиции — сдвигай ВСЕ дейксисы:\n• завтра (его будущее) → на следующий день\n• сюда (его место) → туда (мой взгляд)\n• эти (его близко) → те (далеко)\n• здесь (его координаты) → там (мой отчёт)",
+                ),
+                TheorySection(
+                    type = TheorySectionType.TIP,
+                    heading = "💡 Практический тест",
+                    body = "**Переведи в косвенную (сдвиги + время):**\n\n1. Hoy no vengo, mañana sí. / Dijo que... → ese día no vendría, al día siguiente sí\n2. Ayer me dolía la cabeza. / Confesó que... → el día anterior le había dolido\n3. Aquí hay un problema. / Insistió en que... → allí había un problema\n\nПроверь: если остались hoy/mañana/aquí в косвенной, ошибка!",
+                ),
+            ),
+            keyTakeaways = listOf(
+                "Дейксис = слова, зависящие от позиции говорящего (hoy, aquí, este)",
+                "В косвенной речи дейксис сдвигается: hoy→ese día, aquí→allí, este→ese",
+                "Сдвиг + изменение времени = два разных механизма",
+                "Сдвиг обязателен в косвенной речи",
+                "Репортёр-правило: представь себя наблюдателем чужих слов",
+            ),
+            relatedTheory = listOf("u14_l10", "u14_l12", "u15_l6"),
+        ),
 
         t("u14_l12", "Ser vs Estar — нюансы",
             "ser bueno vs estar bueno (хороший vs вкусный)",
