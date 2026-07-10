@@ -18,6 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import com.airbnb.lottie.compose.*
 
@@ -39,6 +40,36 @@ fun LessonIntroScreen(
         // NavController complains "Cannot popBackStack during composition".
         LaunchedEffect(Unit) { navController.popBackStack() }
         return
+    }
+
+    // v1.25.98 FIX (audit course-H3): PRO-гейт на самом маршруте урока.
+    // Раньше проверка была только на тапе unit-карточки → 3 обхода:
+    // onboarding placement deep-link (lesson_session/5/0), цепочка
+    // «следующий урок» после Victory, Continue-пейджер. Tri-state (null =
+    // ещё грузится) — иначе PRO-юзера выбросило бы на paywall до первой
+    // эмиссии Flow.
+    if (unit.cefrLevel != "A1") {
+        val proContext = androidx.compose.ui.platform.LocalContext.current
+        val proSm = remember {
+            dagger.hilt.android.EntryPointAccessors.fromApplication(
+                proContext.applicationContext,
+                com.spanishapp.ui.games.common.ProGateEntryPoint::class.java
+            ).subscriptionManager()
+        }
+        val isProOrNull by proSm.isProActive.collectAsStateWithLifecycle(initialValue = null)
+        when (isProOrNull) {
+            null -> {
+                Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+                return
+            }
+            false -> {
+                LaunchedEffect(Unit) {
+                    navController.navigate("paywall") { launchSingleTop = true }
+                }
+                return
+            }
+            true -> { /* PRO — продолжаем */ }
+        }
     }
 
     // Per-block Lottie. Каждый из 16 блоков (4 × A1 + 4 × A2 + 4 × B1 + 4 × B2)
@@ -212,16 +243,19 @@ fun LessonIntroScreen(
 
 /**
  * v1.22.9: маппинг lessonId → checkpointId. Последний урок каждого блока
- * (u1_l14, u2_l14, u3_l14, u4_l14) — это финальный чекпоинт блока.
+ * (uN_l14) — это финальный чекпоинт блока.
  *
- * TODO: вынести в RoadmapData как явное поле RoadmapLesson.checkpointId.
+ * v1.25.98 FIX (audit course-H2): расширен с cp1..cp4 до всех 16 блоков.
+ * Раньше чекпоинты A2-B2, открытые через lesson_intro (Continue-пейджер,
+ * цепочка «следующий урок» после Victory), падали в generic quiz И
+ * авто-помечались пройденными (+25 XP) прямо на тапе «Поехали» — до
+ * единственного отвеченного вопроса. CourseDetailScreen при этом вёл на
+ * настоящий checkpoint/cpN c порогом 70% — два пути расходились.
  */
-private fun checkpointIdForLesson(lessonId: String): String? = when (lessonId) {
-    "u1_l14" -> "cp1"
-    "u2_l14" -> "cp2"
-    "u3_l14" -> "cp3"
-    "u4_l14" -> "cp4"
-    else -> null
+private fun checkpointIdForLesson(lessonId: String): String? {
+    val m = Regex("^u(\\d{1,2})_l14$").find(lessonId) ?: return null
+    val unit = m.groupValues[1].toIntOrNull() ?: return null
+    return if (unit in 1..16) "cp$unit" else null
 }
 
 private fun buildActivityRoute(

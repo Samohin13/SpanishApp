@@ -112,7 +112,15 @@ class RatingUpdater @Inject constructor(
 
         val newLeague = LeagueResolver.fromRating(newRating)
 
-        if (newRating == oldRating && newLeague.tier == oldLeague.tier) return null
+        if (newRating == oldRating && newLeague.tier == oldLeague.tier) {
+            // v1.25.98 FIX (audit xp-M7): нулевая дельта (cap исчерпан или
+            // Madrid k=1 округлил в 0) — это всё равно АКТИВНОСТЬ. Раньше
+            // ранний return пропускал обновление last_rating_update (вопреки
+            // комментарию выше про cap) → ежедневно занимающийся юзер в
+            // высокой лиге декаился как будто забросил приложение.
+            runCatching { userProgressDao.touchRatingTimestamp(now) }
+            return null
+        }
 
         userProgressDao.updateSkillRating(
             rating = newRating,

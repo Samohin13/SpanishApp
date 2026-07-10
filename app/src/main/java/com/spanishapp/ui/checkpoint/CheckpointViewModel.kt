@@ -56,6 +56,9 @@ class CheckpointViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val uiSound: UiSoundPlayer,
     private val savedStateHandle: SavedStateHandle,
+    // v1.25.98 (audit course-H1): прохождение чекпоинта пишется в lesson_progress.
+    private val lessonProgressDao: com.spanishapp.data.db.dao.LessonProgressDao,
+    private val lessonCompletionHistoryDao: com.spanishapp.data.db.dao.LessonCompletionHistoryDao,
 ) : ViewModel() {
 
     /** Текущий cpId — нужен чтобы отменять / планировать reminder. */
@@ -188,6 +191,37 @@ class CheckpointViewModel @Inject constructor(
                         // Pass снимает cooldown — следующий retry свободен.
                         viewModelScope.launch {
                             runCatching { cooldownPrefs.clearCooldown(cpId) }
+                        }
+                        // v1.25.98 FIX (audit course-H1): фиксируем прохождение в
+                        // lesson_progress под ключом uN_l14. Раньше НИКТО этого не
+                        // делал (комментарий в LessonIntroScreen ссылался на
+                        // несуществующий код) → юнит навсегда застревал на 15/16,
+                        // Continue-пейджер вечно предлагал уже сданный чекпоинт,
+                        // чекпоинты не попадали в lessonsCompleted/ачивки.
+                        viewModelScope.launch {
+                            runCatching {
+                                val unitNum = cpId.removePrefix("cp").toIntOrNull()
+                                    ?: return@runCatching
+                                val key = "u${unitNum}_l14"
+                                val already = lessonProgressDao.isAlreadyCompleted(key)
+                                lessonProgressDao.markComplete(
+                                    com.spanishapp.data.db.entity.LessonProgressEntity(
+                                        lessonKey = key,
+                                        unitId = unitNum,
+                                        lessonIndex = 14,
+                                    )
+                                )
+                                lessonCompletionHistoryDao.record(
+                                    com.spanishapp.data.db.entity.LessonCompletionEventEntity(lessonKey = key)
+                                )
+                                if (!already) {
+                                    userProgressDao.getProgressOnce()?.let { p ->
+                                        userProgressDao.update(
+                                            p.copy(lessonsCompleted = p.lessonsCompleted + 1)
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                 }

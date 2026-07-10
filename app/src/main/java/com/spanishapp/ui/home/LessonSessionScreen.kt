@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import android.Manifest
 import android.content.pm.PackageManager
@@ -110,6 +111,33 @@ fun LessonSessionScreen(
     if (unit == null || lesson == null || content == null) {
         LaunchedEffect(Unit) { navController.popBackStack() }
         return
+    }
+
+    // v1.25.98 FIX (audit course-H3): PRO-гейт на маршруте сессии — onboarding
+    // placement deep-link'ает прямо на lesson_session/5/0 (A2), минуя intro.
+    // Tri-state: null = подписка ещё грузится (не выкидываем PRO-юзера).
+    if (unit.cefrLevel != "A1") {
+        val proContext = androidx.compose.ui.platform.LocalContext.current
+        val proSm = remember {
+            dagger.hilt.android.EntryPointAccessors.fromApplication(
+                proContext.applicationContext,
+                com.spanishapp.ui.games.common.ProGateEntryPoint::class.java
+            ).subscriptionManager()
+        }
+        val isProOrNull by proSm.isProActive.collectAsStateWithLifecycle(initialValue = null)
+        when (isProOrNull) {
+            null -> {
+                Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+                return
+            }
+            false -> {
+                LaunchedEffect(Unit) {
+                    navController.navigate("paywall") { launchSingleTop = true }
+                }
+                return
+            }
+            true -> { /* PRO — продолжаем */ }
+        }
     }
 
     // Analytics — урок открыт. Срабатывает один раз на вход.

@@ -450,6 +450,12 @@ interface UserProgressDao {
     """)
     suspend fun updateSkillRating(rating: Int, league: Int, ts: Long)
 
+    // v1.25.98 (audit xp-M7): отметка «юзер занимался» без изменения рейтинга.
+    // Нужна когда ответ дал нулевую дельту (cap исчерпан / Madrid k=1 округлил
+    // в 0) — иначе активный юзер декаился, будто не занимался.
+    @Query("UPDATE user_progress SET last_rating_update = :ts")
+    suspend fun touchRatingTimestamp(ts: Long)
+
     /** Обновляет дневной счётчик прироста рейтинга (для daily cap). */
     @Query("""
         UPDATE user_progress SET
