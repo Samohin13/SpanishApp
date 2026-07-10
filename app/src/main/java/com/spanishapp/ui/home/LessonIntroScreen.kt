@@ -211,7 +211,11 @@ fun LessonIntroScreen(
                     // старте остаётся — целевые экраны (flashcards/grammar/quiz)
                     // не имеют связи с lesson_progress и сами не помечают.
                     // Это TODO для будущего рефактора.
-                    val hasOwnCompletion = isCheckpoint || lesson.type == "content"
+                    // v1.25.98: уроки, ведущие в lesson_session (включая роадмап
+                    // мини-тесты type=quiz с авторским контентом), помечаются
+                    // на Victory — automark на старте им не нужен.
+                    val hasOwnCompletion = isCheckpoint || lesson.type == "content" ||
+                        route.startsWith("lesson_session/")
                     if (!hasOwnCompletion) {
                         viewModel.markLessonComplete(unitId, lessonIndex)
                     }
@@ -277,7 +281,15 @@ private fun buildActivityRoute(
         "vocab"   -> "flashcards_session?level=$cefrLevel&category=$cat&direction=ES_TO_RU"
         "phrase"  -> "flashcards_session?level=$cefrLevel&category=$cat&direction=MIXED"
         "grammar" -> "grammar"
-        "quiz"    -> "quiz?type=$cat"
+        // v1.25.98 FIX (audit course-H2/M5): роадмап «Мини-тесты» (u5_l5,
+        // u13_l5, u14_l5, u15_l5, u16_l5) имеют полноценный авторский
+        // V2-контент с упражнениями — ведём в lesson_session с честным
+        // completion на Victory. Раньше они падали в generic quiz И
+        // автопомечались пройденными (+25 XP) на тапе «Поехали».
+        // (Чекпоинты — тоже type=quiz — перехвачены выше через
+        // checkpointIdForLesson и сюда не доходят.)
+        "quiz"    -> if (hasSession) "lesson_session/$unitId/$lessonIndex"
+                     else "quiz?type=$cat"
         else      -> "flashcards_session?level=$cefrLevel&category=$cat&direction=ES_TO_RU"
     }
 }
