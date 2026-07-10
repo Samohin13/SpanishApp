@@ -76,12 +76,19 @@ class RemoteTtsService @Inject constructor(
      * воспроизводит последовательно. Любой повторный вызов или stop()
      * прерывает текущее.
      *
-     * @return true если хотя бы один сегмент успешно начал играть.
+     * @param onAllFailed v1.25.98 (audit tts-H1): вызывается когда НИ ОДИН
+     *   сегмент не удалось скачать/проиграть (offline, 401/429 сервера) и
+     *   воспроизведение не было отменено юзером. Caller использует это для
+     *   fallback на локальный системный TTS — раньше сбой сети означал
+     *   полную тишину без ошибки (speak() возвращает true ДО сетевого I/O,
+     *   локальный fallback в SpanishTts был недостижим).
+     * @return true если запрос принят (async; фактический успех — см. onAllFailed).
      */
     fun speak(
         text: String,
         speed: Float? = null,
         esVoiceOverride: String? = null,
+        onAllFailed: (() -> Unit)? = null,
     ): Boolean {
         if (BuildConfig.AI_PROXY_URL.isBlank()) {
             Log.d(TAG, "speak() blocked: AI_PROXY_URL blank")
@@ -121,6 +128,8 @@ class RemoteTtsService @Inject constructor(
             }
             runCatching { com.spanishapp.radio.player.RadioCoordinator.pauseForTts() }
             _isPlaying.value = true
+            // v1.25.98 (audit tts-H1): отслеживаем сыграл ли хоть один сегмент.
+            var playedAny = false
             try {
                 for (seg in segments) {
                     if (!coroutineContext.isActive) break
@@ -128,10 +137,17 @@ class RemoteTtsService @Inject constructor(
                         .onFailure { Log.w(TAG, "fetchMp3 failed for seg='${seg.text.take(40)}' voice=${seg.voice}", it) }
                         .getOrNull() ?: continue
                     Log.d(TAG, "playing seg='${seg.text.take(40)}' voice=${seg.voice} pitch=$finalPitch file=${mp3.length()}b")
+                    playedAny = true
                     playFileAndWait(mp3)
                 }
             } finally {
                 _isPlaying.value = false
+                // Fallback ТОЛЬКО при полном провале и если юзер не отменял
+                // (cancel = новый speak()/stop(), там fallback не нужен).
+                if (!playedAny && coroutineContext.isActive && onAllFailed != null) {
+                    Log.w(TAG, "all ${segments.size} segments failed → local TTS fallback")
+                    runCatching { onAllFailed() }
+                }
             }
         }
         return true
@@ -250,7 +266,16 @@ class RemoteTtsService @Inject constructor(
                     error("TTS HTTP ${resp.code}")
                 }
                 val bytes = resp.body?.bytes() ?: error("Empty TTS body")
-                file.writeBytes(bytes)
+                // v1.25.98 FIX (audit tts-L3): атомарная запись через .tmp+rename.
+                // Раньше writeBytes напрямую: убитый процесс посреди записи
+                // оставлял частичный файл, cache-check `length() > 0` считал его
+                // валидным → эта фраза «портилась» навсегда (вечный error/skip).
+                val tmp = File(cacheDir, "$hash.tmp")
+                tmp.writeBytes(bytes)
+                if (!tmp.renameTo(file)) {
+                    tmp.delete()
+                    error("TTS cache rename failed")
+                }
             }
             file
         }

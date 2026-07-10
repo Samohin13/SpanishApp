@@ -22,11 +22,15 @@ object AppTtsRouter {
     /**
      * Если premium TTS зарегистрирован и готов — играем через него и
      * возвращаем true. Caller тогда НЕ должен играть через системный TTS.
+     *
+     * @param onAllFailed v1.25.98 (audit tts-H1): пробрасывается в
+     *   RemoteTtsService — вызывается при полном сетевом провале, чтобы
+     *   caller сыграл через системный TTS (offline больше не = тишина).
      */
-    fun speakIfReady(text: String): Boolean {
+    fun speakIfReady(text: String, onAllFailed: (() -> Unit)? = null): Boolean {
         val rt = remoteTts ?: return false
         if (!rt.isReady.value) return false
-        return rt.speak(text)
+        return rt.speak(text, onAllFailed = onAllFailed)
     }
 
     fun stop() {

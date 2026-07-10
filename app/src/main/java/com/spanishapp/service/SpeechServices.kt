@@ -182,11 +182,17 @@ class SpanishTts @Inject constructor(
         if (remoteReady) {
             val speakText = if (fullMixed) sanitizeForFullSpeech(text) else inferSpeakText(text)
             if (!speakText.isNullOrBlank()) {
-                val ok = if (slow) {
-                    remoteTts.speak(speakText, speed = 0.7f, esVoiceOverride = esVoiceOverride)
-                } else {
-                    remoteTts.speak(speakText, speed = null, esVoiceOverride = esVoiceOverride)
-                }
+                // v1.25.98 FIX (audit tts-H1): remoteTts.speak() возвращает true
+                // ДО сетевого I/O — «if (ok) return» делал локальный fallback
+                // НЕДОСТИЖИМЫМ в release. Offline / 429 сервера = мёртвая тишина
+                // на всех кнопках озвучки. Теперь при полном провале сегментов
+                // RemoteTtsService зовёт onAllFailed → играем системным TTS.
+                val ok = remoteTts.speak(
+                    speakText,
+                    speed = if (slow) 0.7f else null,
+                    esVoiceOverride = esVoiceOverride,
+                    onAllFailed = { speakLocal(text, slow, fullMixed) },
+                )
                 Log.d(TAG_ROUTE, "→ remoteTts.speak() returned $ok")
                 if (ok) return
             } else {
@@ -194,7 +200,11 @@ class SpanishTts @Inject constructor(
             }
         }
 
-        // Fallback: системный Android TTS.
+        speakLocal(text, slow, fullMixed)
+    }
+
+    /** Fallback: системный Android TTS (offline-путь). */
+    private fun speakLocal(text: String, slow: Boolean, fullMixed: Boolean) {
         val t = tts ?: return
         if (!_isReady.value) return
         val rate = if (slow) (voiceCfg.rate * 0.7f).coerceIn(0.3f, 2.0f)

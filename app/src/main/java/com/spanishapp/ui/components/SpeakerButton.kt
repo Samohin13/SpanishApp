@@ -218,11 +218,21 @@ fun isSpanishSpeakable(text: String?): Boolean = inferSpeakText(text) != null
  */
 fun TextToSpeech.speakSpanish(text: String?, utteranceId: String = "spk"): Boolean {
     val cleaned = inferSpeakText(text) ?: return false
+    val engine = this
     // v1.18.24: глобальный routing — все 30+ call sites автоматически
     // идут через premium Google Cloud TTS если он зарегистрирован.
-    if (com.spanishapp.service.AppTtsRouter.speakIfReady(cleaned)) {
-        return true
-    }
+    // v1.25.98 (audit tts-H1): при полном сетевом провале remote-сегментов
+    // играем через системный движок — offline больше не означает тишину.
+    val remoteAccepted = com.spanishapp.service.AppTtsRouter.speakIfReady(
+        cleaned,
+        onAllFailed = {
+            runCatching {
+                com.spanishapp.radio.player.RadioCoordinator.pauseForTts()
+                engine.speak(cleaned, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
+            }
+        },
+    )
+    if (remoteAccepted) return true
     // Fallback: системный Android TTS как раньше.
     com.spanishapp.radio.player.RadioCoordinator.pauseForTts()
     speak(cleaned, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
@@ -243,7 +253,13 @@ internal fun speakViaPremiumOrFallback(
     val cleaned = inferSpeakText(text) ?: return
     val remote = runCatching { remoteTtsFrom(context) }.getOrNull()
     if (remote != null && remote.isReady.value) {
-        remote.speak(cleaned)
+        // v1.25.98 (audit tts-H1): offline-fallback на системный движок.
+        remote.speak(cleaned, onAllFailed = {
+            runCatching {
+                com.spanishapp.radio.player.RadioCoordinator.pauseForTts()
+                fallbackTts?.speak(cleaned, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
+            }
+        })
         return
     }
     com.spanishapp.radio.player.RadioCoordinator.pauseForTts()
