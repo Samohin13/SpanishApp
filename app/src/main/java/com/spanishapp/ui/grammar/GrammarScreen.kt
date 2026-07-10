@@ -40,7 +40,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 @HiltViewModel
 class GrammarViewModel @Inject constructor(
-    private val lessonDao: LessonDao
+    private val lessonDao: LessonDao,
+    private val xpTracker: com.spanishapp.service.XpTracker,
+    private val achievementManager: com.spanishapp.service.AchievementManager,
 ) : ViewModel() {
 
     private val _level = MutableStateFlow("A1")
@@ -54,10 +56,18 @@ class GrammarViewModel @Inject constructor(
     fun setLevel(l: String) { _level.value = l }
 
     fun markCompleted(lesson: LessonEntity) = viewModelScope.launch {
+        // v1.25.97 FIX (audit): UI показывал «✅ Урок пройден +N XP», но XP
+        // никогда не начислялся — markCompleted только флипал isCompleted.
+        // Начисляем lesson.xpReward один раз (guard на повторное прохождение).
+        val wasAlreadyDone = lesson.isCompleted
         lessonDao.update(lesson.copy(
             isCompleted = true,
             completedAt = System.currentTimeMillis()
         ))
+        if (!wasAlreadyDone && lesson.xpReward > 0) {
+            xpTracker.add(xp = lesson.xpReward, words = 0)
+            achievementManager.checkAndUnlock()
+        }
     }
 }
 

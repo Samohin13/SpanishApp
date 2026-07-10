@@ -128,7 +128,11 @@ fun CrosswordGameScreen(
                         state, viewModel,
                         onPaywall = { navController.navigate("paywall") { launchSingleTop = true } },
                     )
-                    state.isGameOver -> CrosswordVictory(state, viewModel) { viewModel.resetToMenu() }
+                    state.isGameOver -> CrosswordVictory(
+                        state, viewModel,
+                        onPaywall = { navController.navigate("paywall") { launchSingleTop = true } },
+                        onHome = { viewModel.resetToMenu() },
+                    )
                     else             -> CrosswordActiveContent(state, viewModel)
                 }
             }
@@ -209,7 +213,7 @@ fun CrosswordLevelSelection(
             val level = index + 1
             val stars = state.levelStars[level] ?: 0
             val unlockedByProgress = level <= nextLevel
-            val unlockedByPro = isPro || level <= 10
+            val unlockedByPro = isPro || level <= com.spanishapp.ui.games.common.FREE_GAME_LEVELS
             val unlocked = unlockedByProgress && unlockedByPro
             val isNext = level == nextLevel
 
@@ -603,8 +607,20 @@ fun KeyItem(
 // ── Victory screen ────────────────────────────────────────────────────────────
 
 @Composable
-fun CrosswordVictory(state: CrosswordGameState, viewModel: CrosswordViewModel, onHome: () -> Unit) {
+fun CrosswordVictory(
+    state: CrosswordGameState,
+    viewModel: CrosswordViewModel,
+    onPaywall: () -> Unit = {},
+    onHome: () -> Unit,
+) {
     val stars = state.levelStars[state.level] ?: 0
+    // v1.25.97 (audit H1+M7): «Дальше» раньше (а) обходила PRO-гейт до 100 уровня,
+    // (б) после 100-го стартовала фантомный «уровень 101» (писал мусорную строку
+    // progress). Теперь: >100 нет кнопки; free после 10 уровня → paywall.
+    val isPro by com.spanishapp.ui.games.common.rememberIsProState()
+    val nextLevel = state.level + 1
+    val hasNext = nextLevel <= 100
+    val nextIsLocked = !isPro && nextLevel > com.spanishapp.ui.games.common.FREE_GAME_LEVELS
     Column(
         modifier = Modifier.fillMaxSize().padding(32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -635,13 +651,17 @@ fun CrosswordVictory(state: CrosswordGameState, viewModel: CrosswordViewModel, o
                 Spacer(Modifier.width(8.dp))
                 Text(stringResource(R.string.crw_menu), color = Purple, fontWeight = FontWeight.Bold)
             }
-            Button(onClick = { viewModel.startLevel(state.level + 1) },
-                modifier = Modifier.weight(1.4f).height(56.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Purple),
-                shape = RoundedCornerShape(16.dp)) {
-                Text(stringResource(R.string.crw_next), color = Color.White, fontWeight = FontWeight.Bold)
-                Spacer(Modifier.width(8.dp))
-                Icon(Icons.AutoMirrored.Filled.ArrowForward, null)
+            if (hasNext) {
+                Button(onClick = {
+                        if (nextIsLocked) onPaywall() else viewModel.startLevel(nextLevel)
+                    },
+                    modifier = Modifier.weight(1.4f).height(56.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Purple),
+                    shape = RoundedCornerShape(16.dp)) {
+                    Text(stringResource(R.string.crw_next), color = Color.White, fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.width(8.dp))
+                    Icon(Icons.AutoMirrored.Filled.ArrowForward, null)
+                }
             }
         }
     }

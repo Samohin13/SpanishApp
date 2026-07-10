@@ -71,9 +71,11 @@ fun ArticlesGameScreen(
     com.spanishapp.service.TrackActivity(com.spanishapp.service.ActivityType.GAME)
     val state by viewModel.state.collectAsStateWithLifecycle()
     val mistakesCount by viewModel.mistakesCount.collectAsStateWithLifecycle()
+    // v1.25.97 (audit H1): isPro поднят из ветки showLevelMap — нужен и для
+    // кнопки «Дальше» после победы (раньше она обходила PRO-гейт до 100 уровня).
+    val isPro by com.spanishapp.ui.games.common.rememberIsProState()
     when {
         state.showLevelMap -> {
-            val isPro by com.spanishapp.ui.games.common.rememberIsProState()
             LevelMapScreen(
                 gameId       = GameId.ARTICLES,
                 title        = stringResource(R.string.art_levels_title),
@@ -98,7 +100,13 @@ fun ArticlesGameScreen(
                 onNext  = when {
                     state.isMistakesPractice && mistakesCount > 0 -> { { viewModel.startMistakesPractice() } }
                     !state.isMistakesPractice && state.finalStars > 0 && state.level < 100 -> {
-                        { viewModel.startLevel(state.level + 1, isTransition = true) }
+                        // v1.25.97 (audit H1): free-юзер после 10 уровня → paywall,
+                        // а не бесплатный проход всех 100 через цепочку «Дальше».
+                        if (!isPro && state.level + 1 > com.spanishapp.ui.games.common.FREE_GAME_LEVELS) {
+                            { navController.navigate("paywall") { launchSingleTop = true } }
+                        } else {
+                            { viewModel.startLevel(state.level + 1, isTransition = true) }
+                        }
                     }
                     else -> null
                 },

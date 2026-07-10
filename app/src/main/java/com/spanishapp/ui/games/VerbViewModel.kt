@@ -357,17 +357,24 @@ class VerbViewModel @Inject constructor(
         if (isCorrect) {
             weakVerbDao.deleteByKey(key)
         } else {
-            weakVerbDao.upsert(
-                WeakVerbEntity(
-                    key = key,
-                    verb = q.conjugation.verb,
-                    tense = q.conjugation.tense,
-                    pronounIndex = q.pronounIndex,
-                    correctForm = q.correctAnswer,
-                    errorCount = 1,  // upsert REPLACE — не накапливаем counter
-                    lastErrorAt = System.currentTimeMillis(),
+            // v1.25.97 FIX (audit): сперва UPDATE error_count+1; INSERT только
+            // если строки ещё не было. Раньше REPLACE каждый раз писал count=1 —
+            // сортировка topWeak по error_count не работала.
+            val ts = System.currentTimeMillis()
+            val updated = weakVerbDao.bumpErrorCount(key, ts)
+            if (updated == 0) {
+                weakVerbDao.upsert(
+                    WeakVerbEntity(
+                        key = key,
+                        verb = q.conjugation.verb,
+                        tense = q.conjugation.tense,
+                        pronounIndex = q.pronounIndex,
+                        correctForm = q.correctAnswer,
+                        errorCount = 1,
+                        lastErrorAt = ts,
+                    )
                 )
-            )
+            }
         }
     }
 

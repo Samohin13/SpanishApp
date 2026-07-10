@@ -648,6 +648,40 @@ fun LibroReadScreen(
 ) {
     val libro = remember(libroId) { LibrosData.getById(libroId) }
     if (libro == null) { LaunchedEffect(Unit) { navController.popBackStack() }; return }
+
+    // v1.25.97 FIX (audit H2): PRO-гейт внутри читалки — единая точка контроля.
+    // Раньше гейт был только на тапе в LibrosScreen, а прямые маршруты
+    // (HomeScreen «Продолжить чтение», bento-плитка → navigate("libro/$id"))
+    // открывали A2/B1/B2 книгу без PRO — включая после истечения подписки.
+    // Tri-state (null = ещё не знаем): нельзя стартовать с false и сразу
+    // редиректить — PRO-юзера выбросило бы на paywall до первой эмиссии Flow.
+    if (libro.level != "A1") {
+        val proContext = LocalContext.current
+        val proSm = remember {
+            EntryPointAccessors.fromApplication(
+                proContext.applicationContext,
+                com.spanishapp.ui.games.common.ProGateEntryPoint::class.java
+            ).subscriptionManager()
+        }
+        val isProOrNull by proSm.isProActive
+            .collectAsStateWithLifecycle(initialValue = null)
+        when (isProOrNull) {
+            null -> { // ждём первую эмиссию — пустой фон вместо мигания контентом
+                Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background))
+                return
+            }
+            false -> {
+                LaunchedEffect(Unit) {
+                    navController.navigate("paywall") {
+                        launchSingleTop = true
+                        popUpTo("libro/{id}") { inclusive = true }
+                    }
+                }
+                return
+            }
+            true -> { /* PRO — читаем дальше */ }
+        }
+    }
     com.spanishapp.ui.components.TrackStudyMinutes()
     com.spanishapp.service.TrackActivity(com.spanishapp.service.ActivityType.BOOK)
 
@@ -988,7 +1022,17 @@ fun LibroReadScreen(
                     Spacer(Modifier.height(20.dp))
 
                     val labels = listOf("A", "B", "C")
-                    q.options.forEachIndexed { idx, option ->
+                    // v1.25.97 FIX (audit M1): перемешиваем порядок вариантов.
+                    // В авторских данных правильный ответ в 70% вопросов стоял
+                    // на позиции B — 64 из 100 книг проходились тапом по B без
+                    // чтения. Seed = книга+вопрос → стабильно при рекомпозиции
+                    // и ротации. Ответы храним в ИСХОДНЫХ индексах — проверка
+                    // с q.correctIndex не меняется.
+                    val order = remember(libro.id, s.qIndex) {
+                        q.options.indices.shuffled(kotlin.random.Random(libro.id * 1000 + s.qIndex))
+                    }
+                    order.forEachIndexed { displayIdx, idx ->
+                        val option = q.options[idx]
                         val isSelected  = selectedAnswer == idx
                         val bgColor     = if (isSelected) levelColor else MaterialTheme.colorScheme.surfaceContainerHighest
                         val textColor   = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface
@@ -1011,7 +1055,7 @@ fun LibroReadScreen(
                                 Modifier.size(28.dp).clip(RoundedCornerShape(8.dp))
                                     .background(if (isSelected) Color.White.copy(alpha = 0.25f) else levelColor.copy(alpha = 0.1f)),
                                 contentAlignment = Alignment.Center
-                            ) { Text(labels[idx], fontWeight = FontWeight.Bold, fontSize = 13.sp, color = if (isSelected) Color.White else levelColor) }
+                            ) { Text(labels[displayIdx], fontWeight = FontWeight.Bold, fontSize = 13.sp, color = if (isSelected) Color.White else levelColor) }
                             Spacer(Modifier.width(12.dp))
                             Text(option, fontSize = 15.sp, color = textColor)
                         }

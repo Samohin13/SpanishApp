@@ -424,7 +424,13 @@ interface UserProgressDao {
     @Query("SELECT * FROM user_progress LIMIT 1")
     suspend fun getProgressOnce(): UserProgressEntity?
 
-    @Query("UPDATE user_progress SET total_xp = total_xp + :xp, words_learned = words_learned + :words, lessons_completed = lessons_completed + 1")
+    // v1.25.97 FIX (audit C1): убран `lessons_completed = lessons_completed + 1`.
+    // Этот метод — единственный write-path XpTracker.add(), который зовут ВСЕ
+    // источники XP (игры, книги, теория, WOD, произношение, флэшкарты...).
+    // Каждый из них инкрементил фейковый «+1 урок»: ачивки lesson_first/lesson_10
+    // разблокировались за минуты, реальный урок считался дважды
+    // (LessonIntroViewModel ведёт счётчик явно), статистика/Firestore-синк врали.
+    @Query("UPDATE user_progress SET total_xp = total_xp + :xp, words_learned = words_learned + :words")
     suspend fun addXpAndWords(xp: Int, words: Int)
 
     @Query("UPDATE user_progress SET current_streak = :streak, longest_streak = MAX(longest_streak, :streak), last_study_date = :date")
@@ -542,6 +548,13 @@ interface AchievementDao {
 
     @Update
     suspend fun update(achievement: AchievementEntity)
+
+    // v1.25.97 (audit): атомарный анлок — WHERE is_unlocked = 0 + счётчик
+    // затронутых строк. Два конкурентных checkAndUnlock (RatingUpdater на
+    // каждый ответ + StreakService + ViewModels) больше не могут разблокировать
+    // одну ачивку дважды (двойная нотификация + двойные +5 💡 + двойной XP).
+    @Query("UPDATE achievements SET is_unlocked = 1, unlocked_at = :ts WHERE id = :id AND is_unlocked = 0")
+    suspend fun unlockIfLocked(id: String, ts: Long): Int
 
     @Query("SELECT * FROM achievements ORDER BY is_unlocked DESC, xp_reward DESC")
     fun getAll(): Flow<List<AchievementEntity>>
@@ -1007,6 +1020,12 @@ interface WeakVerbDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(entity: WeakVerbEntity)
+
+    // v1.25.97 FIX (audit): REPLACE-upsert всегда писал error_count = 1 —
+    // счётчик не накапливался, и `topWeak ORDER BY error_count DESC` был
+    // бессмысленным. Инкрементируем существующую строку; INSERT — если новой.
+    @Query("UPDATE weak_verbs SET error_count = error_count + 1, last_error_at = :ts WHERE `key` = :key")
+    suspend fun bumpErrorCount(key: String, ts: Long): Int
 
     @Query("DELETE FROM weak_verbs WHERE `key` = :key")
     suspend fun deleteByKey(key: String)

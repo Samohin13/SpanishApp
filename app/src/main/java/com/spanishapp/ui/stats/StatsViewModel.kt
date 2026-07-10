@@ -234,7 +234,9 @@ class StatsViewModel @Inject constructor(
     private fun topMistakesFlow(since: Long): Flow<List<MistakeRow>> = combine(
         gameMistakesDao.observeAll("articles"),
         gameMistakesDao.observeAll("speed"),
-        gameMistakesDao.observeAll("palabra_maestra"),
+        // v1.25.97 FIX (audit): игра пишет под GameId.PALABRA = "palabra",
+        // а Stats слушал "palabra_maestra" — все ошибки Palabra молча терялись.
+        gameMistakesDao.observeAll("palabra"),
         gameMistakesDao.observeAll("math"),
     ) { a, b, c, d ->
         (a + b + c + d)

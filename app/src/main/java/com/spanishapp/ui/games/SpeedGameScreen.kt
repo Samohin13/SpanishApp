@@ -41,10 +41,11 @@ fun SpeedGameScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
     val haptic = com.spanishapp.ui.components.rememberCheckedHaptic()
     val mistakesCount by viewModel.mistakesCount.collectAsStateWithLifecycle()
+    // v1.25.97 (audit H1): isPro поднят наверх — нужен и для кнопки «Дальше».
+    val isPro by com.spanishapp.ui.games.common.rememberIsProState()
 
     when {
         state.showLevelMap -> {
-            val isPro by com.spanishapp.ui.games.common.rememberIsProState()
             LevelMapScreen(
                 gameId  = GameId.SPEED,
                 title   = stringResource(R.string.speed_levels_title),
@@ -69,7 +70,12 @@ fun SpeedGameScreen(
                 onNext  = when {
                     state.isMistakesPractice && mistakesCount > 0 -> { { viewModel.startMistakesPractice() } }
                     !state.isMistakesPractice && state.finalStars > 0 && state.level < 100 -> {
-                        { viewModel.startLevel(state.level + 1) }
+                        // v1.25.97 (audit H1): free после 10 уровня → paywall.
+                        if (!isPro && state.level + 1 > com.spanishapp.ui.games.common.FREE_GAME_LEVELS) {
+                            { navController.navigate("paywall") { launchSingleTop = true } }
+                        } else {
+                            { viewModel.startLevel(state.level + 1) }
+                        }
                     }
                     else -> null
                 },

@@ -12,6 +12,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -107,8 +108,14 @@ class MiniTestViewModel @Inject constructor(
             return
         }
         viewModelScope.launch {
-            xpTracker.add(xp = XpSystem.MINI_TEST_PASSED, words = 0)
-            miniTestPreferences.markPassed(mt.id)
+            // v1.25.97 FIX (audit M5): XP только за ПЕРВЫЙ pass. markPassed
+            // писался, но никогда не читался как гейт — реплей одного мини-теста
+            // давал +20 XP каждый раз.
+            val alreadyPassed = miniTestPreferences.isPassed(mt.id).first()
+            if (!alreadyPassed) {
+                xpTracker.add(xp = XpSystem.MINI_TEST_PASSED, words = 0)
+                miniTestPreferences.markPassed(mt.id)
+            }
             // SFX: mini-test pass — победный аккорд (≥60% правильных).
             // Задержка чтобы не наложиться на последний CORRECT.
             kotlinx.coroutines.delay(500)

@@ -101,10 +101,16 @@ class MathViewModel @Inject constructor(
         }
         roundResolved = false
         val mistake = mistakesBatch[s.currentRound]
-        // itemId хранит выражение типа "3 + 5", main — то же. correctAnswer
-        // не сохраняем, пересчитываем из выражения.
+        // itemId хранит числовое выражение «3 + 5» (v1.25.97), main — испанский
+        // текст. correctAnswer не сохраняем, пересчитываем из выражения.
         val expr = mistake.itemId
         val correctAnswer = evaluateSimpleExpression(expr) ?: run {
+            // v1.25.97 FIX (audit C2): нераспарсиваемая запись (legacy-формат с
+            // испанским текстом в itemId) — чистим из пула, иначе она вечно
+            // раздувает бейдж и её невозможно закрыть правильным ответом.
+            viewModelScope.launch {
+                runCatching { mistakesDao.removeMistake(GameId.MATH, expr) }
+            }
             _state.value = s.copy(currentRound = s.currentRound + 1)
             nextMistakeQuestion()
             return
@@ -112,7 +118,8 @@ class MathViewModel @Inject constructor(
         _state.value = s.copy(
             currentRound = s.currentRound + 1,
             expressionText = expr,
-            expressionSpoken = expr,
+            // Показ в испанском режиме — сохранённый испанский текст, если есть.
+            expressionSpoken = mistake.displayMain.ifBlank { expr },
             correctAnswer = correctAnswer,
             lastCorrect = null,
             timeLeft = 1f,
@@ -361,8 +368,14 @@ class MathViewModel @Inject constructor(
         )
 
         // v1.22.0: «Работа над ошибками»
+        // v1.25.97 FIX (audit C2): itemId был expressionSpoken («cinco más tres»),
+        // а nextMistakeQuestion пересчитывает ответ через evaluateSimpleExpression,
+        // который парсит ТОЛЬКО числовое «3 + 5» → каждый вопрос практики скипался,
+        // практика мгновенно заканчивалась «0 из N», а пул рос вечно (removeMistake
+        // недостижим). Теперь ключ — числовой expressionText, испанский текст
+        // сохраняем в main для отображения.
         viewModelScope.launch {
-            val itemId = s.expressionSpoken
+            val itemId = s.expressionText
             if (itemId.isNotBlank()) {
                 if (isCorrect && s.isMistakesPractice) {
                     mistakesDao.removeMistake(GameId.MATH, itemId)
@@ -371,7 +384,7 @@ class MathViewModel @Inject constructor(
                         gameId = GameId.MATH,
                         itemId = itemId,
                         hint = "= ${s.correctAnswer}",
-                        main = itemId,
+                        main = s.expressionSpoken.ifBlank { itemId },
                     )
                 }
             }

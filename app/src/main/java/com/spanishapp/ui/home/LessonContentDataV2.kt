@@ -6004,9 +6004,11 @@ object LessonContentDataV2 {
                 ex(ExerciseType.MULTIPLE_CHOICE, "Зачем нужен Imperfecto Subj?", "Для гипотез типа «если бы»",
                     opts = listOf("Для гипотез типа «если бы»", "Только в прошлом", "Только в настоящем", "Регулярно"),
                     expl = "Si + Imp.Subj. + Cond = «если бы..., то...»"),
-                ex(ExerciseType.TAP_MISSING_WORD, "Окончания формы -ra?", "-ra/-ras/-ra/-ramos",
-                    q = "hablar → habla...", opts = listOf("-ra", "-ría", "-aba"),
-                    expl = "Imp.Subj. -ra: hablara, hablaras, hablara."),
+                // v1.25.97 FIX (audit C2): correctAnswer был "-ra/-ras/-ra/-ramos" —
+                // такой опции нет среди чипов → упражнение невыигрываемое.
+                ex(ExerciseType.TAP_MISSING_WORD, "Окончания формы -ra?", "-ra",
+                    q = "hablar → habla___", opts = listOf("-ra", "-ría", "-aba"),
+                    expl = "Imp.Subj. -ra: hablara, hablaras, hablara, habláramos."),
                 ex(ExerciseType.MATCH_PAIRS, "Окончания", "ok",
                     pairs = listOf("hablara" to "Imp.Subj. yo", "hablase" to "то же — другая форма",
                         "hablaría" to "Cond", "hablo" to "Pres", "hablé" to "Indef")),
@@ -8664,8 +8666,10 @@ object LessonContentDataV2 {
             sect("Следствие", "de ahí que" to "отсюда (+Subj)", "de modo que" to "так что",
                 "así que" to "так что (разг)", "por consiguiente" to "следовательно"),
             exercises = listOf(
+                // v1.25.97 FIX (audit C2): correctAnswer "venga" ≠ опция "venga (Subj)" —
+                // тап по правильному чипу не засчитывался. Аннотация убрана из опции.
                 ex(ExerciseType.TAP_MISSING_WORD, "После «de ahí que»", "venga", q = "No estudia, de ahí que ___.",
-                    opts = listOf("venga (Subj)", "viene", "vendrá"), expl = "de ahí que + Subj."),
+                    opts = listOf("venga", "viene", "vendrá"), expl = "de ahí que + Subjuntivo → venga."),
                 ex(ExerciseType.BUILD_SENTENCE, "Собери: «Поэтому пойду»", "Así que iré",
                     words = listOf("Así", "que", "iré"), expl = "Следствие."),
                 ex(ExerciseType.MULTIPLE_CHOICE, "После «de ahí que»?", "Subj",

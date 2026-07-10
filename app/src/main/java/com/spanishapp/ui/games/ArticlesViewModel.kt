@@ -170,10 +170,10 @@ class ArticlesViewModel @Inject constructor(
 
         viewModelScope.launch {
             // Детерминированный набор слов для уровня (1..100), без RANDOM:
-            // позиция в раунде = currentRound (0..9). Если в БД < 10 слов на уровне —
-            // пересеиваем и берём первое слово.
+            // позиция в раунде = currentRound. Пересеиваем ТОЛЬКО если слов
+            // нет вообще (первый запуск до сида).
             var words = dao.getWordsForGameLevel(s.params.level)
-            if (words.size < s.totalRounds) {
+            if (words.isEmpty()) {
                 seedFromJson()
                 words = dao.getWordsForGameLevel(s.params.level)
             }
@@ -183,14 +183,27 @@ class ArticlesViewModel @Inject constructor(
                 finishGame()
                 return@launch
             }
+            // v1.25.97 FIX (audit H3): asset содержит ровно 10 слов на уровень,
+            // а LevelDifficulty для 41+ задаёт 12-15 раундов. Раньше нехватка
+            // триггерила ПОВТОРНЫЙ seedFromJson() → INSERT IGNORE с autoincrement
+            // PK дублировал все 1000 строк (таблица росла при каждом уровне 41+),
+            // и уровень спрашивал одни слова по 2 раза. Кэпим раунды словами.
+            val base = if (words.size < s.totalRounds)
+                s.copy(params = s.params.copy(rounds = words.size))
+            else s
+            if (base.currentRound >= base.totalRounds) {
+                _state.value = base
+                finishGame()
+                return@launch
+            }
             // Детерминированный шафл: один и тот же уровень → всегда один и тот же порядок слов
-            val shuffled = words.shuffled(java.util.Random(s.params.level.toLong() * 31337L))
-            val idx  = s.currentRound.coerceIn(0, shuffled.size - 1)
+            val shuffled = words.shuffled(java.util.Random(base.params.level.toLong() * 31337L))
+            val idx  = base.currentRound.coerceIn(0, shuffled.size - 1)
             val word = shuffled[idx]
 
-            _state.value = s.copy(
+            _state.value = base.copy(
                 currentWord = word,
-                currentRound = s.currentRound + 1,
+                currentRound = base.currentRound + 1,
                 lastCorrect = null,
                 chosenArticle = null,
                 academicHint = null

@@ -30,6 +30,10 @@ class AchievementManager @Inject constructor(
     private val gameLevelProgressDao: GameLevelProgressDao,
     private val notificationService: NotificationService,
     private val hintBank: HintBankManager,
+    // v1.25.97 (audit): XP за ачивку реально начисляется (раньше UI показывал
+    // «+N XP», но totalXp не менялся — награда была фантомной). Lazy — единый
+    // паттерн защиты от Hilt-цикла (XpTracker → LeaderboardRepo → ...).
+    private val xpTracker: dagger.Lazy<XpTracker>,
 ) {
     /** Шина новых ачивок — собирается в Composable для показа диалога. */
     private val _unlockedFlow = MutableSharedFlow<AchievementEntity>(extraBufferCapacity = 8)
@@ -142,13 +146,22 @@ class AchievementManager @Inject constructor(
     }
 
     private suspend fun unlock(a: AchievementEntity, acc: MutableList<AchievementEntity>) {
-        val updated = a.copy(isUnlocked = true, unlockedAt = System.currentTimeMillis())
-        achievementDao.update(updated)
+        // v1.25.97 (audit): атомарный unlock — конкурентные checkAndUnlock
+        // (RatingUpdater per-answer + StreakService + ViewModels) оба читали
+        // is_unlocked=0 → двойная нотификация/награды. Теперь побеждает один.
+        val ts = System.currentTimeMillis()
+        val rows = achievementDao.unlockIfLocked(a.id, ts)
+        if (rows == 0) return  // уже разблокирована конкурентным вызовом
+        val updated = a.copy(isUnlocked = true, unlockedAt = ts)
         acc.add(updated)
         _unlockedFlow.tryEmit(updated)
         notificationService.showAchievement(updated.titleRu, updated.descriptionRu)
         // v1.16.0: +5 💡 за разблокировку достижения
         hintBank.award(5, HintEarnReason.ACHIEVEMENT)
+        // v1.25.97 (audit): и обещанный XP — раньше не начислялся вообще.
+        if (a.xpReward > 0) {
+            runCatching { xpTracker.get().add(xp = a.xpReward, words = 0) }
+        }
     }
 }
 

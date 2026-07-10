@@ -166,9 +166,20 @@ class CheckpointViewModel @Inject constructor(
                         }
                         uiSound.play(tierSound)
                     }
-                    // Начисляем XP только при первом прохождении (TODO: check DB)
+                    // v1.25.97 FIX (audit H6): XP только при ПЕРВОМ прохождении.
+                    // TODO выше висел нереализованным — Pass давал 250-400 XP
+                    // при каждом реплее (+ Pass снимает cooldown) = самый
+                    // эффективный XP-фарм в приложении. Теперь first-pass флаг
+                    // в CheckpointCooldownPrefs гейтит награду.
                     viewModelScope.launch {
-                        xpTracker.add(outcome.xpAwarded)
+                        val alreadyPassed = cpId != null &&
+                            runCatching { cooldownPrefs.wasPassedOnce(cpId) }.getOrDefault(false)
+                        if (!alreadyPassed) {
+                            xpTracker.add(outcome.xpAwarded)
+                            if (cpId != null) {
+                                runCatching { cooldownPrefs.markPassed(cpId) }
+                            }
+                        }
                     }
                     // v1.22.20: успешно сдал → отменяем любые pending reminder
                     // (вдруг был с прошлого fail и юзер сразу пересдал)

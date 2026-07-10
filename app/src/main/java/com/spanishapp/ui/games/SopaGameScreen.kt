@@ -58,10 +58,11 @@ fun SopaGameScreen(
 ) {
     com.spanishapp.service.TrackActivity(com.spanishapp.service.ActivityType.GAME)
     val state by viewModel.state.collectAsStateWithLifecycle()
+    // v1.25.97 (audit H1): isPro поднят наверх — нужен и для кнопки «Дальше».
+    val isPro by com.spanishapp.ui.games.common.rememberIsProState()
 
     when {
         state.showLevelMap -> {
-            val isPro by com.spanishapp.ui.games.common.rememberIsProState()
             LevelMapScreen(
                 gameId  = GameId.SOPA,
                 title   = stringResource(R.string.sopa_levels_title),
@@ -81,9 +82,14 @@ fun SopaGameScreen(
                 percent = state.finalPercent,
                 accent  = ACCENT,
                 onRetry = { viewModel.startLevel(state.level) },
-                onNext  = if (state.finalStars > 0 && state.level < 100)
-                              { { viewModel.startLevel(state.level + 1) } }
-                          else null,
+                // v1.25.97 (audit H1): free после 10 уровня → paywall.
+                onNext  = if (state.finalStars > 0 && state.level < 100) {
+                              if (!isPro && state.level + 1 > com.spanishapp.ui.games.common.FREE_GAME_LEVELS) {
+                                  { navController.navigate("paywall") { launchSingleTop = true } }
+                              } else {
+                                  { viewModel.startLevel(state.level + 1) }
+                              }
+                          } else null,
                 onExit  = { viewModel.openLevelMap() }
             )
         }

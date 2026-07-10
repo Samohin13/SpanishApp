@@ -148,8 +148,12 @@ private suspend fun applyBestVoiceWithRetry(tts: TextToSpeech, preferredName: St
         return n.contains("wavenet") || n.contains("neural") ||
                n.contains("network") || n.contains("hd")
     }
+    // v1.25.97 FIX (audit M6): канон диалекта — Spain Madrid (es-ES).
+    // Раньше сортировка только по качеству: HD-голос es-US/es-MX обгонял
+    // стандартный es-ES и ломал канон. Страна ES — первый критерий.
     val best = spanishVoices.sortedWith(
-        compareByDescending<android.speech.tts.Voice> { it.quality }
+        compareByDescending<android.speech.tts.Voice> { it.locale.country == "ES" }
+            .thenByDescending { it.quality }
             .thenByDescending { isNeural(it) }
             .thenBy { it.latency }
     ).firstOrNull()

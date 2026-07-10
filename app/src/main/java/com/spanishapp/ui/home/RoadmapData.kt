@@ -456,16 +456,20 @@ object RoadmapData {
                 RoadmapLesson("🔀 Si + Imp.Subj. + Condicional (тип 2: гипотеза)",   "content", "general"),
                 // 25.5
                 RoadmapLesson("🆕 Si тип 3 + Cond Compuesto (прошлое-небывшее)",      "content", "general", id = "u10_l9_5"),
+                // v1.25.97 FIX (audit C1): после вставки _5 эти 5 записей без явных
+                // id съезжали на позиционные u10_l11..u10_l15, а V2-контент лежит в
+                // u10_l10..u10_l14 → 4 урока показывали ЧУЖОЙ контент, чекпоинт — none.
+                // Тот же класс бага, что чинился для u14/u15 в v1.25.90; u10 пропустили.
                 // 26
-                RoadmapLesson("💡 Советы: Yo en tu lugar... / Yo que tú...",          "content", "phrases"),
+                RoadmapLesson("💡 Советы: Yo en tu lugar... / Yo que tú...",          "content", "phrases", id = "u10_l10"),
                 // 27
-                RoadmapLesson("🙏 Вежливость: ¿Podrías...? ¿Te importaría...?",      "content", "phrases"),
+                RoadmapLesson("🙏 Вежливость: ¿Podrías...? ¿Te importaría...?",      "content", "phrases", id = "u10_l11"),
                 // 28
-                RoadmapLesson("❓ Quizás / Tal vez + Subj. o Ind.",                   "content", "general"),
+                RoadmapLesson("❓ Quizás / Tal vez + Subj. o Ind.",                   "content", "general", id = "u10_l12"),
                 // 29
-                RoadmapLesson("❤️ Me gustaría que + Subjuntivo",                     "content", "general"),
+                RoadmapLesson("❤️ Me gustaría que + Subjuntivo",                     "content", "general", id = "u10_l13"),
                 // 30  ЧЕКПОИНТ
-                RoadmapLesson("🏁 Чекпоинт B1.2: «Свидание с Andrés»",                         "quiz",    "all")
+                RoadmapLesson("🏁 Чекпоинт B1.2: «Свидание с Andrés»",                         "quiz",    "all", id = "u10_l14")
             )
         ),
 

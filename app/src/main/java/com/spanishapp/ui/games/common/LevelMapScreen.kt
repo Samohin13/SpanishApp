@@ -184,8 +184,8 @@ fun LevelMapScreen(
                     val level = idx + 1
                 val entry = progress[level]
                 val unlockedByProgress = level <= nextLevel
-                // v1.23.0: free → max 10 уровней. PRO → все 100.
-                val unlockedByPro = isPro || level <= 10
+                // v1.23.0: free → max FREE_GAME_LEVELS уровней. PRO → все 100.
+                val unlockedByPro = isPro || level <= FREE_GAME_LEVELS
                 val unlocked = unlockedByProgress && unlockedByPro
                 val isNext = level == nextLevel
 
@@ -323,6 +323,13 @@ private fun LevelMode.label(): String = when (this) {
 //  каждый VM отдельной игры. Возвращает текущее значение isPro
 //  как Compose State.
 // ════════════════════════════════════════════════════════════
+
+/**
+ * v1.25.97 (audit): free-юзерам доступны первые N уровней каждой игры.
+ * Единая константа для карты уровней И для кнопки «Дальше» после победы
+ * (раньше «Дальше» шла до 100 уровня без PRO-проверки — полный обход гейта).
+ */
+const val FREE_GAME_LEVELS = 10
 
 @dagger.hilt.EntryPoint
 @dagger.hilt.InstallIn(dagger.hilt.components.SingletonComponent::class)

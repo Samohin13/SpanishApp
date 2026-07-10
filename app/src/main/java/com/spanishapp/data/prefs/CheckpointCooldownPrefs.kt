@@ -7,6 +7,7 @@ import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -52,5 +53,20 @@ class CheckpointCooldownPrefs @Inject constructor(
 
     suspend fun markFreeRetryUsed(cpId: String) {
         context.checkpointCooldownDataStore.edit { it[freeUsedKey(cpId)] = true }
+    }
+
+    // ── v1.25.97 (audit H6): first-pass флаг — гейт для XP ────────────
+    // Checkpoint Pass даёт 250-400 XP (самая крупная награда в app), но
+    // TODO «начислять только при первом прохождении» не был реализован —
+    // реплей одного чекпоинта был самым эффективным XP-фармом.
+    private fun passedKey(cpId: String) = booleanPreferencesKey("passed_$cpId")
+
+    suspend fun wasPassedOnce(cpId: String): Boolean =
+        context.checkpointCooldownDataStore.data
+            .map { it[passedKey(cpId)] ?: false }
+            .first()
+
+    suspend fun markPassed(cpId: String) {
+        context.checkpointCooldownDataStore.edit { it[passedKey(cpId)] = true }
     }
 }

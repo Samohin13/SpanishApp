@@ -126,8 +126,12 @@ class SyncRepository @Inject constructor(
                     longestStreak = max(cur.longestStreak, (up["longestStreak"] as? Number)?.toInt() ?: 0),
                     wordsLearned = max(cur.wordsLearned, (up["wordsLearned"] as? Number)?.toInt() ?: 0),
                     lessonsCompleted = max(cur.lessonsCompleted, (up["lessonsCompleted"] as? Number)?.toInt() ?: 0),
-                    skillRating = max(cur.skillRating, (up["skillRating"] as? Number)?.toInt() ?: 1000),
-                    peakSkillRating = max(cur.peakSkillRating, (up["peakSkillRating"] as? Number)?.toInt() ?: 1000),
+                    // v1.25.97 FIX (audit H5): fallback был 1000 (стартовое значение
+                    // СТАРОЙ v1-системы рейтинга). Если облачный док без поля
+                    // (записан pre-rating версией / partial merge) — юзеру дарилась
+                    // Valencia-лига в системе, стартующей с 0. Теперь ?: 0.
+                    skillRating = max(cur.skillRating, (up["skillRating"] as? Number)?.toInt() ?: 0),
+                    peakSkillRating = max(cur.peakSkillRating, (up["peakSkillRating"] as? Number)?.toInt() ?: 0),
                     currentLeague = max(cur.currentLeague, (up["currentLeague"] as? Number)?.toInt() ?: 1)
                 )
                 userProgressDao.update(merged)
