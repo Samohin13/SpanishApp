@@ -78,7 +78,6 @@ fun AiChatScreen(
     val isListening    by vm.isListening.collectAsStateWithLifecycle()
     val voiceAmplitude by vm.voiceAmplitude.collectAsStateWithLifecycle()
     val error          by vm.error.collectAsStateWithLifecycle()
-    val remaining      by vm.remainingMessages.collectAsStateWithLifecycle()
     val isPro          by vm.isPro.collectAsStateWithLifecycle()
 
     // v1.25.73: AI Chat = PRO-only. Free юзеры видят paywall stub
@@ -191,7 +190,8 @@ fun AiChatScreen(
             ChatHeader(
                 scenarioEmoji = scenario.emoji,
                 scenarioTitle = scenario.title,
-                limit = if (isPro) null else "$remaining/${com.spanishapp.service.AiChatLimiter.DAILY_LIMIT}",
+                // AI-чат PRO-only → сюда доходят только PRO, лимит-плашку не показываем.
+                limit = null,
                 onBack = { navController.popBackStack() },
                 onArchive = {
                     haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove)

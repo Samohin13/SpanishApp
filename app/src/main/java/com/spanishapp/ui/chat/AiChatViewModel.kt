@@ -10,7 +10,6 @@ import com.spanishapp.domain.chat.ChatScenarios
 import com.spanishapp.data.db.dao.ChatMessageDao
 import com.spanishapp.data.db.entity.ChatMessageEntity
 import com.spanishapp.data.prefs.UserWordFrequency
-import com.spanishapp.service.AiChatLimiter
 import com.spanishapp.service.SpanishSpeechRecognizer
 import com.spanishapp.service.SpanishTts
 import com.spanishapp.service.SpeechResult
@@ -33,7 +32,6 @@ class AiChatViewModel @Inject constructor(
     private val repo: AiChatRepository,
     private val tts: SpanishTts,
     private val stt: SpanishSpeechRecognizer,
-    private val limiter: AiChatLimiter,
     private val subscriptionManager: SubscriptionManager,
     private val chatDao: ChatMessageDao,
     val userWordFrequency: UserWordFrequency,
@@ -85,13 +83,11 @@ class AiChatViewModel @Inject constructor(
         super.onCleared()
     }
 
-    /** PRO-юзер обходит лимит. */
+    /** v1.25.97: AI-чат — PRO-only. Free-юзеры упираются в paywall на входе
+     *  в AiChatScreen. Бывший клиентский лимитер 50/день удалён (был мёртвым
+     *  кодом после перехода на PRO-only в v1.25.73). */
     val isPro: StateFlow<Boolean> = subscriptionManager.isProActive
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), false)
-
-    /** Сколько запросов осталось сегодня. PRO видит -1 (не показываем). */
-    val remainingMessages: StateFlow<Int> = limiter.remainingToday
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5_000), AiChatLimiter.DAILY_LIMIT)
 
     // ── Выбранный сценарий ─────────────────────────────────────
     private val _scenario = MutableStateFlow(ChatScenarios.DEFAULT)
@@ -128,19 +124,13 @@ class AiChatViewModel @Inject constructor(
         if (trimmed.isBlank() || _isSending.value) return
 
         viewModelScope.launch {
-            // PRO-юзеры обходят лимит. Free → проверяем.
-            if (!isPro.value && limiter.isExhausted()) {
-                _error.value = "Достигнут дневной лимит ${AiChatLimiter.DAILY_LIMIT} сообщений. " +
-                    "Лимит обновится завтра, либо подключи PRO для безлимита."
-                return@launch
-            }
-
+            // AI-чат PRO-only: сюда доходят только PRO-юзеры (free блокируются
+            // на входе в AiChatScreen), лимита нет — безлимитная переписка.
             _isSending.value = true
             _error.value = null
 
             repo.sendMessage(trimmed, _scenario.value, level, "ESPEAK")
                 .onSuccess {
-                    if (!isPro.value) limiter.increment()
                     userWordFrequency.recordText(trimmed)  // learn from sent message
                 }
                 .onFailure { _error.value = "Не удалось получить ответ. Проверь интернет." }

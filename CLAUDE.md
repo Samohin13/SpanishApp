@@ -553,7 +553,9 @@ UI → AiChatRepository → Cloudflare Worker proxy
 - **Модель:** `gemini-flash-latest` (auto-alias на актуальную бесплатную)
 - **Системный промпт:** дружелюбный репетитор для русскоязычных A1/A2, короткие ответы (4-5 строк), корректировки в формате `CORRECTIONS_JSON:[...]`
 - **История:** 20 последних сообщений из Room (`chat_messages`)
-- **Лимит:** 50 запросов/день через `AiChatLimiter` (DataStore)
+- **Доступ:** AI-чат **PRO-only** (с v1.25.73). Free-юзеры видят paywall на входе в
+  `AiChatScreen`, воркер отдаёт 403 «Chat is PRO-only» для не-PRO uid. Клиентский
+  лимитер 50/день (`AiChatLimiter`) удалён в v1.25.97 как мёртвый код. Для PRO — безлимит.
 - **Безопасность v1.11.7:**
   - В release `BuildConfig.GEMINI_API_KEY` пустой (не запекается)
   - `AiChatRepository.apiUrl()` и `GeminiTranslator.apiUrl()` крашат с `IllegalArgumentException` если в release нет proxy
@@ -622,7 +624,7 @@ UI → AiChatRepository → Cloudflare Worker proxy
 - Карточки SM-2 для слов A1
 - **Словарь полностью** (10086 слов — handbook-функция)
 - **Pronunciation полностью** (motor skill, не зависит от уровня)
-- AI Chat — 50 запросов/день
+- ~~AI Chat — 50 запросов/день~~ → AI-чат теперь **PRO-only** (с v1.25.73), в free нет
 - Слово дня + WoD-streak + push
 - Достижения, лидерборд, лиги, weekly leagues
 - Виджет, темы, био-замок
@@ -636,7 +638,7 @@ UI → AiChatRepository → Cloudflare Worker proxy
 - Полное спряжение (1300+ глаголов, 159 с таблицами 6 времён)
 - Все 100 уровней каждой игры
 - Карточки SM-2 для слов A2/B1/B2
-- AI Chat — **безлимит**
+- AI Chat — **эксклюзивно PRO, безлимит** (free-юзерам чат недоступен)
 
 ### Цены (через Google Play Billing с auto-pricing)
 - **Месяц:** $4.99 (~450₽ / ~2200₸ / 4.99€)
@@ -698,7 +700,6 @@ Comment'нуто: CAMERA (убрана т.к. PickVisualMedia без permission)
 - `StreakManagerTest` (8)
 - `WordOfDayStreakLogicTest` (5)
 - `XpSystemTest` (5)
-- `AiChatLimiterTest` (4)
 - `LibroTextHelpersTest` (20)
 - `ExerciseGeneratorTest`, `CrosswordTest`, `RatingSystemTest`, ...
 - `LocalizationIntegrityTest` ✅ (раньше падал — починен в v1.11.7 добавлением `nav_radio` + `bento_goal_radio` в en/uk/es)
