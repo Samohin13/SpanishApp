@@ -160,6 +160,27 @@ class DatabaseSeeder @Inject constructor(
             } else word
         }
 
+        // ── Obsolete-key purge (idempotent DELETE, v1.25.98 audit vocab-M3) ──
+        // Записи с НЕПРАВИЛЬНЫМ артиклем/написанием, уже уехавшие юзерам через
+        // старые билды. Просто исправить исходник мало: diff-вставка ниже
+        // добавила бы исправленную строку РЯДОМ с неправильной. Удаляем
+        // старый ключ → корректная строка вставится этим же прогоном.
+        val obsoleteKeys = listOf(
+            "el tiranía",          // → la tiranía
+            "la insomnio",         // дубль корректного el insomnio
+            "la rastro",           // дубль корректного el rastro
+            "la altar",            // → el altar
+            "la jet lag",          // → el jet lag
+            "la pavor",            // → el pavor
+            "el pandilla",         // → la pandilla
+            "la radar",            // → el radar (свой же пример: «El radar»)
+            "el infracción",       // → la infracción
+            "el deshidratación",   // → la deshidratación
+            "el ola de calor",     // → la ola de calor
+            "el turba",            // → la turba
+        )
+        obsoleteKeys.forEach { runCatching { db.wordDao().deleteBySpanish(it) } }
+
         // Отфильтровать слова, которые уже есть в БД (по нижнему регистру)
         val existingSet = db.wordDao().getAllSpanishLower().toHashSet()
         val newOnly = marked.filter { it.spanish.trim().lowercase() !in existingSet }
@@ -172,7 +193,11 @@ class DatabaseSeeder @Inject constructor(
         val patches = listOf(
             "Adiós"    to "До свидания",   // was "Пока / До свидания" — confused with "Hasta luego"
             "Perdón"   to "Простите",       // was "Извините" — that's Disculpe
-            "Disculpe" to "Извините"        // was "Простите" — roles were swapped
+            "Disculpe" to "Извините",       // was "Простите" — roles were swapped
+            // v1.25.98 (audit cards-H3): «claro» из CleanVocab («светлый»,
+            // цвета) выигрывал дедуп у BasicsVocab («конечно / ясно») — сет
+            // приветствий a1_01_greetings учил «claro = светлый».
+            "claro"    to "конечно / ясно; светлый",
         )
         patches.forEach { (es, ru) -> db.wordDao().patchRussian(es, ru) }
     }

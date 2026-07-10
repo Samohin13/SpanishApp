@@ -93,6 +93,15 @@ class SettingsViewModel @Inject constructor(
     private val weeklyLeagueDao: com.spanishapp.data.db.dao.WeeklyLeagueDao,
     private val subscriptionManager: com.spanishapp.service.SubscriptionManager,
     private val playBillingManager: com.spanishapp.service.PlayBillingManager,
+    // v1.25.98 (audit auth-M1): недостающие хранилища для полного wipe.
+    private val chatMessageDao: com.spanishapp.data.db.dao.ChatMessageDao,
+    private val theoryProgressDao: com.spanishapp.data.db.dao.TheoryProgressDao,
+    private val gameMistakesDao: com.spanishapp.data.db.dao.GameMistakesDao,
+    private val activityTimeLogDao: com.spanishapp.data.db.dao.ActivityTimeLogDao,
+    private val lessonCompletionHistoryDao: com.spanishapp.data.db.dao.LessonCompletionHistoryDao,
+    private val userVocabStateDao: com.spanishapp.data.db.dao.UserVocabStateDao,
+    private val weakVerbDao: com.spanishapp.data.db.dao.WeakVerbDao,
+    private val voiceMessageStorage: com.spanishapp.service.VoiceMessageStorage,
 ) : ViewModel() {
 
     /** v1.23.6: для debug-toggle и отображения текущего статуса. */
@@ -127,6 +136,17 @@ class SettingsViewModel @Inject constructor(
         wordListDao.deleteAllLists()
         recentSearchDao.deleteAll()
         weeklyLeagueDao.deleteAll()
+        // v1.25.98 FIX (audit auth-M1): раньше «Удалить аккаунт» оставлял на
+        // устройстве историю AI-чата + голосовые m4a (GDPR-гэп), а «Сбросить
+        // прогресс» — статистику/ошибки/теорию (Stats показывал старые данные).
+        chatMessageDao.deleteAll()
+        runCatching { voiceMessageStorage.deleteAll() }
+        theoryProgressDao.deleteAll()
+        gameMistakesDao.deleteAll()
+        activityTimeLogDao.deleteAll()
+        lessonCompletionHistoryDao.deleteAll()
+        userVocabStateDao.deleteAll()
+        weakVerbDao.deleteAll()
         userProgressDao.update(UserProgressEntity())
     }
 
@@ -360,10 +380,27 @@ class SettingsViewModel @Inject constructor(
 
         // 1. Firestore profile doc
         if (uid != null) {
+            // v1.25.98 FIX (audit auth-C1): Firestore НЕ каскадит удаление
+            // сабколлекций — полный снапшот прогресса лежит в
+            // users/{uid}/state/main (SyncRepository) и раньше оставался в
+            // облаке НАВСЕГДА после «Удалить аккаунт» (GDPR-дыра). Удаляем
+            // сабдокумент ДО родителя.
+            runCatching {
+                db.collection("users").document(uid)
+                    .collection("state").document("main").delete().await()
+            }.onFailure { Log.w("SettingsVM", "Sync state delete failed", it) }
             runCatching { db.collection("users").document(uid).delete().await() }
                 .onFailure { Log.w("SettingsVM", "Firestore delete failed", it) }
             runCatching { db.collection("leaderboard").document(uid).delete().await() }
                 .onFailure { Log.w("SettingsVM", "Leaderboard delete failed", it) }
+            // v1.25.98 (audit auth-C1): member-док недельной лиги тоже персональные
+            // данные (displayName + weekXp) — подчищаем текущую когорту.
+            runCatching {
+                weeklyLeagueDao.get()?.cohortId?.takeIf { it.isNotBlank() }?.let { cohort ->
+                    db.collection("weekly_cohorts").document(cohort)
+                        .collection("members").document(uid).delete().await()
+                }
+            }.onFailure { Log.w("SettingsVM", "Weekly cohort delete failed", it) }
         }
 
         // 2. Storage avatar

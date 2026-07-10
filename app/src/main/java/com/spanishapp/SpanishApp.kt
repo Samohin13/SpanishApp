@@ -112,6 +112,16 @@ class SpanishApp : Application() {
             com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
                 .recordException(RuntimeException("[SpanishApp] VocabAggregatorWorker scheduling failed", e))
         }
+        // v1.25.98 FIX (audit infra-H1): ContentSyncWorker.schedule() не вызывался
+        // НИГДЕ — OTA-синк контент-паков был мёртв на свежих установках (работал
+        // только там, где periodic job остался persisted со старых билдов).
+        // KEEP-policy → вызов на каждом старте не сбрасывает таймер.
+        runCatching {
+            com.spanishapp.service.ContentSyncWorker.schedule(this)
+        }.onFailure { e ->
+            com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+                .recordException(RuntimeException("[SpanishApp] ContentSyncWorker scheduling failed", e))
+        }
         runCatching {
             com.spanishapp.radio.player.RadioCatalogRefreshWorker.schedule(this)
         }.onFailure { e ->

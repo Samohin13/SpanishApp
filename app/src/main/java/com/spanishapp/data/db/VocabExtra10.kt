@@ -532,7 +532,7 @@ object VocabExtra10 {
         w("el plantón", "саженец", "Un plantón joven.", "B2", "naturaleza"),
         w("el riego por goteo", "капельный полив", "Riego por goteo eficiente.", "B2", "naturaleza"),
         w("el sustrato", "субстрат", "Sustrato universal.", "B2", "naturaleza"),
-        w("el turba", "торф", "Sustrato de turba.", "B2", "naturaleza"),
+        w("la turba", "торф", "Sustrato de turba.", "B2", "naturaleza"),
         w("el tutor de planta", "опора для растения", "Un tutor de planta de tomate.", "B2", "naturaleza"),
         w("la perlita", "перлит", "Perlita para drenaje.", "B2", "naturaleza"),
         w("la sierra de podar", "садовая пила", "Una sierra de podar.", "B2", "naturaleza"),

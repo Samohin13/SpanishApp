@@ -85,11 +85,25 @@ class DailyReminderWorker(
             manager.createNotificationChannel(channel)
         }
 
+        // v1.25.98 FIX (audit infra-H3): тап по напоминанию открывает приложение.
+        // Раньше setContentIntent отсутствовал — нажатие не делало НИЧЕГО
+        // (у WoD/Checkpoint reminder'ов intent был, у главного — нет).
+        val tapIntent = android.app.PendingIntent.getActivity(
+            applicationContext,
+            0,
+            android.content.Intent(applicationContext, com.spanishapp.MainActivity::class.java).apply {
+                flags = android.content.Intent.FLAG_ACTIVITY_NEW_TASK or
+                    android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
+            },
+            android.app.PendingIntent.FLAG_UPDATE_CURRENT or android.app.PendingIntent.FLAG_IMMUTABLE,
+        )
+
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setContentTitle("¡Hola! 👋 Время испанского")
             .setContentText("Несколько минут практики — и ты лучше, чем вчера!")
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(tapIntent)
             .setAutoCancel(true)
             .build()
 

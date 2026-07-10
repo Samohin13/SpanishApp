@@ -370,7 +370,7 @@ object VocabExtra9 {
         w("el envase reciclable", "перерабатываемая упаковка", "Un envase reciclable.", "B1", "naturaleza"),
         w("el invierno crudo", "суровая зима", "Un invierno crudo.", "B1", "naturaleza"),
         w("el monzón", "муссон", "El monzón asiático.", "B1", "naturaleza"),
-        w("el ola de calor", "волна жары", "Una ola de calor extremo.", "B1", "naturaleza"),
+        w("la ola de calor", "волна жары", "Una ola de calor extremo.", "B1", "naturaleza"),
         w("el otoño dorado", "золотая осень", "El otoño dorado.", "B1", "naturaleza"),
         w("el santuario animal", "зоозаповедник", "Un santuario animal de elefantes.", "B1", "naturaleza"),
         w("el temporal", "ненастье", "Un temporal de lluvia.", "B1", "naturaleza"),

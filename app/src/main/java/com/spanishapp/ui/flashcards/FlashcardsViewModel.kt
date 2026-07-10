@@ -113,6 +113,7 @@ class FlashcardsViewModel @Inject constructor(
     ) {
         mode = direction
         activeSetId = null
+        lastWeakOnly = weakOnly
         // v1.25.98: per-session счётчики живут в VM — чистим на новой сессии
         // (restart() переиспользует тот же VM instance).
         requeuedIds.clear()
@@ -155,6 +156,7 @@ class FlashcardsViewModel @Inject constructor(
     fun startSetSession(setId: String, direction: FlashcardDirection) {
         mode = direction
         activeSetId = setId
+        lastWeakOnly = false
         requeuedIds.clear()
         newlyLearnedIds.clear()
         viewModelScope.launch {
@@ -345,13 +347,27 @@ class FlashcardsViewModel @Inject constructor(
         _state.value = prevState.copy(showBack = true, canUndo = false)
     }
 
+    /** true если текущая сессия была weak-words (для честного restart). */
+    private var lastWeakOnly = false
+
     fun restart() {
         val s = _state.value
+        // v1.25.98 FIX (audit cards-H2): «Повторить сет» после set-сессии всегда
+        // давал «Нет слов для сессии» — restart() шёл через startSession с
+        // category="set", которой нет в words. Теперь set-сессии рестартуются
+        // через startSetSession, а weak-сессии сохраняют weakOnly-флаг (раньше
+        // «ещё раз» слабых слов молча превращался в обычную колоду A1/all).
+        val setId = activeSetId
+        if (setId != null) {
+            startSetSession(setId, mode)
+            return
+        }
         startSession(
             level = s.level,
             category = s.category,
             direction = mode,
-            sessionSize = 20
+            sessionSize = 20,
+            weakOnly = lastWeakOnly,
         )
     }
 

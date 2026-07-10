@@ -32,7 +32,8 @@ import javax.inject.Inject
 @HiltViewModel
 class AppLockViewModel @Inject constructor(
     private val appLockManager: AppLockManager,
-    private val authRepository: com.spanishapp.data.repository.AuthRepository
+    private val authRepository: com.spanishapp.data.repository.AuthRepository,
+    private val appLockPreferences: com.spanishapp.data.prefs.AppLockPreferences,
 ) : ViewModel() {
 
     fun unlock() {
@@ -41,6 +42,16 @@ class AppLockViewModel @Inject constructor(
 
     fun signOut() {
         viewModelScope.launch {
+            // v1.25.98 FIX (audit auth-H3/H4):
+            // 1. Выключаем сам замок — раньше isEnabled оставался true, и после
+            //    re-login юзер снова упирался в app_lock (бесконечная петля,
+            //    Settings недостижимы чтобы отключить).
+            // 2. Полная логаут-гигиена как в SettingsViewModel.logout —
+            //    раньше этот путь оставлял чужой профиль (age/reason/interests)
+            //    следующему юзеру на общем устройстве (та же дыра, что чинилась
+            //    в v1.25.90 для основного logout).
+            runCatching { appLockPreferences.setEnabled(false) }
+            runCatching { authRepository.clearAllUserData() }
             authRepository.setLoggedIn(false)
             com.google.firebase.auth.FirebaseAuth.getInstance().signOut()
         }
@@ -62,7 +73,6 @@ fun AppLockScreen(
     val errNotRecognized = stringResource(R.string.lock_error_not_recognized)
     val titleUnlock = stringResource(R.string.lock_title_unlock)
     val subtitleUnlock = stringResource(R.string.lock_subtitle_unlock)
-    val signInAgain = stringResource(R.string.lock_sign_in_again)
 
     fun showBiometricPrompt() {
         val act = activity ?: run {
@@ -102,13 +112,18 @@ fun AppLockScreen(
                 }
             }
         )
+        // v1.25.98 FIX (audit auth-H3): + DEVICE_CREDENTIAL (PIN/паттерн/пароль
+        // устройства). Раньше только биометрия: слетела регистрация отпечатка
+        // или ERROR_LOCKOUT_PERMANENT → разблокировать приложение НЕВОЗМОЖНО.
+        // setNegativeButtonText несовместим с DEVICE_CREDENTIAL (throws) —
+        // убран; система сама показывает «Использовать PIN», а выход из
+        // аккаунта остаётся отдельной кнопкой на экране.
         val info = BiometricPrompt.PromptInfo.Builder()
             .setTitle(titleUnlock)
             .setSubtitle(subtitleUnlock)
-            .setNegativeButtonText(signInAgain)
             .setAllowedAuthenticators(
-                BiometricManager.Authenticators.BIOMETRIC_STRONG or
-                    BiometricManager.Authenticators.BIOMETRIC_WEAK
+                BiometricManager.Authenticators.BIOMETRIC_WEAK or
+                    BiometricManager.Authenticators.DEVICE_CREDENTIAL
             )
             .build()
         prompt.authenticate(info)

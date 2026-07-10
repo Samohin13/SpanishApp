@@ -1059,7 +1059,10 @@ private fun WordOfDayQuizSheet(
                         word = word,
                         onLessonClick = {
                             onDismiss()
-                            navController.navigate("course_a1") { launchSingleTop = true }
+                            // v1.25.98 FIX (audit nav-C1): маршрута "course_a1" НЕ
+                            // существует → IllegalArgumentException (гарантированный
+                            // краш на кнопке «урок» после Word-of-Day квиза).
+                            navController.navigate("course_detail/A1") { launchSingleTop = true }
                         },
                         onCardsClick = {
                             onDismiss()

@@ -127,6 +127,11 @@ interface WordDao {
     @Query("UPDATE words SET russian = :russian WHERE lower(trim(spanish)) = lower(trim(:spanish))")
     suspend fun patchRussian(spanish: String, russian: String)
 
+    // v1.25.98 (audit vocab-M3): чистка записей с неправильным артиклем,
+    // уже уехавших юзерам — сидер удаляет старый ключ и дозаливает корректный.
+    @Query("DELETE FROM words WHERE lower(trim(spanish)) = lower(trim(:spanish))")
+    suspend fun deleteBySpanish(spanish: String)
+
     @Query("SELECT COUNT(*) FROM words WHERE is_learned = 1")
     fun learnedCount(): Flow<Int>
 

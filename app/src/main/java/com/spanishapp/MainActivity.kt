@@ -163,7 +163,10 @@ class MainActivity : FragmentActivity() {
                         // финальный кадр (логотип) держится до seedReady.
                         val app = applicationContext as SpanishApp
                         val seedReady by app.seedReady.collectAsStateWithLifecycle()
-                        var splashAnimDone by remember { mutableStateOf(false) }
+                        // v1.25.98 FIX (audit nav-H3): rememberSaveable — раньше
+                        // ротация/смена темы пересоздавала Activity и 5-секундный
+                        // splash проигрывался ЗАНОВО поверх текущего экрана.
+                        var splashAnimDone by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
 
                         // System splash скрываем как только Compose начал
                         // рисовать наш Splash (через первый recomposition).
@@ -300,8 +303,15 @@ fun SpanishAppRoot(
     // v1.14.0: реагируем на widget deep link (Dictionary / Radio).
     // Когда widgetTarget меняется — навигируем и сбрасываем (чтобы повторное
     // открытие виджета снова сработало).
-    LaunchedEffect(widgetTarget.value) {
+    // v1.25.98 FIX (audit nav-H1): диплинки виджетов/пушей ОБХОДИЛИ био-замок —
+    // навигация летела поверх app_lock сразу после composition. Теперь target
+    // держится до разблокировки (эффект перезапустится при смене lock-state).
+    val lockGate: com.spanishapp.ui.AppLockGateViewModel =
+        androidx.hilt.navigation.compose.hiltViewModel()
+    val lockState by lockGate.state.collectAsStateWithLifecycle()
+    LaunchedEffect(widgetTarget.value, lockState.shouldShowLock) {
         val target = widgetTarget.value ?: return@LaunchedEffect
+        if (lockState.shouldShowLock) return@LaunchedEffect  // ждём разблокировки
         if (target.isNotBlank() && target != currentRoute) {
             navController.navigate(target) {
                 popUpTo("home") { inclusive = false; saveState = true }

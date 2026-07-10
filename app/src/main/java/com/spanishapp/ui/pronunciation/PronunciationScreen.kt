@@ -40,12 +40,29 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 // ── Утилита сравнения произношения ────────────────────────────
 
+/**
+ * v1.25.98 FIX (audit pron-C1): нормализация ОБЕИХ сторон одинаково.
+ * Раньше: (1) replace("la ") вырезал подстроку ГДЕ УГОДНО — «habla más»
+ * превращалось в «habmás», 376 эталонов корректировались неправильно;
+ * (2) артикль стригся только у эталона, а юзер его произносит (карточка
+ * показывает «el gato») → «el gato» vs «gato» = 57% и незаслуженный fail;
+ * (3) los/las не стриглись вовсе; (4) пунктуация «¡¿…» в эталоне, которую
+ * STT никогда не вернёт, гарантированно штрафовала.
+ */
+private val LEADING_ARTICLE = Regex("^(el|la|los|las|un|una)\\s+")
+private val PUNCTUATION = Regex("[¿?¡!.,;:…()\"«»]")
+
+private fun normalizeForScore(raw: String): String =
+    raw.lowercase().trim()
+        .replace(PUNCTUATION, " ")
+        .replace(Regex("\\s+"), " ")
+        .trim()
+        .replace(LEADING_ARTICLE, "")
+
 /** Возвращает 0..100 — насколько похоже произношение на эталон. */
 private fun pronunciationScore(spoken: String, target: String): Int {
-    val s = spoken.lowercase().trim()
-    val t = target.lowercase().trim()
-        .replace("el ", "").replace("la ", "")
-        .replace("un ", "").replace("una ", "")
+    val s = normalizeForScore(spoken)
+    val t = normalizeForScore(target)
     if (s == t) return 100
     // Простое расстояние Левенштейна
     val m = s.length
@@ -172,9 +189,15 @@ class PronunciationViewModel @Inject constructor(
                 }
             }
             is SpeechResult.Error -> {
+                // v1.25.98 FIX (audit pron-M4): раньше в баннер шли сырые
+                // машинные токены «silence»/«no_match».
                 _state.value = _state.value.copy(
                     phase        = PronunciationPhase.IDLE,
-                    errorMessage = result.message
+                    errorMessage = when {
+                        result.isSilence -> "Не слышу. Нажми и говори громче."
+                        result.message == "no_match" -> "Не разобрал. Попробуй ещё раз."
+                        else -> result.message
+                    }
                 )
             }
             is SpeechResult.Cancelled -> {

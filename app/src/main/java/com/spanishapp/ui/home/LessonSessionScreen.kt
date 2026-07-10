@@ -164,11 +164,14 @@ fun LessonSessionScreen(
     }
 
     val totalSteps     = sections.size + exercises.size + 1
-    var stepIndex      by remember { mutableStateOf(0) }
-    var xpEarned       by remember { mutableStateOf(0) }
-    var correctCount   by remember { mutableStateOf(0) }
-    var comboCount     by remember { mutableStateOf(0) }
-    var bestCombo      by remember { mutableStateOf(0) }
+    // v1.25.98 FIX (audit nav-H2): rememberSaveable — раньше ротация экрана
+    // (или смена тёмной темы) пересоздавала Activity и сбрасывала урок на
+    // шаг 0 с потерей заработанного XP/комбо.
+    var stepIndex      by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(0) }
+    var xpEarned       by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(0) }
+    var correctCount   by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(0) }
+    var comboCount     by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(0) }
+    var bestCombo      by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(0) }
     var showQuitDialog by remember { mutableStateOf(false) }
 
     // Theory overlay для этого урока (если есть теория)

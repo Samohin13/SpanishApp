@@ -48,4 +48,8 @@ interface TheoryProgressDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(entity: TheoryProgressEntity)
+
+    // v1.25.98 (audit auth-M1): для Reset Progress / Delete Account.
+    @Query("DELETE FROM theory_progress")
+    suspend fun deleteAll()
 }

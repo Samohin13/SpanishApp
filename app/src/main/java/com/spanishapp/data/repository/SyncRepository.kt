@@ -193,16 +193,20 @@ class SyncRepository @Inject constructor(
         }
 
         // lessons merge
+        // v1.25.98 FIX (audit auth-H5): ключи уроков-вставок «uN_lM_5» раньше
+        // не парсились («2_5».toIntOrNull() == null → silently dropped) — после
+        // переустановки все 19 пройденных _5-уроков «сбрасывались», ломая
+        // счётчики юнитов. Regex принимает и обычные uN_lM, и вставки uN_lM_5;
+        // lessonKey сохраняется ЦЕЛИКОМ (прогресс ключуется строкой).
         @Suppress("UNCHECKED_CAST")
         val lessons = snapshot.get("lessons") as? List<String> ?: emptyList()
+        val lessonKeyRe = Regex("^u(\\d+)_l(\\d+)(?:_5)?$")
         lessons.forEach { key ->
-            val parts = key.removePrefix("u").split("_l")
-            if (parts.size == 2) {
-                val unitId = parts[0].toIntOrNull() ?: return@forEach
-                val lessonIndex = parts[1].toIntOrNull() ?: return@forEach
-                lessonProgressDao.markComplete(LessonProgressEntity(key, unitId, lessonIndex))
-                applied++
-            }
+            val m = lessonKeyRe.find(key) ?: return@forEach
+            val unitId = m.groupValues[1].toIntOrNull() ?: return@forEach
+            val lessonIndex = m.groupValues[2].toIntOrNull() ?: return@forEach
+            lessonProgressDao.markComplete(LessonProgressEntity(key, unitId, lessonIndex))
+            applied++
         }
 
         applied

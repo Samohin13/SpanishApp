@@ -439,7 +439,7 @@ object VocabExtra6 {
         w("el semáforo ámbar", "жёлтый сигнал", "Cuidado con el ámbar.", "B1", "transporte"),
         w("la colisión", "столкновение", "Una colisión en cadena.", "B1", "transporte"),
         w("la prohibición", "запрет", "Una prohibición clara.", "B1", "transporte"),
-        w("la radar", "радар", "El radar de tráfico.", "B1", "transporte"),
+        w("el radar", "радар", "El radar de tráfico.", "B1", "transporte"),
         w("la zona azul", "платная парковка", "Aparca en zona azul.", "B1", "transporte"),
         w("el asilo", "убежище", "Solicitar asilo político.", "B1", "viajes"),
         w("el certificado de nacimiento", "свидетельство о рождении", "Certificado de nacimiento original.", "B1", "viajes"),

@@ -197,7 +197,7 @@ object VocabExtra4 {
         w("el lactante", "грудничок", "El lactante toma el pecho.", "B1", "familia"),
         w("el mellizo", "двойняшка", "Son mellizos no idénticos.", "B1", "familia"),
         w("el padrastro", "отчим", "Mi padrastro me crió.", "B1", "familia"),
-        w("el pandilla", "компания друзей", "Mi pandilla del barrio.", "B1", "familia"),
+        w("la pandilla", "компания друзей", "Mi pandilla del barrio.", "B1", "familia"),
         w("el árbol genealógico", "семейное древо", "Investigo mi árbol genealógico.", "B1", "familia"),
         w("la ahijada", "крестница", "Le compré un regalo a mi ahijada.", "B1", "familia"),
         w("la biznieta", "правнучка", "La biznieta de mi abuela.", "B1", "familia"),

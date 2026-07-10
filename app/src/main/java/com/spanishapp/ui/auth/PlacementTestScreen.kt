@@ -81,10 +81,12 @@ fun PlacementTestScreen(
     navController: NavHostController,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
-    var currentIndex by remember { mutableIntStateOf(0) }
-    var correctCount by remember { mutableIntStateOf(0) }
-    var selectedIndex by remember { mutableIntStateOf(-1) }
-    var answered by remember { mutableStateOf(false) }
+    // v1.25.98 FIX (audit nav-H2): rememberSaveable — ротация посреди
+    // placement-теста сбрасывала его на первый вопрос.
+    var currentIndex by androidx.compose.runtime.saveable.rememberSaveable { mutableIntStateOf(0) }
+    var correctCount by androidx.compose.runtime.saveable.rememberSaveable { mutableIntStateOf(0) }
+    var selectedIndex by androidx.compose.runtime.saveable.rememberSaveable { mutableIntStateOf(-1) }
+    var answered by androidx.compose.runtime.saveable.rememberSaveable { mutableStateOf(false) }
     var showAbortDialog by remember { mutableStateOf(false) }
 
     val question = QUESTIONS[currentIndex]
