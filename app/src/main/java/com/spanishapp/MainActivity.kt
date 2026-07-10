@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import kotlinx.coroutines.launch
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
@@ -57,6 +58,7 @@ class MainActivity : FragmentActivity() {
     @Inject lateinit var appPreferences: AppPreferences
     @Inject lateinit var onboardingPrefs: OnboardingPrefs
     @Inject lateinit var appUpdateChecker: com.spanishapp.service.AppUpdateChecker
+    @Inject lateinit var syncRepository: com.spanishapp.data.repository.SyncRepository
 
     /**
      * Применяем выбранный пользователем язык UI ДО создания UI.
@@ -217,6 +219,14 @@ class MainActivity : FragmentActivity() {
         super.onStop()
         if (!isChangingConfigurations) {
             appLockManager.lock()
+            // v1.25.98 (lifecycle): страховочный upload прогресса при уходе в
+            // фон. Основной синк — debounced 60s на каждом ответе, но юзер,
+            // прошедший урок и сразу свернувший/убивший приложение, мог не
+            // успеть в окно дебаунса. Запускаем на app-scope (переживает
+            // destroy Activity), force=true обходит дебаунс.
+            (applicationContext as? SpanishApp)?.appScope?.launch {
+                runCatching { syncRepository.uploadAll(force = true) }
+            }
         }
     }
 

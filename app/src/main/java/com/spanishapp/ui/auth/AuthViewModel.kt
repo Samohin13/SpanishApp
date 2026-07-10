@@ -201,9 +201,11 @@ class AuthViewModel @Inject constructor(
                 // перезаписывал свои Firestore-данные.
                 if (result.user != null) {
                     syncUserDataFromFirestore(result.user!!.uid)
-                    runCatching {
-                        if (syncRepository.isLocalEmpty()) syncRepository.downloadAll()
-                    }
+                    // v1.25.98 FIX (audit auth-M4): download на КАЖДОМ логине.
+                    // Раньше гейт isLocalEmpty (xp<50): юзер, сделавший пару
+                    // уроков до логина, никогда не получал облачный прогресс.
+                    // downloadAll мержит по MAX — безопасно всегда.
+                    runCatching { syncRepository.downloadAll() }
                 }
                 _uiState.update { it.copy(isLoading = false) }
             } catch (e: Exception) {
@@ -303,10 +305,9 @@ class AuthViewModel @Inject constructor(
                 if (result.user != null) {
                     authRepository.setLoggedIn(true)
                     syncUserDataFromFirestore(result.user!!.uid)
-                    // Если локальная БД пуста — стянуть прогресс из облака
-                    runCatching {
-                        if (syncRepository.isLocalEmpty()) syncRepository.downloadAll()
-                    }
+                    // v1.25.98 FIX (audit auth-M4): merge-download на каждом
+                    // логине (см. комментарий в login()).
+                    runCatching { syncRepository.downloadAll() }
                     _uiState.update { it.copy(isLoading = false) }
                 }
             } catch (e: Exception) {

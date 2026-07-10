@@ -53,7 +53,9 @@ class SpanishApp : Application() {
     @Inject lateinit var authRepository: com.spanishapp.data.repository.AuthRepository
     @Inject lateinit var userProgressDao: com.spanishapp.data.db.dao.UserProgressDao
 
-    private val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    // v1.25.98: не private — MainActivity.onStop использует для страховочного
+    // upload'а прогресса (переживает destroy Activity).
+    val appScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     /**
      * Готов ли databaseSeeder.seedIfNeeded() — на первом старте seeding

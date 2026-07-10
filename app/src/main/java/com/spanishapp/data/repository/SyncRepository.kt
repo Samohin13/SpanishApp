@@ -132,7 +132,14 @@ class SyncRepository @Inject constructor(
                     // Valencia-лига в системе, стартующей с 0. Теперь ?: 0.
                     skillRating = max(cur.skillRating, (up["skillRating"] as? Number)?.toInt() ?: 0),
                     peakSkillRating = max(cur.peakSkillRating, (up["peakSkillRating"] as? Number)?.toInt() ?: 0),
-                    currentLeague = max(cur.currentLeague, (up["currentLeague"] as? Number)?.toInt() ?: 1)
+                    currentLeague = max(cur.currentLeague, (up["currentLeague"] as? Number)?.toInt() ?: 1),
+                    // v1.25.98 FIX (audit auth-M3): эти поля загружались в облако,
+                    // но НЕ восстанавливались — после переустановки диалоги/минуты/
+                    // фризы/имя обнулялись, хотя лежали в Firestore.
+                    dialoguesCompleted = max(cur.dialoguesCompleted, (up["dialoguesCompleted"] as? Number)?.toInt() ?: 0),
+                    totalStudyMinutes = max(cur.totalStudyMinutes, (up["totalStudyMinutes"] as? Number)?.toInt() ?: 0),
+                    streakFreezesAvailable = max(cur.streakFreezesAvailable, (up["streakFreezesAvailable"] as? Number)?.toInt() ?: 0),
+                    displayName = cur.displayName.ifBlank { (up["displayName"] as? String).orEmpty() },
                 )
                 userProgressDao.update(merged)
                 applied++
