@@ -75,9 +75,16 @@ class SubscriptionVerifier @Inject constructor(
     ): VerifyResult = withContext(Dispatchers.IO) {
         val url = verifyUrl()
         if (url == null) {
-            Log.w(TAG, "verifyPurchase: AI_PROXY_URL not configured, skipping server-side check")
-            // Fallback: доверяем локальной покупке (development mode)
-            return@withContext VerifyResult(valid = true, error = "proxy not configured")
+            // v1.25.97 SEC: fail-CLOSED в release. Раньше при незаданном
+            // AI_PROXY_URL возвращали valid=true — misconfigured release-сборка
+            // молча отключала бы всю серверную проверку локального PRO-кэша.
+            // В debug оставляем valid=true (dev-удобство, worker может быть не поднят).
+            if (BuildConfig.DEBUG) {
+                Log.w(TAG, "verifyPurchase: AI_PROXY_URL not configured (debug) — trusting local")
+                return@withContext VerifyResult(valid = true, error = "proxy not configured (debug)")
+            }
+            Log.e(TAG, "verifyPurchase: AI_PROXY_URL not configured in release — failing closed")
+            return@withContext VerifyResult(valid = false, error = "proxy not configured")
         }
         val uid = currentFirebaseUid() ?: run {
             Log.w(TAG, "verifyPurchase: no Firebase uid, can't verify")

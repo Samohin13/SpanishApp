@@ -205,12 +205,18 @@ async function getGoogleAccessToken(env) {
   return data.access_token;
 }
 
-async function handleVerifyPurchase(request, env) {
+async function handleVerifyPurchase(request, env, authUid) {
   let payload;
   try { payload = await request.json(); } catch {
     return new Response(JSON.stringify({ error: "Bad JSON" }), { status: 400 });
   }
-  const { purchaseToken, productId, uid } = payload;
+  const { purchaseToken, productId } = payload;
+  // SEC (v1.25.97): PRO entitlement KV key ДОЛЖЕН браться из проверенного
+  // Firebase-токена (authUid), НИКОГДА из тела запроса. Раньше здесь читался
+  // `uid` из body — любой обладатель app-secret + одного валидного Firebase
+  // токена + одного реально активного purchaseToken мог выставить
+  // pro:<произвольный_uid>=true, размножив одну подписку на много аккаунтов.
+  const uid = authUid;
   if (!purchaseToken || !productId || !uid) {
     return new Response(JSON.stringify({ error: "Missing required fields" }), { status: 400 });
   }
@@ -368,7 +374,11 @@ export default {
     }
 
     if (isVerifyEndpoint) {
-      return handleVerifyPurchase(request, env);
+      // uid берётся из проверенного Firebase-токена выше, не из тела запроса.
+      if (!uid) {
+        return new Response("Unauthorized: verify requires Firebase token", { status: 401 });
+      }
+      return handleVerifyPurchase(request, env, uid);
     }
 
     if (isTtsEndpoint) {

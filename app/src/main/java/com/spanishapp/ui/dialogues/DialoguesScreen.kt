@@ -15,6 +15,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.VolumeUp
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -167,6 +168,12 @@ fun DialoguesScreen(
                     }
                 }
             } else {
+                // v1.25.97: PRO gate. A1 = free, A2/B1/B2 = PRO.
+                // Раньше диалоги были единственной content-поверхностью без гейта
+                // (уроки/грамматика/книги/игры уже гейтятся) — A2/B1 контент был
+                // доступен бесплатно. Используем тот же rememberIsProState() helper.
+                val isPro by com.spanishapp.ui.games.common.rememberIsProState()
+                val locked = level != "A1" && !isPro
                 LazyColumn(
                     contentPadding = PaddingValues(horizontal = 20.dp, vertical = 8.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -174,8 +181,10 @@ fun DialoguesScreen(
                     items(dialogues, key = { it.id }) { dialogue ->
                         DialogueCardContent(
                             dialogue    = dialogue,
+                            locked      = locked,
                             onSpeak     = { vm.speak(it) },
-                            onComplete  = { vm.markCompleted(dialogue) }
+                            onComplete  = { vm.markCompleted(dialogue) },
+                            onPaywall   = { navController.navigate("paywall") { launchSingleTop = true } }
                         )
                     }
                 }
@@ -187,16 +196,19 @@ fun DialoguesScreen(
 @Composable
 private fun DialogueCardContent(
     dialogue: DialogueEntity,
+    locked: Boolean,
     onSpeak: (String) -> Unit,
-    onComplete: () -> Unit
+    onComplete: () -> Unit,
+    onPaywall: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val rotation by animateFloatAsState(if (expanded) 180f else 0f, label = "rotation")
+    // Locked-карточка не раскрывается — тап ведёт на paywall.
+    val rotation by animateFloatAsState(if (expanded && !locked) 180f else 0f, label = "rotation")
 
     val lines = remember(dialogue.linesJson) { parseDialogueLines(dialogue.linesJson) }
 
     Surface(
-        onClick = { expanded = !expanded },
+        onClick = { if (locked) onPaywall() else expanded = !expanded },
         shape = RoundedCornerShape(24.dp),
         color = MaterialTheme.colorScheme.surfaceContainerHighest.copy(alpha = 0.4f),
         border = androidx.compose.foundation.BorderStroke(
@@ -224,20 +236,41 @@ private fun DialogueCardContent(
                 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        dialogue.title, 
+                        dialogue.title,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
                         color = if (dialogue.isCompleted) AppColors.Teal else MaterialTheme.colorScheme.onSurface
                     )
-                    Text(
-                        dialogue.situation, 
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
+                    if (locked) {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            modifier = Modifier.padding(top = 2.dp)
+                        ) {
+                            Icon(
+                                Icons.Default.Lock,
+                                contentDescription = null,
+                                tint = AppColors.Gold,
+                                modifier = Modifier.size(13.dp)
+                            )
+                            Text(
+                                "PRO",
+                                style = MaterialTheme.typography.labelSmall,
+                                fontWeight = FontWeight.Bold,
+                                color = AppColors.GoldDark
+                            )
+                        }
+                    } else {
+                        Text(
+                            dialogue.situation,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
                 }
-                
+
                 Icon(
-                    Icons.Default.KeyboardArrowDown,
+                    if (locked) Icons.Default.Lock else Icons.Default.KeyboardArrowDown,
                     null,
                     modifier = Modifier.graphicsLayer { rotationZ = rotation },
                     tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
