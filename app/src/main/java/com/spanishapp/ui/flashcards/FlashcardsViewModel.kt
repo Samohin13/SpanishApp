@@ -89,6 +89,16 @@ class FlashcardsViewModel @Inject constructor(
     /** Words already re-queued this session — each word returns at most once. */
     private val requeuedIds = mutableSetOf<Int>()
 
+    /**
+     * v1.25.98 FIX (audit xp-H3): слова, у которых isLearned перевернулся
+     * false→true В ЭТОЙ сессии. Раньше в words_learned шёл correctCount —
+     * ежедневный повтор одних и тех же 20 знакомых слов давал «+20 выученных
+     * слов в день», и ачивка words_1000 («уровень носителя») фармилась за
+     * недели без реального обучения. Настоящий сигнал — SM-2 переход
+     * repetitions ≥ 3.
+     */
+    private val newlyLearnedIds = mutableSetOf<Int>()
+
     private val _leaguePromotions = MutableSharedFlow<LeaguePromotion>(replay = 0, extraBufferCapacity = 1)
     val leaguePromotions: SharedFlow<LeaguePromotion> = _leaguePromotions.asSharedFlow()
 
@@ -103,6 +113,10 @@ class FlashcardsViewModel @Inject constructor(
     ) {
         mode = direction
         activeSetId = null
+        // v1.25.98: per-session счётчики живут в VM — чистим на новой сессии
+        // (restart() переиспользует тот же VM instance).
+        requeuedIds.clear()
+        newlyLearnedIds.clear()
         viewModelScope.launch {
             val cards = if (weakOnly) {
                 // Pulls accuracy < 60% words from any level/category.
@@ -141,6 +155,8 @@ class FlashcardsViewModel @Inject constructor(
     fun startSetSession(setId: String, direction: FlashcardDirection) {
         mode = direction
         activeSetId = setId
+        requeuedIds.clear()
+        newlyLearnedIds.clear()
         viewModelScope.launch {
             val set = FlashcardSetData.byId(setId)
             if (set == null) {
@@ -224,6 +240,11 @@ class FlashcardsViewModel @Inject constructor(
         val quality = SM2.qualityFromButton(button)
         val updated = SM2.review(current, quality)
 
+        // v1.25.98 (audit xp-H3): фиксируем реальный переход «выучено».
+        if (!current.isLearned && updated.isLearned) {
+            newlyLearnedIds.add(current.id)
+        }
+
         val xpDelta = when (button) {
             ReviewButton.HARD -> 0
             ReviewButton.GOOD -> XpSystem.WORD_CORRECT
@@ -277,7 +298,9 @@ class FlashcardsViewModel @Inject constructor(
 
         if (finished) {
             viewModelScope.launch {
-                val learnedDelta = _state.value.correctCount
+                // v1.25.98 FIX (audit xp-H3): «выучено» = переход isLearned
+                // false→true (SM-2 repetitions ≥ 3), а не каждый верный ответ.
+                val learnedDelta = newlyLearnedIds.size
                 xpTracker.add(_state.value.earnedXp, learnedDelta)
                 // If this was a Daily Set session, persist stars + best %.
                 activeSetId?.let { setId ->
@@ -313,6 +336,8 @@ class FlashcardsViewModel @Inject constructor(
         val (prevState, originalWord) = undoSnapshot ?: return
         undoSnapshot = null
         requeuedIds.remove(originalWord.id)
+        // v1.25.98: откат ответа отменяет и «выучено» этого слова.
+        newlyLearnedIds.remove(originalWord.id)
         viewModelScope.launch {
             wordDao.update(originalWord)           // revert SM-2 changes
         }

@@ -58,24 +58,30 @@ class RatingUpdater @Inject constructor(
         // Любой ответ — это учебная активность, обновляем стрик и проверяем ачивки.
         runCatching { streakService.touchStreak() }
         runCatching { achievementManager.checkAndUnlock() }
-        // Weekly leagues — параллельная ветка, считает weeklyXP. quality=4+ → +5, ниже → 0.
-        runCatching {
-            val xp = if (quality >= 4) XpSystem.WORD_CORRECT
-                     else if (quality == 3) XpSystem.WORD_CORRECT
-                     else 0
-            weeklyLeagueService.onXpEarned(xp)
-        }
         // Fire-and-forget sync с дебаунсом 1/мин внутри SyncRepository.
         bgScope.launch { runCatching { syncRepository.uploadAll() } }
 
         // Per-word cooldown: одно слово даёт рейтинг максимум раз в 24ч.
-        // Стрик/ачивки/синк выше уже отработали — пропускаем только дельту рейтинга.
+        // Стрик/ачивки/синк выше уже отработали — пропускаем дельту рейтинга
+        // И weekly XP (см. ниже).
         val now = System.currentTimeMillis()
         if (wordId != null) {
             val w = runCatching { wordDao.findById(wordId) }.getOrNull()
             if (w != null && now - w.lastRatingAt < WORD_COOLDOWN_MS) {
+                // v1.25.98 (audit xp-M7): активность есть, дельты нет — не даём
+                // decay считать юзера забросившим.
+                runCatching { userProgressDao.touchRatingTimestamp(now) }
                 return null
             }
+        }
+
+        // v1.25.98 FIX (audit xp-M1): weekly XP начисляется ПОСЛЕ проверки
+        // per-word cooldown. Раньше — до неё: повторные ответы на одно слово
+        // (или бесконечные пересдачи 4-вопросного quiz книги) давали +5
+        // weekly XP каждый раз без лимита — недельная лига фармилась.
+        runCatching {
+            val xp = if (quality >= 3) XpSystem.WORD_CORRECT else 0
+            weeklyLeagueService.onXpEarned(xp)
         }
 
         val progress: UserProgressEntity = userProgressDao.getProgressOnce() ?: return null

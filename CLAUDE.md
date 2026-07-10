@@ -41,10 +41,42 @@
   Libro #81 quiz AI editing artifact «...espera, sí podría» убран.
 - **v1.25.95** — Tier 1 technical audit fixes (date locale, fake PerformanceLoadTest
   assertions, broken androidTest package name).
+- **v1.25.97-98 (2026-07-10, ветка → master)** — БОЛЬШОЙ мульти-аудит (6 агентов:
+  security / billing / курс / рейтинги+награды / игры / книги+TTS) + фиксы:
+  - **Security**: 0 critical/high. Worker verify-purchase: uid из Firebase-токена
+    (был спуфинг PRO из body — ⚠️ ТРЕБУЕТ ДЕПЛОЯ ВОРКЕРА). SubscriptionVerifier
+    fail-closed в release.
+  - **PRO-гейты закрыты**: диалоги A2+, книги через прямые маршруты, кнопка
+    «Дальше» в 6 играх (FREE_GAME_LEVELS=10), lesson_intro/lesson_session
+    (onboarding deep-link), кроссворд «уровень 101».
+  - **XP-целостность**: addXpAndWords больше не инкрементит lessons_completed
+    (каждый XP-источник давал фейковый «+1 урок»); grammar/achievements XP
+    реально начисляются (были фантомными); checkpoint/minitest XP только
+    first-pass; words_learned = переход isLearned (не каждый ответ); weekly XP
+    после cooldown; Firestore rating fallback ?:0 (был 1000).
+  - **Курс**: u10 сдвиг 5 уроков починен (id u10_l10..l14); 2 невыигрываемых
+    упражнения; чекпоинты пишутся в lesson_progress (юнит больше не 15/16);
+    cp-маппинг cp1..cp16 (был cp1-4 → A2+ чекпоинты автопроходились на «Поехали»).
+  - **Verbos**: генератор больше НЕ УЧИТ неправильным формам — орфография
+    g→j/c→z/gu→g из написания инфинитива + stem-сдвиги в -zar/-gar/-car
+    (dirijo/cojo/venzo/empiece/almuerce); 17 ре-типизаций банка; jugar/avergonzar
+    → AUTHORED; +18 тестов SpanishConjugatorTest.
+  - **Игры**: Math «Работа над ошибками» реанимирована (была мертва), Articles
+    дубликация таблицы на уровнях 41+, Palabra ошибки в Stats, weak-verbs счётчик.
+  - **TTS**: offline = локальный fallback вместо тишины (onAllFailed);
+    атомарный кэш mp3; es-ES приоритет в авто-выборе голоса; quiz-опции книг
+    шафлятся (70% ответов были «B»).
+  - **Rating decay честный**: якорь = последняя активность, дельта между
+    прогонами воркера (была вечная -5/3дня); zero-delta ответы обновляют таймштамп.
+  - **AI-чат PRO-only** подтверждён решением владельца, AiChatLimiter (50/день)
+    удалён как мёртвый код.
+  - Отдельная ветка `claude/compliance-targetsdk36-billing8`: targetSdk 36 +
+    Billing 8.0.0 (Play deadline 31 авг 2026) — НЕ мержить без device-теста покупок.
 
 ⚠️ Educational backlog: ~120 medium/low findings из Phase 1+2 audit'ов (verb imperativo
-data для 60 AUTHORED, generator g→j/c→z rules, vocab ~30 entries cleanup, libros
-CEFR re-leveling, pronunciation redesign, theory ~190 duplicate Map keys).
+data для 60 AUTHORED — imperativo для правильных теперь генерится корректно, для
+AUTHORED пропускается; vocab ~30 entries cleanup, libros CEFR re-leveling,
+pronunciation redesign, theory ~190 duplicate Map keys).
 
 ## 🆕 v1.25.x Chat / Voice / Billing batch (2026-05-28..29)
 
