@@ -190,4 +190,164 @@ class SpanishConjugatorTest {
         println("Conjugator covers ${all.size} verbs")
         assertTrue("at least 100 known verbs", all.size >= 100)
     }
+
+    // ═══════════════════════════════════════════════════════════════
+    // v1.25.98 (audit games-C1): орфография g→j / gu→g / c→z перед a/o
+    // + комбинации «стем-сдвиг + spelling». До фикса генератор учил
+    // НЕПРАВИЛЬНЫМ формам: «dirigo», «cogo», «venco», «empece», «almorzo».
+    // Каждая форма проверена по RAE.
+    // ═══════════════════════════════════════════════════════════════
+
+    @Test fun `dirigir presente — g→j in yo only`() {
+        assertEquals(
+            listOf("dirijo","diriges","dirige","dirigimos","dirigís","dirigen"),
+            forms("dirigir", "presente")
+        )
+    }
+
+    @Test fun `dirigir subjuntivo — j throughout`() {
+        assertEquals(
+            listOf("dirija","dirijas","dirija","dirijamos","dirijáis","dirijan"),
+            forms("dirigir", "subjuntivo")
+        )
+    }
+
+    @Test fun `coger escoger proteger exigir fingir — g→j in yo`() {
+        assertEquals("cojo",    forms("coger", "presente")[0])
+        assertEquals("coges",   forms("coger", "presente")[1])
+        assertEquals("coja",    forms("coger", "subjuntivo")[0])
+        assertEquals("escojo",  forms("escoger", "presente")[0])
+        assertEquals("protejo", forms("proteger", "presente")[0])
+        assertEquals("exijo",   forms("exigir", "presente")[0])
+        assertEquals("finjo",   forms("fingir", "presente")[0])
+    }
+
+    @Test fun `corregir — stem e→i PLUS g→j`() {
+        assertEquals(
+            listOf("corrijo","corriges","corrige","corregimos","corregís","corrigen"),
+            forms("corregir", "presente")
+        )
+        assertEquals(
+            listOf("corrija","corrijas","corrija","corrijamos","corrijáis","corrijan"),
+            forms("corregir", "subjuntivo")
+        )
+    }
+
+    @Test fun `elegir presente — elijo`() {
+        assertEquals("elijo", forms("elegir", "presente")[0])
+    }
+
+    @Test fun `distinguir — gu→g in yo and subjuntivo`() {
+        assertEquals(
+            listOf("distingo","distingues","distingue","distinguimos","distinguís","distinguen"),
+            forms("distinguir", "presente")
+        )
+        assertEquals("distinga",    forms("distinguir", "subjuntivo")[0])
+        assertEquals("distingamos", forms("distinguir", "subjuntivo")[3])
+    }
+
+    @Test fun `seguir — stem e→i PLUS gu→g`() {
+        assertEquals(
+            listOf("sigo","sigues","sigue","seguimos","seguís","siguen"),
+            forms("seguir", "presente")
+        )
+        assertEquals(
+            listOf("siga","sigas","siga","sigamos","sigáis","sigan"),
+            forms("seguir", "subjuntivo")
+        )
+    }
+
+    @Test fun `perseguir conseguir — persigo consigo`() {
+        assertEquals("persigo", forms("perseguir", "presente")[0])
+        assertEquals("consigo", forms("conseguir", "presente")[0])
+    }
+
+    @Test fun `vencer convencer — consonant+cer c→z`() {
+        assertEquals(
+            listOf("venzo","vences","vence","vencemos","vencéis","vencen"),
+            forms("vencer", "presente")
+        )
+        assertEquals(
+            listOf("venza","venzas","venza","venzamos","venzáis","venzan"),
+            forms("vencer", "subjuntivo")
+        )
+        assertEquals("convenzo", forms("convencer", "presente")[0])
+    }
+
+    @Test fun `empezar presente — stem shift restored (was 'empezo')`() {
+        assertEquals(
+            listOf("empiezo","empiezas","empieza","empezamos","empezáis","empiezan"),
+            forms("empezar", "presente")
+        )
+    }
+
+    @Test fun `empezar subjuntivo — empiece + empecemos (shift AND z→c)`() {
+        assertEquals(
+            listOf("empiece","empieces","empiece","empecemos","empecéis","empiecen"),
+            forms("empezar", "subjuntivo")
+        )
+    }
+
+    @Test fun `almorzar — almuerzo almorcé almuerce`() {
+        assertEquals("almuerzo",   forms("almorzar", "presente")[0])
+        assertEquals("almorzamos", forms("almorzar", "presente")[3])
+        assertEquals("almorcé",    forms("almorzar", "preterito")[0])
+        assertEquals("almuerce",   forms("almorzar", "subjuntivo")[0])
+        assertEquals("almorcemos", forms("almorzar", "subjuntivo")[3])
+    }
+
+    @Test fun `colgar rogar negar — stem shift plus g→gu`() {
+        assertEquals("cuelgo",    forms("colgar", "presente")[0])
+        assertEquals("colgué",    forms("colgar", "preterito")[0])
+        assertEquals("cuelgue",   forms("colgar", "subjuntivo")[0])
+        assertEquals("colguemos", forms("colgar", "subjuntivo")[3])
+        assertEquals("ruego",     forms("rogar", "presente")[0])
+        assertEquals("niego",     forms("negar", "presente")[0])
+        assertEquals("niegue",    forms("negar", "subjuntivo")[0])
+    }
+
+    @Test fun `volcar fregar cegar comenzar — remaining stem+spell combos`() {
+        assertEquals("vuelco",   forms("volcar", "presente")[0])
+        assertEquals("volqué",   forms("volcar", "preterito")[0])
+        assertEquals("vuelque",  forms("volcar", "subjuntivo")[0])
+        assertEquals("friego",   forms("fregar", "presente")[0])
+        assertEquals("ciego",    forms("cegar", "presente")[0])
+        assertEquals("comienzo", forms("comenzar", "presente")[0])
+        assertEquals("comience", forms("comenzar", "subjuntivo")[0])
+    }
+
+    @Test fun `pure spelling verbs unaffected — busque llegue realice`() {
+        assertEquals("busque",  forms("buscar", "subjuntivo")[0])
+        assertEquals("llegue",  forms("llegar", "subjuntivo")[0])
+        assertEquals("realice", forms("realizar", "subjuntivo")[0])
+    }
+
+    @Test fun `imperativo — dirige dirija, empieza empiece, sigue siga`() {
+        val dir = forms("dirigir", "imperativo")
+        assertEquals("dirige",    dir[1])  // tú
+        assertEquals("dirija",    dir[2])  // usted
+        assertEquals("dirijamos", dir[3])  // nosotros
+        assertEquals("dirigid",   dir[4])  // vosotros
+        assertEquals("dirijan",   dir[5])  // ustedes
+        val emp = forms("empezar", "imperativo")
+        assertEquals("empieza",   emp[1])
+        assertEquals("empiece",   emp[2])
+        val seg = forms("seguir", "imperativo")
+        assertEquals("sigue", seg[1])
+        assertEquals("siga",  seg[2])
+    }
+
+    @Test fun `subjuntivo imperfecto — siguiera empezara`() {
+        assertEquals("hablara",    forms("hablar", "subjuntivo_imperfecto")[0])
+        assertEquals("habláramos", forms("hablar", "subjuntivo_imperfecto")[3])
+        assertEquals("siguiera",   forms("seguir", "subjuntivo_imperfecto")[0])
+        assertEquals("empezara",   forms("empezar", "subjuntivo_imperfecto")[0])
+    }
+
+    @Test fun `jugar avergonzar now AUTHORED — no wrong generated forms`() {
+        // jugar: u→ue не выражается VerbKind — раньше генерил «juga».
+        assertNull(SpanishConjugator.conjugate("jugar", "presente"))
+        // avergonzar: o→üe с диерезисом — исключён из генератора.
+        assertNull(SpanishConjugator.conjugate("avergonzar", "presente"))
+    }
 }

@@ -102,18 +102,40 @@ object SpanishConjugator {
         val isE_IE   = kind == VerbKind.STEM_E_IE
         val isO_UE   = kind == VerbKind.STEM_O_UE
         val isE_I    = kind == VerbKind.STEM_E_I
-        val isCar    = kind == VerbKind.SPELL_CAR
-        val isGar    = kind == VerbKind.SPELL_GAR
-        val isZar    = kind == VerbKind.SPELL_ZAR
         val isZc     = kind == VerbKind.ZC
         val isDucir  = kind == VerbKind.DUCIR
         val isUir    = kind == VerbKind.UIR
+
+        // v1.25.98 FIX (audit games-C1): орфографические изменения в испанском
+        // ПОЛНОСТЬЮ предсказуемы из написания инфинитива, поэтому определяем их
+        // по spelling, а не только по VerbKind. Это решает и проблему комбинаций
+        // «stem-change + spelling-change» (empezar = e→ie + z→c): kind несёт
+        // стем-изменение, орфография накладывается автоматически.
+        val isCar    = kind == VerbKind.SPELL_CAR || inf.endsWith("car")
+        val isGar    = kind == VerbKind.SPELL_GAR || inf.endsWith("gar")
+        val isZar    = kind == VerbKind.SPELL_ZAR || inf.endsWith("zar")
 
         fun shifted(): String = when {
             isE_IE -> changeLastVowel(stem, 'e', "ie")
             isO_UE -> changeLastVowel(stem, 'o', "ue")
             isE_I  -> changeLastVowel(stem, 'e', "i")
             else   -> stem
+        }
+
+        // v1.25.98 FIX (audit games-C1): орфография перед окончаниями на a/o.
+        // Раньше отсутствовала полностью → генератор учил НЕПРАВИЛЬНЫМ формам:
+        // «dirigo» (надо dirijo), «cogo» (cojo), «venco» (venzo), «distinguo»
+        // (distingo), «corrigo» (corrijo). Правила:
+        //   -ger/-gir  → g→j  перед a/o (dirigir → dirijo, dirija)
+        //   -guir      → gu→g перед a/o (distinguir → distingo, distinga)
+        //   -cer/-cir после согласной → c→z перед a/o (vencer → venzo, venza);
+        //     после гласной работает ZC/DUCIR (parezco) — их не трогаем.
+        fun orthoAO(s: String): String = when {
+            inf.endsWith("guir") && s.endsWith("gu") -> s.dropLast(1)
+            (inf.endsWith("ger") || inf.endsWith("gir")) && s.endsWith("g") -> s.dropLast(1) + "j"
+            (inf.endsWith("cer") || inf.endsWith("cir")) && !isZc && !isDucir && s.endsWith("c") ->
+                s.dropLast(1) + "z"
+            else -> s
         }
 
         val forms: List<String> = when (tense) {
@@ -137,12 +159,15 @@ object SpanishConjugator {
                 }
                 else -> {
                     val s1 = shifted()
+                    // yo-форма: единственная в presente с окончанием -o →
+                    // здесь срабатывает орфография g→j / gu→g / c→z.
+                    val yo = orthoAO(s1)
                     when (ending) {
-                        "ar" -> listOf(s1 + "o", s1 + "as", s1 + "a",
+                        "ar" -> listOf(yo + "o", s1 + "as", s1 + "a",
                                        stem + "amos", stem + "áis", s1 + "an")
-                        "er" -> listOf(s1 + "o", s1 + "es", s1 + "e",
+                        "er" -> listOf(yo + "o", s1 + "es", s1 + "e",
                                        stem + "emos", stem + "éis", s1 + "en")
-                        "ir" -> listOf(s1 + "o", s1 + "es", s1 + "e",
+                        "ir" -> listOf(yo + "o", s1 + "es", s1 + "e",
                                        stem + "imos", stem + "ís", s1 + "en")
                         else -> return null
                     }
@@ -251,29 +276,39 @@ object SpanishConjugator {
                            y + "amos", y + "áis", y + "an")
                 }
                 ending == "ar" -> {
-                    val s1 = shifted()
-                    val (sb, sn) = when {
-                        isCar -> (stem.dropLast(1) + "qu") to (stem.dropLast(1) + "qu")
-                        isGar -> (stem + "u") to (stem + "u")
-                        isZar -> (stem.dropLast(1) + "c") to (stem.dropLast(1) + "c")
-                        else  -> s1 to stem
+                    // v1.25.98 FIX: орфография (c→qu / g→gu / z→c перед e)
+                    // накладывается ПОВЕРХ стем-сдвига, а не вместо него.
+                    // Раньше SPELL_ZAR ронял сдвиг: empezar → «empece»
+                    // (надо empiece), almorzar → «almorce» (надо almuerce).
+                    fun orthoE(s: String): String = when {
+                        isCar -> s.dropLast(1) + "qu"
+                        isGar -> s + "u"
+                        isZar -> s.dropLast(1) + "c"
+                        else  -> s
                     }
+                    val sb = orthoE(shifted())  // empiez → empiec
+                    val sn = orthoE(stem)       // empez  → empec
                     listOf(sb + "e", sb + "es", sb + "e",
                            sn + "emos", sn + "éis", sb + "en")
                 }
                 ending == "er" -> {
-                    val s1 = shifted()
+                    // Все окончания subj -er начинаются с a → орфография
+                    // применяется ко всем лицам (vencer → venza..venzan).
+                    val s1 = orthoAO(shifted())
+                    val ns = orthoAO(stem)
                     listOf(s1 + "a", s1 + "as", s1 + "a",
-                           stem + "amos", stem + "áis", s1 + "an")
+                           ns + "amos", ns + "áis", s1 + "an")
                 }
                 ending == "ir" -> {
-                    val s1 = shifted()
-                    val nosStem = when {
+                    // Аналогично -er: dirigir → dirija..dirijan,
+                    // seguir → siga..sigan, corregir → corrija..corrijan.
+                    val s1 = orthoAO(shifted())
+                    val nosStem = orthoAO(when {
                         isE_IE -> changeLastVowel(stem, 'e', "i")
                         isO_UE -> changeLastVowel(stem, 'o', "u")
                         isE_I  -> changeLastVowel(stem, 'e', "i")
                         else   -> stem
-                    }
+                    })
                     listOf(s1 + "a", s1 + "as", s1 + "a",
                            nosStem + "amos", nosStem + "áis", s1 + "an")
                 }

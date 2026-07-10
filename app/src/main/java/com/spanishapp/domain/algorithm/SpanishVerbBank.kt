@@ -84,7 +84,12 @@ object SpanishVerbBank {
         VerbInfo("tratar", 1, VerbKind.REGULAR_AR),
         VerbInfo("mirar", 1, VerbKind.REGULAR_AR),
         VerbInfo("contar", 1, VerbKind.STEM_O_UE),
-        VerbInfo("empezar", 1, VerbKind.SPELL_ZAR), // e→ie + zar
+        // v1.25.98 FIX (audit): stem-changers, ошибочно помеченные чисто
+        // орфографическими kind'ами — SPELL_ZAR/GAR ронял стем-сдвиг
+        // («empezo» вместо empiezo, «almorzo» вместо almuerzo). Теперь kind
+        // несёт стем-изменение, а орфография -zar/-gar/-car накладывается
+        // АВТОМАТИЧЕСКИ по написанию инфинитива (SpanishConjugator).
+        VerbInfo("empezar", 1, VerbKind.STEM_E_IE), // e→ie + zar (z→c авто)
         VerbInfo("esperar", 1, VerbKind.REGULAR_AR),
         VerbInfo("buscar", 1, VerbKind.SPELL_CAR),
         VerbInfo("existir", 1, VerbKind.REGULAR_IR),
@@ -104,7 +109,7 @@ object SpanishVerbBank {
         VerbInfo("permitir", 2, VerbKind.REGULAR_IR),
         VerbInfo("aparecer", 2, VerbKind.ZC),
         VerbInfo("conseguir", 2, VerbKind.STEM_E_I),
-        VerbInfo("comenzar", 2, VerbKind.SPELL_ZAR),
+        VerbInfo("comenzar", 2, VerbKind.STEM_E_IE), // e→ie + zar (v1.25.98)
         VerbInfo("servir", 2, VerbKind.STEM_E_I),
         VerbInfo("sacar", 2, VerbKind.SPELL_CAR),
         VerbInfo("necesitar", 2, VerbKind.REGULAR_AR),
@@ -214,7 +219,10 @@ object SpanishVerbBank {
         VerbInfo("subir", 3, VerbKind.REGULAR_IR),
         VerbInfo("bajar", 3, VerbKind.REGULAR_AR),
         VerbInfo("llover", 3, VerbKind.STEM_O_UE),
-        VerbInfo("jugar", 3, VerbKind.SPELL_GAR),
+        // v1.25.98: jugar — уникальный сдвиг u→ue, не выражается VerbKind.
+        // AUTHORED → 6 времён из БД (juego), imperativo/subj_imp пропускаются
+        // (лучше нет вопроса, чем неправильная форма «juga»).
+        VerbInfo("jugar", 3, VerbKind.AUTHORED),
         VerbInfo("conducir", 3, VerbKind.DUCIR),
         VerbInfo("traducir", 3, VerbKind.DUCIR),
         VerbInfo("reducir", 3, VerbKind.DUCIR),
@@ -241,14 +249,14 @@ object SpanishVerbBank {
         VerbInfo("sentar", 3, VerbKind.STEM_E_IE),
         VerbInfo("despertar", 3, VerbKind.STEM_E_IE),
         VerbInfo("encender", 3, VerbKind.STEM_E_IE),
-        VerbInfo("negar", 3, VerbKind.SPELL_GAR),
+        VerbInfo("negar", 3, VerbKind.STEM_E_IE), // e→ie + gar (v1.25.98)
         VerbInfo("merendar", 3, VerbKind.STEM_E_IE),
         VerbInfo("mentir", 3, VerbKind.STEM_E_IE),
         VerbInfo("sugerir", 3, VerbKind.STEM_E_IE),
         VerbInfo("divertir", 3, VerbKind.STEM_E_IE),
         VerbInfo("hervir", 3, VerbKind.STEM_E_IE),
         VerbInfo("advertir", 3, VerbKind.STEM_E_IE),
-        VerbInfo("almorzar", 3, VerbKind.SPELL_ZAR),
+        VerbInfo("almorzar", 3, VerbKind.STEM_O_UE), // o→ue + zar (v1.25.98)
         VerbInfo("soñar", 3, VerbKind.STEM_O_UE),
         VerbInfo("volar", 3, VerbKind.STEM_O_UE),
         VerbInfo("doler", 3, VerbKind.STEM_O_UE),
@@ -266,14 +274,14 @@ object SpanishVerbBank {
         VerbInfo("gobernar", 4, VerbKind.STEM_E_IE),
         VerbInfo("recomendar", 4, VerbKind.STEM_E_IE),
         VerbInfo("temblar", 4, VerbKind.STEM_E_IE),
-        VerbInfo("tropezar", 4, VerbKind.SPELL_ZAR),
+        VerbInfo("tropezar", 4, VerbKind.STEM_E_IE), // e→ie + zar (v1.25.98)
         VerbInfo("acordar", 4, VerbKind.STEM_O_UE),
         VerbInfo("acostar", 4, VerbKind.STEM_O_UE),
         VerbInfo("aprobar", 4, VerbKind.STEM_O_UE),
-        VerbInfo("colgar", 4, VerbKind.SPELL_GAR),
+        VerbInfo("colgar", 4, VerbKind.STEM_O_UE), // o→ue + gar (v1.25.98)
         VerbInfo("encontrarse", 4, VerbKind.STEM_O_UE),
-        VerbInfo("forzar", 4, VerbKind.SPELL_ZAR),
-        VerbInfo("rogar", 4, VerbKind.SPELL_GAR),
+        VerbInfo("forzar", 4, VerbKind.STEM_O_UE), // o→ue + zar (v1.25.98)
+        VerbInfo("rogar", 4, VerbKind.STEM_O_UE), // o→ue + gar (v1.25.98)
         VerbInfo("contar", 4, VerbKind.STEM_O_UE),  // dup safe
         VerbInfo("sonar", 4, VerbKind.STEM_O_UE),
         VerbInfo("tronar", 4, VerbKind.STEM_O_UE),
@@ -630,7 +638,9 @@ object SpanishVerbBank {
         VerbInfo("atrapar", 5, VerbKind.REGULAR_AR),
         VerbInfo("atribuir", 5, VerbKind.UIR),
         VerbInfo("ausentar", 5, VerbKind.REGULAR_AR),
-        VerbInfo("avergonzar", 5, VerbKind.SPELL_ZAR),
+        // v1.25.98: avergonzar — o→üe с диерезисом (avergüenzo), правилами не
+// выражается. AUTHORED = исключён из генератора (нет неправильных форм).
+VerbInfo("avergonzar", 5, VerbKind.AUTHORED),
 
         // B
         VerbInfo("balancear", 5, VerbKind.REGULAR_AR),
@@ -660,7 +670,7 @@ object SpanishVerbBank {
         VerbInfo("carecer", 5, VerbKind.ZC),
         VerbInfo("cazar", 5, VerbKind.SPELL_ZAR),
         VerbInfo("ceder", 5, VerbKind.REGULAR_ER),
-        VerbInfo("cegar", 5, VerbKind.SPELL_GAR),
+        VerbInfo("cegar", 5, VerbKind.STEM_E_IE), // e→ie + gar: ciego (v1.25.98)
         VerbInfo("censurar", 5, VerbKind.REGULAR_AR),
         VerbInfo("centrar", 5, VerbKind.REGULAR_AR),
         VerbInfo("cepillar", 5, VerbKind.REGULAR_AR),
@@ -678,7 +688,7 @@ object SpanishVerbBank {
         VerbInfo("coincidir", 5, VerbKind.REGULAR_IR),
         VerbInfo("colaborar", 5, VerbKind.REGULAR_AR),
         VerbInfo("colegir", 5, VerbKind.STEM_E_I),
-        VerbInfo("colgar", 5, VerbKind.SPELL_GAR),
+        VerbInfo("colgar", 5, VerbKind.STEM_O_UE), // o→ue + gar (v1.25.98)
         VerbInfo("combatir", 5, VerbKind.REGULAR_IR),
         VerbInfo("combinar", 5, VerbKind.REGULAR_AR),
         VerbInfo("comentar", 5, VerbKind.REGULAR_AR),
@@ -759,7 +769,7 @@ object SpanishVerbBank {
         VerbInfo("desnudar", 5, VerbKind.REGULAR_AR),
         VerbInfo("despachar", 5, VerbKind.REGULAR_AR),
         VerbInfo("desplazar", 5, VerbKind.SPELL_ZAR),
-        VerbInfo("desplegar", 5, VerbKind.SPELL_GAR),
+        VerbInfo("desplegar", 5, VerbKind.STEM_E_IE), // e→ie + gar: despliego (v1.25.98)
         VerbInfo("despreciar", 5, VerbKind.REGULAR_AR),
         VerbInfo("destacar", 5, VerbKind.SPELL_CAR),
         VerbInfo("destinar", 5, VerbKind.REGULAR_AR),
@@ -852,7 +862,7 @@ object SpanishVerbBank {
         VerbInfo("escapar", 5, VerbKind.REGULAR_AR),
         VerbInfo("escasear", 5, VerbKind.REGULAR_AR),
         VerbInfo("esculpir", 5, VerbKind.REGULAR_IR),
-        VerbInfo("esforzar", 5, VerbKind.SPELL_ZAR),
+        VerbInfo("esforzar", 5, VerbKind.STEM_O_UE), // o→ue + zar: esfuerzo (v1.25.98)
         VerbInfo("estallar", 5, VerbKind.REGULAR_AR),
         VerbInfo("estimar", 5, VerbKind.REGULAR_AR),
         VerbInfo("estimular", 5, VerbKind.REGULAR_AR),
@@ -901,7 +911,7 @@ object SpanishVerbBank {
         VerbInfo("fomentar", 5, VerbKind.REGULAR_AR),
         VerbInfo("fotografiar", 5, VerbKind.REGULAR_AR),
         VerbInfo("fracasar", 5, VerbKind.REGULAR_AR),
-        VerbInfo("fregar", 5, VerbKind.SPELL_GAR),
+        VerbInfo("fregar", 5, VerbKind.STEM_E_IE), // e→ie + gar: friego (v1.25.98)
         VerbInfo("frotar", 5, VerbKind.REGULAR_AR),
         VerbInfo("fumar", 5, VerbKind.REGULAR_AR),
         VerbInfo("fundamentar", 5, VerbKind.REGULAR_AR),
@@ -1204,7 +1214,7 @@ object SpanishVerbBank {
         VerbInfo("reclamar", 5, VerbKind.REGULAR_AR),
         VerbInfo("reclutar", 5, VerbKind.REGULAR_AR),
         VerbInfo("recomendar", 5, VerbKind.STEM_E_IE),
-        VerbInfo("recomenzar", 5, VerbKind.SPELL_ZAR),
+        VerbInfo("recomenzar", 5, VerbKind.STEM_E_IE), // e→ie + zar (v1.25.98)
         VerbInfo("recompensar", 5, VerbKind.REGULAR_AR),
         VerbInfo("reconstituir", 5, VerbKind.UIR),
         VerbInfo("reconstruir", 5, VerbKind.UIR),
@@ -1222,7 +1232,7 @@ object SpanishVerbBank {
         VerbInfo("reflejar", 5, VerbKind.REGULAR_AR),
         VerbInfo("reflexionar", 5, VerbKind.REGULAR_AR),
         VerbInfo("reformar", 5, VerbKind.REGULAR_AR),
-        VerbInfo("reforzar", 5, VerbKind.SPELL_ZAR),
+        VerbInfo("reforzar", 5, VerbKind.STEM_O_UE), // o→ue + zar: refuerzo (v1.25.98)
         VerbInfo("refrescar", 5, VerbKind.SPELL_CAR),
         VerbInfo("refugiar", 5, VerbKind.REGULAR_AR),
         VerbInfo("regalar", 5, VerbKind.REGULAR_AR),
@@ -1271,7 +1281,7 @@ object SpanishVerbBank {
         VerbInfo("restablecer", 5, VerbKind.ZC),
         VerbInfo("restar", 5, VerbKind.REGULAR_AR),
         VerbInfo("restaurar", 5, VerbKind.REGULAR_AR),
-        VerbInfo("restregar", 5, VerbKind.SPELL_GAR),
+        VerbInfo("restregar", 5, VerbKind.STEM_E_IE), // e→ie + gar: restriego (v1.25.98)
         VerbInfo("resucitar", 5, VerbKind.REGULAR_AR),
         VerbInfo("resumir", 5, VerbKind.REGULAR_IR),
         VerbInfo("retomar", 5, VerbKind.REGULAR_AR),
@@ -1392,7 +1402,7 @@ object SpanishVerbBank {
         VerbInfo("trasladarse", 5, VerbKind.REGULAR_AR),
         VerbInfo("traspasar", 5, VerbKind.REGULAR_AR),
         VerbInfo("tratarse", 5, VerbKind.REGULAR_AR),
-        VerbInfo("tropezar", 5, VerbKind.SPELL_ZAR),
+        VerbInfo("tropezar", 5, VerbKind.STEM_E_IE), // e→ie + zar (v1.25.98)
         VerbInfo("trazar", 5, VerbKind.SPELL_ZAR),
         VerbInfo("trotar", 5, VerbKind.REGULAR_AR),
         VerbInfo("truncar", 5, VerbKind.SPELL_CAR),
@@ -1423,7 +1433,7 @@ object SpanishVerbBank {
         VerbInfo("visualizar", 5, VerbKind.SPELL_ZAR),
         VerbInfo("vivar", 5, VerbKind.REGULAR_AR),
         VerbInfo("vociferar", 5, VerbKind.REGULAR_AR),
-        VerbInfo("volcar", 5, VerbKind.SPELL_CAR),
+        VerbInfo("volcar", 5, VerbKind.STEM_O_UE), // o→ue + car: vuelco (v1.25.98)
         VerbInfo("voltear", 5, VerbKind.REGULAR_AR),
         VerbInfo("vomitar", 5, VerbKind.REGULAR_AR),
         VerbInfo("yacer", 5, VerbKind.AUTHORED),
