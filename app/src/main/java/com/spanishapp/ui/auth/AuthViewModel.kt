@@ -43,12 +43,70 @@ class AuthViewModel @Inject constructor(
     private val syncRepository: com.spanishapp.data.repository.SyncRepository,
     // v1.25.88: sync displayName в user_progress для leaderboard
     private val userProgressDao: com.spanishapp.data.db.dao.UserProgressDao,
+    // v1.25.98 (audit auth-H2): wipe локальных данных при входе в ДРУГОЙ аккаунт.
+    private val userDataWiper: com.spanishapp.service.UserDataWiper,
+    // v1.25.98 (adversarial review): владелец локального прогресса + шлагбаум
+    // upload'ов на время сверки с облаком.
+    private val accountSyncGuard: com.spanishapp.service.AccountSyncGuard,
     @ApplicationContext private val appContext: Context,
 ) : ViewModel() {
 
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    
+
+    /**
+     * v1.25.98 (adversarial review): единая сверка локальных данных с аккаунтом
+     * после УСПЕШНОГО входа/регистрации/link. Вызывать с uid результата
+     * (для link — это сохранённый анонимный uid).
+     *
+     * Модель (как в account-based приложениях):
+     *  1. beginAccountSwitch() — блокируем upload'ы ДО любых действий. Это
+     *     закрывает гонку: между resolve signIn (currentUser уже = новый uid)
+     *     и завершением сверки конкурентный uploadAll (onStop force-upload,
+     *     RatingUpdater) мог записать локальные данные/нули в облачный док
+     *     нового юзера НАВСЕГДА (SetOptions.merge перетирает поля).
+     *  2. Если owner (владелец локальных данных) — ДРУГОЙ uid → это чужие
+     *     данные на общем устройстве → wipe. Работает и для link: если на
+     *     устройстве оставались данные другого реального аккаунта (logout не
+     *     стирает Room), анонимная сессия «унаследовала» их — стираем.
+     *     owner == null (свежий гость) или owner == uid (свой re-login) → НЕ
+     *     стираем: прогресс гостя/юзера сохраняется. Это чинит H1
+     *     (регистрация больше не уничтожает собственный прогресс гостя).
+     *  3. downloadAll() при УСПЕХЕ вызывает completeAccountSwitch(uid) внутри
+     *     (owner=uid, upload разблокирован). При ЛЮБОЙ ошибке шлагбаум
+     *     остаётся закрыт → ни один upload не занулит облако (чинит H2);
+     *     ретрай на следующем логине/ручном синке.
+     *  4. Только после успешной сверки выгружаем локальный прогресс (напр.
+     *     наработанный гостем до регистрации) в облако.
+     */
+    private suspend fun reconcileAfterAuth(uid: String) {
+        val owner = accountSyncGuard.ownerUid()
+        accountSyncGuard.beginAccountSwitch()
+
+        if (owner != null && owner != uid) {
+            Log.i("AuthViewModel", "Account switch ($owner -> $uid): wiping foreign local data")
+            val wiped = runCatching { userDataWiper.wipeAll() }
+                .onFailure { Log.e("AuthViewModel", "wipe failed on account switch", it) }
+                .isSuccess
+            if (!wiped) {
+                // Шлагбаум остаётся закрыт — ретрай на следующем логине.
+                return
+            }
+        }
+
+        val downloaded = syncRepository.downloadAll().isSuccess
+        if (downloaded) {
+            runCatching { syncRepository.uploadAll(force = true) }
+        } else if (owner == null || owner == uid) {
+            // Скачать не удалось, но чужого облака клобберить нечем (свежий
+            // владелец / свой re-login) — claim + upload, чтобы приложение не
+            // осталось навсегда с заблокированным синком.
+            accountSyncGuard.completeAccountSwitch(uid)
+            runCatching { syncRepository.uploadAll(force = true) }
+        }
+        // else: switch + download упал → остаёмся заблокированы, ретрай.
+    }
+
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
 
@@ -61,6 +119,22 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             authRepository.setLoggedIn(currentUser != null)
             if (currentUser != null) {
+                if (!currentUser.isAnonymous) {
+                    val uid = currentUser.uid
+                    when {
+                        // v1.25.98 (adversarial review): seed маркера владельца
+                        // для юзеров, уже залогиненных на момент апдейта — иначе
+                        // ПЕРВАЯ смена аккаунта после апдейта прошла бы без защиты.
+                        accountSyncGuard.ownerUid() == null ->
+                            accountSyncGuard.setOwner(uid)
+                        // Незавершённая сверка (download упал при switch и
+                        // upload остался заблокирован) переживает перезапуск в
+                        // persisted-сессии — дочиниваем на старте, иначе синк
+                        // навсегда заблокирован до явного ре-логина.
+                        !accountSyncGuard.isUploadAllowed(uid) ->
+                            reconcileAfterAuth(uid)
+                    }
+                }
                 syncUserDataFromFirestore(currentUser.uid)
             }
         }
@@ -170,9 +244,37 @@ class AuthViewModel @Inject constructor(
                 )
             }
             try {
-                auth.createUserWithEmailAndPassword(email, pass).await()
+                // v1.25.98 (audit auth-H1): стандартный флоу «как у всех»
+                // (Duolingo/Firebase-приложения): если юзер уже занимается под
+                // анонимным Firebase-аккаунтом — ПРИВЯЗЫВАЕМ email к нему
+                // (linkWithCredential), uid сохраняется → облачный прогресс,
+                // PRO-верификация и лидерборд остаются за тем же uid. Раньше
+                // createUser заменял юзера → анонимные облачные данные
+                // осиротевали (ghost-дубли лидерборда).
+                val anon = auth.currentUser?.takeIf { it.isAnonymous }
+                val user = if (anon != null) {
+                    val cred = com.google.firebase.auth.EmailAuthProvider
+                        .getCredential(email, pass)
+                    anon.linkWithCredential(cred).await().user
+                } else {
+                    auth.createUserWithEmailAndPassword(email, pass).await().user
+                }
                 authRepository.setLoggedIn(true)
+                if (user != null) {
+                    // Индустриальный стандарт: письмо-подтверждение email
+                    // (ссылка от Firebase). Не блокирует вход — как у других.
+                    runCatching { user.sendEmailVerification().await() }
+                        .onFailure { Log.w("AuthViewModel", "sendEmailVerification failed", it) }
+                    // Сверка локальных данных с аккаунтом + безопасная выгрузка
+                    // прогресса гостя (см. reconcileAfterAuth).
+                    reconcileAfterAuth(user.uid)
+                }
                 _uiState.update { it.copy(isLoading = false, isRegistered = true) }
+            } catch (e: com.google.firebase.auth.FirebaseAuthUserCollisionException) {
+                // Email уже зарегистрирован — стандартная ошибка, юзеру
+                // предлагается войти (та же семантика, что была у createUser).
+                Log.w("AuthViewModel", "register: email already in use", e)
+                _uiState.update { it.copy(isLoading = false, generalError = e.localizedMessage) }
             } catch (e: Exception) {
                 Log.w("AuthViewModel", "register failed", e)
                 _uiState.update { it.copy(isLoading = false, generalError = e.localizedMessage) }
@@ -200,12 +302,12 @@ class AuthViewModel @Inject constructor(
                 // оставлял auth_prefs пустыми → юзер уходил на onboarding и
                 // перезаписывал свои Firestore-данные.
                 if (result.user != null) {
+                    // Сначала профиль (имя/уровень) — до сверки прогресса.
                     syncUserDataFromFirestore(result.user!!.uid)
-                    // v1.25.98 FIX (audit auth-M4): download на КАЖДОМ логине.
-                    // Раньше гейт isLocalEmpty (xp<50): юзер, сделавший пару
-                    // уроков до логина, никогда не получал облачный прогресс.
-                    // downloadAll мержит по MAX — безопасно всегда.
-                    runCatching { syncRepository.downloadAll() }
+                    // v1.25.98: единая безопасная сверка (wipe при switch,
+                    // блокировка upload'ов до успешного download, merge по MAX
+                    // на каждом логине — убран гейт isLocalEmpty).
+                    reconcileAfterAuth(result.user!!.uid)
                 }
                 _uiState.update { it.copy(isLoading = false) }
             } catch (e: Exception) {
@@ -301,13 +403,27 @@ class AuthViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, generalError = null) }
             try {
                 val credential = GoogleAuthProvider.getCredential(idToken, null)
-                val result = auth.signInWithCredential(credential).await()
+                // v1.25.98 (audit auth-H1): анонимный юзер + вход через Google —
+                // сначала пробуем ПРИВЯЗАТЬ Google к текущему анонимному uid
+                // (прогресс сохраняется за тем же uid). Если этот Google-аккаунт
+                // уже существует в Firebase (collision) — обычный вход: как у
+                // других приложений, аккаунт из облака побеждает, а локальные
+                // данные предыдущего владельца снимает reconcileAfterAuth.
+                val anon = auth.currentUser?.takeIf { it.isAnonymous }
+                val result = if (anon != null) {
+                    try {
+                        anon.linkWithCredential(credential).await()
+                    } catch (_: com.google.firebase.auth.FirebaseAuthUserCollisionException) {
+                        auth.signInWithCredential(credential).await()
+                    }
+                } else {
+                    auth.signInWithCredential(credential).await()
+                }
                 if (result.user != null) {
                     authRepository.setLoggedIn(true)
                     syncUserDataFromFirestore(result.user!!.uid)
-                    // v1.25.98 FIX (audit auth-M4): merge-download на каждом
-                    // логине (см. комментарий в login()).
-                    runCatching { syncRepository.downloadAll() }
+                    // v1.25.98: единая безопасная сверка (см. reconcileAfterAuth).
+                    reconcileAfterAuth(result.user!!.uid)
                     _uiState.update { it.copy(isLoading = false) }
                 }
             } catch (e: Exception) {

@@ -93,15 +93,9 @@ class SettingsViewModel @Inject constructor(
     private val weeklyLeagueDao: com.spanishapp.data.db.dao.WeeklyLeagueDao,
     private val subscriptionManager: com.spanishapp.service.SubscriptionManager,
     private val playBillingManager: com.spanishapp.service.PlayBillingManager,
-    // v1.25.98 (audit auth-M1): недостающие хранилища для полного wipe.
-    private val chatMessageDao: com.spanishapp.data.db.dao.ChatMessageDao,
-    private val theoryProgressDao: com.spanishapp.data.db.dao.TheoryProgressDao,
-    private val gameMistakesDao: com.spanishapp.data.db.dao.GameMistakesDao,
-    private val activityTimeLogDao: com.spanishapp.data.db.dao.ActivityTimeLogDao,
-    private val lessonCompletionHistoryDao: com.spanishapp.data.db.dao.LessonCompletionHistoryDao,
-    private val userVocabStateDao: com.spanishapp.data.db.dao.UserVocabStateDao,
-    private val weakVerbDao: com.spanishapp.data.db.dao.WeakVerbDao,
-    private val voiceMessageStorage: com.spanishapp.service.VoiceMessageStorage,
+    // v1.25.98: единый wiper (Reset Progress / Delete Account / смена аккаунта).
+    private val userDataWiper: com.spanishapp.service.UserDataWiper,
+    private val accountSyncGuard: com.spanishapp.service.AccountSyncGuard,
 ) : ViewModel() {
 
     /** v1.23.6: для debug-toggle и отображения текущего статуса. */
@@ -123,32 +117,9 @@ class SettingsViewModel @Inject constructor(
      * conjugations, lessons, dialogues) keep their rows but their per-row
      * study stats are cleared. Called from Reset Progress and Delete Account.
      */
-    private suspend fun wipeAllUserData() {
-        wordDao.resetAllStats()
-        achievementDao.resetAll()
-        libroProgressDao.deleteAll()
-        flashcardSetProgressDao.deleteAll()
-        lessonProgressDao.deleteAll()
-        dailyXpDao.deleteAll()
-        gameLevelProgressDao.deleteAll()
-        articleGameDao.deleteAllProgress()
-        wordListDao.deleteAllEntries()
-        wordListDao.deleteAllLists()
-        recentSearchDao.deleteAll()
-        weeklyLeagueDao.deleteAll()
-        // v1.25.98 FIX (audit auth-M1): раньше «Удалить аккаунт» оставлял на
-        // устройстве историю AI-чата + голосовые m4a (GDPR-гэп), а «Сбросить
-        // прогресс» — статистику/ошибки/теорию (Stats показывал старые данные).
-        chatMessageDao.deleteAll()
-        runCatching { voiceMessageStorage.deleteAll() }
-        theoryProgressDao.deleteAll()
-        gameMistakesDao.deleteAll()
-        activityTimeLogDao.deleteAll()
-        lessonCompletionHistoryDao.deleteAll()
-        userVocabStateDao.deleteAll()
-        weakVerbDao.deleteAll()
-        userProgressDao.update(UserProgressEntity())
-    }
+    // v1.25.98 (audit auth-M1): полный wipe вынесен в UserDataWiper —
+    // общий для Reset Progress / Delete Account / входа в другой аккаунт.
+    private suspend fun wipeAllUserData() = userDataWiper.wipeAll()
 
     /** Результат синхронизации — для понятных Toast-сообщений. */
     enum class SyncResult { SUCCESS, NO_INTERNET, AUTH_FAILED, FAILED }
@@ -415,6 +386,11 @@ class SettingsViewModel @Inject constructor(
 
         // 4. Local Room: wipe everything user-generated, not just user_progress.
         runCatching { wipeAllUserData() }
+        // v1.25.98 (adversarial review): сбрасываем маркер владельца прогресса.
+        // Иначе он указывал бы на удалённый uid → следующая регистрация на
+        // этом устройстве считалась бы «сменой аккаунта» и (а) стёрла бы
+        // прогресс нового гостя, (б) хранила бы uid удалённого аккаунта (privacy).
+        runCatching { accountSyncGuard.clear() }
 
         // 5. DataStore: wipe auth_prefs целиком + явно setLoggedIn(false).
         // v1.25.90: старый код выставлял только name="" + photo + level="A1"

@@ -46,7 +46,9 @@ class SyncRepository @Inject constructor(
     private val libroProgressDao: LibroProgressDao,
     private val gameLevelProgressDao: GameLevelProgressDao,
     private val lessonProgressDao: LessonProgressDao,
-    private val wordDao: WordDao
+    private val wordDao: WordDao,
+    // v1.25.98: шлагбаум против выгрузки чужих/зануленных данных при смене аккаунта.
+    private val accountSyncGuard: com.spanishapp.service.AccountSyncGuard,
 ) {
     private val auth: FirebaseAuth get() = Firebase.auth
     private val db: FirebaseFirestore get() = Firebase.firestore
@@ -62,6 +64,15 @@ class SyncRepository @Inject constructor(
     suspend fun uploadAll(force: Boolean = false): Result<Unit> = runCatching {
         val now = System.currentTimeMillis()
         if (!force && now - lastUploadMs < UPLOAD_DEBOUNCE_MS) return@runCatching
+        // v1.25.98 (adversarial review): НИКОГДА не выгружаем, если локальные
+        // данные принадлежат другому uid или идёт незавершённая смена аккаунта.
+        // Иначе гонка (onStop force-upload / RatingUpdater) записывает данные
+        // юзера A — или нули после wipe — в облачный док юзера B навсегда
+        // (SetOptions.merge перетирает поля, потом merge-by-MAX не спасает).
+        val currentUid = uid() ?: error("not signed in")
+        if (!accountSyncGuard.isUploadAllowed(currentUid)) {
+            return@runCatching
+        }
         val doc = userDoc() ?: error("not signed in")
 
         val progress = userProgressDao.getProgressOnce() ?: error("no user_progress")
@@ -108,9 +119,15 @@ class SyncRepository @Inject constructor(
 
     /** Слить документ из облака в локальную БД (мердж по MAX). */
     suspend fun downloadAll(): Result<Int> = runCatching {
+        val currentUid = uid() ?: error("not signed in")
         val doc = userDoc() ?: error("not signed in")
         val snapshot = doc.get().await()
-        if (!snapshot.exists()) return@runCatching 0
+        if (!snapshot.exists()) {
+            // Новый аккаунт без облачного дока — данные консистентны «пусто»,
+            // смена аккаунта завершена, upload'ы можно открывать.
+            accountSyncGuard.completeAccountSwitch(currentUid)
+            return@runCatching 0
+        }
 
         var applied = 0
 
@@ -215,6 +232,12 @@ class SyncRepository @Inject constructor(
             lessonProgressDao.markComplete(LessonProgressEntity(key, unitId, lessonIndex))
             applied++
         }
+
+        // v1.25.98: download прошёл целиком → локальные данные консистентны
+        // с аккаунтом currentUid, открываем upload'ы. При ЛЮБОЙ ошибке выше
+        // runCatching не доходит сюда — шлагбаум остаётся закрыт (fail-safe:
+        // прогресс копится локально, retry на следующем логине/ручном синке).
+        accountSyncGuard.completeAccountSwitch(currentUid)
 
         applied
     }
