@@ -119,13 +119,18 @@ class SyncRepository @Inject constructor(
 
     /** Слить документ из облака в локальную БД (мердж по MAX). */
     suspend fun downloadAll(): Result<Int> = runCatching {
-        val currentUid = uid() ?: error("not signed in")
+        uid() ?: error("not signed in")
         val doc = userDoc() ?: error("not signed in")
         val snapshot = doc.get().await()
         if (!snapshot.exists()) {
-            // Новый аккаунт без облачного дока — данные консистентны «пусто»,
-            // смена аккаунта завершена, upload'ы можно открывать.
-            accountSyncGuard.completeAccountSwitch(currentUid)
+            // v1.25.98 (adversarial review v2): offline cache-miss НЕ отличим
+            // от «дока реально нет». Fail-safe: если снапшот из кэша (нет сети),
+            // бросаем ошибку → это НЕ считается успешным download → reconcile
+            // при sign-in не выгрузит пустой прогресс поверх реального облака.
+            // Только СЕРВЕРНО подтверждённое отсутствие дока = «новый аккаунт».
+            if (snapshot.metadata.isFromCache) {
+                error("offline: cannot confirm cloud doc absence")
+            }
             return@runCatching 0
         }
 
@@ -233,12 +238,11 @@ class SyncRepository @Inject constructor(
             applied++
         }
 
-        // v1.25.98: download прошёл целиком → локальные данные консистентны
-        // с аккаунтом currentUid, открываем upload'ы. При ЛЮБОЙ ошибке выше
-        // runCatching не доходит сюда — шлагбаум остаётся закрыт (fail-safe:
-        // прогресс копится локально, retry на следующем логине/ручном синке).
-        accountSyncGuard.completeAccountSwitch(currentUid)
-
+        // v1.25.98 (adversarial review v2): владельца/шлагбаум НЕ трогаем здесь.
+        // Ownership claim делает ТОЛЬКО reconcileAfterAuth (знает контекст: вход
+        // реального аккаунта vs анонимный «Sync now»). Иначе анонимный
+        // downloadAll (syncNow после logout) захватывал бы владельца X и уводил
+        // данные аккаунта A на throwaway-uid.
         applied
     }
 

@@ -55,33 +55,27 @@ class AuthViewModel @Inject constructor(
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
 
     /**
-     * v1.25.98 (adversarial review): единая сверка локальных данных с аккаунтом
-     * после УСПЕШНОГО входа/регистрации/link. Вызывать с uid результата
-     * (для link — это сохранённый анонимный uid).
+     * v1.25.98 (adversarial review v2): единая сверка локальных данных с
+     * аккаунтом после УСПЕШНОГО входа/регистрации/link.
      *
-     * Модель (как в account-based приложениях):
-     *  1. beginAccountSwitch() — блокируем upload'ы ДО любых действий. Это
-     *     закрывает гонку: между resolve signIn (currentUser уже = новый uid)
-     *     и завершением сверки конкурентный uploadAll (onStop force-upload,
-     *     RatingUpdater) мог записать локальные данные/нули в облачный док
-     *     нового юзера НАВСЕГДА (SetOptions.merge перетирает поля).
-     *  2. Если owner (владелец локальных данных) — ДРУГОЙ uid → это чужие
-     *     данные на общем устройстве → wipe. Работает и для link: если на
-     *     устройстве оставались данные другого реального аккаунта (logout не
-     *     стирает Room), анонимная сессия «унаследовала» их — стираем.
-     *     owner == null (свежий гость) или owner == uid (свой re-login) → НЕ
-     *     стираем: прогресс гостя/юзера сохраняется. Это чинит H1
-     *     (регистрация больше не уничтожает собственный прогресс гостя).
-     *  3. downloadAll() при УСПЕХЕ вызывает completeAccountSwitch(uid) внутри
-     *     (owner=uid, upload разблокирован). При ЛЮБОЙ ошибке шлагбаум
-     *     остаётся закрыт → ни один upload не занулит облако (чинит H2);
-     *     ретрай на следующем логине/ручном синке.
-     *  4. Только после успешной сверки выгружаем локальный прогресс (напр.
-     *     наработанный гостем до регистрации) в облако.
+     * @param uid результат auth (для link — сохранённый анонимный uid).
+     * @param localIsAuthoritative какой источник — истина, если download
+     *   не удался:
+     *     true  — register / anon→permanent link: локальные данные (прогресс
+     *             гостя / новый аккаунт) авторитетны, облака-для-затирания нет
+     *             → можно claim+upload даже без успешного download.
+     *     false — sign-in существующего аккаунта: облако авторитетно и
+     *             НЕДОСТИЖИМО при фейле → НЕЛЬЗЯ выгружать (занулили бы облако).
+     *             Остаёмся заблокированы, self-heal ретраит на старте.
+     *
+     * ⚠️ beginAccountSwitch() ДОЛЖЕН быть вызван ВЫЗЫВАЮЩИМ сразу после
+     * resolve signIn (ДО этого метода) — здесь дублируется идемпотентно, но
+     * ранний вызов на call-site закрывает окно между resolve и первым сетевым
+     * await (syncUserDataFromFirestore), в котором onStop мог выгрузить пусто.
      */
-    private suspend fun reconcileAfterAuth(uid: String) {
+    private suspend fun reconcileAfterAuth(uid: String, localIsAuthoritative: Boolean) {
         val owner = accountSyncGuard.ownerUid()
-        accountSyncGuard.beginAccountSwitch()
+        accountSyncGuard.beginAccountSwitch()  // идемпотентно; ранний вызов — на call-site
 
         if (owner != null && owner != uid) {
             Log.i("AuthViewModel", "Account switch ($owner -> $uid): wiping foreign local data")
@@ -95,16 +89,22 @@ class AuthViewModel @Inject constructor(
         }
 
         val downloaded = syncRepository.downloadAll().isSuccess
-        if (downloaded) {
-            runCatching { syncRepository.uploadAll(force = true) }
-        } else if (owner == null || owner == uid) {
-            // Скачать не удалось, но чужого облака клобберить нечем (свежий
-            // владелец / свой re-login) — claim + upload, чтобы приложение не
-            // осталось навсегда с заблокированным синком.
-            accountSyncGuard.completeAccountSwitch(uid)
-            runCatching { syncRepository.uploadAll(force = true) }
+        when {
+            downloaded -> {
+                // Облако сверено с локальным → владельца фиксируем, синк открыт.
+                accountSyncGuard.completeAccountSwitch(uid)
+                runCatching { syncRepository.uploadAll(force = true) }
+            }
+            localIsAuthoritative -> {
+                // Download не удался, но локальные данные — истина (гость/новый
+                // аккаунт), чужого облака затирать нечем → claim + upload.
+                accountSyncGuard.completeAccountSwitch(uid)
+                runCatching { syncRepository.uploadAll(force = true) }
+            }
+            // else: sign-in + download упал → облако недостижимо и авторитетно.
+            // НЕ выгружаем (занулили бы), остаёмся заблокированы. Self-heal в
+            // checkAuthStatus ретраит на следующем старте.
         }
-        // else: switch + download упал → остаёмся заблокированы, ретрай.
     }
 
     private val _uiState = MutableStateFlow(AuthUiState())
@@ -130,9 +130,10 @@ class AuthViewModel @Inject constructor(
                         // Незавершённая сверка (download упал при switch и
                         // upload остался заблокирован) переживает перезапуск в
                         // persisted-сессии — дочиниваем на старте, иначе синк
-                        // навсегда заблокирован до явного ре-логина.
+                        // навсегда заблокирован до явного ре-логина. Облако
+                        // авторитетно (это ре-синк своего аккаунта).
                         !accountSyncGuard.isUploadAllowed(uid) ->
-                            reconcileAfterAuth(uid)
+                            reconcileAfterAuth(uid, localIsAuthoritative = false)
                     }
                 }
                 syncUserDataFromFirestore(currentUser.uid)
@@ -259,15 +260,18 @@ class AuthViewModel @Inject constructor(
                 } else {
                     auth.createUserWithEmailAndPassword(email, pass).await().user
                 }
+                // v1.25.98 (adversarial review v2): барьер СРАЗУ после resolve —
+                // до любого сетевого await ниже — иначе onStop мог выгрузить.
+                accountSyncGuard.beginAccountSwitch()
                 authRepository.setLoggedIn(true)
                 if (user != null) {
                     // Индустриальный стандарт: письмо-подтверждение email
                     // (ссылка от Firebase). Не блокирует вход — как у других.
                     runCatching { user.sendEmailVerification().await() }
                         .onFailure { Log.w("AuthViewModel", "sendEmailVerification failed", it) }
-                    // Сверка локальных данных с аккаунтом + безопасная выгрузка
-                    // прогресса гостя (см. reconcileAfterAuth).
-                    reconcileAfterAuth(user.uid)
+                    // register = локальные данные (прогресс гостя / новый аккаунт)
+                    // авторитетны → localIsAuthoritative=true.
+                    reconcileAfterAuth(user.uid, localIsAuthoritative = true)
                 }
                 _uiState.update { it.copy(isLoading = false, isRegistered = true) }
             } catch (e: com.google.firebase.auth.FirebaseAuthUserCollisionException) {
@@ -296,6 +300,10 @@ class AuthViewModel @Inject constructor(
             _uiState.update { it.copy(isLoading = true, generalError = null) }
             try {
                 val result = auth.signInWithEmailAndPassword(email, pass).await()
+                // v1.25.98 (adversarial review v2): барьер СРАЗУ после resolve,
+                // ДО сетевого syncUserDataFromFirestore — иначе в это окно
+                // onStop force-upload мог занулить облако реального аккаунта.
+                accountSyncGuard.beginAccountSwitch()
                 authRepository.setLoggedIn(true)
                 // v1.25.90: тянем профиль из Firestore + локальный прогресс из облака
                 // (зеркало loginWithGoogle). Раньше email-вход после переустановки
@@ -304,10 +312,9 @@ class AuthViewModel @Inject constructor(
                 if (result.user != null) {
                     // Сначала профиль (имя/уровень) — до сверки прогресса.
                     syncUserDataFromFirestore(result.user!!.uid)
-                    // v1.25.98: единая безопасная сверка (wipe при switch,
-                    // блокировка upload'ов до успешного download, merge по MAX
-                    // на каждом логине — убран гейт isLocalEmpty).
-                    reconcileAfterAuth(result.user!!.uid)
+                    // sign-in = облако авторитетно → localIsAuthoritative=false
+                    // (при фейле download НЕ выгружаем, чтобы не занулить облако).
+                    reconcileAfterAuth(result.user!!.uid, localIsAuthoritative = false)
                 }
                 _uiState.update { it.copy(isLoading = false) }
             } catch (e: Exception) {
@@ -410,20 +417,25 @@ class AuthViewModel @Inject constructor(
                 // других приложений, аккаунт из облака побеждает, а локальные
                 // данные предыдущего владельца снимает reconcileAfterAuth.
                 val anon = auth.currentUser?.takeIf { it.isAnonymous }
+                // linkedAnon=true → прогресс гостя привязан к тому же uid,
+                // локальные данные авторитетны. При collision (аккаунт уже
+                // существует) → обычный вход, облако авторитетно.
+                var linkedAnon = false
                 val result = if (anon != null) {
                     try {
-                        anon.linkWithCredential(credential).await()
+                        anon.linkWithCredential(credential).await().also { linkedAnon = true }
                     } catch (_: com.google.firebase.auth.FirebaseAuthUserCollisionException) {
                         auth.signInWithCredential(credential).await()
                     }
                 } else {
                     auth.signInWithCredential(credential).await()
                 }
+                // v1.25.98 (adversarial review v2): барьер сразу после resolve.
+                accountSyncGuard.beginAccountSwitch()
                 if (result.user != null) {
                     authRepository.setLoggedIn(true)
                     syncUserDataFromFirestore(result.user!!.uid)
-                    // v1.25.98: единая безопасная сверка (см. reconcileAfterAuth).
-                    reconcileAfterAuth(result.user!!.uid)
+                    reconcileAfterAuth(result.user!!.uid, localIsAuthoritative = linkedAnon)
                     _uiState.update { it.copy(isLoading = false) }
                 }
             } catch (e: Exception) {
