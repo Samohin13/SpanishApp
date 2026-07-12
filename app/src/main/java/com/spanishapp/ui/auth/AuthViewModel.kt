@@ -122,18 +122,19 @@ class AuthViewModel @Inject constructor(
                 if (!currentUser.isAnonymous) {
                     val uid = currentUser.uid
                     when {
-                        // v1.25.98 (adversarial review): seed маркера владельца
-                        // для юзеров, уже залогиненных на момент апдейта — иначе
+                        // v1.25.98 (adversarial review v3): self-heal ПЕРВЫМ.
+                        // Незавершённая сверка (download упал при логине → upload
+                        // заблокирован) переживает перезапуск persisted-сессии.
+                        // Раньше при owner==null ветка seed'а маскировала heal →
+                        // прогресс восстанавливался только со ВТОРОГО перезапуска.
+                        // isUploadAllowed=false покрывает и blocked, и owner≠uid.
+                        !accountSyncGuard.isUploadAllowed(uid) ->
+                            reconcileAfterAuth(uid, localIsAuthoritative = false)
+                        // seed маркера для юзеров, уже залогиненных на момент
+                        // апдейта (не заблокированы, владелец не задан) — иначе
                         // ПЕРВАЯ смена аккаунта после апдейта прошла бы без защиты.
                         accountSyncGuard.ownerUid() == null ->
                             accountSyncGuard.setOwner(uid)
-                        // Незавершённая сверка (download упал при switch и
-                        // upload остался заблокирован) переживает перезапуск в
-                        // persisted-сессии — дочиниваем на старте, иначе синк
-                        // навсегда заблокирован до явного ре-логина. Облако
-                        // авторитетно (это ре-синк своего аккаунта).
-                        !accountSyncGuard.isUploadAllowed(uid) ->
-                            reconcileAfterAuth(uid, localIsAuthoritative = false)
                     }
                 }
                 syncUserDataFromFirestore(currentUser.uid)
