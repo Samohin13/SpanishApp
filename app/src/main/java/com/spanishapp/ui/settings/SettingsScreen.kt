@@ -826,7 +826,16 @@ fun SettingsScreen(
                 }
             }
 
+            val isGuest by com.spanishapp.ui.auth.rememberIsGuest()
             SettingsSection(stringResource(R.string.settings_section_account)) {
+                // v1.26.1: гостю — явный статус + путь к регистрации.
+                if (isGuest) {
+                    SettingsItem(
+                        icon = Icons.Default.PersonAddAlt,
+                        title = stringResource(R.string.guest_settings_title),
+                        summary = stringResource(R.string.guest_settings_subtitle),
+                    ) { navController.navigate("register") { launchSingleTop = true } }
+                }
                 SettingsItem(Icons.AutoMirrored.Filled.Logout, stringResource(R.string.settings_logout), textColor = MaterialTheme.colorScheme.error) { showLogoutDialog = true }
                 SettingsItem(Icons.Default.DeleteForever, stringResource(R.string.set_delete_account_full), textColor = MaterialTheme.colorScheme.error) { showDeleteDialog = true }
             }

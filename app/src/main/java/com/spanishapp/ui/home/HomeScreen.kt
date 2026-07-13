@@ -46,6 +46,7 @@ import androidx.compose.ui.res.stringResource
 import com.spanishapp.R
 import com.spanishapp.data.db.entity.WordEntity
 import com.spanishapp.ui.components.*
+import com.spanishapp.ui.auth.rememberIsGuest
 import kotlinx.coroutines.launch
 
 // ── Roadmap Data Model ────────────────────────────────────────
@@ -2870,19 +2871,8 @@ private fun HomeProBannerTop(onClick: () -> Unit) {
 }
 
 // ── v1.26.1: гостевой режим ──────────────────────────────────────────
-/**
- * true если юзер — гость (ещё не зарегистрировался). Покрывает оба случая:
- *  - анонимный Firebase-аккаунт (isGuest, Anonymous Auth включён);
- *  - локальный guestMode (без анонимного аккаунта — Anonymous Auth выключен /
- *    офлайн). Сбрасывается при регистрации/входе в реальный аккаунт → баннер
- *    «сохрани прогресс» исчезает.
- */
-@Composable
-private fun rememberIsGuest(): State<Boolean> {
-    val authViewModel: com.spanishapp.ui.auth.AuthViewModel = hiltViewModel()
-    val state by authViewModel.uiState.collectAsStateWithLifecycle()
-    return androidx.compose.runtime.rememberUpdatedState(state.isGuest || state.guestMode)
-}
+// rememberIsGuest() вынесен в com.spanishapp.ui.auth.GuestState (общий для
+// Home / Profile / Settings).
 
 /** Баннер «сохрани прогресс» для гостя → регистрация (линкует аккаунт). */
 @Composable
@@ -2902,13 +2892,13 @@ private fun GuestSaveProgressBanner(onClick: () -> Unit, modifier: Modifier = Mo
             Text("💾", fontSize = 22.sp)
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    "Сохрани свой прогресс",
+                    stringResource(R.string.guest_banner_title),
                     fontWeight = FontWeight.Bold,
                     fontSize = 15.sp,
                     color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
-                    "Создай аккаунт — не потеряешь уроки при смене телефона",
+                    stringResource(R.string.guest_banner_subtitle),
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

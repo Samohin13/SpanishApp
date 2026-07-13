@@ -393,14 +393,20 @@ fun ProfileScreen(
         ) {
             StaggeredEntrance(index = 0) {
                 Column {
+                    val isGuest by com.spanishapp.ui.auth.rememberIsGuest()
                     HeroBlock(
                         name = state.authName.ifBlank { p.displayName }.ifBlank {
-                            androidx.compose.ui.res.stringResource(com.spanishapp.R.string.profile_default_name)
+                            // v1.26.1: гостю без имени показываем «Гость», а не «Estudiante».
+                            androidx.compose.ui.res.stringResource(
+                                if (isGuest) com.spanishapp.R.string.guest_label
+                                else com.spanishapp.R.string.profile_default_name
+                            )
                         },
                         photoUrl = effectivePhotoUrl,
                         isPhotoUploading = isPhotoUploading,
                         league = league,
                         isPro = subscription.isPro,
+                        isGuest = isGuest,
                         proPlanLabel = subscription.planLabel,
                         proExpiresAt = subscription.expiresAt,
                         onAvatarClick = {
@@ -658,6 +664,7 @@ private fun HeroBlock(
     isPhotoUploading: Boolean,
     league: League,
     isPro: Boolean = false,
+    isGuest: Boolean = false,
     proPlanLabel: String = "",
     proExpiresAt: Long = 0L,
     onAvatarClick: () -> Unit
@@ -753,6 +760,23 @@ private fun HeroBlock(
                         color = Color(0xFF1A1A22),
                         fontSize = 9.sp,
                         fontWeight = FontWeight.Black,
+                        letterSpacing = 0.5.sp
+                    )
+                }
+            }
+            // v1.26.1: пилл «Гость» — постоянный статус-индикатор.
+            if (isGuest) {
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(99.dp))
+                        .background(MaterialTheme.colorScheme.surfaceContainerHighest)
+                        .padding(horizontal = 8.dp, vertical = 3.dp)
+                ) {
+                    Text(
+                        stringResource(com.spanishapp.R.string.guest_label),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = 10.sp,
+                        fontWeight = FontWeight.Bold,
                         letterSpacing = 0.5.sp
                     )
                 }
