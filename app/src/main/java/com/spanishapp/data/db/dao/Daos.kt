@@ -94,17 +94,36 @@ interface WordDao {
     @Query("SELECT * FROM words WHERE category = :category ORDER BY RANDOM() LIMIT :limit")
     fun getByCategory(category: String, limit: Int = 50): Flow<List<WordEntity>>
 
-    // SQLite's LIKE is ASCII-only case-insensitive by default — Cyrillic
-     // queries miss capitalized matches ("Дом" vs "дом"). Folding both sides
-     // with lower() fixes Russian search at the cost of one extra pass per row.
+    // v1.26.1: SQLite lower() ASCII-only — не опускает кириллицу («Дом»≠«дом»)
+    // и не убирает испанские акценты («cafe»≠«café»). Поэтому:
+    //  • регистр запроса опускаем в Kotlin (WordDao.searchNormalized ниже),
+    //  • акценты á/é/í/ó/ú/ü/ñ фолдим через replace() на СТОЛБЦЕ, а запрос
+    //    приходит уже сфолженным (:qf) — обе стороны нормализованы одинаково.
+    // Не вызывать напрямую — только через searchNormalized(raw).
     @Query("""
         SELECT * FROM words
-        WHERE lower(spanish) LIKE '%' || lower(:q) || '%'
-           OR lower(russian) LIKE '%' || lower(:q) || '%'
-        ORDER BY CASE WHEN lower(spanish) LIKE lower(:q) || '%' THEN 0 ELSE 1 END
+        WHERE replace(replace(replace(replace(replace(replace(replace(lower(spanish),'á','a'),'é','e'),'í','i'),'ó','o'),'ú','u'),'ü','u'),'ñ','n') LIKE '%' || :qf || '%'
+           OR replace(replace(replace(replace(replace(replace(replace(lower(russian),'á','a'),'é','e'),'í','i'),'ó','o'),'ú','u'),'ü','u'),'ñ','n') LIKE '%' || :qf || '%'
+        ORDER BY CASE WHEN replace(replace(replace(replace(replace(replace(replace(lower(spanish),'á','a'),'é','e'),'í','i'),'ó','o'),'ú','u'),'ü','u'),'ñ','n') LIKE :qf || '%' THEN 0 ELSE 1 END
         LIMIT 80
     """)
-    fun search(q: String): Flow<List<WordEntity>>
+    fun searchFolded(qf: String): Flow<List<WordEntity>>
+
+    /**
+     * Публичный поиск: нормализует сырой запрос (Unicode-lowercase кириллицы +
+     * фолдинг испанских акцентов) и вызывает [searchFolded]. Обе стороны
+     * приведены к одному виду → «Дом» находит «дом», «cafe» находит «café».
+     */
+    fun search(q: String): Flow<List<WordEntity>> = searchFolded(foldForSearch(q))
+
+    companion object {
+        /** lowercase (Unicode, включая кириллицу) + фолдинг исп. акцентов. */
+        fun foldForSearch(s: String): String =
+            s.trim().lowercase()
+                .replace('á', 'a').replace('é', 'e').replace('í', 'i')
+                .replace('ó', 'o').replace('ú', 'u').replace('ü', 'u')
+                .replace('ñ', 'n')
+    }
 
     @Query("SELECT * FROM words WHERE lower(trim(spanish)) = :q LIMIT 1")
     suspend fun findBySpanish(q: String): WordEntity?
