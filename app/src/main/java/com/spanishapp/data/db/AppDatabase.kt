@@ -41,7 +41,10 @@ import com.spanishapp.data.db.entity.*
         WeakVerbEntity::class,  // v1.25.78 VERB-4
     ],
     version = 32,
-    exportSchema = false
+    // v1.26.1: включён экспорт схемы (app/schemas/) — с этой версии каждая
+    // новая версия БД сохраняет JSON-схему, что даёт MigrationTestHelper-тесты
+    // для будущих миграций. Историю v1..v31 восстановить нельзя.
+    exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun wordDao(): WordDao

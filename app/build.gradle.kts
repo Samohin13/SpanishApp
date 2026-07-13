@@ -192,6 +192,20 @@ android {
         compose = true
         buildConfig = true
     }
+
+    // v1.26.1: Robolectric-тестам нужны Android-ресурсы в JVM unit-тестах.
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
+}
+
+// v1.26.1: экспорт схемы Room в app/schemas/ — с этого момента каждая версия БД
+// получает JSON-схему, что даёт возможность писать MigrationTestHelper-тесты для
+// будущих миграций. Историю (v1..v31) восстановить нельзя — экспорт не включался.
+ksp {
+    arg("room.schemaLocation", "${projectDir}/schemas")
 }
 
 dependencies {
@@ -268,6 +282,10 @@ dependencies {
     testImplementation(libs.mockk)
     testImplementation(libs.turbine)
     testImplementation(libs.kotlinx.coroutines.test)
+    // v1.26.1: Robolectric — JVM-эмуляция Android (SharedPreferences, Room in-memory)
+    // для тестов AccountSyncGuard и БД. room-testing — MigrationTestHelper.
+    testImplementation(libs.robolectric)
+    testImplementation(libs.androidx.room.testing)
     // org.json настоящий — без него Android stub бросает «not mocked» на JSONArray
     testImplementation("org.json:json:20240303")
     androidTestImplementation(libs.androidx.junit)
