@@ -29,6 +29,10 @@ data class AuthUiState(
     val successMessage: String? = null,
     val isRegistered: Boolean = false,
     val isLoggedIn: Boolean? = null,
+    // v1.26.1: гостевой режим. isGuest = анонимный Firebase-аккаунт (без email/
+    // Google). guestStarted — одноразовый сигнал для навигации в онбординг.
+    val isGuest: Boolean = false,
+    val guestStarted: Boolean = false,
     val userLevel: String? = null,
     val userName: String? = null,
     val userAge: Int? = null,
@@ -110,9 +114,55 @@ class AuthViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(AuthUiState())
     val uiState: StateFlow<AuthUiState> = _uiState.asStateFlow()
 
+    // v1.26.1: держим isGuest актуальным. Меняется при link (anon→email/Google)
+    // — isAnonymous становится false, баннер «создай аккаунт» исчезает.
+    private val authStateListener = FirebaseAuth.AuthStateListener { fb ->
+        _uiState.update { it.copy(isGuest = fb.currentUser?.isAnonymous == true) }
+    }
+
     init {
         checkAuthStatus()
+        auth.addAuthStateListener(authStateListener)
     }
+
+    override fun onCleared() {
+        auth.removeAuthStateListener(authStateListener)
+        super.onCleared()
+    }
+
+    /**
+     * v1.26.1: гостевой вход. Аноним Firebase (без email) → онбординг → home.
+     * Прогресс копится под анонимным uid; при позднейшей регистрации
+     * register()/loginWithGoogle() делают linkWithCredential → тот же uid,
+     * прогресс сохраняется (см. reconcileAfterAuth, owner==null → без wipe).
+     */
+    fun startGuest() {
+        viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, generalError = null) }
+            // Пытаемся создать анонимную сессию (нужна для облачного бэкапа +
+            // linking при регистрации), НО не блокируем офлайн: онбординг и вся
+            // учёба работают локально, а аккаунт подхватится лениво / при
+            // регистрации — прогресс сохранится через owner==null путь
+            // reconcileAfterAuth (localIsAuthoritative=true).
+            runCatching {
+                auth.currentUser?.takeIf { it.isAnonymous }
+                    ?: auth.signInAnonymously().await().user
+            }.onFailure {
+                Log.w("AuthViewModel", "guest anon sign-in failed (offline?), continuing local", it)
+            }
+            authRepository.setLoggedIn(true)
+            _uiState.update {
+                it.copy(
+                    isLoading = false,
+                    isGuest = auth.currentUser?.isAnonymous == true,
+                    guestStarted = true,
+                )
+            }
+        }
+    }
+
+    /** Сброс одноразового навигационного сигнала после перехода в онбординг. */
+    fun consumeGuestStarted() { _uiState.update { it.copy(guestStarted = false) } }
 
     private fun checkAuthStatus() {
         val currentUser = auth.currentUser

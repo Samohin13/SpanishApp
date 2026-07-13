@@ -41,6 +41,17 @@ fun WelcomeScreen(
     val privacyUrl = stringResource(R.string.privacy_policy_url)
     val termsUrl = stringResource(R.string.terms_url)
 
+    // v1.26.1: гостевой старт → онбординг (name_entry). Регистрация опциональна
+    // (баннер «сохрани прогресс» позже линкует аккаунт к этому же uid).
+    LaunchedEffect(state.guestStarted) {
+        if (state.guestStarted) {
+            viewModel.consumeGuestStarted()
+            navController.navigate("name_entry") {
+                popUpTo("welcome") { inclusive = true }
+            }
+        }
+    }
+
     val openLink: (String) -> Unit = { url ->
         runCatching {
             context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
@@ -107,7 +118,7 @@ fun WelcomeScreen(
             Spacer(Modifier.height(48.dp))
 
             Button(
-                onClick = { navController.navigate("register") },
+                onClick = { viewModel.startGuest() },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = MaterialTheme.shapes.medium,
                 enabled = !state.isLoading

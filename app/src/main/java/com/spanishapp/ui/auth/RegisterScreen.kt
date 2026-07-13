@@ -52,7 +52,10 @@ fun RegisterScreen(
 
     LaunchedEffect(state.isRegistered) {
         if (state.isRegistered) {
-            navController.navigate("name_entry") {
+            // v1.26.1: гость, конвертирующийся в аккаунт (уже прошёл онбординг),
+            // → сразу home. Новый юзер → онбординг.
+            val dest = if (state.onboardingCompleted) "home" else "name_entry"
+            navController.navigate(dest) {
                 popUpTo("register") { inclusive = true }
             }
         }

@@ -184,6 +184,17 @@ fun HomeScreen(
                 }
             }
 
+            // ── Гостевой баннер «сохрани прогресс» (v1.26.1) ──────
+            item(key = "guest_banner") {
+                val isGuest by rememberIsGuest()
+                if (isGuest) {
+                    GuestSaveProgressBanner(
+                        onClick = { navController.navigate("register") { launchSingleTop = true } },
+                        modifier = Modifier.padding(horizontal = 16.dp).padding(top = 8.dp)
+                    )
+                }
+            }
+
             // ── Stats bar (single row) ─────────────────────────
             item {
                 StaggeredEntrance(index = 1) {
@@ -2852,6 +2863,61 @@ private fun HomeProBannerTop(onClick: () -> Unit) {
                 "→",
                 color = androidx.compose.ui.graphics.Color.White,
                 fontSize = 26.sp,
+                fontWeight = FontWeight.Black,
+            )
+        }
+    }
+}
+
+// ── v1.26.1: гостевой режим ──────────────────────────────────────────
+/** true если текущий Firebase-юзер анонимный (гость без email/Google). */
+@Composable
+private fun rememberIsGuest(): State<Boolean> {
+    val auth = remember { com.google.firebase.auth.FirebaseAuth.getInstance() }
+    val isGuest = remember { mutableStateOf(auth.currentUser?.isAnonymous == true) }
+    DisposableEffect(auth) {
+        val l = com.google.firebase.auth.FirebaseAuth.AuthStateListener { fb ->
+            isGuest.value = fb.currentUser?.isAnonymous == true
+        }
+        auth.addAuthStateListener(l)
+        onDispose { auth.removeAuthStateListener(l) }
+    }
+    return isGuest
+}
+
+/** Баннер «сохрани прогресс» для гостя → регистрация (линкует аккаунт). */
+@Composable
+private fun GuestSaveProgressBanner(onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Surface(
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        color = com.spanishapp.ui.theme.AppColors.Gold.copy(alpha = 0.14f),
+        border = androidx.compose.foundation.BorderStroke(1.dp, com.spanishapp.ui.theme.AppColors.Gold.copy(alpha = 0.4f)),
+    ) {
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Text("💾", fontSize = 22.sp)
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "Сохрани свой прогресс",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp,
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+                Text(
+                    "Создай аккаунт — не потеряешь уроки при смене телефона",
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Text(
+                "→",
+                color = com.spanishapp.ui.theme.AppColors.GoldDark,
+                fontSize = 22.sp,
                 fontWeight = FontWeight.Black,
             )
         }
