@@ -24,6 +24,9 @@ service cloud.firestore {
 
       allow create, update: if request.auth != null
         && request.auth.uid == uid
+        // v1.26.1 (Model B): гости (анонимный вход) НЕ участвуют в рейтинге —
+        // иначе ghost-дубли лидерборда. Участие требует регистрации.
+        && request.auth.token.firebase.sign_in_provider != 'anonymous'
         && request.resource.data.keys().hasOnly([
             'nickname', 'country', 'skillRating',
             'peakRating', 'league', 'updatedAt'
@@ -55,6 +58,8 @@ service cloud.firestore {
       allow read: if request.auth != null;
       allow write: if request.auth != null
         && request.auth.uid == uid
+        // v1.26.1 (Model B): гости не вступают в лиги (ghost-когорты).
+        && request.auth.token.firebase.sign_in_provider != 'anonymous'
         && request.resource.data.keys().hasOnly([
             'nickname', 'country', 'weekXp', 'league', 'updatedAt'
            ])
