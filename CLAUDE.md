@@ -455,14 +455,16 @@ app/src/main/java/com/spanishapp/
 ### Сущности (25)
 WordEntity, ConjugationEntity, LessonEntity, DialogueEntity, UserProgressEntity, ChatMessageEntity, AchievementEntity, DailyWordEntity, WordListEntity, ArticleGameProgressEntity, LessonProgressEntity, LibroProgressEntity, GameLevelProgressEntity, DailyXpEntity, FlashcardSetProgressEntity, RecentSearchEntity, WeeklyLeagueStateEntity, WodHistoryEntity, TheoryProgressEntity, RadioFavoriteEntity, RadioCatalogEntity, RadioListeningSessionEntity, RadioWordCatchEntity *(legacy, без DAO)*
 
-### Миграции зарегистрированы в 5 местах
-- `AppModule.provideDatabase` (главный)
-- `RatingDecayWorker.doWork`
-- `ContentSyncWorker.doWork`
-- `WordOfDayWidget.kt`
-- `RadioCatalogRefreshWorker.doWork`
+### Миграции — единая константа (v1.26.1)
+Все миграции живут в `AppDatabase.companion.ALL_MIGRATIONS: Array<Migration>`.
+Раньше список дублировался руками в **8 местах** (AppModule + 4 воркера +
+2 виджета) — пропуск одной = краш в release. Теперь все точки вызывают
+`.addMigrations(*AppDatabase.ALL_MIGRATIONS)`.
 
-**Важно:** при добавлении новой миграции обновить все 5. **`fallbackToDestructiveMigration` ТОЛЬКО в debug** (с v1.11.7).
+**При добавлении новой миграции:** (1) объявить `MIGRATION_x_y` в companion,
+(2) дописать её в `ALL_MIGRATIONS`, (3) поднять `version` у `@Database`. Всё —
+одна правка вместо восьми. **`fallbackToDestructiveMigration` ТОЛЬКО в debug**
+(с v1.11.7) → release крашит на кривой миграции, а не молча wipe'ает данные.
 
 ### DataStore preferences
 - `voice_prefs` — TTS settings (8 персонажей, rate, pitch)
