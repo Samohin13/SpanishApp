@@ -204,8 +204,19 @@ class DatabaseSeeder @Inject constructor(
 
     // ── Conjugation tables ────────────────────────────────────
     private suspend fun seedConjugations() {
-        if (db.conjugationDao().getCount() > 0) return
-        db.conjugationDao().insertAll(ConjugationData.getAll() + ConjugationData2.getAll() + ConjugationData3.getAll())
+        val all = ConjugationData.getAll() + ConjugationData2.getAll() + ConjugationData3.getAll()
+        if (db.conjugationDao().getCount() == 0) {
+            db.conjugationDao().insertAll(all)
+            return
+        }
+        // v1.26.1: imperativo для AUTHORED-глаголов добавлен позже — существующие
+        // юзеры уже засеяны без него. Идемпотентно добираем ТОЛЬКО imperativo,
+        // если его ещё нет (PK — auto-id, уникального ключа нет → иначе дубли).
+        // Rule-based imperativo генерится тренажёром в рантайме, в БД не лежит,
+        // поэтому countByTense==0 у старых юзеров — корректный триггер.
+        if (db.conjugationDao().countByTense("imperativo") == 0) {
+            db.conjugationDao().insertAll(all.filter { it.tense == "imperativo" })
+        }
     }
 
     // ── Default user profile ──────────────────────────────────

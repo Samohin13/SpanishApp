@@ -387,6 +387,10 @@ interface ConjugationDao {
 
     @Query("SELECT COUNT(*) FROM conjugations")
     suspend fun getCount(): Int
+
+    // v1.26.1: для идемпотентного добора imperativo существующим юзерам.
+    @Query("SELECT COUNT(*) FROM conjugations WHERE tense = :tense")
+    suspend fun countByTense(tense: String): Int
 }
 
 @Dao

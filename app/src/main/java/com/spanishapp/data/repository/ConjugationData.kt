@@ -232,5 +232,21 @@ object ConjugationData {
         add("conocer","futuro","conoceré","conocerás","conocerá","conoceremos","conoceréis","conocerán",false)
         add("conocer","condicional","conocería","conocerías","conocería","conoceríamos","conoceríais","conocerían",false)
         add("conocer","subjuntivo","conozca","conozcas","conozca","conozcamos","conozcáis","conozcan",true)
+
+        // ════════════════════════════════════════════════════
+        // IMPERATIVO (affirmative) для ключевых НЕПРАВИЛЬНЫХ authored-глаголов.
+        // v1.26.1: раньше тренажёр пропускал imperativo для AUTHORED (генератор
+        // по правилу давал НЕВЕРНУЮ форму: ser→*sea вместо sé). Даём авторские
+        // формы. Конвенция слотов = как у SpanishConjugator: yo="" (нет формы),
+        // tu/el/nos/vos/ellos = tú / usted / nosotros / vosotros / ustedes.
+        // Формы стандартные (RAE): sé/ve/ten/pon/sal/haz/di/ven — самые нужные.
+        add("ser","imperativo","","sé","sea","seamos","sed","sean",true,"нет yo-формы")
+        add("ir","imperativo","","ve","vaya","vamos","id","vayan",true,"nos.=vamos")
+        add("tener","imperativo","","ten","tenga","tengamos","tened","tengan",true)
+        add("poner","imperativo","","pon","ponga","pongamos","poned","pongan",true)
+        add("salir","imperativo","","sal","salga","salgamos","salid","salgan",true)
+        add("hacer","imperativo","","haz","haga","hagamos","haced","hagan",true)
+        add("decir","imperativo","","di","diga","digamos","decid","digan",true)
+        add("venir","imperativo","","ven","venga","vengamos","venid","vengan",true)
     }
 }
