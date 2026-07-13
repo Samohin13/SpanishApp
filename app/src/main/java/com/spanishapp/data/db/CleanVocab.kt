@@ -4565,7 +4565,7 @@ object CleanVocab {
         w("la metáfora", "метафора", "Usa la metáfora de la luz.", "B2", "literatura"),
         w("la monarquía", "монархия", "España es una monarquía constitucional.", "B2", "historia"),
         w("la moral", "мораль", "La moral varía según la cultura.", "B2", "filosofia"),
-        w("la morfo", "форма", "", "B2", "general"),
+        w("el morfo", "форма", "", "B2", "general"),
         w("la noticia falsa", "фейк/ложная новость", "Las noticias falsas se propagan.", "B2", "medios"),
         w("la novela histórica", "исторический роман", "La novela histórica mezcla realidad.", "B2", "literatura"),
         w("la obsesión", "навязчивая идея", "Es una obsesión incontrolable.", "B2", "psicologia"),

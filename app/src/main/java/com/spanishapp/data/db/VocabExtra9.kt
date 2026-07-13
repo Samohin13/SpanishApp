@@ -489,7 +489,7 @@ object VocabExtra9 {
         w("el dosel", "балдахин", "Una cama con dosel.", "B2", "casa"),
         w("el somier", "решётка кровати", "Un somier de láminas.", "B2", "casa"),
         w("el merengue francés", "французская меренга", "Merengue francés clásico.", "B2", "comida"),
-        w("la caramelizado", "карамелизация", "Caramelizado de cebolla.", "B2", "comida"),
+        w("el caramelizado", "карамелизация", "Caramelizado de cebolla.", "B2", "comida"),
         w("la leche evaporada", "выпаренное молоко", "Leche evaporada para postres.", "B2", "comida"),
         w("la masa madre", "опара", "Pan de masa madre.", "B2", "comida"),
         w("la nata pastelera", "кондитерские сливки", "Nata pastelera para tartas.", "B2", "comida"),

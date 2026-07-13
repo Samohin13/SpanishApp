@@ -426,7 +426,7 @@ object VocabExtra7 {
         w("la astrofísica", "астрофизика", "Estudia astrofísica.", "B2", "ciencia"),
         w("la cibernética", "кибернетика", "La cibernética moderna.", "B2", "ciencia"),
         w("la cosmología", "космология", "La cosmología moderna.", "B2", "ciencia"),
-        w("la electromagnetismo", "электромагнетизм", "El electromagnetismo de Maxwell.", "B2", "ciencia"),
+        w("el electromagnetismo", "электромагнетизм", "El electromagnetismo de Maxwell.", "B2", "ciencia"),
         w("la energía oscura", "тёмная энергия", "La energía oscura misteriosa.", "B2", "ciencia"),
         w("la materia oscura", "тёмная материя", "La materia oscura del cosmos.", "B2", "ciencia"),
         w("la nanotecnología", "нанотехнология", "Nanotecnología aplicada.", "B2", "ciencia"),
