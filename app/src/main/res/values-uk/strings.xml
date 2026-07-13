@@ -113,7 +113,7 @@
     <!-- v1.26.1: варіанти входу + гостьовий режим -->
     <string name="btn_continue_google">Продовжити з Google</string>
     <string name="btn_register_email">Реєстрація через email</string>
-    <string name="btn_try_guest">Спробувати без реєстрації</string>
+    <string name="btn_try_guest">Увійти як гість</string>
     <string name="welcome_guest_caption">Прогрес збережеться лише на цьому телефоні. Зареєструйся згодом, щоб не втратити.</string>
     <string name="welcome_login_link">У мене вже є акаунт → Увійти</string>
     <string name="guest_label">Гість</string>

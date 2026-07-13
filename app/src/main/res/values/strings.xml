@@ -117,7 +117,7 @@
     <!-- v1.26.1: варианты входа + гостевой режим -->
     <string name="btn_continue_google">Продолжить с Google</string>
     <string name="btn_register_email">Регистрация по email</string>
-    <string name="btn_try_guest">Попробовать без регистрации</string>
+    <string name="btn_try_guest">Войти как гость</string>
     <string name="welcome_guest_caption">Прогресс сохранится только на этом телефоне. Зарегистрируйся позже, чтобы не потерять.</string>
     <string name="welcome_login_link">У меня уже есть аккаунт → Войти</string>
     <string name="guest_label">Гость</string>

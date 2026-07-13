@@ -104,7 +104,7 @@
     <!-- v1.26.1: sign-in options + guest mode -->
     <string name="btn_continue_google">Continue with Google</string>
     <string name="btn_register_email">Sign up with email</string>
-    <string name="btn_try_guest">Try without signing up</string>
+    <string name="btn_try_guest">Continue as guest</string>
     <string name="welcome_guest_caption">Progress is saved only on this phone. Sign up later so you don\'t lose it.</string>
     <string name="welcome_login_link">I already have an account → Sign in</string>
     <string name="guest_label">Guest</string>

@@ -113,7 +113,7 @@
     <!-- v1.26.1: opciones de acceso + modo invitado -->
     <string name="btn_continue_google">Continuar con Google</string>
     <string name="btn_register_email">Registrarse con email</string>
-    <string name="btn_try_guest">Probar sin registrarse</string>
+    <string name="btn_try_guest">Entrar como invitado</string>
     <string name="welcome_guest_caption">El progreso se guarda solo en este teléfono. Regístrate más tarde para no perderlo.</string>
     <string name="welcome_login_link">Ya tengo una cuenta → Iniciar sesión</string>
     <string name="guest_label">Invitado</string>

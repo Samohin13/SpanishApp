@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.foundation.border
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.clickable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -123,25 +124,30 @@ fun WelcomeScreen(
             // рейтинг). Дальше регистрация email, крупная кнопка гостя с честной
             // подписью, и ссылка «войти».
 
-            // 1. Google — главная кнопка
+            // v1.26.1: единый стиль — все кнопки 56dp, скругление 16dp, full-width.
+            // Иерархия: Google (белая, самая заметная) → Регистрация (оранжевый
+            // бренд) → Гость (нейтральная обводка).
+            val btnShape = RoundedCornerShape(16.dp)
+
+            // 1. Google — главная кнопка (белая)
             GoogleSignInFullButton(viewModel = viewModel, enabled = !state.isLoading)
 
             Spacer(Modifier.height(12.dp))
 
-            // 2. Регистрация по email
-            OutlinedButton(
+            // 2. Регистрация по email — оранжевая (бренд)
+            Button(
                 onClick = { navController.navigate("register") },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
-                shape = MaterialTheme.shapes.medium,
+                shape = btnShape,
                 enabled = !state.isLoading
             ) {
-                Text(stringResource(R.string.btn_register_email), fontSize = 17.sp)
+                Text(stringResource(R.string.btn_register_email), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
             }
 
             Spacer(Modifier.height(12.dp))
 
-            // 3. Гость — крупная tonal-кнопка + честная подпись
-            FilledTonalButton(
+            // 3. Гость — нейтральная обводка (крупная, но низкий приоритет)
+            OutlinedButton(
                 onClick = {
                     // v1.26.1 FIX: навигация СРАЗУ (синхронно), до async-смены
                     // isLoggedIn в startGuest — иначе пересборка NavHost-графа
@@ -152,8 +158,14 @@ fun WelcomeScreen(
                     }
                 },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
-                shape = MaterialTheme.shapes.medium,
-                enabled = !state.isLoading
+                shape = btnShape,
+                enabled = !state.isLoading,
+                border = androidx.compose.foundation.BorderStroke(
+                    1.5.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.28f)
+                ),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.onSurface
+                )
             ) {
                 Text(stringResource(R.string.btn_try_guest), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
             }

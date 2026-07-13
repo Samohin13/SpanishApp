@@ -107,7 +107,7 @@ fun GoogleSignInFullButton(
         onClick = { if (enabled) onClick() },
         modifier = modifier.fillMaxWidth().height(56.dp),
         enabled = enabled,
-        shape = MaterialTheme.shapes.medium,
+        shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = Color.White,
             contentColor = Color(0xFF1F1F1F),
