@@ -171,18 +171,18 @@ class AuthViewModel @Inject constructor(
         // пересборкой NavHost-графа при смене isLoggedIn. Здесь — только
         // побочные эффекты.
         viewModelScope.launch {
-            // v1.26.1 (data-loss fix, shared device): logout НЕ чистит Room, а
-            // owner-маркер переживает logout. Значит локальными данными мог
-            // владеть ПРЕДЫДУЩИЙ реальный аккаунт. Гость — новая личность: не
-            // должен видеть/наследовать чужой прогресс, и — главное — при будущей
-            // регистрации reconcileAfterAuth не должен снести его работу как
-            // «чужую» (owner≠newUid → wipe). Даём чистый лист: стираем чужие
-            // данные и снимаем владельца (owner→null).
-            if (accountSyncGuard.ownerUid() != null) {
-                runCatching { userDataWiper.wipeAll() }
-                    .onFailure { Log.e("AuthViewModel", "guest start: foreign data wipe failed", it) }
-                accountSyncGuard.clear()
-            }
+            // v1.26.1 (data-loss/privacy fix, shared device): гость ВСЕГДА
+            // начинает с чистого листа. Room не привязан к гостю (owner не
+            // ставится), а logout Room не чистит. Без безусловного вайпа:
+            //  • гость после реального юзера видел бы его прогресс, а при
+            //    регистрации утащил бы чужие данные в своё облако (owner≠uid);
+            //  • второй гость после logout первого гостя (owner всё время null!)
+            //    унаследовал бы прогресс первого — приватность + смешение данных.
+            // wipeAll обнуляет только пользовательский прогресс; сид-словарь/
+            // уроки/спряжения остаются. Гость на этом устройстве всегда «новый».
+            runCatching { userDataWiper.wipeAll() }
+                .onFailure { Log.e("AuthViewModel", "guest start: wipe failed", it) }
+            accountSyncGuard.clear()
             authRepository.setGuestMode(true)
             authRepository.setLoggedIn(true)
             _uiState.update {
@@ -586,6 +586,10 @@ class AuthViewModel @Inject constructor(
                         discardLocalIfGuest = wasGuest && !keepGuestProgress,
                     )
                     _uiState.update { it.copy(isLoading = false, authSuccess = true) }
+                } else {
+                    // v1.26.1: паритет с login() — без этого спиннер вис вечно.
+                    accountSyncGuard.abortAccountSwitch(wasBlockedBefore)
+                    _uiState.update { it.copy(isLoading = false, generalError = "Google Auth Error") }
                 }
             } catch (e: Exception) {
                 accountSyncGuard.abortAccountSwitch(wasBlockedBefore)
