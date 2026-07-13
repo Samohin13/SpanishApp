@@ -83,17 +83,20 @@
     урок/placement/сплэш (rememberSaveable); диплинки обходили замок;
     ContentSyncWorker не был запланирован (OTA мёртв); reminder без tap-intent.
   - **Волна 2 — отложенный бэклог** (задача #6): radio session-запись умирает
-    с VM (мимо daily mission №5); теория — 91 карта затенена дублями ключей,
-    8 уроков показывают ЧУЖУЮ тему (нужен topic-mapping); поиск словаря не
-    находит кириллицу с заглавной/без акцентов; anonymous→permanent linking
-    отсутствует (ghost-дубли лидерборда); Room-загрязнение между аккаунтами
-    на общем устройстве; ~1420 русских литералов вне frozen-модулей (paywall
-    74 — топ приоритет); weekly-лига промоутит неактивных в мелких когортах.
+    с VM (мимо daily mission №5); weekly-лига промоутит неактивных в мелких
+    когортах. ✅ **ЗАКРЫТО в v1.26.1:** 8 карточек теории с ЧУЖОЙ темой
+    (удалены неверно затеняющие записи, корректные `t()`-карты всплыли);
+    поиск словаря находит заглавную кириллицу + акценты; anonymous→permanent
+    linking + guest-режим (весь батч гостевого режима); Room-загрязнение между
+    аккаунтами на общем устройстве (гость всегда с чистого листа); paywall
+    локализован (strings ×4). Уточнение: «91 карта затенена / ~190 дублей» —
+    STALE, реально был 1 безвредный дубль (`u11_l5_6`, та же тема) + 8
+    wrong-topic (уже пофикшены).
 
-⚠️ Educational backlog: ~120 medium/low findings из Phase 1+2 audit'ов (verb imperativo
-data для 60 AUTHORED — imperativo для правильных теперь генерится корректно, для
-AUTHORED пропускается; vocab ~30 entries cleanup, libros CEFR re-leveling,
-pronunciation redesign, theory ~190 duplicate Map keys).
+⚠️ Educational backlog (остаток после v1.26.1): imperativo data для 159 AUTHORED
+глаголов (imperativo для правильных генерится, для AUTHORED пропускается —
+ser→sé, ir→ve, tener→ten…); libros CEFR re-leveling; pronunciation redesign;
+~1000-1400 русских UI-литералов вне frozen-модулей (paywall — ✅ сделан).
 
 ## 🆕 v1.25.x Chat / Voice / Billing batch (2026-05-28..29)
 
