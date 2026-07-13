@@ -82,12 +82,12 @@ android {
     // может отличаться. Сменён на "com.espeak.app" т.к. "com.spanishapp"
     // уже зарегистрирован другим разработчиком в Google Play.
     namespace = "com.spanishapp"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.espeak.app"
         minSdk = 26
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 200
         versionName = "1.26.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"

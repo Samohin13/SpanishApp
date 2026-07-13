@@ -34,7 +34,7 @@ crashlytics = "3.0.2"
 biometric = "1.2.0-alpha05"
 media3 = "1.4.1"
 zxing = "3.5.3"
-billing = "7.1.1"
+billing = "8.0.0"
 
 [libraries]
 billing-ktx = { group = "com.android.billingclient", name = "billing-ktx", version.ref = "billing" }
