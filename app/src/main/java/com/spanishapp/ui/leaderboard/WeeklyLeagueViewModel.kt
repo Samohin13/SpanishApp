@@ -9,6 +9,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -21,12 +22,16 @@ data class WeeklyLeagueUiState(
     val state: WeeklyLeagueStateEntity? = null,
     val members: List<WeeklyMember> = emptyList(),
     val daysRemaining: Int = 0,
-    val error: String? = null
+    val error: String? = null,
+    /** v1.26.1 (Model B): гость нажал «участвовать» — нужен аккаунт. */
+    val needsAccount: Boolean = false
 )
 
 @HiltViewModel
 class WeeklyLeagueViewModel @Inject constructor(
-    private val service: WeeklyLeagueService
+    private val service: WeeklyLeagueService,
+    // v1.26.1 (Model B): гейт участия для гостя.
+    private val authRepository: com.spanishapp.data.repository.AuthRepository,
 ) : ViewModel() {
 
     private val _ui = MutableStateFlow(WeeklyLeagueUiState())
@@ -55,8 +60,16 @@ class WeeklyLeagueViewModel @Inject constructor(
         }
     }
 
+    fun consumeNeedsAccount() { _ui.value = _ui.value.copy(needsAccount = false) }
+
     fun optIn() {
         viewModelScope.launch {
+            // v1.26.1 (Model B): гость не вступает в лигу (ghost-когорты) —
+            // сначала регистрация.
+            if (authRepository.guestMode.first()) {
+                _ui.value = _ui.value.copy(needsAccount = true)
+                return@launch
+            }
             service.setOptedIn(true)
             refresh()
         }

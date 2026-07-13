@@ -31,6 +31,8 @@ import javax.inject.Inject
 class PaywallViewModel @Inject constructor(
     private val subscriptionManager: SubscriptionManager,
     private val billing: PlayBillingManager,
+    // v1.26.1 (Model B): гейт покупки для гостя.
+    private val authRepository: com.spanishapp.data.repository.AuthRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PaywallState())
@@ -74,6 +76,12 @@ class PaywallViewModel @Inject constructor(
      */
     fun startPurchase(activity: Activity) {
         viewModelScope.launch {
+            // v1.26.1 (Model B): гость не может купить PRO — entitlement привязался
+            // бы к анонимному uid (потеря при удалении, возвраты). Сначала аккаунт.
+            if (authRepository.guestMode.first()) {
+                _events.send(PurchaseEvent.RequiresAccount)
+                return@launch
+            }
             _state.update { it.copy(isLoading = true) }
             val plan = state.value.selectedPlan
             val basePlanId = when (plan) {
@@ -109,4 +117,6 @@ data class PaywallState(
 
 sealed class PurchaseEvent {
     object Purchased : PurchaseEvent()
+    // v1.26.1 (Model B): гость нажал купить — нужен реальный аккаунт.
+    object RequiresAccount : PurchaseEvent()
 }

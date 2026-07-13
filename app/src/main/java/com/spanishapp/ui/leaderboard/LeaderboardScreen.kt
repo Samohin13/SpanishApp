@@ -79,6 +79,25 @@ fun LeaderboardScreen(
                 onDismiss = { vm.dismissNamePrompt() }
             )
         }
+        // v1.26.1 (Model B): гость нажал «участвовать» — нужен аккаунт.
+        if (state.needsAccount) {
+            AlertDialog(
+                onDismissRequest = { vm.consumeNeedsAccount() },
+                title = { Text(stringResource(com.spanishapp.R.string.guest_leaderboard_gate_title)) },
+                text = { Text(stringResource(com.spanishapp.R.string.guest_leaderboard_gate_body)) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        vm.consumeNeedsAccount()
+                        navController.navigate("register") { launchSingleTop = true }
+                    }) { Text(stringResource(com.spanishapp.R.string.guest_leaderboard_gate_cta)) }
+                },
+                dismissButton = {
+                    TextButton(onClick = { vm.consumeNeedsAccount() }) {
+                        Text(stringResource(com.spanishapp.R.string.auth_back))
+                    }
+                }
+            )
+        }
         if (state.showCountryPicker) {
             CountryPickerDialog(
                 currentIso = state.deviceCountry,

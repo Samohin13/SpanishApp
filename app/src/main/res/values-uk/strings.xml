@@ -127,6 +127,10 @@
     <string name="guest_login_warning_confirm">Увійти</string>
     <string name="guest_save_progress_title">Зберегти прогрес</string>
     <string name="guest_save_progress_guarantee">Твої уроки, XP і стрік перенесуться в акаунт.</string>
+    <string name="guest_purchase_needs_account">Створи акаунт, щоб покупка збереглася при зміні телефону</string>
+    <string name="guest_leaderboard_gate_title">Рейтинг — для зареєстрованих</string>
+    <string name="guest_leaderboard_gate_body">Створи акаунт, щоб брати участь у рейтингу та лігах і не втратити місце.</string>
+    <string name="guest_leaderboard_gate_cta">Створити акаунт</string>
     <string name="auth_email">Email</string>
     <string name="auth_password">Пароль</string>
     <string name="auth_password_confirm">Повторіть пароль</string>

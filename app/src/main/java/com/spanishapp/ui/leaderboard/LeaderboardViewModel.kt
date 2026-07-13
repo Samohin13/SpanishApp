@@ -16,6 +16,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
 data class LeaderboardUiState(
@@ -29,6 +30,8 @@ data class LeaderboardUiState(
     val needsNamePrompt: Boolean = false,
     /** Открыт ли picker для смены страны. */
     val showCountryPicker: Boolean = false,
+    /** v1.26.1 (Model B): гость нажал «участвовать» — нужен аккаунт. */
+    val needsAccount: Boolean = false,
 )
 
 @HiltViewModel
@@ -37,6 +40,8 @@ class LeaderboardViewModel @Inject constructor(
     private val userProgressDao: UserProgressDao,
     private val countryPrefs: CountryPreferences,
     private val subscriptionManager: com.spanishapp.service.SubscriptionManager,
+    // v1.26.1 (Model B): гейт участия для гостя.
+    private val authRepository: com.spanishapp.data.repository.AuthRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(LeaderboardUiState(deviceCountry = "XX"))
@@ -83,14 +88,22 @@ class LeaderboardViewModel @Inject constructor(
      *  • Если имя нормальное — выполняем DAO update СЕКВЕНЦИАЛЬНО (через
      *    .join() suspend-вызовов), потом syncSelf
      */
+    fun consumeNeedsAccount() { _state.value = _state.value.copy(needsAccount = false) }
+
     fun optIn() {
         val current = _state.value
-        val name = current.displayName.trim()
-        if (name.isBlank() || name == "Estudiante") {
-            _state.value = current.copy(needsNamePrompt = true)
-            return
-        }
         viewModelScope.launch {
+            // v1.26.1 (Model B): гость не участвует в рейтинге (ghost-дубли) —
+            // сначала регистрация.
+            if (authRepository.guestMode.first()) {
+                _state.value = _state.value.copy(needsAccount = true)
+                return@launch
+            }
+            val name = current.displayName.trim()
+            if (name.isBlank() || name == "Estudiante") {
+                _state.value = _state.value.copy(needsNamePrompt = true)
+                return@launch
+            }
             userProgressDao.setLeaderboardOptIn(true)
             _state.value = _state.value.copy(optedIn = true)
             try {

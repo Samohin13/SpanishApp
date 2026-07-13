@@ -127,6 +127,10 @@
     <string name="guest_login_warning_confirm">Iniciar sesión</string>
     <string name="guest_save_progress_title">Guardar progreso</string>
     <string name="guest_save_progress_guarantee">Tus lecciones, XP y racha se moverán a tu cuenta.</string>
+    <string name="guest_purchase_needs_account">Crea una cuenta para que tu compra no se pierda al cambiar de teléfono</string>
+    <string name="guest_leaderboard_gate_title">La clasificación es para usuarios registrados</string>
+    <string name="guest_leaderboard_gate_body">Crea una cuenta para unirte a la clasificación y las ligas y no perder tu puesto.</string>
+    <string name="guest_leaderboard_gate_cta">Crear cuenta</string>
     <string name="auth_email">Correo</string>
     <string name="auth_password">Contraseña</string>
     <string name="auth_password_confirm">Repite la contraseña</string>

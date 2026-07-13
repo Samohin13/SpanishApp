@@ -187,6 +187,13 @@ class LeaderboardRepository @Inject constructor(
         val progress = userProgressDao.getProgressOnce() ?: return false
         if (!progress.leaderboardOptIn) return false
 
+        // v1.26.1 (Model B): в рейтинг пишут только зарегистрированные. Гость
+        // (анонимный аккаунт или вовсе без currentUser) не создаёт запись —
+        // иначе ghost-дубли лидерборда от анонимных uid. Участие требует
+        // регистрации (см. гейт в LeaderboardViewModel/WeeklyLeagueViewModel).
+        val cur = auth.currentUser
+        if (cur == null || cur.isAnonymous) return false
+
         val uid = ensureAuth()
         // ⚠ Используем АСИНХРОННУЮ версию detect — это даёт IP-API fallback
         // для WiFi-only устройств. Если упадёт сеть — вернётся "XX", но

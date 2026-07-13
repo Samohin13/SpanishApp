@@ -140,12 +140,22 @@ fun PaywallScreen(navController: NavHostController) {
 
     // v1.23.1 (audit Bug 10): слушаем purchased event через LaunchedEffect —
     // навигация только в alive lifecycle, никаких race conditions.
+    val ctx = androidx.compose.ui.platform.LocalContext.current
     LaunchedEffect(Unit) {
         vm.events.collect { event ->
             when (event) {
                 is PurchaseEvent.Purchased -> {
                     purchased = true  // флаг для onDispose чтоб НЕ слать dismissed
                     navController.popBackStack()
+                }
+                // v1.26.1 (Model B): гость — сначала аккаунт, потом покупка.
+                is PurchaseEvent.RequiresAccount -> {
+                    android.widget.Toast.makeText(
+                        ctx,
+                        ctx.getString(com.spanishapp.R.string.guest_purchase_needs_account),
+                        android.widget.Toast.LENGTH_LONG
+                    ).show()
+                    navController.navigate("register") { launchSingleTop = true }
                 }
             }
         }
