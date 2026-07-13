@@ -186,6 +186,16 @@ class AuthViewModel @Inject constructor(
                 age?.let { authRepository.setUserAge(it) }
                 reason?.let { authRepository.setUserReason(it) }
                 level?.let { authRepository.setUserLevel(it) }
+
+                // v1.26.1 FIX: восстанавливаем флаг завершённого онбординга.
+                // Раньше после logout (auth_prefs очищаются) повторный вход
+                // гнал юзера через онбординг ЗАНОВО — sync тянул имя/возраст/…,
+                // но не onboardingCompleted → гейт видел false. Берём явный
+                // флаг из Firestore ИЛИ выводим из полноты профиля (все 4 поля
+                // на месте → человек уже прошёл онбординг).
+                val onboardingDone = document.getBoolean("onboardingCompleted") == true ||
+                    (name != null && age != null && reason != null && level != null)
+                if (onboardingDone) authRepository.setOnboardingCompleted(true)
             }
         } catch (e: Exception) {
             Log.w("AuthViewModel", "syncUserDataFromFirestore failed", e)
@@ -199,6 +209,9 @@ class AuthViewModel @Inject constructor(
             "age" to uiState.value.userAge,
             "reason" to uiState.value.userReason,
             "level" to uiState.value.userLevel,
+            // v1.26.1: сохраняем флаг онбординга — чтобы повторный вход не гнал
+            // через онбординг заново (см. syncUserDataFromFirestore).
+            "onboardingCompleted" to uiState.value.onboardingCompleted,
             "updatedAt" to System.currentTimeMillis()
         )
 
@@ -305,17 +318,17 @@ class AuthViewModel @Inject constructor(
                 // ДО сетевого syncUserDataFromFirestore — иначе в это окно
                 // onStop force-upload мог занулить облако реального аккаунта.
                 accountSyncGuard.beginAccountSwitch()
-                authRepository.setLoggedIn(true)
-                // v1.25.90: тянем профиль из Firestore + локальный прогресс из облака
-                // (зеркало loginWithGoogle). Раньше email-вход после переустановки
-                // оставлял auth_prefs пустыми → юзер уходил на onboarding и
-                // перезаписывал свои Firestore-данные.
                 if (result.user != null) {
-                    // Сначала профиль (имя/уровень) — до сверки прогресса.
+                    // v1.26.1 FIX: профиль (имя/возраст/уровень + флаг онбординга)
+                    // восстанавливаем ДО setLoggedIn(true) — иначе гейт на мгновение
+                    // видит пустой профиль и уводит юзера в онбординг заново.
                     syncUserDataFromFirestore(result.user!!.uid)
+                    authRepository.setLoggedIn(true)
                     // sign-in = облако авторитетно → localIsAuthoritative=false
                     // (при фейле download НЕ выгружаем, чтобы не занулить облако).
                     reconcileAfterAuth(result.user!!.uid, localIsAuthoritative = false)
+                } else {
+                    authRepository.setLoggedIn(true)
                 }
                 _uiState.update { it.copy(isLoading = false) }
             } catch (e: Exception) {
@@ -434,8 +447,10 @@ class AuthViewModel @Inject constructor(
                 // v1.25.98 (adversarial review v2): барьер сразу после resolve.
                 accountSyncGuard.beginAccountSwitch()
                 if (result.user != null) {
-                    authRepository.setLoggedIn(true)
+                    // v1.26.1 FIX: профиль + флаг онбординга ДО setLoggedIn
+                    // (иначе онбординг заново при повторном входе).
                     syncUserDataFromFirestore(result.user!!.uid)
+                    authRepository.setLoggedIn(true)
                     reconcileAfterAuth(result.user!!.uid, localIsAuthoritative = linkedAnon)
                     _uiState.update { it.copy(isLoading = false) }
                 }
