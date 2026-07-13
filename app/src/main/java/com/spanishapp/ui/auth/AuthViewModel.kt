@@ -83,17 +83,30 @@ class AuthViewModel @Inject constructor(
      * ранний вызов на call-site закрывает окно между resolve и первым сетевым
      * await (syncUserDataFromFirestore), в котором onStop мог выгрузить пусто.
      */
-    private suspend fun reconcileAfterAuth(uid: String, localIsAuthoritative: Boolean) {
+    private suspend fun reconcileAfterAuth(
+        uid: String,
+        localIsAuthoritative: Boolean,
+        // v1.26.1 (data-loss fix): true когда ГОСТЬ входит в СУЩЕСТВУЮЩИЙ аккаунт
+        // (email-login / Google-collision). Тогда облако авторитетно, а локальный
+        // гостевой прогресс (owner==null) надо отбросить ДО download — иначе он
+        // замержится в чужой облачный док (uploadAll после download). Передаётся
+        // ТОЛЬКО из login()/loginWithGoogle(); register (localAuth=true) и
+        // self-heal его не ставят, поэтому регресс их путей исключён.
+        discardLocalIfGuest: Boolean = false,
+    ) {
         // v1.26.1: сюда попадаем только с РЕАЛЬНЫМ (или уже слинкованным из
         // анонимного) аккаунтом — гостевой режим окончен, снимаем флаг.
         authRepository.setGuestMode(false)
         val owner = accountSyncGuard.ownerUid()
         accountSyncGuard.beginAccountSwitch()  // идемпотентно; ранний вызов — на call-site
 
-        if (owner != null && owner != uid) {
-            Log.i("AuthViewModel", "Account switch ($owner -> $uid): wiping foreign local data")
+        val foreignSwitch = owner != null && owner != uid
+        // Гость (owner==null — данные не заявлены) входит в существующий аккаунт.
+        val discardGuest = discardLocalIfGuest && owner == null
+        if (foreignSwitch || discardGuest) {
+            Log.i("AuthViewModel", "Reconcile wipe (foreign=$foreignSwitch guestIntoExisting=$discardGuest): $owner -> $uid")
             val wiped = runCatching { userDataWiper.wipeAll() }
-                .onFailure { Log.e("AuthViewModel", "wipe failed on account switch", it) }
+                .onFailure { Log.e("AuthViewModel", "wipe failed on reconcile", it) }
                 .isSuccess
             if (!wiped) {
                 // Шлагбаум остаётся закрыт — ретрай на следующем логине.
@@ -154,6 +167,18 @@ class AuthViewModel @Inject constructor(
         // пересборкой NavHost-графа при смене isLoggedIn. Здесь — только
         // побочные эффекты.
         viewModelScope.launch {
+            // v1.26.1 (data-loss fix, shared device): logout НЕ чистит Room, а
+            // owner-маркер переживает logout. Значит локальными данными мог
+            // владеть ПРЕДЫДУЩИЙ реальный аккаунт. Гость — новая личность: не
+            // должен видеть/наследовать чужой прогресс, и — главное — при будущей
+            // регистрации reconcileAfterAuth не должен снести его работу как
+            // «чужую» (owner≠newUid → wipe). Даём чистый лист: стираем чужие
+            // данные и снимаем владельца (owner→null).
+            if (accountSyncGuard.ownerUid() != null) {
+                runCatching { userDataWiper.wipeAll() }
+                    .onFailure { Log.e("AuthViewModel", "guest start: foreign data wipe failed", it) }
+                accountSyncGuard.clear()
+            }
             authRepository.setGuestMode(true)
             authRepository.setLoggedIn(true)
             _uiState.update {
@@ -387,6 +412,10 @@ class AuthViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, generalError = null) }
+            // v1.26.1: был ли активен гостевой режим ДО входа (guestMode
+            // сбрасывается внутри reconcileAfterAuth) — вход в существующий
+            // аккаунт должен отбросить локальный гостевой прогресс.
+            val wasGuest = authRepository.guestMode.first()
             try {
                 val result = auth.signInWithEmailAndPassword(email, pass).await()
                 // v1.25.98 (adversarial review v2): барьер СРАЗУ после resolve,
@@ -401,7 +430,7 @@ class AuthViewModel @Inject constructor(
                     authRepository.setLoggedIn(true)
                     // sign-in = облако авторитетно → localIsAuthoritative=false
                     // (при фейле download НЕ выгружаем, чтобы не занулить облако).
-                    reconcileAfterAuth(result.user!!.uid, localIsAuthoritative = false)
+                    reconcileAfterAuth(result.user!!.uid, localIsAuthoritative = false, discardLocalIfGuest = wasGuest)
                 } else {
                     authRepository.setLoggedIn(true)
                 }
@@ -497,6 +526,10 @@ class AuthViewModel @Inject constructor(
     fun loginWithGoogle(idToken: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, generalError = null) }
+            // v1.26.1: гость ДО входа (см. login()). Для linkedAnon (новый Google
+            // на анонимном uid) прогресс гостя авторитетен и сохраняется; для
+            // collision (существующий Google-аккаунт) — отбрасывается.
+            val wasGuest = authRepository.guestMode.first()
             try {
                 val credential = GoogleAuthProvider.getCredential(idToken, null)
                 // v1.25.98 (audit auth-H1): анонимный юзер + вход через Google —
@@ -526,7 +559,11 @@ class AuthViewModel @Inject constructor(
                     // (иначе онбординг заново при повторном входе).
                     syncUserDataFromFirestore(result.user!!.uid)
                     authRepository.setLoggedIn(true)
-                    reconcileAfterAuth(result.user!!.uid, localIsAuthoritative = linkedAnon)
+                    reconcileAfterAuth(
+                        result.user!!.uid,
+                        localIsAuthoritative = linkedAnon,
+                        discardLocalIfGuest = wasGuest && !linkedAnon,
+                    )
                     _uiState.update { it.copy(isLoading = false) }
                 }
             } catch (e: Exception) {
