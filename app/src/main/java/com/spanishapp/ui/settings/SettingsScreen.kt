@@ -828,13 +828,30 @@ fun SettingsScreen(
 
             val isGuest by com.spanishapp.ui.auth.rememberIsGuest()
             SettingsSection(stringResource(R.string.settings_section_account)) {
-                // v1.26.1: гостю — явный статус + путь к регистрации.
+                // v1.26.1: явный статус аккаунта — гость видит «Гостевой режим» +
+                // путь к регистрации; зарегистрированный видит СВОЮ почту и
+                // провайдера (как в Apple/Google).
                 if (isGuest) {
                     SettingsItem(
                         icon = Icons.Default.PersonAddAlt,
                         title = stringResource(R.string.guest_settings_title),
                         summary = stringResource(R.string.guest_settings_subtitle),
                     ) { navController.navigate("register") { launchSingleTop = true } }
+                } else {
+                    val fbUser = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+                    val email = fbUser?.email
+                    val providerSummary = when {
+                        fbUser?.providerData?.any { it.providerId == "google.com" } == true ->
+                            stringResource(R.string.account_via_google)
+                        fbUser?.providerData?.any { it.providerId == "password" } == true ->
+                            stringResource(R.string.account_via_email)
+                        else -> stringResource(R.string.account_synced)
+                    }
+                    SettingsItem(
+                        icon = Icons.Default.AccountCircle,
+                        title = email ?: stringResource(R.string.account_synced),
+                        summary = if (email != null) providerSummary else null,
+                    )
                 }
                 SettingsItem(Icons.AutoMirrored.Filled.Logout, stringResource(R.string.settings_logout), textColor = MaterialTheme.colorScheme.error) { showLogoutDialog = true }
                 SettingsItem(Icons.Default.DeleteForever, stringResource(R.string.set_delete_account_full), textColor = MaterialTheme.colorScheme.error) { showDeleteDialog = true }

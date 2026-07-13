@@ -108,7 +108,10 @@
     <string name="welcome_guest_caption">Progress is saved only on this phone. Sign up later so you don\'t lose it.</string>
     <string name="welcome_login_link">I already have an account → Sign in</string>
     <string name="guest_label">Guest</string>
-    <string name="guest_settings_title">You\'re signed in as a guest</string>
+    <string name="guest_settings_title">Guest mode</string>
+    <string name="account_via_google">Signed in with Google</string>
+    <string name="account_via_email">Signed in with email</string>
+    <string name="account_synced">Account · synced to cloud</string>
     <string name="guest_settings_subtitle">Progress is stored only on this device</string>
     <string name="guest_settings_cta">Create account</string>
     <string name="guest_banner_title">Save your progress</string>

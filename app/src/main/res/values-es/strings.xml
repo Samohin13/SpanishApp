@@ -117,7 +117,10 @@
     <string name="welcome_guest_caption">El progreso se guarda solo en este teléfono. Regístrate más tarde para no perderlo.</string>
     <string name="welcome_login_link">Ya tengo una cuenta → Iniciar sesión</string>
     <string name="guest_label">Invitado</string>
-    <string name="guest_settings_title">Has entrado como invitado</string>
+    <string name="guest_settings_title">Modo invitado</string>
+    <string name="account_via_google">Sesión iniciada con Google</string>
+    <string name="account_via_email">Sesión iniciada con email</string>
+    <string name="account_synced">Cuenta · sincronizada con la nube</string>
     <string name="guest_settings_subtitle">El progreso se guarda solo en este dispositivo</string>
     <string name="guest_settings_cta">Crear cuenta</string>
     <string name="guest_banner_title">Guarda tu progreso</string>

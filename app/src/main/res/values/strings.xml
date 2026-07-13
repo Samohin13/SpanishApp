@@ -121,9 +121,12 @@
     <string name="welcome_guest_caption">Прогресс сохранится только на этом телефоне. Зарегистрируйся позже, чтобы не потерять.</string>
     <string name="welcome_login_link">У меня уже есть аккаунт → Войти</string>
     <string name="guest_label">Гость</string>
-    <string name="guest_settings_title">Вы вошли как гость</string>
+    <string name="guest_settings_title">Гостевой режим</string>
     <string name="guest_settings_subtitle">Прогресс хранится только на этом устройстве</string>
     <string name="guest_settings_cta">Создать аккаунт</string>
+    <string name="account_via_google">Вход через Google</string>
+    <string name="account_via_email">Вход через Email</string>
+    <string name="account_synced">Аккаунт · синхронизируется с облаком</string>
     <string name="guest_banner_title">Сохрани свой прогресс</string>
     <string name="guest_banner_subtitle">Ты сейчас гость. Создай аккаунт — прогресс не потеряется при смене телефона</string>
     <string name="guest_login_warning_title">Войти в другой аккаунт?</string>

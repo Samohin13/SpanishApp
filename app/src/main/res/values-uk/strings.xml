@@ -117,7 +117,10 @@
     <string name="welcome_guest_caption">Прогрес збережеться лише на цьому телефоні. Зареєструйся згодом, щоб не втратити.</string>
     <string name="welcome_login_link">У мене вже є акаунт → Увійти</string>
     <string name="guest_label">Гість</string>
-    <string name="guest_settings_title">Ви увійшли як гість</string>
+    <string name="guest_settings_title">Гостьовий режим</string>
+    <string name="account_via_google">Вхід через Google</string>
+    <string name="account_via_email">Вхід через Email</string>
+    <string name="account_synced">Акаунт · синхронізується з хмарою</string>
     <string name="guest_settings_subtitle">Прогрес зберігається лише на цьому пристрої</string>
     <string name="guest_settings_cta">Створити акаунт</string>
     <string name="guest_banner_title">Збережи свій прогрес</string>
