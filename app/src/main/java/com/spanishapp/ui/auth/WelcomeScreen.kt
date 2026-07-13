@@ -104,9 +104,31 @@ fun WelcomeScreen(
                 )
             }
 
-            Spacer(Modifier.height(48.dp))
+            Spacer(Modifier.height(40.dp))
 
-            Button(
+            // v1.26.1: 4 явных варианта. Google — главный (1 тап → облако +
+            // рейтинг). Дальше регистрация email, крупная кнопка гостя с честной
+            // подписью, и ссылка «войти».
+
+            // 1. Google — главная кнопка
+            GoogleSignInFullButton(viewModel = viewModel, enabled = !state.isLoading)
+
+            Spacer(Modifier.height(12.dp))
+
+            // 2. Регистрация по email
+            OutlinedButton(
+                onClick = { navController.navigate("register") },
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                shape = MaterialTheme.shapes.medium,
+                enabled = !state.isLoading
+            ) {
+                Text(stringResource(R.string.btn_register_email), fontSize = 17.sp)
+            }
+
+            Spacer(Modifier.height(12.dp))
+
+            // 3. Гость — крупная tonal-кнопка + честная подпись
+            FilledTonalButton(
                 onClick = {
                     // v1.26.1 FIX: навигация СРАЗУ (синхронно), до async-смены
                     // isLoggedIn в startGuest — иначе пересборка NavHost-графа
@@ -120,39 +142,29 @@ fun WelcomeScreen(
                 shape = MaterialTheme.shapes.medium,
                 enabled = !state.isLoading
             ) {
-                Text(stringResource(R.string.btn_start_learning), fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.btn_try_guest), fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
             }
 
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(8.dp))
 
-            OutlinedButton(
-                onClick = { navController.navigate("login") },
-                modifier = Modifier.fillMaxWidth().height(56.dp),
-                shape = MaterialTheme.shapes.medium,
-                enabled = !state.isLoading
-            ) {
-                Text(stringResource(R.string.welcome_already_have_account), fontSize = 18.sp)
-            }
-
-            Spacer(Modifier.height(40.dp))
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
-                Text(
-                    stringResource(R.string.welcome_login_with),
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    fontSize = 15.sp
-                )
-                HorizontalDivider(modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
-            }
+            Text(
+                stringResource(R.string.welcome_guest_caption),
+                fontSize = 12.sp,
+                textAlign = TextAlign.Center,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                lineHeight = 16.sp,
+                modifier = Modifier.padding(horizontal = 8.dp)
+            )
 
             Spacer(Modifier.height(20.dp))
 
-            GoogleSignInButton(viewModel = viewModel, enabled = !state.isLoading)
+            // 4. Вход в существующий аккаунт — текстовая ссылка
+            TextButton(
+                onClick = { navController.navigate("login") },
+                enabled = !state.isLoading
+            ) {
+                Text(stringResource(R.string.welcome_login_link), fontSize = 15.sp)
+            }
         }
 
         // ── Footer: ссылки на политику ────────────────────────────

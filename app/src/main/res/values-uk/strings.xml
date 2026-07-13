@@ -110,6 +110,23 @@
     <string name="welcome_subtitle">Розпочни свій шлях до вільної іспанської просто зараз</string>
     <string name="welcome_already_have_account">У мене вже є акаунт</string>
     <string name="welcome_login_with">або увійти через</string>
+    <!-- v1.26.1: варіанти входу + гостьовий режим -->
+    <string name="btn_continue_google">Продовжити з Google</string>
+    <string name="btn_register_email">Реєстрація через email</string>
+    <string name="btn_try_guest">Спробувати без реєстрації</string>
+    <string name="welcome_guest_caption">Прогрес збережеться лише на цьому телефоні. Зареєструйся згодом, щоб не втратити.</string>
+    <string name="welcome_login_link">У мене вже є акаунт → Увійти</string>
+    <string name="guest_label">Гість</string>
+    <string name="guest_settings_title">Ви увійшли як гість</string>
+    <string name="guest_settings_subtitle">Прогрес зберігається лише на цьому пристрої</string>
+    <string name="guest_settings_cta">Створити акаунт</string>
+    <string name="guest_banner_title">Збережи свій прогрес</string>
+    <string name="guest_banner_subtitle">Ти зараз гість. Створи акаунт — прогрес не втратиться при зміні телефону</string>
+    <string name="guest_login_warning_title">Увійти в інший акаунт?</string>
+    <string name="guest_login_warning_body">Твій поточний гостьовий прогрес буде замінено даними цього акаунта з хмари. Це не можна скасувати.</string>
+    <string name="guest_login_warning_confirm">Увійти</string>
+    <string name="guest_save_progress_title">Зберегти прогрес</string>
+    <string name="guest_save_progress_guarantee">Твої уроки, XP і стрік перенесуться в акаунт.</string>
     <string name="auth_email">Email</string>
     <string name="auth_password">Пароль</string>
     <string name="auth_password_confirm">Повторіть пароль</string>
