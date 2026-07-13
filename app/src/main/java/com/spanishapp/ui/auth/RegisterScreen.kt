@@ -222,10 +222,11 @@ fun RegisterScreen(
             }
 
             TextButton(onClick = {
-                // Pop back to welcome — otherwise register↔login bounce
-                // would grow the back stack unboundedly.
+                // v1.26.1: заменяем register на login (popUpTo самого себя
+                // inclusive) — без bounce и без сноса Home при in-app пути гостя
+                // (см. LoginScreen).
                 navController.navigate("login") {
-                    popUpTo("welcome")
+                    popUpTo("register") { inclusive = true }
                     launchSingleTop = true
                 }
             }) {

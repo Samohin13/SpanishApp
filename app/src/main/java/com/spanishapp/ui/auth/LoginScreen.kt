@@ -39,6 +39,29 @@ fun LoginScreen(
     var email by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var passwordVisible by remember { mutableStateOf(false) }
+    // v1.26.1: гость, входящий в СУЩЕСТВУЮЩИЙ аккаунт, теряет локальный прогресс
+    // (облако авторитетно). Предупреждаем до входа.
+    val isGuestNow = state.isGuest || state.guestMode
+    var showLoginWarning by remember { mutableStateOf(false) }
+
+    if (showLoginWarning) {
+        AlertDialog(
+            onDismissRequest = { showLoginWarning = false },
+            title = { Text(stringResource(R.string.guest_login_warning_title)) },
+            text = { Text(stringResource(R.string.guest_login_warning_body)) },
+            confirmButton = {
+                TextButton(onClick = {
+                    showLoginWarning = false
+                    viewModel.login(email, password)
+                }) { Text(stringResource(R.string.guest_login_warning_confirm)) }
+            },
+            dismissButton = {
+                TextButton(onClick = { showLoginWarning = false }) {
+                    Text(stringResource(R.string.auth_back))
+                }
+            }
+        )
+    }
 
     Scaffold(
         topBar = {
@@ -125,7 +148,10 @@ fun LoginScreen(
             }
 
             Button(
-                onClick = { viewModel.login(email, password) },
+                onClick = {
+                    if (isGuestNow) showLoginWarning = true
+                    else viewModel.login(email, password)
+                },
                 modifier = Modifier.fillMaxWidth().height(56.dp),
                 shape = MaterialTheme.shapes.medium,
                 enabled = !state.isLoading
@@ -138,10 +164,12 @@ fun LoginScreen(
             }
 
             TextButton(onClick = {
-                // Pop back to welcome — otherwise login↔register bounce
-                // would grow the back stack unboundedly.
+                // v1.26.1: заменяем текущий login на register (popUpTo самого себя
+                // inclusive) — предотвращает бесконечный bounce login↔register И
+                // не сносит Home при in-app пути гостя (раньше popUpTo("welcome")
+                // при отсутствии welcome в стеке ронял главную).
                 navController.navigate("register") {
-                    popUpTo("welcome")
+                    popUpTo("login") { inclusive = true }
                     launchSingleTop = true
                 }
             }) {
