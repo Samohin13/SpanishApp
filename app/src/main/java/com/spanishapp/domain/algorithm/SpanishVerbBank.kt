@@ -639,8 +639,8 @@ object SpanishVerbBank {
         VerbInfo("atribuir", 5, VerbKind.UIR),
         VerbInfo("ausentar", 5, VerbKind.REGULAR_AR),
         // v1.25.98: avergonzar — o→üe с диерезисом (avergüenzo), правилами не
-// выражается. AUTHORED = исключён из генератора (нет неправильных форм).
-VerbInfo("avergonzar", 5, VerbKind.AUTHORED),
+        // выражается. AUTHORED = исключён из генератора (нет неправильных форм).
+        VerbInfo("avergonzar", 5, VerbKind.AUTHORED),
 
         // B
         VerbInfo("balancear", 5, VerbKind.REGULAR_AR),
