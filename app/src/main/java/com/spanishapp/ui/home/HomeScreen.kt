@@ -2870,19 +2870,18 @@ private fun HomeProBannerTop(onClick: () -> Unit) {
 }
 
 // ── v1.26.1: гостевой режим ──────────────────────────────────────────
-/** true если текущий Firebase-юзер анонимный (гость без email/Google). */
+/**
+ * true если юзер — гость (ещё не зарегистрировался). Покрывает оба случая:
+ *  - анонимный Firebase-аккаунт (isGuest, Anonymous Auth включён);
+ *  - локальный guestMode (без анонимного аккаунта — Anonymous Auth выключен /
+ *    офлайн). Сбрасывается при регистрации/входе в реальный аккаунт → баннер
+ *    «сохрани прогресс» исчезает.
+ */
 @Composable
 private fun rememberIsGuest(): State<Boolean> {
-    val auth = remember { com.google.firebase.auth.FirebaseAuth.getInstance() }
-    val isGuest = remember { mutableStateOf(auth.currentUser?.isAnonymous == true) }
-    DisposableEffect(auth) {
-        val l = com.google.firebase.auth.FirebaseAuth.AuthStateListener { fb ->
-            isGuest.value = fb.currentUser?.isAnonymous == true
-        }
-        auth.addAuthStateListener(l)
-        onDispose { auth.removeAuthStateListener(l) }
-    }
-    return isGuest
+    val authViewModel: com.spanishapp.ui.auth.AuthViewModel = hiltViewModel()
+    val state by authViewModel.uiState.collectAsStateWithLifecycle()
+    return androidx.compose.runtime.rememberUpdatedState(state.isGuest || state.guestMode)
 }
 
 /** Баннер «сохрани прогресс» для гостя → регистрация (линкует аккаунт). */

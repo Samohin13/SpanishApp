@@ -34,6 +34,11 @@ data class AuthUiState(
     // Google). guestStarted — одноразовый сигнал для навигации в онбординг.
     val isGuest: Boolean = false,
     val guestStarted: Boolean = false,
+    // v1.26.1: локальный гостевой режим (persist). true пока гость не
+    // зарегистрировался/не вошёл в реальный аккаунт. Покрывает и случай без
+    // анонимного аккаунта Firebase (Anonymous Auth выключен) — в отличие от
+    // isGuest, который завязан на auth.currentUser.isAnonymous.
+    val guestMode: Boolean = false,
     val userLevel: String? = null,
     val userName: String? = null,
     val userAge: Int? = null,
@@ -234,6 +239,11 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             authRepository.onboardingCompleted.collect { completed ->
                 _uiState.update { it.copy(onboardingCompleted = completed) }
+            }
+        }
+        viewModelScope.launch {
+            authRepository.guestMode.collect { g ->
+                _uiState.update { it.copy(guestMode = g) }
             }
         }
     }
