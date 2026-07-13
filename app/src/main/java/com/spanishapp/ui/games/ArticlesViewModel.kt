@@ -104,8 +104,10 @@ class ArticlesViewModel @Inject constructor(
             if (batch.isEmpty()) return@launch
             mistakesBatch = batch
             // Используем псевдо-уровень 0 (отключает level-progression логику)
-            // params используем как у первого уровня для UI, но не сохраняем результат
-            val params = LevelDifficulty.forLevel(1)
+            // params используем как у первого уровня для UI, но не сохраняем результат.
+            // v1.26.1: rounds = размер батча (иначе прогресс показывал «X/10»
+            // при 5 вопросах).
+            val params = LevelDifficulty.forLevel(1).copy(rounds = batch.size)
             _state.value = ArticlesPremiumState(
                 params = params,
                 showLevelMap = false,
@@ -132,7 +134,16 @@ class ArticlesViewModel @Inject constructor(
         viewModelScope.launch {
             val mistake = mistakesBatch[s.currentRound]
             // Восстановим слово из ArticleWordEntity (если оно есть в БД)
-            val word = dao.findByWord(mistake.itemId) ?: return@launch
+            val word = dao.findByWord(mistake.itemId)
+            if (word == null) {
+                // v1.26.1 FIX: слово недоступно (реcид/смена данных). Раньше
+                // return@launch ВИСИЛ на этом вопросе — практика замирала.
+                // Теперь чистим устаревшую запись и идём дальше.
+                runCatching { mistakesDao.removeMistake(GameId.ARTICLES, mistake.itemId) }
+                _state.value = s.copy(currentRound = s.currentRound + 1)
+                nextMistakeRound()
+                return@launch
+            }
             _state.value = s.copy(
                 currentWord = word,
                 currentRound = s.currentRound + 1,

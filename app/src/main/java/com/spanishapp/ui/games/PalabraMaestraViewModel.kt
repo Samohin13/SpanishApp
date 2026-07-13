@@ -122,10 +122,16 @@ class PalabraMaestraViewModel @Inject constructor(
         viewModelScope.launch {
             val batch = mistakesDao.getNextBatch(GameId.PALABRA, 5)
             if (batch.isEmpty()) return@launch
-            // Восстановим WordEntity по испанскому слову из main
-            val words = batch.mapNotNull { m ->
+            // Восстановим WordEntity по испанскому слову из main.
+            // v1.26.1 FIX (audit M6): нерезолвнутые слова (ушли из БД после
+            // реcида) раньше молча выпадали из практики, но ОСТАВАЛИСЬ в пуле —
+            // счётчик ошибок залипал и его нельзя было обнулить. Теперь чистим.
+            val words = mutableListOf<com.spanishapp.data.db.entity.WordEntity>()
+            for (m in batch) {
                 val clean = stripArticle(m.itemId).lowercase()
-                wordDao.findBySpanish(m.displayMain) ?: wordDao.findBySpanish(clean)
+                val w = wordDao.findBySpanish(m.displayMain) ?: wordDao.findBySpanish(clean)
+                if (w != null) words.add(w)
+                else runCatching { mistakesDao.removeMistake(GameId.PALABRA, m.itemId) }
             }
             if (words.isEmpty()) return@launch
             val questions = words.map { word ->
