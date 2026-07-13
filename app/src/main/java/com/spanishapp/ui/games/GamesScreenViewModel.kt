@@ -6,11 +6,11 @@ import com.spanishapp.data.db.dao.LibroProgressDao
 import com.spanishapp.domain.games.GameId
 import com.spanishapp.domain.games.GameLevelManager
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 /**
@@ -41,34 +41,22 @@ class GamesScreenViewModel @Inject constructor(
         "game_crossword" to GameId.CROSSWORD
     )
 
-    private val _gameProgress = MutableStateFlow<Map<String, GameProgressInfo>>(emptyMap())
-    val gameProgress: StateFlow<Map<String, GameProgressInfo>> = _gameProgress.asStateFlow()
-
-    // init MUST come after routeToGameId — иначе refresh() стартует когда
-    // map ещё null и падает с NPE на entries (вылет произошёл именно тут).
-    init { refresh() }
-
-    fun refresh() {
-        viewModelScope.launch {
-            val map = HashMap<String, GameProgressInfo>()
-
-            // ── Универсально: для всех level-based игр — реальные данные.
-            // Показываем подпись ВСЕГДА (даже 0/100) — это даёт юзеру понять
-            // что у игры есть 100 уровней и сколько он прошёл. Раньше при 0
-            // подпись скрывалась полностью.
-            for ((route, gameId) in routeToGameId) {
-                val cleared = levelManager.nextLevel(gameId) - 1
-                map[route] = GameProgressInfo("$cleared / 100")
+    // v1.26.1 FIX: РЕАКТИВНЫЙ прогресс через Flow. Раньше refresh() звался
+    // только в init (один раз) — вернувшись в хаб после прохождения уровня,
+    // юзер видел старое «0/100», т.к. ViewModel переиспользовался и данные не
+    // перечитывались. Теперь observeOverview эмитит при каждом изменении в
+    // Room → обложка обновляется сама.
+    private val gameFlows: List<kotlinx.coroutines.flow.Flow<Pair<String, GameProgressInfo>?>> =
+        routeToGameId.map { (route, gameId) ->
+            levelManager.observeOverview(gameId).map<_, Pair<String, GameProgressInfo>?> { ov ->
+                route to GameProgressInfo("${ov.nextLevel - 1} / 100")
             }
-
-            // ── Libros: пройдено рассказов (свой формат, не /100) ──
-            val libros = libroDao.getAll().first()
-            val libCompleted = libros.count { it.isCompleted }
-            if (libCompleted > 0) {
-                map["game_libros"] = GameProgressInfo("$libCompleted прочитано")
-            }
-
-            _gameProgress.value = map
+        } + libroDao.getAll().map<_, Pair<String, GameProgressInfo>?> { libros ->
+            val n = libros.count { it.isCompleted }
+            if (n > 0) "game_libros" to GameProgressInfo("$n прочитано") else null
         }
-    }
+
+    val gameProgress: StateFlow<Map<String, GameProgressInfo>> =
+        combine(gameFlows) { arr -> arr.filterNotNull().toMap() }
+            .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyMap())
 }
