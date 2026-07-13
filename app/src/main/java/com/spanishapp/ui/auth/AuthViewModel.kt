@@ -358,6 +358,9 @@ class AuthViewModel @Inject constructor(
                     generalError = null
                 )
             }
+            // v1.26.1 (adversarial review): барьер ДО link/createUser await (см. login()).
+            val wasBlockedBefore = accountSyncGuard.isUploadBlocked()
+            accountSyncGuard.beginAccountSwitch()
             try {
                 // v1.25.98 (audit auth-H1): стандартный флоу «как у всех»
                 // (Duolingo/Firebase-приложения): если юзер уже занимается под
@@ -374,9 +377,6 @@ class AuthViewModel @Inject constructor(
                 } else {
                     auth.createUserWithEmailAndPassword(email, pass).await().user
                 }
-                // v1.25.98 (adversarial review v2): барьер СРАЗУ после resolve —
-                // до любого сетевого await ниже — иначе onStop мог выгрузить.
-                accountSyncGuard.beginAccountSwitch()
                 authRepository.setLoggedIn(true)
                 if (user != null) {
                     // Индустриальный стандарт: письмо-подтверждение email
@@ -391,9 +391,11 @@ class AuthViewModel @Inject constructor(
             } catch (e: com.google.firebase.auth.FirebaseAuthUserCollisionException) {
                 // Email уже зарегистрирован — стандартная ошибка, юзеру
                 // предлагается войти (та же семантика, что была у createUser).
+                accountSyncGuard.abortAccountSwitch(wasBlockedBefore)
                 Log.w("AuthViewModel", "register: email already in use", e)
                 _uiState.update { it.copy(isLoading = false, generalError = e.localizedMessage) }
             } catch (e: Exception) {
+                accountSyncGuard.abortAccountSwitch(wasBlockedBefore)
                 Log.w("AuthViewModel", "register failed", e)
                 _uiState.update { it.copy(isLoading = false, generalError = e.localizedMessage) }
             }
@@ -416,12 +418,13 @@ class AuthViewModel @Inject constructor(
             // сбрасывается внутри reconcileAfterAuth) — вход в существующий
             // аккаунт должен отбросить локальный гостевой прогресс.
             val wasGuest = authRepository.guestMode.first()
+            // v1.26.1 (adversarial review): барьер ДО await — закрывает окно,
+            // в котором Firebase уже переключил currentUser, а onStop-upload мог
+            // выгрузить гостевые данные в чужой облачный аккаунт.
+            val wasBlockedBefore = accountSyncGuard.isUploadBlocked()
+            accountSyncGuard.beginAccountSwitch()
             try {
                 val result = auth.signInWithEmailAndPassword(email, pass).await()
-                // v1.25.98 (adversarial review v2): барьер СРАЗУ после resolve,
-                // ДО сетевого syncUserDataFromFirestore — иначе в это окно
-                // onStop force-upload мог занулить облако реального аккаунта.
-                accountSyncGuard.beginAccountSwitch()
                 if (result.user != null) {
                     // v1.26.1 FIX: профиль (имя/возраст/уровень + флаг онбординга)
                     // восстанавливаем ДО setLoggedIn(true) — иначе гейт на мгновение
@@ -436,6 +439,7 @@ class AuthViewModel @Inject constructor(
                 }
                 _uiState.update { it.copy(isLoading = false) }
             } catch (e: Exception) {
+                accountSyncGuard.abortAccountSwitch(wasBlockedBefore)
                 Log.w("AuthViewModel", "login failed", e)
                 _uiState.update { it.copy(isLoading = false, generalError = e.localizedMessage) }
             }
@@ -530,6 +534,9 @@ class AuthViewModel @Inject constructor(
             // на анонимном uid) прогресс гостя авторитетен и сохраняется; для
             // collision (существующий Google-аккаунт) — отбрасывается.
             val wasGuest = authRepository.guestMode.first()
+            // v1.26.1 (adversarial review): барьер ДО link/signIn await (см. login()).
+            val wasBlockedBefore = accountSyncGuard.isUploadBlocked()
+            accountSyncGuard.beginAccountSwitch()
             try {
                 val credential = GoogleAuthProvider.getCredential(idToken, null)
                 // v1.25.98 (audit auth-H1): анонимный юзер + вход через Google —
@@ -552,8 +559,6 @@ class AuthViewModel @Inject constructor(
                 } else {
                     auth.signInWithCredential(credential).await()
                 }
-                // v1.25.98 (adversarial review v2): барьер сразу после resolve.
-                accountSyncGuard.beginAccountSwitch()
                 if (result.user != null) {
                     // v1.26.1 FIX: профиль + флаг онбординга ДО setLoggedIn
                     // (иначе онбординг заново при повторном входе).
@@ -567,6 +572,7 @@ class AuthViewModel @Inject constructor(
                     _uiState.update { it.copy(isLoading = false) }
                 }
             } catch (e: Exception) {
+                accountSyncGuard.abortAccountSwitch(wasBlockedBefore)
                 Log.w("AuthViewModel", "loginWithGoogle failed", e)
                 _uiState.update { it.copy(isLoading = false, generalError = "Google Auth Error: ${e.localizedMessage}") }
             }

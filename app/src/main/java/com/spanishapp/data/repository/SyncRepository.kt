@@ -161,7 +161,14 @@ class SyncRepository @Inject constructor(
                     dialoguesCompleted = max(cur.dialoguesCompleted, (up["dialoguesCompleted"] as? Number)?.toInt() ?: 0),
                     totalStudyMinutes = max(cur.totalStudyMinutes, (up["totalStudyMinutes"] as? Number)?.toInt() ?: 0),
                     streakFreezesAvailable = max(cur.streakFreezesAvailable, (up["streakFreezesAvailable"] as? Number)?.toInt() ?: 0),
-                    displayName = cur.displayName.ifBlank { (up["displayName"] as? String).orEmpty() },
+                    // v1.26.1 FIX (adversarial review): считаем sentinel
+                    // "Estudiante" (дефолт UserProgressEntity, ставится после
+                    // wipeAll при смене аккаунта) ПУСТЫМ — иначе локальный
+                    // sentinel побеждал реальное облачное имя и затем
+                    // выгружался обратно, затирая имя на других устройствах.
+                    displayName = cur.displayName
+                        .takeIf { it.isNotBlank() && it != "Estudiante" }
+                        ?: (up["displayName"] as? String).orEmpty(),
                 )
                 userProgressDao.update(merged)
                 applied++

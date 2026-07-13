@@ -40,12 +40,30 @@ class AccountSyncGuard @Inject constructor(
     }
 
     /**
-     * Начало смены аккаунта: блокируем upload'ы ДО wipe. Первая операция
-     * после успешного signIn — чтобы конкурирующие upload'ы (onStop,
-     * RatingUpdater) не успели снять снапшот старых данных под новым uid.
+     * Начало смены аккаунта: блокируем upload'ы. Ставится ДО signIn().await()
+     * (v1.26.1): Firebase переключает auth.currentUser на новый uid ещё ВНУТРИ
+     * await, до нашей continuation — и в это окно onStop force-upload /
+     * RatingUpdater могли выгрузить локальные (гостевые) данные под новым uid
+     * (owner==null → isUploadAllowed=true → порча чужого облака). Блокировка до
+     * await закрывает это окно.
      */
     fun beginAccountSwitch() {
         prefs.edit().putBoolean("upload_blocked", true).apply()
+    }
+
+    /** Текущее состояние блокировки — чтобы корректно откатить при провале входа. */
+    fun isUploadBlocked(): Boolean = prefs.getBoolean("upload_blocked", false)
+
+    /**
+     * Откат beginAccountSwitch при ПРОВАЛЕ входа (signIn кинул исключение — wipe
+     * и download не запускались). Восстанавливает блокировку в состояние ДО
+     * попытки: если гость не был заблокирован — снимаем блок (иначе его
+     * анонимный бэкап заблокировался бы навсегда после неудачного логина). Но
+     * НЕ снимаем блок, который стоял ещё до попытки (легитимный незавершённый
+     * switch: download прошлого раза не добежал — его нельзя открывать).
+     */
+    fun abortAccountSwitch(wasBlockedBefore: Boolean) {
+        if (!wasBlockedBefore) prefs.edit().putBoolean("upload_blocked", false).apply()
     }
 
     /** Успешный download нового аккаунта → данные консистентны, открываем синк. */
