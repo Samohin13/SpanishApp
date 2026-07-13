@@ -29,6 +29,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -36,6 +37,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.annotation.StringRes
+import com.spanishapp.R
 
 /**
  * v1.23.0: Paywall PRO — реализация по docs/mockups/paywall_final_swipe.html.
@@ -68,40 +71,42 @@ private val GoodGreen = Color(0xFF4ADE80)
 // держит 2-3 соседних страницы скомпонованными — без hoist'а
 // списки пересоздавались 100+ раз в секунду при свайпе. ===
 
-private data class StatItem(val num: String, val lbl: String, val sub: String)
+// v1.26.1: строки вынесены в ресурсы (paywall_*) — @StringRes Int вместо String,
+// чтобы списки остались file-level (no realloc на recompose) и при этом
+// локализовались через stringResource в точке рендера.
+private data class StatItem(@StringRes val num: Int, @StringRes val lbl: Int, @StringRes val sub: Int)
 private val PAYWALL_STATS = listOf(
-    StatItem("180", "уроков", "A2 · B1 · B2"),
-    StatItem("75", "историй", "A2 · B1 · B2"),
-    StatItem("1327", "глаголов", "все времена"),
-    StatItem("100", "уровней игр", "все 6 игр"),
-    StatItem("10К", "слов в карточках", "по всем уровням"),
-    // v1.25.61: добавлен 6-й — иначе grid 2×3 крашится ArrayIndexOutOfBounds
-    // когда юзер тапает PRO-сценарий в чате → paywall открыт → crash
-    // v1.25.98: копия обновлена — лимит 50/день удалён в v1.25.97,
-    // чат теперь эксклюзивно PRO (у free его нет вообще).
-    StatItem("∞", "AI-чат", "эксклюзив PRO · безлимит"),
+    StatItem(R.string.paywall_stat_lessons_num, R.string.paywall_stat_lessons_lbl, R.string.paywall_level_a2b1b2),
+    StatItem(R.string.paywall_stat_stories_num, R.string.paywall_stat_stories_lbl, R.string.paywall_level_a2b1b2),
+    StatItem(R.string.paywall_stat_verbs_num, R.string.paywall_stat_verbs_lbl, R.string.paywall_stat_verbs_sub),
+    StatItem(R.string.paywall_stat_games_num, R.string.paywall_stat_games_lbl, R.string.paywall_stat_games_sub),
+    StatItem(R.string.paywall_stat_words_num, R.string.paywall_stat_words_lbl, R.string.paywall_stat_words_sub),
+    // v1.25.61: 6-й stat обязателен — иначе grid 2×3 крашится ArrayIndexOutOfBounds
+    // когда юзер тапает PRO-сценарий в чате → paywall открыт → crash.
+    // v1.25.98: чат теперь эксклюзивно PRO (у free его нет вообще).
+    StatItem(R.string.paywall_stat_chat_num, R.string.paywall_stat_chat_lbl, R.string.paywall_stat_chat_sub),
 )
 
-private data class FeatItem(val icon: String, val title: String, val dim: String)
+private data class FeatItem(val icon: String, @StringRes val title: Int, @StringRes val dim: Int)
 private val PAYWALL_FEATS = listOf(
-    FeatItem("🎓", "Все уроки до B2", "180 новых уроков · грамматика · диалоги"),
-    FeatItem("📚", "Все 100 историй", "Художественное чтение всех уровней"),
-    FeatItem("🔥", "1327 глаголов", "Все формы прошедшего, будущего, сослагательного"),
-    FeatItem("🎯", "Все 100 уровней игр", "Сейчас открыты только первые 10 каждой"),
-    FeatItem("🃏", "Умные карточки слов", "Все 10 000 слов с интервальным повторением"),
+    FeatItem("🎓", R.string.paywall_feat_lessons_title, R.string.paywall_feat_lessons_dim),
+    FeatItem("📚", R.string.paywall_feat_stories_title, R.string.paywall_feat_stories_dim),
+    FeatItem("🔥", R.string.paywall_feat_verbs_title, R.string.paywall_feat_verbs_dim),
+    FeatItem("🎯", R.string.paywall_feat_games_title, R.string.paywall_feat_games_dim),
+    FeatItem("🃏", R.string.paywall_feat_cards_title, R.string.paywall_feat_cards_dim),
 )
 
-private data class CompareRow(val icon: String, val cat: String, val free: String, val pro: String)
+private data class CompareRow(val icon: String, @StringRes val cat: Int, @StringRes val free: Int, @StringRes val pro: Int)
 private val PAYWALL_COMPARE_ROWS = listOf(
-    CompareRow("🎓", "Уроки", "60 (A1)", "240 (A1→B2)"),
-    CompareRow("🧠", "Грамматика", "15 (A1)", "75 (все)"),
-    CompareRow("💬", "Диалоги", "A1", "все уровни"),
-    CompareRow("📚", "Книги", "25 (A1)", "100 (все)"),
-    CompareRow("🔥", "Спряжение", "базовое", "1327 глаг."),
-    CompareRow("🎯", "Игры", "10 уровней", "100 уровней"),
-    CompareRow("🃏", "SM-2 карт.", "A1 слова", "все ~10K"),
-    CompareRow("📖", "Словарь", "✓", "✓"),
-    CompareRow("📻", "Радио", "✓", "✓"),
+    CompareRow("🎓", R.string.paywall_cmp_lessons_cat, R.string.paywall_cmp_lessons_free, R.string.paywall_cmp_lessons_pro),
+    CompareRow("🧠", R.string.paywall_cmp_grammar_cat, R.string.paywall_cmp_grammar_free, R.string.paywall_cmp_grammar_pro),
+    CompareRow("💬", R.string.paywall_cmp_dialogues_cat, R.string.paywall_cmp_dialogues_free, R.string.paywall_cmp_dialogues_pro),
+    CompareRow("📚", R.string.paywall_cmp_books_cat, R.string.paywall_cmp_books_free, R.string.paywall_cmp_books_pro),
+    CompareRow("🔥", R.string.paywall_cmp_conj_cat, R.string.paywall_cmp_conj_free, R.string.paywall_cmp_conj_pro),
+    CompareRow("🎯", R.string.paywall_cmp_games_cat, R.string.paywall_cmp_games_free, R.string.paywall_cmp_games_pro),
+    CompareRow("🃏", R.string.paywall_cmp_cards_cat, R.string.paywall_cmp_cards_free, R.string.paywall_cmp_cards_pro),
+    CompareRow("📖", R.string.paywall_cmp_dict_cat, R.string.paywall_check, R.string.paywall_check),
+    CompareRow("📻", R.string.paywall_cmp_radio_cat, R.string.paywall_check, R.string.paywall_check),
 )
 
 @OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
@@ -220,9 +225,9 @@ private fun PaywallTopBar(currentPage: Int, onClose: () -> Unit) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Премиум", color = TextColor, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+            Text(stringResource(R.string.paywall_top_title), color = TextColor, fontWeight = FontWeight.Bold, fontSize = 14.sp)
             IconButton(onClick = onClose, modifier = Modifier.size(28.dp)) {
-                Icon(Icons.Default.Close, contentDescription = "Закрыть", tint = TextDim)
+                Icon(Icons.Default.Close, contentDescription = stringResource(R.string.paywall_close_cd), tint = TextDim)
             }
         }
         Spacer(Modifier.height(12.dp))
@@ -292,14 +297,17 @@ private fun PageHero() {
                 Spacer(Modifier.height(20.dp))
                 Text("💎", fontSize = 88.sp)
                 Spacer(Modifier.height(10.dp))
+                val heroTitle1 = stringResource(R.string.paywall_hero_title_1)
+                val heroTitleHl = stringResource(R.string.paywall_hero_title_hl)
+                val heroTitle2 = stringResource(R.string.paywall_hero_title_2)
                 Text(
                     buildAnnotatedString {
-                        append("Открой ")
+                        append(heroTitle1)
                         withStyle(SpanStyle(
                             fontWeight = FontWeight.ExtraBold,
                             brush = Brush.linearGradient(listOf(PrimaryOrange, GoldColor))
-                        )) { append("весь") }
-                        append("\nиспанский")
+                        )) { append(heroTitleHl) }
+                        append(heroTitle2)
                     },
                     color = TextColor,
                     fontSize = 38.sp,
@@ -309,7 +317,7 @@ private fun PageHero() {
                 )
                 Spacer(Modifier.height(10.dp))
                 Text(
-                    "От алфавита до свободной речи —\nвсё в одной подписке",
+                    stringResource(R.string.paywall_hero_subtitle),
                     color = TextDim,
                     fontSize = 14.sp,
                     fontStyle = FontStyle.Italic,
@@ -332,12 +340,14 @@ private fun PageHero() {
             ) {
                 AvatarStack()
                 Column {
+                    val learnersText = stringResource(R.string.paywall_social_learners)
                     Text(
                         buildAnnotatedString {
                             withStyle(SpanStyle(fontWeight = FontWeight.ExtraBold, color = TextColor)) {
                                 append("12 847")
                             }
-                            append(" учеников уже PRO")
+                            append(" ")
+                            append(learnersText)
                         },
                         color = TextColor, fontSize = 15.sp
                     )
@@ -382,12 +392,12 @@ private fun PageNumbers() {
     ) {
         Spacer(Modifier.height(8.dp))
         Text(
-            "📊 Что ты получишь",
+            stringResource(R.string.paywall_numbers_title),
             color = TextColor, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold,
             textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()
         )
         Text(
-            "Сейчас доступны только 60 уроков уровня A1.\nС PRO открывается всё остальное:",
+            stringResource(R.string.paywall_numbers_subtitle),
             color = TextDim, fontSize = 14.sp, lineHeight = 20.sp,
             textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()
         )
@@ -400,8 +410,8 @@ private fun PageNumbers() {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                StatCard(left.num, left.lbl, left.sub, modifier = Modifier.weight(1f))
-                StatCard(right.num, right.lbl, right.sub, modifier = Modifier.weight(1f))
+                StatCard(stringResource(left.num), stringResource(left.lbl), stringResource(left.sub), modifier = Modifier.weight(1f))
+                StatCard(stringResource(right.num), stringResource(right.lbl), stringResource(right.sub), modifier = Modifier.weight(1f))
             }
         }
     }
@@ -454,10 +464,10 @@ private fun PageFeatures() {
         verticalArrangement = Arrangement.spacedBy(10.dp),
     ) {
         Spacer(Modifier.height(8.dp))
-        Text("✨ Что входит", color = TextColor, fontSize = 24.sp,
+        Text(stringResource(R.string.paywall_features_title), color = TextColor, fontSize = 24.sp,
             fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth())
-        Text("Все шесть направлений без ограничений",
+        Text(stringResource(R.string.paywall_features_subtitle),
             color = TextDim, fontSize = 14.sp,
             textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
         for (f in PAYWALL_FEATS) {
@@ -478,9 +488,9 @@ private fun PageFeatures() {
                     contentAlignment = Alignment.Center
                 ) { Text(f.icon, fontSize = 22.sp) }
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(f.title, color = TextColor, fontSize = 15.sp,
+                    Text(stringResource(f.title), color = TextColor, fontSize = 15.sp,
                         fontWeight = FontWeight.Bold)
-                    Text(f.dim, color = TextDim, fontSize = 12.sp, lineHeight = 16.sp)
+                    Text(stringResource(f.dim), color = TextDim, fontSize = 12.sp, lineHeight = 16.sp)
                 }
             }
         }
@@ -499,11 +509,11 @@ private fun PageCompare() {
             .padding(horizontal = 18.dp, vertical = 14.dp)
     ) {
         Spacer(Modifier.height(20.dp))
-        Text("⚖️ Free vs PRO", color = TextColor, fontSize = 24.sp,
+        Text(stringResource(R.string.paywall_compare_title), color = TextColor, fontSize = 24.sp,
             fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center,
             modifier = Modifier.fillMaxWidth())
         Spacer(Modifier.height(4.dp))
-        Text("Что именно меняется при подписке",
+        Text(stringResource(R.string.paywall_compare_subtitle),
             color = TextDim, fontSize = 14.sp,
             textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
         Spacer(Modifier.height(16.dp))
@@ -522,13 +532,13 @@ private fun PageCompare() {
                     .padding(horizontal = 12.dp, vertical = 14.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("КОНТЕНТ", color = TextDim, fontSize = 11.sp,
+                Text(stringResource(R.string.paywall_compare_header_content), color = TextDim, fontSize = 11.sp,
                     fontWeight = FontWeight.ExtraBold, letterSpacing = 1.sp,
                     modifier = Modifier.weight(1f))
-                Text("FREE", color = TextDim, fontSize = 12.sp,
+                Text(stringResource(R.string.paywall_tier_free), color = TextDim, fontSize = 12.sp,
                     fontWeight = FontWeight.ExtraBold, textAlign = TextAlign.Center,
                     modifier = Modifier.width(80.dp))
-                Text("PRO 💎", color = PrimaryOrange, fontSize = 12.sp,
+                Text(stringResource(R.string.paywall_compare_header_pro), color = PrimaryOrange, fontSize = 12.sp,
                     fontWeight = FontWeight.Black, letterSpacing = 1.sp,
                     textAlign = TextAlign.Center, modifier = Modifier.width(80.dp))
             }
@@ -547,10 +557,10 @@ private fun PageCompare() {
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                 ) {
                     Text(r.icon, fontSize = 16.sp)
-                    Text(r.cat, color = TextColor, fontSize = 13.sp,
+                    Text(stringResource(r.cat), color = TextColor, fontSize = 13.sp,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.weight(1f))
-                    Text(r.free, color = TextDim, fontSize = 12.sp,
+                    Text(stringResource(r.free), color = TextDim, fontSize = 12.sp,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.width(80.dp))
                     Box(
@@ -561,7 +571,7 @@ private fun PageCompare() {
                             .padding(vertical = 6.dp),
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(r.pro, color = PrimaryOrange, fontSize = 12.sp,
+                        Text(stringResource(r.pro), color = PrimaryOrange, fontSize = 12.sp,
                             fontWeight = FontWeight.ExtraBold,
                             textAlign = TextAlign.Center)
                     }
@@ -577,11 +587,14 @@ private fun PageCompare() {
                     .background(PrimaryOrange.copy(alpha = 0.06f))
                     .padding(10.dp)
             ) {
+                val notePrefix = stringResource(R.string.paywall_compare_note_prefix)
+                val noteHighlight = stringResource(R.string.paywall_compare_note_highlight)
                 Text(
                     buildAnnotatedString {
-                        append("Словарь, радио, произношение, ачивки, виджет ")
+                        append(notePrefix)
+                        append(" ")
                         withStyle(SpanStyle(color = PrimaryOrange, fontWeight = FontWeight.Bold)) {
-                            append("бесплатны навсегда")
+                            append(noteHighlight)
                         }
                     },
                     color = TextDim, fontSize = 10.sp,
@@ -609,15 +622,15 @@ private fun PageProgress() {
             modifier = Modifier.fillMaxWidth()
         ) {
             Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 18.dp)) {
-                Text("📈 КУДА ТЫ ДОЙДЁШЬ", color = GoldColor, fontSize = 11.sp,
+                Text(stringResource(R.string.paywall_progress_label), color = GoldColor, fontSize = 11.sp,
                     fontWeight = FontWeight.ExtraBold, letterSpacing = 1.5.sp)
                 Spacer(Modifier.height(4.dp))
-                Text("Free застрянет на A1. С PRO дойдёшь до уверенного B2.",
+                Text(stringResource(R.string.paywall_progress_desc),
                     color = TextColor, fontSize = 13.sp)
                 Spacer(Modifier.height(16.dp))
-                ProgressRow("FREE", 0.2f, "A1", isPro = false)
+                ProgressRow(stringResource(R.string.paywall_tier_free), 0.2f, "A1", isPro = false)
                 Spacer(Modifier.height(12.dp))
-                ProgressRow("PRO", 1.0f, "B2", isPro = true)
+                ProgressRow(stringResource(R.string.paywall_tier_pro), 1.0f, "B2", isPro = true)
                 Spacer(Modifier.height(6.dp))
                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp),
                     horizontalArrangement = Arrangement.SpaceBetween) {
@@ -644,7 +657,7 @@ private fun PageProgress() {
         ) {
             Column {
                 Text(
-                    "«За 4 месяца с PRO дошла до B1 и впервые свободно говорила с испанцем в Барселоне. Курс просто огонь.»",
+                    stringResource(R.string.paywall_testimonial_quote),
                     color = TextColor, fontSize = 13.sp,
                     fontStyle = FontStyle.Italic, lineHeight = 19.sp
                 )
@@ -652,13 +665,16 @@ private fun PageProgress() {
                 Row(verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Box(modifier = Modifier.size(24.dp).clip(CircleShape).background(A2Blue))
+                    val testimonialName = stringResource(R.string.paywall_testimonial_name)
+                    val testimonialSince = stringResource(R.string.paywall_testimonial_since)
                     Text(
                         buildAnnotatedString {
                             withStyle(SpanStyle(color = TextColor, fontWeight = FontWeight.Bold)) {
-                                append("Мария К.")
+                                append(testimonialName)
                             }
                             withStyle(SpanStyle(color = TextDim)) {
-                                append(" · PRO с января")
+                                append(" · ")
+                                append(testimonialSince)
                             }
                         },
                         fontSize = 11.sp
@@ -668,7 +684,7 @@ private fun PageProgress() {
         }
 
         Text(
-            "👇 Жми «Начать» внизу — 7 дней бесплатно",
+            stringResource(R.string.paywall_progress_cta_hint),
             color = GoldColor, fontSize = 11.sp, fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(8.dp)
         )
@@ -735,7 +751,7 @@ private fun PaywallBottomBar(
                 .padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("💎 7 дней бесплатно · затем выгода 42% за год",
+            Text(stringResource(R.string.paywall_urgency_banner),
                 color = PrimaryOrange, fontSize = 11.sp,
                 fontWeight = FontWeight.ExtraBold, letterSpacing = 0.3.sp,
                 textAlign = TextAlign.Center,
@@ -751,21 +767,22 @@ private fun PaywallBottomBar(
             // v1.25.74: цены подняты до рыночных $9.99/$49.99
             // (Duolingo $13.99, Babbel $13.95, Lingvist $9.99).
             PlanCard(
-                title = "Месяц",
+                title = stringResource(R.string.paywall_plan_month),
                 price = "\$9.99",
-                per = "в месяц",
-                note = "гибко · без обязательств",
+                per = stringResource(R.string.paywall_per_month_word),
+                note = stringResource(R.string.paywall_plan_month_note),
                 isActive = selectedPlan == PaywallPlan.MONTH,
                 badge = null,
                 onClick = { onSelectPlan(PaywallPlan.MONTH) },
                 modifier = Modifier.weight(1f)
             )
             PlanCard(
-                title = "Год",
+                title = stringResource(R.string.paywall_plan_year),
                 price = "\$49.99",
-                per = "\$4.17/мес",
+                per = stringResource(R.string.paywall_plan_year_permonth),
                 oldPer = "\$119.88",
-                note = "выгода \$69.89",
+                note = stringResource(R.string.paywall_plan_year_note, "\$69.89"),
+                isSavings = true,
                 isActive = selectedPlan == PaywallPlan.YEAR,
                 badge = "−58%",
                 onClick = { onSelectPlan(PaywallPlan.YEAR) },
@@ -803,7 +820,7 @@ private fun PaywallBottomBar(
                 } else {
                     Text(
                         // v1.25.74: оба плана начинаются с 7-дневного trial
-                        "Начать 7 дней бесплатно",
+                        stringResource(R.string.paywall_cta_start_trial),
                         color = Color.White, fontSize = 15.sp,
                         fontWeight = FontWeight.ExtraBold, letterSpacing = 0.3.sp
                     )
@@ -813,8 +830,8 @@ private fun PaywallBottomBar(
         Spacer(Modifier.height(8.dp))
         Text(
             if (selectedPlan == PaywallPlan.YEAR)
-                "далее \$49.99/год · отмена в любой момент"
-            else "далее \$9.99/мес · отмена в любой момент",
+                stringResource(R.string.paywall_renew_year, "\$49.99")
+            else stringResource(R.string.paywall_renew_month, "\$9.99"),
             color = TextDim, fontSize = 10.sp,
             textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth()
         )
@@ -825,7 +842,11 @@ private fun PaywallBottomBar(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            listOf("Отмена 1 кликом", "Возврат 7 дней", "Без сюрпризов").forEach {
+            listOf(
+                stringResource(R.string.paywall_trust_cancel),
+                stringResource(R.string.paywall_trust_refund),
+                stringResource(R.string.paywall_trust_nosurprises)
+            ).forEach {
                 Row(verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(3.dp)) {
                     Icon(Icons.Default.Check, null,
@@ -849,6 +870,9 @@ private fun PlanCard(
     oldPer: String? = null,
     note: String? = null,
     badge: String? = null,
+    // v1.26.1: раньше зелёная подсветка note определялась note.startsWith("выгода") —
+    // ломалось при локализации. Теперь явный флаг «это note про экономию».
+    isSavings: Boolean = false,
 ) {
     Box(
         modifier = modifier
@@ -893,7 +917,7 @@ private fun PlanCard(
                 Spacer(Modifier.height(4.dp))
                 Text(
                     buildAnnotatedString {
-                        if (note.startsWith("выгода")) {
+                        if (isSavings) {
                             withStyle(SpanStyle(color = GoodGreen, fontWeight = FontWeight.Bold)) {
                                 append(note)
                             }
