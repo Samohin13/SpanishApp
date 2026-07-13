@@ -42,6 +42,11 @@ class AuthRepository @Inject constructor(
     private val SELECTED_RU_VOICE = stringPreferencesKey("selected_ru_voice")
     private val SELECTED_ES_VOICE = stringPreferencesKey("selected_es_voice")
     private val ONBOARDING_COMPLETED = booleanPreferencesKey("onboarding_completed")
+    // v1.26.1: гостевой режим (учёба без регистрации). Держит юзера
+    // «залогиненным» локально даже если анонимного аккаунта Firebase нет
+    // (Anonymous Auth выключен / офлайн). Сбрасывается при регистрации/входе в
+    // реальный аккаунт и при logout/deleteAccount (clearAllUserData → clear()).
+    private val GUEST_MODE = booleanPreferencesKey("guest_mode")
 
     val isLoggedIn: Flow<Boolean> = context.dataStore.data
         .map { preferences ->
@@ -123,6 +128,12 @@ val onboardingCompleted: Flow<Boolean> = context.dataStore.data.map { it[ONBOARD
         context.dataStore.edit { preferences ->
             preferences[IS_LOGGED_IN] = loggedIn
         }
+    }
+
+    // v1.26.1: гостевой режим.
+    val guestMode: Flow<Boolean> = context.dataStore.data.map { it[GUEST_MODE] ?: false }
+    suspend fun setGuestMode(value: Boolean) {
+        context.dataStore.edit { it[GUEST_MODE] = value }
     }
 
     /**

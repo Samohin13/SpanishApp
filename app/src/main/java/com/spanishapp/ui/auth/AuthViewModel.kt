@@ -15,6 +15,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -78,6 +79,9 @@ class AuthViewModel @Inject constructor(
      * await (syncUserDataFromFirestore), в котором onStop мог выгрузить пусто.
      */
     private suspend fun reconcileAfterAuth(uid: String, localIsAuthoritative: Boolean) {
+        // v1.26.1: сюда попадаем только с РЕАЛЬНЫМ (или уже слинкованным из
+        // анонимного) аккаунтом — гостевой режим окончен, снимаем флаг.
+        authRepository.setGuestMode(false)
         val owner = accountSyncGuard.ownerUid()
         accountSyncGuard.beginAccountSwitch()  // идемпотентно; ранний вызов — на call-site
 
@@ -137,19 +141,15 @@ class AuthViewModel @Inject constructor(
      * прогресс сохраняется (см. reconcileAfterAuth, owner==null → без wipe).
      */
     fun startGuest() {
+        // v1.26.1 FIX: НЕ блокируем UI. Кнопка «Начать обучение» раньше висела
+        // 3+ сек и не реагировала, потому что startGuest ждал ответа сервера на
+        // signInAnonymously().await() (а при выключенном Anonymous Auth он ещё и
+        // падал с ADMIN_ONLY после сетевого раунд-трипа). Навигацию в онбординг
+        // делает WelcomeScreen сразу в onClick — детерминированно, без гонки с
+        // пересборкой NavHost-графа при смене isLoggedIn. Здесь — только
+        // побочные эффекты.
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, generalError = null) }
-            // Пытаемся создать анонимную сессию (нужна для облачного бэкапа +
-            // linking при регистрации), НО не блокируем офлайн: онбординг и вся
-            // учёба работают локально, а аккаунт подхватится лениво / при
-            // регистрации — прогресс сохранится через owner==null путь
-            // reconcileAfterAuth (localIsAuthoritative=true).
-            runCatching {
-                auth.currentUser?.takeIf { it.isAnonymous }
-                    ?: auth.signInAnonymously().await().user
-            }.onFailure {
-                Log.w("AuthViewModel", "guest anon sign-in failed (offline?), continuing local", it)
-            }
+            authRepository.setGuestMode(true)
             authRepository.setLoggedIn(true)
             _uiState.update {
                 it.copy(
@@ -159,6 +159,17 @@ class AuthViewModel @Inject constructor(
                 )
             }
         }
+        // Best-effort анонимный аккаунт в ФОНЕ (для облачного бэкапа + linking
+        // при регистрации). Провал (напр. Anonymous Auth выключен в Firebase
+        // Console, или офлайн) НЕ ломает гостевой режим — учёба идёт локально.
+        viewModelScope.launch {
+            runCatching {
+                if (auth.currentUser == null) auth.signInAnonymously().await()
+            }.onFailure {
+                Log.w("AuthViewModel", "guest anon sign-in unavailable, continuing local-only", it)
+            }
+            _uiState.update { it.copy(isGuest = auth.currentUser?.isAnonymous == true) }
+        }
     }
 
     /** Сброс одноразового навигационного сигнала после перехода в онбординг. */
@@ -167,7 +178,11 @@ class AuthViewModel @Inject constructor(
     private fun checkAuthStatus() {
         val currentUser = auth.currentUser
         viewModelScope.launch {
-            authRepository.setLoggedIn(currentUser != null)
+            // v1.26.1: гость без анонимного аккаунта (Anonymous Auth выключен или
+            // офлайн) остаётся «залогинен» локально — иначе перезапуск выкинул бы
+            // его на welcome, отрезав доступ к уже начатому обучению.
+            val guest = authRepository.guestMode.first()
+            authRepository.setLoggedIn(currentUser != null || guest)
             if (currentUser != null) {
                 if (!currentUser.isAnonymous) {
                     val uid = currentUser.uid
