@@ -72,6 +72,9 @@ class MathViewModel @Inject constructor(
         .stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000), 0)
 
     private var mistakesBatch: List<com.spanishapp.data.db.entity.GameMistakeEntity> = emptyList()
+    // v1.26.1: ключ (item_id) текущего вопроса практики — по нему удаляем
+    // запись при верном ответе. Отдельно от expressionText (тот — для показа).
+    private var currentMistakeKey: String? = null
 
     /** v1.22.0: «Работа над ошибками» — 5 заданий из mistakes. */
     fun startMistakesPractice() {
@@ -101,15 +104,16 @@ class MathViewModel @Inject constructor(
         }
         roundResolved = false
         val mistake = mistakesBatch[s.currentRound]
-        // itemId хранит числовое выражение «3 + 5» (v1.25.97), main — испанский
-        // текст. correctAnswer не сохраняем, пересчитываем из выражения.
-        val expr = mistake.itemId
-        val correctAnswer = evaluateSimpleExpression(expr) ?: run {
-            // v1.25.97 FIX (audit C2): нераспарсиваемая запись (legacy-формат с
-            // испанским текстом в itemId) — чистим из пула, иначе она вечно
-            // раздувает бейдж и её невозможно закрыть правильным ответом.
+        currentMistakeKey = mistake.itemId
+        // v1.26.1 FIX: ответ берём из displayHint («= 8»), а НЕ пересчётом из
+        // выражения. Прошлый фикс (v1.25.97) был неверным: и expressionText, и
+        // expressionSpoken — испанские СЛОВА («cinco + tres»), evaluateSimple-
+        // Expression их не парсит → каждый вопрос скипался. hint хранит число
+        // при записи ошибки и работает для новых И старых записей.
+        val correctAnswer = parseAnswerFromHint(mistake.displayHint) ?: run {
+            // Совсем битая запись (нет числа в hint) — чистим, чтобы не висела.
             viewModelScope.launch {
-                runCatching { mistakesDao.removeMistake(GameId.MATH, expr) }
+                runCatching { mistakesDao.removeMistake(GameId.MATH, mistake.itemId) }
             }
             _state.value = s.copy(currentRound = s.currentRound + 1)
             nextMistakeQuestion()
@@ -117,16 +121,22 @@ class MathViewModel @Inject constructor(
         }
         _state.value = s.copy(
             currentRound = s.currentRound + 1,
-            expressionText = expr,
-            // Показ в испанском режиме — сохранённый испанский текст, если есть.
-            expressionSpoken = mistake.displayMain.ifBlank { expr },
+            // Показываем выражение (форма «cinco + tres» из displayMain; для
+            // старых записей — сам ключ). expressionSpoken для повторной озвучки.
+            expressionText = mistake.displayMain.ifBlank { mistake.itemId },
+            expressionSpoken = mistake.itemId,
             correctAnswer = correctAnswer,
             lastCorrect = null,
             timeLeft = 1f,
         )
     }
 
+    /** Достаёт число ответа из подсказки «= 8» → 8. */
+    private fun parseAnswerFromHint(hint: String): Int? =
+        hint.trim().removePrefix("=").trim().toIntOrNull()
+
     /** Считает простое выражение «3 + 5» / «12 - 4» / «6 * 2» / «10 / 2». */
+    @Suppress("unused")
     private fun evaluateSimpleExpression(expr: String): Int? {
         val parts = expr.trim().split(Regex("\\s+"))
         if (parts.size != 3) return null
@@ -368,23 +378,22 @@ class MathViewModel @Inject constructor(
         )
 
         // v1.22.0: «Работа над ошибками»
-        // v1.25.97 FIX (audit C2): itemId был expressionSpoken («cinco más tres»),
-        // а nextMistakeQuestion пересчитывает ответ через evaluateSimpleExpression,
-        // который парсит ТОЛЬКО числовое «3 + 5» → каждый вопрос практики скипался,
-        // практика мгновенно заканчивалась «0 из N», а пул рос вечно (removeMistake
-        // недостижим). Теперь ключ — числовой expressionText, испанский текст
-        // сохраняем в main для отображения.
+        // v1.26.1 FIX: ключ (item_id) = expressionSpoken («cinco más tres») —
+        // уникален для каждого примера. Раньше ключом был expressionText, но на
+        // уровнях 26+ он равен «?» → все ошибки схлопывались в одну запись.
+        // Ответ хранится в hint («= 8») и читается оттуда в практике
+        // (см. nextMistakeQuestion). remove в практике — по currentMistakeKey.
         viewModelScope.launch {
-            val itemId = s.expressionText
-            if (itemId.isNotBlank()) {
-                if (isCorrect && s.isMistakesPractice) {
-                    mistakesDao.removeMistake(GameId.MATH, itemId)
-                } else if (!isCorrect) {
+            if (isCorrect && s.isMistakesPractice) {
+                currentMistakeKey?.let { mistakesDao.removeMistake(GameId.MATH, it) }
+            } else if (!isCorrect) {
+                val key = s.expressionSpoken.ifBlank { s.expressionText }
+                if (key.isNotBlank()) {
                     mistakesDao.recordMistake(
                         gameId = GameId.MATH,
-                        itemId = itemId,
+                        itemId = key,
                         hint = "= ${s.correctAnswer}",
-                        main = s.expressionSpoken.ifBlank { itemId },
+                        main = s.expressionText.ifBlank { key },
                     )
                 }
             }
