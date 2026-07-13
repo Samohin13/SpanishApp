@@ -26,6 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.spanishapp.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,6 +44,18 @@ fun LoginScreen(
     // (облако авторитетно). Предупреждаем до входа.
     val isGuestNow = state.isGuest || state.guestMode
     var showLoginWarning by remember { mutableStateOf(false) }
+
+    // v1.26.1: после успешного входа уводим в приложение (login сам не навигирует).
+    LaunchedEffect(state.authSuccess) {
+        if (state.authSuccess) {
+            viewModel.consumeAuthSuccess()
+            val dest = if (state.onboardingCompleted) "home" else "name_entry"
+            navController.navigate(dest) {
+                popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
+                launchSingleTop = true
+            }
+        }
+    }
 
     if (showLoginWarning) {
         AlertDialog(

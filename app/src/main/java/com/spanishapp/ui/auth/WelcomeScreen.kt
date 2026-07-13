@@ -30,6 +30,7 @@ import androidx.compose.foundation.clickable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 
 @Composable
 fun WelcomeScreen(
@@ -40,6 +41,18 @@ fun WelcomeScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val privacyUrl = stringResource(R.string.privacy_policy_url)
     val termsUrl = stringResource(R.string.terms_url)
+
+    // v1.26.1: после успешного входа/привязки (Google/login) уводим в приложение.
+    LaunchedEffect(state.authSuccess) {
+        if (state.authSuccess) {
+            viewModel.consumeAuthSuccess()
+            val dest = if (state.onboardingCompleted) "home" else "name_entry"
+            navController.navigate(dest) {
+                popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
+                launchSingleTop = true
+            }
+        }
+    }
 
     val openLink: (String) -> Unit = { url ->
         runCatching {

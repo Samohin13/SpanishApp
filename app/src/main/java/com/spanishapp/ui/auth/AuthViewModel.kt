@@ -29,6 +29,10 @@ data class AuthUiState(
     val generalError: String? = null,
     val successMessage: String? = null,
     val isRegistered: Boolean = false,
+    // v1.26.1: одноразовый сигнал «вход/привязка успешны» — для навигации в
+    // приложение из Welcome/Login/Register (login и loginWithGoogle сами не
+    // навигируют, а гейт не перерисовывает граф надёжно при in-app входе).
+    val authSuccess: Boolean = false,
     val isLoggedIn: Boolean? = null,
     // v1.26.1: гостевой режим. isGuest = анонимный Firebase-аккаунт (без email/
     // Google). guestStarted — одноразовый сигнал для навигации в онбординг.
@@ -204,6 +208,9 @@ class AuthViewModel @Inject constructor(
 
     /** Сброс одноразового навигационного сигнала после перехода в онбординг. */
     fun consumeGuestStarted() { _uiState.update { it.copy(guestStarted = false) } }
+
+    /** Сброс сигнала успешного входа/привязки после навигации в приложение. */
+    fun consumeAuthSuccess() { _uiState.update { it.copy(authSuccess = false) } }
 
     private fun checkAuthStatus() {
         val currentUser = auth.currentUser
@@ -437,7 +444,7 @@ class AuthViewModel @Inject constructor(
                 } else {
                     authRepository.setLoggedIn(true)
                 }
-                _uiState.update { it.copy(isLoading = false) }
+                _uiState.update { it.copy(isLoading = false, authSuccess = true) }
             } catch (e: Exception) {
                 accountSyncGuard.abortAccountSwitch(wasBlockedBefore)
                 Log.w("AuthViewModel", "login failed", e)
@@ -560,16 +567,25 @@ class AuthViewModel @Inject constructor(
                     auth.signInWithCredential(credential).await()
                 }
                 if (result.user != null) {
-                    // v1.26.1 FIX: профиль + флаг онбординга ДО setLoggedIn
-                    // (иначе онбординг заново при повторном входе).
+                    // v1.26.1 FIX: прогресс гостя авторитетен (сохраняем + грузим
+                    // в аккаунт) если это НОВАЯ личность: анонимный аккаунт
+                    // слинкован (тот же uid) ИЛИ гость впервые вошёл в НОВЫЙ
+                    // Google-аккаунт (пустое облако — isNewUser). Только вход в
+                    // УЖЕ существующий Google-аккаунт с данными → облако
+                    // авторитетно, локальный гостевой прогресс отбрасываем.
+                    // Раньше без анонимного аккаунта (Anonymous Auth выключен)
+                    // ЛЮБОЙ Google-вход гостя терял прогресс (linkedAnon=false).
+                    val isNewUser = result.additionalUserInfo?.isNewUser == true
+                    val keepGuestProgress = linkedAnon || (wasGuest && isNewUser)
+                    // профиль + флаг онбординга ДО setLoggedIn (иначе онбординг заново).
                     syncUserDataFromFirestore(result.user!!.uid)
                     authRepository.setLoggedIn(true)
                     reconcileAfterAuth(
                         result.user!!.uid,
-                        localIsAuthoritative = linkedAnon,
-                        discardLocalIfGuest = wasGuest && !linkedAnon,
+                        localIsAuthoritative = keepGuestProgress,
+                        discardLocalIfGuest = wasGuest && !keepGuestProgress,
                     )
-                    _uiState.update { it.copy(isLoading = false) }
+                    _uiState.update { it.copy(isLoading = false, authSuccess = true) }
                 }
             } catch (e: Exception) {
                 accountSyncGuard.abortAccountSwitch(wasBlockedBefore)

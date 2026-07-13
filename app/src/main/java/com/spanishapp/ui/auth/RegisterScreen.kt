@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import com.spanishapp.R
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +57,21 @@ fun RegisterScreen(
             // → сразу home. Новый юзер → онбординг.
             val dest = if (state.onboardingCompleted) "home" else "name_entry"
             navController.navigate(dest) {
-                popUpTo("register") { inclusive = true }
+                popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
+                launchSingleTop = true
+            }
+        }
+    }
+
+    // v1.26.1: Google-вход с экрана регистрации (гость привязывает аккаунт) —
+    // login/loginWithGoogle сами не навигируют, ловим authSuccess.
+    LaunchedEffect(state.authSuccess) {
+        if (state.authSuccess) {
+            viewModel.consumeAuthSuccess()
+            val dest = if (state.onboardingCompleted) "home" else "name_entry"
+            navController.navigate(dest) {
+                popUpTo(navController.graph.findStartDestination().id) { inclusive = true }
+                launchSingleTop = true
             }
         }
     }
