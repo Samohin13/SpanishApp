@@ -208,9 +208,14 @@ class FlashcardsViewModel @Inject constructor(
                 )
                 return@launch
             }
-            val cards = wordDao.findBySpanishMany(
+            // v1.26.1 FIX (фидбэк владельца): колода сета — в АВТОРСКОМ порядке
+            // списка, а не shuffled(). «Местоимения» встречали случайным
+            // «vosotros» вместо yo → tú → él…, «Числа 1-20» начинались с
+            // catorce — выглядело «коряво и не все».
+            val byKey = wordDao.findBySpanishMany(
                 set.wordsSpanish.map { it.lowercase().trim() }
-            ).shuffled()
+            ).associateBy { it.spanish.trim().lowercase() }
+            val cards = set.wordsSpanish.mapNotNull { byKey[it.lowercase().trim()] }
             if (cards.isEmpty()) {
                 _state.value = FlashcardsUiState(
                     isLoading = false,

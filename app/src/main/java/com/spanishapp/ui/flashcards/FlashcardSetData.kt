@@ -44,7 +44,9 @@ object FlashcardSetData {
                    "perdón", "lo siento", "sí", "no", "tal vez",
                    "claro")))
 
-        add(FlashcardSet("a1_02_pronouns", "A1", 2, "Личные местоимения", "👤",
+        // v1.26.1: заголовок «Местоимения» — сет включает и притяжательные
+        // (mi/tu/su/nuestro), «Личные» было неточно.
+        add(FlashcardSet("a1_02_pronouns", "A1", 2, "Местоимения", "👤",
             listOf("yo", "tú", "él", "ella", "nosotros",
                    "nosotras", "vosotros", "vosotras", "ellos", "ellas",
                    "usted", "ustedes", "mi", "tu", "su",
