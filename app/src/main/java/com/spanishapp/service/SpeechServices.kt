@@ -457,13 +457,46 @@ class SpanishSpeechRecognizer @Inject constructor(
     suspend fun listenOnce(
         language: String = "es-ES",
         biasStrings: List<String> = emptyList(),
+    ): SpeechResult {
+        // v1.26.1: сначала пробуем ON-DEVICE распознавание (Android 13+) —
+        // партиалы стримятся почти в реальном времени (слово за словом), а
+        // biasing-подсказка именно там работает лучше всего. Если языковой
+        // модели на устройстве нет — ошибка приходит МГНОВЕННО (без
+        // прослушивания), и мы прозрачно откатываемся на серверный распознаватель
+        // (поведение как раньше). Юзер двойного прослушивания не видит.
+        if (android.os.Build.VERSION.SDK_INT >= 33 &&
+            SpeechRecognizer.isOnDeviceRecognitionAvailable(context)
+        ) {
+            val onDevice = listenOnceWith(language, biasStrings, onDevice = true)
+            val langMissing = onDevice is SpeechResult.Error && onDevice.message == LANG_UNAVAILABLE
+            if (!langMissing) return onDevice
+        }
+        return listenOnceWith(language, biasStrings, onDevice = false)
+    }
+
+    private companion object {
+        /** Внутренний маркер «on-device модель языка недоступна» → фолбэк на сервер. */
+        const val LANG_UNAVAILABLE = "lang_unavailable"
+    }
+
+    private suspend fun listenOnceWith(
+        language: String,
+        biasStrings: List<String>,
+        onDevice: Boolean,
     ): SpeechResult = suspendCancellableCoroutine { cont ->
         if (!SpeechRecognizer.isRecognitionAvailable(context)) {
             cont.resume(SpeechResult.Error("Распознавание речи недоступно на этом устройстве"))
             return@suspendCancellableCoroutine
         }
 
-        val recognizer = SpeechRecognizer.createSpeechRecognizer(context)
+        val recognizer = if (onDevice && android.os.Build.VERSION.SDK_INT >= 31) {
+            runCatching { SpeechRecognizer.createOnDeviceSpeechRecognizer(context) }.getOrElse {
+                cont.resume(SpeechResult.Error(LANG_UNAVAILABLE))
+                return@suspendCancellableCoroutine
+            }
+        } else {
+            SpeechRecognizer.createSpeechRecognizer(context)
+        }
 
         // Защита от двойного вызова на OEM-устройствах: некоторые прошивки
         // отправляют onResults дважды или onResults после onError.
@@ -519,6 +552,12 @@ class SpanishSpeechRecognizer @Inject constructor(
             }
 
             override fun onError(error: Int) {
+                // v1.26.1: 12/13 = языковая модель on-device не установлена —
+                // прилетает мгновенно, listenOnce() прозрачно уходит на сервер.
+                if (error == 12 /*LANGUAGE_NOT_SUPPORTED*/ || error == 13 /*LANGUAGE_UNAVAILABLE*/) {
+                    finishOnce(SpeechResult.Error(LANG_UNAVAILABLE))
+                    return
+                }
                 val isSilence = error == SpeechRecognizer.ERROR_SPEECH_TIMEOUT ||
                                 error == SpeechRecognizer.ERROR_NO_MATCH
                 val msg = when (error) {
