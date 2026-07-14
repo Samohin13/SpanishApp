@@ -49,7 +49,11 @@ class GeminiTranslator @Inject constructor(
         fun apiUrl(): String {
             val proxy = BuildConfig.AI_PROXY_URL.trim().trimEnd('/')
             if (proxy.isNotEmpty()) {
-                return "$proxy/v1beta/models/$MODEL:generateContent"
+                // v1.26.1: воркер v7 — отдельный БЕСПЛАТНЫЙ маршрут /translate
+                // (лимит 300/день). Путь /v1beta на v2-воркере — PRO-only чат с
+                // обязательным Firebase-токеном; переводчик (книги long-press,
+                // WoD «Фраза») — free-фичи и ходят сюда.
+                return "$proxy/translate"
             }
             require(BuildConfig.DEBUG) {
                 "AI_PROXY_URL must be configured for release builds (GeminiTranslator)."
