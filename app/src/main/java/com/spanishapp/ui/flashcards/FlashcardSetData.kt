@@ -8,8 +8,8 @@ package com.spanishapp.ui.flashcards
  * Word strings here MUST match the `spanish` column in the DB (with article
  * for nouns, e.g. "el gato"). At runtime the screen resolves them via WordDao.
  *
- * Sets unlock progressively in [order]: set N+1 opens when set N hits ≥70%
- * mastered words.
+ * Sets unlock progressively in [order]: set N+1 opens once set N has been
+ * completed at least once — any accuracy (see FlashcardsSetupViewModel).
  *
  * @param id          stable identifier like "a1_set_01_greetings".
  * @param level       CEFR level — "A1" / "A2" / "B1" / "B2".
@@ -29,8 +29,8 @@ data class FlashcardSet(
 
 object FlashcardSetData {
 
-    /** Threshold for "set complete enough to unlock the next one". */
-    const val UNLOCK_RATIO = 0.7f
+    // v1.26.1 FIX (audit): удалён мёртвый UNLOCK_RATIO = 0.7f — реальный
+    // анлок = предыдущий сет пройден хотя бы раз (FlashcardsSetupViewModel).
 
     val all: List<FlashcardSet> = buildList {
 
@@ -232,7 +232,7 @@ object FlashcardSetData {
         add(FlashcardSet("a2_12", "A2", 12, "Дом — мебель и комнаты", "🛋️",
             listOf("el apartamento", "el balcón", "el escritorio", "el espejo grande", "el horno",
                    "el lavavajillas", "la aspiradora", "la bombilla", "el grifo", "el interruptor",
-                   "la cerradura", "el frigorifico", "el secador de pelo", "la cama de matrimonio", "el cuarto",
+                   "la cerradura", "el frigorífico", "el secador de pelo", "la cama de matrimonio", "el cuarto",
                    "el pasillo", "decorar")))
 
         add(FlashcardSet("a2_13", "A2", 13, "Кулинария и приготовление", "👨‍🍳",
@@ -248,7 +248,7 @@ object FlashcardSetData {
                    "agradecido")))
 
         add(FlashcardSet("a2_15", "A2", 15, "Описания людей", "🙋",
-            listOf("amable", "simpatico", "antipatico", "generoso", "paciente",
+            listOf("amable", "simpático", "antipático", "generoso", "paciente",
                    "curioso", "creativo", "sociable", "honesto", "grosero",
                    "calvo", "pelirrojo", "activo", "cariñoso", "cobarde",
                    "educado", "maleducado", "mentiroso", "tacaño", "valiente")))

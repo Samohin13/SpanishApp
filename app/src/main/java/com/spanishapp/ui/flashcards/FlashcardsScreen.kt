@@ -47,6 +47,7 @@ import kotlinx.coroutines.launch
 private val BrandOrange   = Color(0xFFFF6B35)   // front face accent + progress bar + buttons
 private val BrandOrange2  = Color(0xFFFF9A6C)   // completion header gradient end
 private val CardBackAccent = Color(0xFF34C759)  // back face accent stripe + glow (iOS green)
+private val EasyAmber     = Color(0xFFFFB300)   // v1.26.1: кнопка «Легко» (третья градация SM-2)
 
 // ═══════════════════════════════════════════════════════════════
 //  ENTRY POINT
@@ -87,6 +88,28 @@ fun FlashcardsScreen(
         }
     }
 
+    // v1.26.1 FIX (audit): выход посреди сессии молча терял XP — теперь
+    // подтверждение (и на крестик, и на системный Back).
+    var showExitDialog by remember { mutableStateOf(false) }
+    val mustConfirmExit = state.currentIndex > 0 && !state.isFinished && state.error == null
+    androidx.activity.compose.BackHandler(enabled = mustConfirmExit) { showExitDialog = true }
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { showExitDialog = false },
+            title = { Text("Выйти из сессии?") },
+            text = { Text("Прогресс этой сессии не сохранится") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showExitDialog = false
+                    navController.popBackStack()
+                }) { Text("Выйти") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showExitDialog = false }) { Text("Остаться") }
+            }
+        )
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
@@ -97,19 +120,27 @@ fun FlashcardsScreen(
                 title = {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            stringResource(com.spanishapp.R.string.flashcards_title),
+                            // v1.26.1 FIX (audit): для set-сессии показываем тему сета
+                            // («Местоимения»), а не generic «Изучение слов».
+                            state.sessionTitle
+                                ?: stringResource(com.spanishapp.R.string.flashcards_title),
                             style = MaterialTheme.typography.labelMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            "${(state.currentIndex).coerceAtMost(state.sessionSize)} из ${state.sessionSize}",
+                            // v1.26.1 FIX (audit): 1-based счётчик по замороженной
+                            // колоде (deckSize) — requeue не раздувает знаменатель.
+                            "${(state.currentIndex + 1).coerceAtMost(state.deckSize)} из ${state.deckSize}",
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold
                         )
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = {
+                        if (mustConfirmExit) showExitDialog = true
+                        else navController.popBackStack()
+                    }) {
                         Icon(Icons.Default.Close, contentDescription = null)
                     }
                 }
@@ -124,7 +155,9 @@ fun FlashcardsScreen(
             when {
                 state.isLoading  -> LoadingBody()
                 state.isFinished -> SessionCompleteBody(
-                    total      = state.sessionSize,
+                    // v1.26.1 FIX (audit): процент финала — от исходной колоды,
+                    // а не от sessionSize, раздутого requeue-ами.
+                    total      = if (state.deckSize > 0) state.deckSize else state.sessionSize,
                     correct    = state.correctCount,
                     wrong      = state.wrongCount,
                     xp         = state.earnedXp,
@@ -191,6 +224,15 @@ private fun SessionCompleteBody(
     onNextSet: () -> Unit,
     onExit: () -> Unit
 ) {
+    // v1.26.1 FIX (audit): звёзды по шкале VM (90/70/50) управляют тоном финала —
+    // «Сессия завершена! 🎉» + золото на 0% выглядели насмешкой.
+    val accuracy = (if (total > 0) correct * 100 / total else 0).coerceIn(0, 100)
+    val stars = when {
+        accuracy >= 90 -> 3
+        accuracy >= 70 -> 2
+        accuracy >= 50 -> 1
+        else           -> 0
+    }
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -208,11 +250,19 @@ private fun SessionCompleteBody(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    if (error != null) stringResource(com.spanishapp.R.string.flashcards_session_complete_no_emoji)
-                    else stringResource(com.spanishapp.R.string.flashcards_session_complete),
+                    when {
+                        // v1.26.1 FIX (audit): ошибка — её текст и есть заголовок,
+                        // без ложного «Сессия завершена».
+                        error != null -> error
+                        stars >= 1    -> stringResource(com.spanishapp.R.string.flashcards_session_complete)
+                        // v1.26.1 FIX (audit): 0 звёзд — без 🎉.
+                        else          -> "Сет пройден — нужно повторение"
+                    },
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
-                    color = Color.White
+                    color = Color.White,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.padding(horizontal = 20.dp)
                 )
             }
         }
@@ -224,18 +274,26 @@ private fun SessionCompleteBody(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (error != null) {
+                    // v1.26.1 FIX (audit): тупик ошибки — единственный CTA «Назад».
+                    // «Ещё раз» скрыт: restart зациклил бы тот же падающий запрос.
                     Spacer(Modifier.height(32.dp))
-                    Text(
-                        error,
-                        style = MaterialTheme.typography.bodyLarge,
-                        textAlign = TextAlign.Center
-                    )
+                    Button(
+                        onClick = onExit,
+                        modifier = Modifier.fillMaxWidth().height(56.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
+                    ) {
+                        Text(stringResource(com.spanishapp.R.string.practice_back), fontWeight = FontWeight.Bold)
+                    }
                 } else {
-                    val accuracy = if (total > 0) (correct * 100 / total) else 0
                     Spacer(Modifier.height(24.dp))
                     com.spanishapp.ui.components.CompletionBadge(
                         accuracyPercent = accuracy,
-                        size = 160.dp
+                        size = 160.dp,
+                        // v1.26.1 FIX (audit): лента «¡COMPLETADO!» только за 100%,
+                        // приглушённый тон вместо золота при <50%.
+                        showRibbon = accuracy == 100,
+                        mutedWhenLow = true
                     )
                     Spacer(Modifier.height(16.dp))
                     Text(
@@ -251,41 +309,41 @@ private fun SessionCompleteBody(
                             color = MaterialTheme.colorScheme.error.copy(alpha = 0.8f)
                         )
                     }
-                }
-                Spacer(Modifier.height(28.dp))
-                if (hasNextSet) {
-                    Button(
-                        onClick = onNextSet,
-                        modifier = Modifier.fillMaxWidth().height(56.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
-                    ) {
-                        Text(stringResource(com.spanishapp.R.string.flashcards_next_set), fontWeight = FontWeight.Bold)
+                    Spacer(Modifier.height(28.dp))
+                    if (hasNextSet) {
+                        Button(
+                            onClick = onNextSet,
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
+                        ) {
+                            Text(stringResource(com.spanishapp.R.string.flashcards_next_set), fontWeight = FontWeight.Bold)
+                        }
+                        Spacer(Modifier.height(8.dp))
+                        OutlinedButton(
+                            onClick = onRestart,
+                            modifier = Modifier.fillMaxWidth().height(48.dp),
+                            shape = RoundedCornerShape(14.dp)
+                        ) {
+                            Text(stringResource(com.spanishapp.R.string.flashcards_repeat_set))
+                        }
+                    } else {
+                        Button(
+                            onClick = onRestart,
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
+                        ) {
+                            Text(stringResource(com.spanishapp.R.string.flashcards_again), fontWeight = FontWeight.Bold)
+                        }
                     }
-                    Spacer(Modifier.height(8.dp))
-                    OutlinedButton(
-                        onClick = onRestart,
-                        modifier = Modifier.fillMaxWidth().height(48.dp),
-                        shape = RoundedCornerShape(14.dp)
-                    ) {
-                        Text(stringResource(com.spanishapp.R.string.flashcards_repeat_set))
+                    TextButton(onClick = onExit) {
+                        Text(
+                            stringResource(com.spanishapp.R.string.flashcards_back_to_cards),
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
                     }
-                } else {
-                    Button(
-                        onClick = onRestart,
-                        modifier = Modifier.fillMaxWidth().height(56.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
-                    ) {
-                        Text(stringResource(com.spanishapp.R.string.flashcards_again), fontWeight = FontWeight.Bold)
-                    }
-                }
-                TextButton(onClick = onExit) {
-                    Text(
-                        stringResource(com.spanishapp.R.string.flashcards_back_to_cards),
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
                 }
             }
         }
@@ -371,6 +429,11 @@ private fun SessionBody(
     val offsetY = remember { Animatable(0f) }
     val swipeThreshold = with(LocalDensity.current) { 80.dp.toPx() }
 
+    // v1.26.1 FIX (audit): актуальный showBack внутри gesture-корутины —
+    // pointerInput перезапускается только по currentIndex, и без этого свайп
+    // читал бы устаревший снапшот state после переворота карточки.
+    val showBackNow by rememberUpdatedState(state.showBack)
+
     LaunchedEffect(state.currentIndex) {
         offsetX.snapTo(0f)
         offsetY.snapTo(0f)
@@ -382,35 +445,26 @@ private fun SessionBody(
             .padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // ── Orange progress bar with inline counter ───────────────
+        // ── Orange progress bar ───────────────────────────────────
+        // v1.26.1 FIX (audit): доля от замороженной колоды (deckSize) — прогресс
+        // не откатывается и знаменатель не растёт при requeue. Дублирующий
+        // счётчик у бара удалён — каноничный живёт в топ-баре (1-based).
         Spacer(Modifier.height(8.dp))
         val progress by animateFloatAsState(
-            targetValue = if (state.sessionSize > 0)
-                state.currentIndex.toFloat() / state.sessionSize else 0f,
+            targetValue = if (state.deckSize > 0)
+                (state.currentIndex.toFloat() / state.deckSize).coerceIn(0f, 1f) else 0f,
             animationSpec = spring(dampingRatio = Spring.DampingRatioMediumBouncy),
             label = "progress"
         )
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier
-                    .weight(1f)
-                    .height(8.dp)
-                    .clip(CircleShape),
-                color = BrandOrange,
-                trackColor = MaterialTheme.colorScheme.surfaceVariant
-            )
-            Spacer(Modifier.width(10.dp))
-            Text(
-                "${state.currentIndex} / ${state.sessionSize}",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-        }
+        LinearProgressIndicator(
+            progress = { progress },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(8.dp)
+                .clip(CircleShape),
+            color = BrandOrange,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant
+        )
         Spacer(Modifier.height(12.dp))
 
         // ── Swipeable card area ───────────────────────────────────
@@ -430,7 +484,13 @@ private fun SessionBody(
                                 xPx < -swipeThreshold -> ReviewButton.HARD
                                 else                  -> null
                             }
-                            if (ans != null) {
+                            if (ans != null && !showBackNow) {
+                                // v1.26.1 FIX (audit): свайп по НЕоткрытой карточке —
+                                // переворот, а не оценка вслепую.
+                                scope.launch { offsetX.animateTo(0f, spring()) }
+                                scope.launch { offsetY.animateTo(0f, spring()) }
+                                onFlip()
+                            } else if (ans != null) {
                                 scope.launch {
                                     offsetX.animateTo(xPx * 4f, tween(220))
                                     offsetY.animateTo(yPx, tween(220))
@@ -444,7 +504,10 @@ private fun SessionBody(
                     ) { change, drag ->
                         change.consume()
                         scope.launch { offsetX.snapTo(offsetX.value + drag.x) }
-                        scope.launch { offsetY.snapTo(offsetY.value + drag.y.coerceAtMost(0f)) }
+                        // v1.26.1 FIX (audit): клампим РЕЗУЛЬТАТ, а не приращение —
+                        // старый вариант резал drag.y и работал храповиком:
+                        // карточка поднималась, но вернуть её вниз было нельзя.
+                        scope.launch { offsetY.snapTo((offsetY.value + drag.y).coerceAtMost(0f)) }
                     }
                 },
             contentAlignment = Alignment.Center
@@ -477,6 +540,49 @@ private fun SessionBody(
         val actionFont = if (isWideActions) 18.sp else 14.sp
         val actionIcon = if (isWideActions) 22.dp else 15.dp
 
+        // v1.26.1 FIX (audit): Undo вынесен из ряда кнопок в слот фиксированной
+        // высоты НАД ними — кнопки больше не прыгают при появлении чипа.
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 44.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            // top-level overload: внутри Box (вложенного в Column) implicit
+            // receiver перехватывал бы ColumnScope.AnimatedVisibility.
+            androidx.compose.animation.AnimatedVisibility(visible = state.canUndo) {
+                Surface(
+                    onClick = onUndo,
+                    shape = RoundedCornerShape(20.dp),
+                    color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    border = BorderStroke(
+                        1.dp,
+                        MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Text(
+                            "↩",
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            stringResource(com.spanishapp.R.string.flashcards_action_undo),
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+            }
+        }
+
+        // v1.26.1 FIX (audit): три градации SM-2 — Забыл / Знаю / Легко.
+        // Пока карточка не открыта, любая кнопка ПЕРЕВОРАЧИВАЕТ её, а не
+        // оценивает вслепую (grade-while-hidden).
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -487,8 +593,12 @@ private fun SessionBody(
             // HARD — outlined, error-red
             OutlinedButton(
                 onClick = {
-                    cardHaptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                    onAnswer(ReviewButton.HARD)
+                    if (!state.showBack) {
+                        onFlip()
+                    } else {
+                        cardHaptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                        onAnswer(ReviewButton.HARD)
+                    }
                 },
                 modifier = Modifier
                     .weight(1f)
@@ -510,47 +620,21 @@ private fun SessionBody(
                 Text(stringResource(com.spanishapp.R.string.flashcards_action_forgot), fontWeight = FontWeight.SemiBold, fontSize = actionFont)
             }
 
-            // Undo chip — visible only after previous card was answered
-            AnimatedVisibility(visible = state.canUndo) {
-                Surface(
-                    onClick = onUndo,
-                    shape = RoundedCornerShape(20.dp),
-                    color = MaterialTheme.colorScheme.surfaceContainerHighest,
-                    border = BorderStroke(
-                        1.dp,
-                        MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
-                    )
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(3.dp)
-                    ) {
-                        Text(
-                            "↩",
-                            fontSize = 13.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            stringResource(com.spanishapp.R.string.flashcards_action_undo),
-                            fontSize = 11.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
-
-            // GOOD — filled brand-orange
+            // GOOD — filled green (уверенное «Знаю»)
             Button(
                 onClick = {
-                    cardHaptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                    onAnswer(ReviewButton.GOOD)
+                    if (!state.showBack) {
+                        onFlip()
+                    } else {
+                        cardHaptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                        onAnswer(ReviewButton.GOOD)
+                    }
                 },
                 modifier = Modifier
-                    .weight(1.3f)
+                    .weight(1f)
                     .height(actionHeight),
                 shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
+                colors = ButtonDefaults.buttonColors(containerColor = CardBackAccent)
             ) {
                 Text(stringResource(com.spanishapp.R.string.flashcards_action_know), fontWeight = FontWeight.Bold, fontSize = actionFont)
                 Spacer(Modifier.width(4.dp))
@@ -558,6 +642,28 @@ private fun SessionBody(
                     Icons.Default.Check, null,
                     modifier = Modifier.size(15.dp)
                 )
+            }
+
+            // EASY — amber, третья градация (interval × EF + бонус, +10 XP)
+            Button(
+                onClick = {
+                    if (!state.showBack) {
+                        onFlip()
+                    } else {
+                        cardHaptic.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                        onAnswer(ReviewButton.EASY)
+                    }
+                },
+                modifier = Modifier
+                    .weight(1f)
+                    .height(actionHeight),
+                shape = RoundedCornerShape(14.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = EasyAmber,
+                    contentColor = Color(0xFF3E2723)
+                )
+            ) {
+                Text("Легко", fontWeight = FontWeight.Bold, fontSize = actionFont)
             }
         }
     }
@@ -597,7 +703,11 @@ private fun FlipCard(
     } else {
         Modifier
             .fillMaxWidth()
-            .height(400.dp)
+            // v1.26.1 FIX (audit): фикс-высота 400dp переполняла компактные
+            // экраны — берём доступное место, но не больше 400dp (на высоких
+            // экранах картинка не меняется).
+            .heightIn(max = 400.dp)
+            .fillMaxHeight()
     }
     Box(
         modifier = cardModifier
@@ -686,7 +796,7 @@ private fun CardSurface(
 private fun CardFront(
     word: WordEntity,
     direction: FlashcardDirection,
-    @Suppress("UNUSED_PARAMETER") onSpeak: () -> Unit
+    onSpeak: () -> Unit
 ) {
     val frontText = when (direction) {
         FlashcardDirection.ES_TO_RU -> word.spanish
@@ -713,7 +823,10 @@ private fun CardFront(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // ── Bento-tile label chip — ExtraBold + letter-spacing ───────
-        Row(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Surface(
                 shape = RoundedCornerShape(8.dp),
                 color = BrandOrange.copy(alpha = 0.18f)
@@ -726,6 +839,22 @@ private fun CardFront(
                     color         = BrandOrange,
                     modifier      = Modifier.padding(horizontal = 10.dp, vertical = 5.dp)
                 )
+            }
+            Spacer(Modifier.weight(1f))
+            // v1.26.1 FIX (audit): если на фронте испанский (ES→RU / MIXED) —
+            // даём прослушать слово ДО ответа (кнопка в стиле задней стороны).
+            // Для RU→ES не показываем: испанского на фронте нет.
+            if (direction != FlashcardDirection.RU_TO_ES) {
+                IconButton(
+                    onClick  = onSpeak,
+                    modifier = Modifier.size(36.dp)
+                ) {
+                    Icon(
+                        Icons.Default.VolumeUp, null,
+                        tint     = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
             }
         }
 
@@ -754,10 +883,13 @@ private fun CardFront(
         }
 
         // ── Dim bottom hint ────────────────────────────────────────
+        // v1.26.1 FIX (audit): подсказка была почти невидима (alpha 0.35) —
+        // новички не понимали, что карточку нужно тапнуть.
         Text(
             stringResource(com.spanishapp.R.string.flashcards_tap_to_check),
             style         = MaterialTheme.typography.labelSmall,
-            color         = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.35f),
+            fontSize      = 12.sp,
+            color         = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.65f),
             letterSpacing = 1.sp
         )
     }

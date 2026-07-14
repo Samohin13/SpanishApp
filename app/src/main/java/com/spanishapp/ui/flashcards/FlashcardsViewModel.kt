@@ -45,6 +45,14 @@ data class FlashcardsUiState(
     val wrongWords: List<WordEntity> = emptyList(),
     /** True immediately after an answer — shows the undo chip. */
     val canUndo: Boolean = false,
+    /**
+     * v1.26.1 FIX (audit): исходный размер колоды (заморожен на старте сессии).
+     * sessionSize растёт от requeue HARD-слов — для счётчика «N из M»,
+     * прогресс-бара и знаменателя процента нужен неизменный размер.
+     */
+    val deckSize: Int = 0,
+    /** v1.26.1 FIX (audit): название сета для топ-бара (null = generic заголовок). */
+    val sessionTitle: String? = null,
 )
 
 @HiltViewModel
@@ -104,6 +112,17 @@ class FlashcardsViewModel @Inject constructor(
 
     private var mode: FlashcardDirection = FlashcardDirection.ES_TO_RU
 
+    /**
+     * v1.26.1 FIX (audit): ключ аргументов активной сессии. Поворот экрана
+     * пересоздаёт Activity → LaunchedEffect экрана заново зовёт start*, и
+     * сессия молча перезапускалась с карточки 1 (терялись индекс и счёт).
+     * Если аргументы те же и сессия ещё идёт — не перезагружаем.
+     */
+    private var lastSessionKey: String? = null
+
+    /** v1.26.1 FIX (audit): исходный размер колоды — знаменатель процента/звёзд. */
+    private var originalDeckSize = 0
+
     fun startSession(
         level: String,
         category: String,
@@ -111,6 +130,12 @@ class FlashcardsViewModel @Inject constructor(
         sessionSize: Int = 20,
         weakOnly: Boolean = false,
     ) {
+        // v1.26.1 FIX (audit): guard от рестарта при recreate Activity (rotation).
+        // restart() проходит guard, т.к. на финальном экране isFinished = true.
+        val sessionKey = "cat|$level|$category|$direction|$sessionSize|$weakOnly"
+        val prev = _state.value
+        if (sessionKey == lastSessionKey && prev.cards.isNotEmpty() && !prev.isFinished) return
+        lastSessionKey = sessionKey
         mode = direction
         activeSetId = null
         lastWeakOnly = weakOnly
@@ -135,6 +160,7 @@ class FlashcardsViewModel @Inject constructor(
                 )
                 return@launch
             }
+            originalDeckSize = cards.size   // v1.26.1 FIX (audit): фиксируем до requeue
             _state.value = FlashcardsUiState(
                 isLoading = false,
                 cards = cards,
@@ -143,7 +169,8 @@ class FlashcardsViewModel @Inject constructor(
                 currentDirection = resolveDirection(direction),
                 level = level,
                 category = category,
-                sessionSize = cards.size
+                sessionSize = cards.size,
+                deckSize = cards.size
             )
         }
     }
@@ -154,6 +181,11 @@ class FlashcardsViewModel @Inject constructor(
      * After the session ends, [maybeSaveSetCompletion] persists stars + best %.
      */
     fun startSetSession(setId: String, direction: FlashcardDirection) {
+        // v1.26.1 FIX (audit): guard от рестарта при recreate Activity (rotation).
+        val sessionKey = "set|$setId|$direction"
+        val prev = _state.value
+        if (sessionKey == lastSessionKey && prev.cards.isNotEmpty() && !prev.isFinished) return
+        lastSessionKey = sessionKey
         mode = direction
         activeSetId = setId
         lastWeakOnly = false
@@ -184,6 +216,7 @@ class FlashcardsViewModel @Inject constructor(
                 )
                 return@launch
             }
+            originalDeckSize = cards.size   // v1.26.1 FIX (audit): фиксируем до requeue
             _state.value = FlashcardsUiState(
                 isLoading = false,
                 cards = cards,
@@ -192,7 +225,11 @@ class FlashcardsViewModel @Inject constructor(
                 currentDirection = resolveDirection(direction),
                 level = set.level,
                 category = "set",
-                sessionSize = cards.size
+                sessionSize = cards.size,
+                deckSize = cards.size,
+                // v1.26.1 FIX (audit): тема сета в топ-баре — юзер открыл
+                // «Местоимения» и не видел, какой это сет.
+                sessionTitle = set.title
             )
         }
     }
@@ -213,7 +250,10 @@ class FlashcardsViewModel @Inject constructor(
             wordDao.getDueForSession(level, category, missing + 5)
                 .filter { it !in due } else emptyList()
 
-        return (due + fresh + extra).take(sessionSize).shuffled()
+        // v1.26.1 FIX (audit): lapsed-слова (SM-2 fail → repetitions=0, но
+        // total_reviews>0) теперь попадают в due-выборку И в «новые»
+        // (repetitions=0) — дедупим по id, чтобы слово не встретилось дважды.
+        return (due + fresh + extra).distinctBy { it.id }.take(sessionSize).shuffled()
     }
 
     fun flip() {
@@ -250,7 +290,9 @@ class FlashcardsViewModel @Inject constructor(
         val xpDelta = when (button) {
             ReviewButton.HARD -> 0
             ReviewButton.GOOD -> XpSystem.WORD_CORRECT
-            ReviewButton.EASY -> XpSystem.WORD_CORRECT
+            // v1.26.1 FIX (audit): EASY давал те же +5, что и GOOD — теперь
+            // честные +10 по XpSystem.WORD_EASY.
+            ReviewButton.EASY -> XpSystem.WORD_EASY
         }
 
         viewModelScope.launch {
@@ -263,17 +305,16 @@ class FlashcardsViewModel @Inject constructor(
             if (promotion != null) _leaguePromotions.tryEmit(promotion)
         }
 
-        // Capture deck size BEFORE requeue — used below for set-completion %.
-        // Using _state.value.cards.size after the update is wrong because requeued
-        // HARD cards inflate the total, making accuracy look artificially low.
-        val deckSizeBeforeRequeue = s.cards.size
-
         // Re-queue HARD words 3 positions ahead (each word re-inserted at most once).
+        // v1.26.1 FIX (audit): в очередь идёт post-fail `updated`, а не устаревший
+        // снапшот `current` — иначе повторный ответ гнал SM2.review по состоянию
+        // ДО провала и стирал зафиксированный fail (ложный isLearned, раздутый
+        // words_learned).
         val updatedCards = if (quality < 3 && current.id !in requeuedIds) {
             requeuedIds.add(current.id)
             val mutable = s.cards.toMutableList()
             val insertAt = (s.currentIndex + 3).coerceAtMost(mutable.size)
-            mutable.add(insertAt, current)
+            mutable.add(insertAt, updated)
             mutable
         } else s.cards
 
@@ -306,9 +347,14 @@ class FlashcardsViewModel @Inject constructor(
                 xpTracker.add(_state.value.earnedXp, learnedDelta)
                 // If this was a Daily Set session, persist stars + best %.
                 activeSetId?.let { setId ->
-                    val total = deckSizeBeforeRequeue   // original deck, not inflated by requeues
+                    // v1.26.1 FIX (audit): знаменатель — исходная колода со старта
+                    // сессии. Прежний deckSizeBeforeRequeue снимался на ПОСЛЕДНЕМ
+                    // ответе и уже включал requeue-вставки — best_percent/звёзды
+                    // занижались. correctCount может превысить колоду (requeue
+                    // отвечен верно) — коэрсим в 0..100.
+                    val total = originalDeckSize
                     val correct = _state.value.correctCount
-                    val percent = if (total > 0) (correct * 100 / total) else 0
+                    val percent = if (total > 0) (correct * 100 / total).coerceIn(0, 100) else 0
                     val stars = when {
                         percent >= 90 -> 3
                         percent >= 70 -> 2

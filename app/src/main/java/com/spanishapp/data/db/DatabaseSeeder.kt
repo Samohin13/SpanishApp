@@ -178,12 +178,24 @@ class DatabaseSeeder @Inject constructor(
             "el deshidratación",   // → la deshidratación
             "el ola de calor",     // → la ola de calor
             "el turba",            // → la turba
+            // v1.26.1 FIX (audit): безакцентные дубли корректных записей —
+            // сеты a2_12/a2_15 теперь ссылаются на акцентные варианты (F10).
+            "simpatico",           // дубль корректного simpático
+            "antipatico",          // дубль корректного antipático
+            "el frigorifico",      // дубль корректного el frigorífico
         )
         obsoleteKeys.forEach { runCatching { db.wordDao().deleteBySpanish(it) } }
 
         // Отфильтровать слова, которые уже есть в БД (по нижнему регистру)
+        // v1.26.1 FIX (audit): дополнительно исключаем obsoleteKeys — иначе
+        // безакцентные дубли, ещё живущие в исходниках словаря, пере-вставлялись
+        // бы этим же прогоном сразу после purge (delete → insert каждый запуск).
+        val obsoleteLower = obsoleteKeys.map { it.trim().lowercase() }.toHashSet()
         val existingSet = db.wordDao().getAllSpanishLower().toHashSet()
-        val newOnly = marked.filter { it.spanish.trim().lowercase() !in existingSet }
+        val newOnly = marked.filter {
+            val key = it.spanish.trim().lowercase()
+            key !in existingSet && key !in obsoleteLower
+        }
 
         if (newOnly.isNotEmpty()) db.wordDao().insertAll(newOnly)
 
@@ -198,6 +210,13 @@ class DatabaseSeeder @Inject constructor(
             // цвета) выигрывал дедуп у BasicsVocab («конечно / ясно») — сет
             // приветствий a1_01_greetings учил «claro = светлый».
             "claro"    to "конечно / ясно; светлый",
+            // v1.26.1 FIX (audit): омонимы — тематический сет учил ОДНОМУ
+            // значению, а в других контекстах слово значит другое. Двойной
+            // перевод по образцу «claro».
+            "el partido" to "партия; матч",
+            "el ensayo"  to "репетиция; эссе",
+            "la obra"    to "произведение, пьеса; стройка",
+            "el pastel"  to "пастель; торт, пирожное",
         )
         patches.forEach { (es, ru) -> db.wordDao().patchRussian(es, ru) }
     }

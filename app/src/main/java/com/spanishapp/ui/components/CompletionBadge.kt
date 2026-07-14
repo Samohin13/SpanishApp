@@ -62,9 +62,16 @@ fun CompletionBadge(
     accuracyPercent: Int,
     modifier: Modifier = Modifier,
     size: Dp = 180.dp,
-    label: String = "¡COMPLETADO!"
+    label: String = "¡COMPLETADO!",
+    // v1.26.1 FIX (audit): «достоинство финала» — флэшкарты скрывают ленту
+    // ниже 100% и глушат золото при <50% (0% сессия выглядела как праздник).
+    // Дефолты сохраняют прежнее поведение остальных экранов (LessonSession).
+    showRibbon: Boolean = true,
+    mutedWhenLow: Boolean = false,
 ) {
     val acc = accuracyPercent.coerceIn(0, 100)
+    // v1.26.1 FIX (audit): приглушённый тон темы вместо «медали» при провале.
+    val muted = mutedWhenLow && acc < 50
 
     // Tier colors based on accuracy. Each pair = (lighter, darker) for the
     // inner gradient fill — keeps medals visually distinct at a glance.
@@ -72,8 +79,20 @@ fun CompletionBadge(
         acc >= 90 -> Color(0xFFFFD700) to Color(0xFFFFA500) // Gold
         acc >= 70 -> Color(0xFFC0C0C0) to Color(0xFF808080) // Silver
         acc >= 50 -> Color(0xFFCD7F32) to Color(0xFF8B4513) // Bronze
+        muted     -> MaterialTheme.colorScheme.surfaceContainerHighest to
+                     MaterialTheme.colorScheme.surfaceContainerHighest // Muted (<50%)
         else      -> Color(0xFF778899) to Color(0xFF2F4F4F) // Steel
     }
+
+    // v1.26.1 FIX (audit): кольцо и текст — не золотые, когда финал приглушён.
+    val ringColors =
+        if (muted) {
+            val c = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f)
+            listOf(c, c)
+        } else {
+            listOf(Color(0xFFFFD700), Color(0xFFB8860B))
+        }
+    val contentColor = if (muted) MaterialTheme.colorScheme.onSurfaceVariant else Color.White
 
     // Star count: 4 thresholds — 4 = perfect, 3 = great, 2 = ok, 1 = passed,
     // 0 = struggling. Matches the four tiers above.
@@ -84,7 +103,7 @@ fun CompletionBadge(
         acc >= 25 -> 1
         else      -> 0
     }
-    val starColor = if (acc >= 90) Color(0xFFFFD700) else Color.White
+    val starColor = if (acc >= 90) Color(0xFFFFD700) else contentColor
 
     // Medal scale-in with overshoot.
     val medalScale = remember { Animatable(0f) }
@@ -154,10 +173,10 @@ fun CompletionBadge(
                     center = center
                 )
 
-                // Outer golden ring.
+                // Outer ring — golden by default, muted tone при провале (v1.26.1).
                 drawCircle(
                     brush = Brush.linearGradient(
-                        colors = listOf(Color(0xFFFFD700), Color(0xFFB8860B)),
+                        colors = ringColors,
                         start = Offset(0f, 0f),
                         end = Offset(w, h)
                     ),
@@ -176,7 +195,7 @@ fun CompletionBadge(
                     text = "${acc}%",
                     fontSize = 32.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    color = Color.White
+                    color = contentColor
                 )
                 Spacer(Modifier.height(4.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(2.dp)) {
@@ -185,7 +204,7 @@ fun CompletionBadge(
                         Text(
                             text = if (filled) "★" else "☆",
                             fontSize = 16.sp,
-                            color = if (filled) starColor else Color.White.copy(alpha = 0.4f)
+                            color = if (filled) starColor else contentColor.copy(alpha = 0.4f)
                         )
                     }
                 }
@@ -195,8 +214,9 @@ fun CompletionBadge(
         // ── Ribbon banner ──────────────────────────────────────────
         // Slight negative offset so the ribbon visually overlaps the bottom of
         // the medal — classic "медаль на ленте" look.
+        // v1.26.1 FIX (audit): вызывающий может скрыть ленту (флэшкарты — только 100%).
         AnimatedVisibility(
-            visible = ribbonVisible,
+            visible = ribbonVisible && showRibbon,
             enter = slideInVertically(
                 initialOffsetY = { it },
                 animationSpec = tween(durationMillis = 350)

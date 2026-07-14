@@ -41,6 +41,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -84,6 +85,8 @@ class PracticeViewModel @Inject constructor(
     private val tts: SpanishTts,
     private val ratingUpdater: com.spanishapp.domain.algorithm.RatingUpdater,
     @dagger.hilt.android.qualifiers.ApplicationContext private val appContext: android.content.Context,
+    // v1.26.1 FIX (audit): нужен тумблер «Голос диктора» — без него LISTENING немой.
+    private val appPreferences: com.spanishapp.data.prefs.AppPreferences,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(PracticeState())
@@ -93,6 +96,10 @@ class PracticeViewModel @Inject constructor(
 
     private fun loadSession() {
         viewModelScope.launch {
+            // v1.26.1 FIX (audit): при выключенном «Голосе диктора»
+            // SpanishTts.speak() — no-op, и LISTENING-раунд превращался в немую
+            // угадайку вслепую. Такие раунды генерим как MULTIPLE_CHOICE.
+            val voiceEnabled = appPreferences.ttsEnabled.first()
             // 3-bucket fallback:
             // 1. Weak — accuracy < 60% (the real target of Practice)
             // 2. Shaky — accuracy 60–80% (supplement when weak pool is thin)
@@ -136,8 +143,14 @@ class PracticeViewModel @Inject constructor(
                 // Anagram needs ≥4 letters to be non-trivial (2-3 letter words
                 // like "sí", "no", "hoy" can be guessed by random tapping).
                 val isTooShort = target.filter { it != ' ' }.length < 4
-                val mode = if (rawMode == PracticeMode.TYPING && (isPhrase || isTooShort))
-                    PracticeMode.MULTIPLE_CHOICE else rawMode
+                val mode = when {
+                    rawMode == PracticeMode.TYPING && (isPhrase || isTooShort) ->
+                        PracticeMode.MULTIPLE_CHOICE
+                    // v1.26.1 FIX (audit): без озвучки LISTENING невозможен.
+                    rawMode == PracticeMode.LISTENING && !voiceEnabled ->
+                        PracticeMode.MULTIPLE_CHOICE
+                    else -> rawMode
+                }
                 // Prefer same-category distractors so wrong options stay
                 // semantically related (greetings vs greetings, food vs food).
                 // Fall back to any same-level word if the category is too
@@ -227,6 +240,10 @@ class PracticeViewModel @Inject constructor(
     fun typeLetter(c: Char) {
         val s = _state.value
         if (s.typingChecked) return
+        // v1.26.1 FIX (audit): буфер не длиннее целевого слова — раньше одну
+        // плитку можно было тапать бесконечно и переполнить ответ.
+        val round = s.rounds.getOrNull(s.currentIndex) ?: return
+        if (s.typedAnswer.length >= round.scrambledLetters.size) return
         _state.value = s.copy(typedAnswer = s.typedAnswer + c)
     }
 
@@ -712,6 +729,13 @@ private fun TypingRoundView(
     onNext: () -> Unit,
     onSpeak: () -> Unit
 ) {
+    // v1.26.1 FIX (audit): каждая плитка нажимается ОДИН раз (паттерн
+    // LetterAssemblyQuiz из HomeScreen) — раньше одну букву можно было
+    // тапать многократно и собрать «aa…» из одной «a».
+    val used = remember(round.word.id) { mutableStateListOf<Int>() }
+    // Страховка: буфер опустел (next/restart/clear) → все плитки снова свободны.
+    LaunchedEffect(typed) { if (typed.isEmpty() && used.isNotEmpty()) used.clear() }
+
     Column(
         modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp, vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -799,13 +823,22 @@ private fun TypingRoundView(
         // Letter keys grid — 5 per row.
         if (!checked) {
             val rows = round.scrambledLetters.chunked(5)
-            rows.forEach { rowChars ->
+            rows.forEachIndexed { rowIdx, rowChars ->
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
                     horizontalArrangement = Arrangement.spacedBy(6.dp, Alignment.CenterHorizontally)
                 ) {
-                    rowChars.forEach { c ->
-                        LetterKey(c) { onLetter(c) }
+                    rowChars.forEachIndexed { colIdx, c ->
+                        // v1.26.1 FIX (audit): использованная плитка гаснет и
+                        // не кликается; буфер капится длиной цели.
+                        val tileIndex = rowIdx * 5 + colIdx
+                        val tileUsed = tileIndex in used
+                        LetterKey(c, enabled = !tileUsed) {
+                            if (!tileUsed && typed.length < round.scrambledLetters.size) {
+                                used.add(tileIndex)
+                                onLetter(c)
+                            }
+                        }
                     }
                 }
             }
@@ -817,12 +850,19 @@ private fun TypingRoundView(
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 OutlinedButton(
-                    onClick = onClear,
+                    onClick = {
+                        used.clear()   // v1.26.1 FIX (audit): освободить плитки
+                        onClear()
+                    },
                     modifier = Modifier.weight(1f).height(52.dp),
                     shape = RoundedCornerShape(14.dp)
                 ) { Text(stringResource(com.spanishapp.R.string.practice_clear)) }
                 OutlinedButton(
-                    onClick = onBackspace,
+                    onClick = {
+                        // v1.26.1 FIX (audit): вернуть последнюю использованную плитку
+                        if (used.isNotEmpty()) used.removeAt(used.lastIndex)
+                        onBackspace()
+                    },
                     modifier = Modifier.weight(1f).height(52.dp),
                     shape = RoundedCornerShape(14.dp)
                 ) { Text("⌫") }
@@ -852,24 +892,27 @@ private fun TypingRoundView(
 }
 
 @Composable
-private fun LetterKey(c: Char, onClick: () -> Unit) {
+private fun LetterKey(c: Char, enabled: Boolean = true, onClick: () -> Unit) {
     // Filled primary tile + white text — guaranteed visible on both light AND
     // dark backgrounds. Earlier the keys used colorScheme.surface which is
     // dark grey in dark theme and blended into the background, making the
     // entire keypad invisible (user reported "как я должен собрать слово").
+    // v1.26.1 FIX (audit): использованная плитка гаснет (alpha) и не кликается.
     Surface(
         onClick = onClick,
+        enabled = enabled,
         modifier = Modifier.size(width = 56.dp, height = 60.dp),
         shape = RoundedCornerShape(12.dp),
-        color = MaterialTheme.colorScheme.primary,
-        shadowElevation = 4.dp
+        color = if (enabled) MaterialTheme.colorScheme.primary
+                else MaterialTheme.colorScheme.primary.copy(alpha = 0.30f),
+        shadowElevation = if (enabled) 4.dp else 0.dp
     ) {
         Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()) {
             Text(
                 c.toString(),
                 fontSize = 24.sp,
                 fontWeight = FontWeight.ExtraBold,
-                color = Color.White
+                color = if (enabled) Color.White else Color.White.copy(alpha = 0.45f)
             )
         }
     }

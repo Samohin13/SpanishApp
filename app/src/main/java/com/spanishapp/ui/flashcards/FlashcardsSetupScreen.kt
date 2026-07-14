@@ -212,6 +212,8 @@ fun FlashcardsSetupScreen(
     val selectedLevel by viewModel.selectedLevel.collectAsStateWithLifecycle()
     val sets          by viewModel.setsForLevel.collectAsStateWithLifecycle()
     val weakCount     by viewModel.weakCount.collectAsStateWithLifecycle()
+    // v1.26.1 FIX (audit): Toast-объяснение для прогресс-заблокированных сетов.
+    val context       = androidx.compose.ui.platform.LocalContext.current
 
     // loadSetsFor is already called from ViewModel.selectLevel() and from the
     // observeAll-collect watcher in init — no need to call it again here.
@@ -325,6 +327,13 @@ fun FlashcardsSetupScreen(
                                 "flashcards_session?level=${row.set.level}" +
                                     "&category=set&direction=ES_TO_RU&setId=${row.set.id}"
                             )
+                            // v1.26.1 FIX (audit): прогресс-заблокированный сет больше
+                            // не «мёртвый» тап — объясняем, как открыть.
+                            else -> android.widget.Toast.makeText(
+                                context,
+                                "Сначала пройди предыдущий сет",
+                                android.widget.Toast.LENGTH_SHORT
+                            ).show()
                         }
                     },
                     modifier = Modifier.animateItem()
@@ -386,7 +395,9 @@ private fun SetRow(
         shape = RoundedCornerShape(14.dp),
         backgroundColor = MaterialTheme.colorScheme.surfaceContainerHighest,
         shadowElevation = if (row.unlocked || row.isProLocked) 3.dp else 0.dp,
-        enabled = row.unlocked || row.isProLocked,
+        // v1.26.1 FIX (audit): кликабельны ВСЕ ряды — прогресс-заблокированные
+        // показывают Toast вместо мёртвого тапа (PRO-поведение не тронуто).
+        enabled = true,
     ) {
         Box(
             Modifier

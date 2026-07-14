@@ -172,12 +172,15 @@ interface WordDao {
     fun getWeakWords(): Flow<List<WordEntity>>
 
     // ── Flashcards session helpers (suspend, one-shot) ─────────
+    // v1.26.1 FIX (audit): total_reviews > 0 вместо repetitions > 0 — SM-2 fail
+    // сбрасывает repetitions в 0, и «провалившиеся» слова навсегда выпадали из
+    // due-выборки (никогда не возвращались на повторение).
     @Query("""
         SELECT * FROM words
         WHERE next_review <= :now
           AND level = :level
           AND (:category = 'all' OR category = :category)
-          AND repetitions > 0
+          AND total_reviews > 0
         ORDER BY next_review ASC
         LIMIT :limit
     """)
