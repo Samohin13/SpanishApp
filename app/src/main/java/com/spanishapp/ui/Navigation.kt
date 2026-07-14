@@ -348,7 +348,13 @@ object Navigation {
                 )
             ) { FlashcardsSetupScreen(navController) }
 
-            composable("practice") { PracticeScreen(navController) }
+            // v1.26.1: wordIds (CSV) — «Закрепить тестом» с финала карточек
+            // гоняет колоду только что пройденной сессии; без параметра —
+            // общий пул повторения (плитка «Работа над ошибками»).
+            composable(
+                "practice?wordIds={wordIds}",
+                arguments = listOf(navArgument("wordIds") { defaultValue = "" })
+            ) { PracticeScreen(navController) }
 
             composable(
                 "flashcards_session?level={level}&category={category}&direction={direction}&setId={setId}&weak={weak}",

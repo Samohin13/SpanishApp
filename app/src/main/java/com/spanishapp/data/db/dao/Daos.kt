@@ -220,6 +220,11 @@ interface WordDao {
     @Query("SELECT COUNT(*) FROM words WHERE next_review <= :now AND total_reviews > 0")
     suspend fun countDueAnyLevel(now: Long = System.currentTimeMillis()): Int
 
+    /** v1.26.1: слова по id — «Закрепить тестом» гоняет колоду только что
+     *  пройденной сессии, а не общий пул повторения. */
+    @Query("SELECT * FROM words WHERE id IN (:ids)")
+    suspend fun getByIds(ids: List<Int>): List<WordEntity>
+
     @Query("""
         SELECT * FROM words
         WHERE total_reviews > 2

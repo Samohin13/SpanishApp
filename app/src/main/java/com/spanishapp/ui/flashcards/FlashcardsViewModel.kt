@@ -58,6 +58,11 @@ data class FlashcardsUiState(
      * для полосы «до следующего уровня» на финальном экране. 0 = ещё не прочитан.
      */
     val totalXpAfter: Int = 0,
+    /**
+     * v1.26.1: id слов ИСХОДНОЙ колоды (без requeue-вставок) — «Закрепить
+     * тестом» на финале гоняет именно эти слова, а не общий пул повторения.
+     */
+    val deckWordIds: List<Int> = emptyList(),
 )
 
 /** v1.26.1: псевдо-категория «умный микс» — слабые + due + новые одной сессией. */
@@ -181,7 +186,8 @@ class FlashcardsViewModel @Inject constructor(
                 category = category,
                 sessionSize = cards.size,
                 deckSize = cards.size,
-                sessionTitle = if (category == SMART_MIX_CATEGORY) "Умный микс" else null
+                sessionTitle = if (category == SMART_MIX_CATEGORY) "Умный микс" else null,
+                deckWordIds = cards.map { it.id }
             )
         }
     }
@@ -262,7 +268,8 @@ class FlashcardsViewModel @Inject constructor(
                 deckSize = cards.size,
                 // v1.26.1 FIX (audit): тема сета в топ-баре — юзер открыл
                 // «Местоимения» и не видел, какой это сет.
-                sessionTitle = set.title
+                sessionTitle = set.title,
+                deckWordIds = cards.map { it.id }
             )
         }
     }

@@ -184,7 +184,14 @@ fun FlashcardsScreen(
                             haptic.performHapticFeedback(HapticFeedbackType.LongPress)
                             viewModel.startNextSet()
                         },
-                        onPractice = { navController.navigate("practice") },
+                        // v1.26.1 FIX (фидбэк): тест — по колоде ЭТОЙ сессии,
+                        // а не по общему пулу (после «Приветствий» просили
+                        // собрать «diecinueve» из чужой сессии чисел).
+                        onPractice = {
+                            navController.navigate(
+                                "practice?wordIds=" + state.deckWordIds.joinToString(",")
+                            )
+                        },
                         onExit     = { navController.popBackStack() }
                     )
                 }

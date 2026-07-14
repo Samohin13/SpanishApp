@@ -87,7 +87,19 @@ class PracticeViewModel @Inject constructor(
     @dagger.hilt.android.qualifiers.ApplicationContext private val appContext: android.content.Context,
     // v1.26.1 FIX (audit): нужен тумблер «Голос диктора» — без него LISTENING немой.
     private val appPreferences: com.spanishapp.data.prefs.AppPreferences,
+    savedStateHandle: androidx.lifecycle.SavedStateHandle,
 ) : ViewModel() {
+
+    /**
+     * v1.26.1 FIX (фидбэк): «Закрепить тестом» с финала карточек передаёт
+     * id колоды сессии (CSV) — тест по ЭТИМ словам. Пусто = общий пул
+     * повторения (плитка «Работа над ошибками»). Раньше после «Приветствий»
+     * практика просила собрать «diecinueve» из чужой сессии.
+     */
+    private val scopedIds: List<Int> =
+        (savedStateHandle.get<String>("wordIds") ?: "")
+            .split(',')
+            .mapNotNull { it.trim().toIntOrNull() }
 
     private val _state = MutableStateFlow(PracticeState())
     val state: StateFlow<PracticeState> = _state.asStateFlow()
@@ -100,20 +112,25 @@ class PracticeViewModel @Inject constructor(
             // SpanishTts.speak() — no-op, и LISTENING-раунд превращался в немую
             // угадайку вслепую. Такие раунды генерим как MULTIPLE_CHOICE.
             val voiceEnabled = appPreferences.ttsEnabled.first()
-            // 3-bucket fallback:
-            // 1. Weak — accuracy < 60% (the real target of Practice)
-            // 2. Shaky — accuracy 60–80% (supplement when weak pool is thin)
-            // 3. Any reviewed — absolute fallback for brand-new users
-            val weak  = wordDao.getPracticePool(limit = 20)
-            val pool  = if (weak.size >= 10) {
-                weak
+            // v1.26.1: scoped-режим — тест по колоде конкретной сессии.
+            val pool = if (scopedIds.isNotEmpty()) {
+                wordDao.getByIds(scopedIds).shuffled().take(20)
             } else {
-                val shaky = wordDao.getShakyPool(limit = 20 - weak.size)
-                val combined = (weak + shaky).distinctBy { it.id }
-                if (combined.size >= 5) combined
-                else {
-                    val any = wordDao.getAnyReviewedPool(limit = 20)
-                    (combined + any).distinctBy { it.id }.take(20)
+                // 3-bucket fallback:
+                // 1. Weak — accuracy < 60% (the real target of Practice)
+                // 2. Shaky — accuracy 60–80% (supplement when weak pool is thin)
+                // 3. Any reviewed — absolute fallback for brand-new users
+                val weak = wordDao.getPracticePool(limit = 20)
+                if (weak.size >= 10) {
+                    weak
+                } else {
+                    val shaky = wordDao.getShakyPool(limit = 20 - weak.size)
+                    val combined = (weak + shaky).distinctBy { it.id }
+                    if (combined.size >= 5) combined
+                    else {
+                        val any = wordDao.getAnyReviewedPool(limit = 20)
+                        (combined + any).distinctBy { it.id }.take(20)
+                    }
                 }
             }
             if (pool.isEmpty()) {
