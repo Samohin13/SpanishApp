@@ -228,6 +228,9 @@ fun TextToSpeech.speakSpanish(text: String?, utteranceId: String = "spk"): Boole
         onAllFailed = {
             runCatching {
                 com.spanishapp.radio.player.RadioCoordinator.pauseForTts()
+                // v1.26.1: движок общий с speakRussian — фиксируем локаль
+                // перед каждым системным воспроизведением.
+                engine.language = java.util.Locale("es", "ES")
                 engine.speak(cleaned, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
             }
         },
@@ -235,6 +238,21 @@ fun TextToSpeech.speakSpanish(text: String?, utteranceId: String = "spk"): Boole
     if (remoteAccepted) return true
     // Fallback: системный Android TTS как раньше.
     com.spanishapp.radio.player.RadioCoordinator.pauseForTts()
+    language = java.util.Locale("es", "ES")
+    speak(cleaned, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
+    return true
+}
+
+/**
+ * v1.26.1: озвучить РУССКИЙ текст системным движком (WoD-квиз «Фраза»:
+ * юзер слышит перевод на родном языке, потом собирает испанскую фразу).
+ * Через AppTtsRouter НЕ идёт — там premium ИСПАНСКИЕ голоса. Локаль ставится
+ * per-call; speakSpanish тоже ставит свою — общий движок безопасен.
+ */
+fun TextToSpeech.speakRussian(text: String?, utteranceId: String = "spk_ru"): Boolean {
+    val cleaned = text?.trim()?.takeIf { it.isNotBlank() } ?: return false
+    com.spanishapp.radio.player.RadioCoordinator.pauseForTts()
+    language = java.util.Locale("ru", "RU")
     speak(cleaned, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
     return true
 }

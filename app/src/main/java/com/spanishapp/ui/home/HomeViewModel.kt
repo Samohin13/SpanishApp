@@ -86,7 +86,28 @@ class HomeViewModel @Inject constructor(
     private val subscriptionManager: com.spanishapp.service.SubscriptionManager,
     // v1.26.1: стадия «Произнеси» в квизе Слова дня.
     private val stt: com.spanishapp.service.SpanishSpeechRecognizer,
+    // v1.26.1: RU-перевод примера для стадии «Фраза» (тот же переводчик, что
+    // long-press в книгах).
+    private val translator: com.spanishapp.data.repository.GeminiTranslator,
 ) : ViewModel() {
+
+    /** Кэш переводов примеров: wordId → русский перевод (null не кэшируем). */
+    private val exampleRuCache = mutableMapOf<Int, String>()
+
+    /**
+     * v1.26.1: перевод примера на русский для стадии «Фраза». Сначала юзер
+     * видит/слышит фразу на родном языке, потом собирает испанскую. Offline
+     * или ошибка → null (UI показывает fallback-подсказку со словом).
+     */
+    suspend fun translateExampleRu(wordId: Int, example: String): String? {
+        exampleRuCache[wordId]?.let { return it }
+        val ru = runCatching { translator.translateSentence(example) }
+            .getOrNull()
+            ?.trim()
+            ?.takeIf { it.isNotBlank() }
+        if (ru != null) exampleRuCache[wordId] = ru
+        return ru
+    }
 
     /** v1.23.0: PRO state — для показа/скрытия pro-bento promo-карточки. */
     val isPro: StateFlow<Boolean> = subscriptionManager.isProActive

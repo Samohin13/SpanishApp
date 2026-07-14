@@ -1074,7 +1074,7 @@ private fun WordOfDayQuizSheet(
                             word.example.trim().split(Regex("""\s+""")).filter { it.isNotBlank() }
                         }
                         if (tokens.size in 3..9) {
-                            SentenceBuildQuiz(word, tts) {
+                            SentenceBuildQuiz(word, tts, viewModel) {
                                 viewModel.markWordOfDayPractised(); autoAdvance()
                             }
                         } else {
@@ -1408,8 +1408,18 @@ private fun FillBlankQuiz(
 private fun SentenceBuildQuiz(
     word: WordOfDay,
     tts: android.speech.tts.TextToSpeech?,
+    viewModel: HomeViewModel,
     onSolved: () -> Unit
 ) {
+    // v1.26.1 v2 (по фидбэку владельца): сначала показываем/озвучиваем фразу
+    // на РОДНОМ языке («Она смотрится в зеркало»), потом юзер собирает
+    // испанскую. Перевод — GeminiTranslator (кэш в VM); offline → fallback.
+    var ruText by remember(word.wordId) { mutableStateOf<String?>(null) }
+    var ruLoading by remember(word.wordId) { mutableStateOf(true) }
+    LaunchedEffect(word.wordId) {
+        ruText = viewModel.translateExampleRu(word.wordId, word.example)
+        ruLoading = false
+    }
     val tokens = remember(word.wordId) {
         word.example.trim().split(Regex("""\s+""")).filter { it.isNotBlank() }
     }
@@ -1441,27 +1451,42 @@ private fun SentenceBuildQuiz(
         modifier = Modifier.fillMaxSize().padding(vertical = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            "Переведи и собери фразу:",
+            fontSize = 13.sp,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        Spacer(Modifier.height(4.dp))
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             Text(
-                "Собери фразу",
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
+                when {
+                    ruLoading -> "Перевожу…"
+                    ruText != null -> "«$ruText»"
+                    else -> "Фраза со словом «${word.russian}»"
+                },
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface,
+                textAlign = TextAlign.Center
             )
-            Spacer(Modifier.width(8.dp))
-            // Подсказка на слух — можно послушать целую фразу.
-            Surface(
-                onClick = { tts?.speakSpanish(word.example, "wod_sentence_hint") },
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.primaryContainer,
-                modifier = Modifier.size(32.dp)
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        Icons.Default.VolumeUp, contentDescription = "Послушать фразу",
-                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
-                        modifier = Modifier.size(18.dp)
-                    )
+            // 🔊 фраза на родном языке (по фидбэку — «прослушать что собираю»).
+            if (ruText != null) {
+                Surface(
+                    onClick = { tts?.speakRussian(ruText, "wod_sentence_ru") },
+                    shape = CircleShape,
+                    color = MaterialTheme.colorScheme.primaryContainer,
+                    modifier = Modifier.size(30.dp)
+                ) {
+                    Box(contentAlignment = Alignment.Center) {
+                        Icon(
+                            Icons.Default.VolumeUp, contentDescription = "Послушать по-русски",
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
                 }
             }
         }
