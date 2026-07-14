@@ -332,12 +332,19 @@ private fun ReadingAloudPanel(
         scope.launch {
             when (val r = stt.listenOnce()) {
                 is SpeechResult.Success -> {
-                    val checks = compareToExpected(sentence, r.text)
+                    // v1.26.1: проверяем ВСЕ альтернативы распознавания и берём
+                    // ту, где совпало больше слов — Google часто ставит верную
+                    // гипотезу второй, а скорился только первый вариант.
+                    val candidates = (r.alternatives.map { it.first } + r.text).distinct()
+                    val (bestText, checks) = candidates
+                        .map { it to compareToExpected(sentence, it) }
+                        .maxByOrNull { (_, ch) -> ch.count { it.second } }
+                        ?: (r.text to compareToExpected(sentence, r.text))
                     val newResults = state.results.toMutableList()
                     if (state.currentIdx < newResults.size)
                         newResults[state.currentIdx] = SentenceResult(checks)
                     onUpdate(state.copy(
-                        isListening = false, recognizedText = r.text, results = newResults
+                        isListening = false, recognizedText = bestText, results = newResults
                     ))
                 }
                 is SpeechResult.Error -> {

@@ -194,6 +194,7 @@
     <string name="pron_listen">Слушать</string>
     <string name="pron_speak">Сказать</string>
     <string name="pron_listening">Слушаю…</string>
+    <string name="pron_score_perfect">Идеально!</string>
     <string name="pron_score_excellent">Отлично! Почти идеально!</string>
     <string name="pron_score_good">Хорошо! Продолжай!</string>
     <string name="pron_score_ok">Неплохо, ещё попробуй</string>

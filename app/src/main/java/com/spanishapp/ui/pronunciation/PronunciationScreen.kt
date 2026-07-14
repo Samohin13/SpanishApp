@@ -58,6 +58,10 @@ private fun normalizeForScore(raw: String): String =
         .replace(Regex("\\s+"), " ")
         .trim()
         .replace(LEADING_ARTICLE, "")
+        // v1.26.1: фолдим акценты — расставляет их STT, а не юзер («esta» vs
+        // «está» звучит одинаково для распознавателя; штрафовать нечестно).
+        .replace('á','a').replace('é','e').replace('í','i')
+        .replace('ó','o').replace('ú','u').replace('ü','u')
 
 /** Возвращает 0..100 — насколько похоже произношение на эталон. */
 private fun pronunciationScore(spoken: String, target: String): Int {
@@ -172,10 +176,16 @@ class PronunciationViewModel @Inject constructor(
         )
         when (val result = stt.listenOnce()) {
             is SpeechResult.Success -> {
-                val score = pronunciationScore(result.text, word.spanish)
+                // v1.26.1: скорим ВСЕ альтернативы распознавания (до 3) и берём
+                // лучшую. Google часто ставит верный вариант вторым — раньше
+                // оценивался только первый → незаслуженные низкие проценты
+                // («плохо отрабатывает»).
+                val candidates = (result.alternatives.map { it.first } + result.text).distinct()
+                val best = candidates.maxByOrNull { pronunciationScore(it, word.spanish) } ?: result.text
+                val score = pronunciationScore(best, word.spanish)
                 _state.value = _state.value.copy(
                     phase      = PronunciationPhase.RESULT,
-                    spokenText = result.text,
+                    spokenText = best,
                     score      = score,
                     totalPracticed = _state.value.totalPracticed + 1
                 )
@@ -347,25 +357,29 @@ private fun PronunciationContent(
             }
         }
 
-        // Кнопки TTS (послушать обычно + медленно)
+        // Кнопки TTS (послушать обычно + медленно).
+        // v1.26.1: full-width + 52dp + 16sp — были мелкие и нечитаемые.
         Row(
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxWidth()
         ) {
             OutlinedButton(
                 onClick = { vm.playWord() },
-                shape = RoundedCornerShape(14.dp)
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier.weight(1f).height(52.dp)
             ) {
-                Icon(Icons.Default.VolumeUp, null, modifier = Modifier.size(18.dp))
-                Spacer(Modifier.width(6.dp))
-                Text(stringResource(com.spanishapp.R.string.pron_listen_btn))
+                Icon(Icons.Default.VolumeUp, null, modifier = Modifier.size(20.dp))
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(com.spanishapp.R.string.pron_listen_btn), fontSize = 16.sp)
             }
             OutlinedButton(
                 onClick = { vm.playWordSlow() },
-                shape = RoundedCornerShape(14.dp)
+                shape = RoundedCornerShape(14.dp),
+                modifier = Modifier.weight(1f).height(52.dp)
             ) {
-                Icon(Icons.Default.VolumeUp, null, modifier = Modifier.size(14.dp))
-                Spacer(Modifier.width(6.dp))
-                Text(stringResource(com.spanishapp.R.string.pron_listen_slow))
+                Icon(Icons.Default.VolumeUp, null, modifier = Modifier.size(18.dp))
+                Spacer(Modifier.width(8.dp))
+                Text(stringResource(com.spanishapp.R.string.pron_listen_slow), fontSize = 16.sp)
             }
         }
 
@@ -411,13 +425,13 @@ private fun PronunciationContent(
                     OutlinedButton(
                         onClick = { vm.tryAgain() },
                         shape = RoundedCornerShape(14.dp),
-                        modifier = Modifier.weight(1f).height(52.dp)
-                    ) { Text(stringResource(com.spanishapp.R.string.pron_again)) }
+                        modifier = Modifier.weight(1f).height(56.dp)
+                    ) { Text(stringResource(com.spanishapp.R.string.pron_again), fontSize = 16.sp) }
                     Button(
                         onClick = { vm.nextWordAction() },
                         shape = RoundedCornerShape(14.dp),
-                        modifier = Modifier.weight(1f).height(52.dp)
-                    ) { Text(stringResource(com.spanishapp.R.string.pron_next)) }
+                        modifier = Modifier.weight(1f).height(56.dp)
+                    ) { Text(stringResource(com.spanishapp.R.string.pron_next), fontSize = 16.sp, fontWeight = FontWeight.SemiBold) }
                 }
             }
             else -> {
@@ -481,16 +495,20 @@ private fun PronunciationResultBadge(score: Int, spokenText: String, target: Str
         else        -> MaterialTheme.colorScheme.error
     }
     val emoji = when {
-        score >= 90 -> "🌟"
-        score >= 70 -> "👍"
-        score >= 50 -> "🙂"
-        else        -> "💪"
+        score == 100 -> "🏆"
+        score >= 90  -> "🌟"
+        score >= 70  -> "👍"
+        score >= 50  -> "🙂"
+        else         -> "💪"
     }
+    // v1.26.1 FIX: при 100% писало «Почти идеально» — противоречие. Теперь
+    // 100 = «Идеально!», 90-99 = «Отлично! Почти идеально!».
     val msg = when {
-        score >= 90 -> stringResource(com.spanishapp.R.string.pron_score_excellent)
-        score >= 70 -> stringResource(com.spanishapp.R.string.pron_score_good)
-        score >= 50 -> stringResource(com.spanishapp.R.string.pron_score_ok)
-        else        -> stringResource(com.spanishapp.R.string.pron_score_try_again)
+        score == 100 -> stringResource(com.spanishapp.R.string.pron_score_perfect)
+        score >= 90  -> stringResource(com.spanishapp.R.string.pron_score_excellent)
+        score >= 70  -> stringResource(com.spanishapp.R.string.pron_score_good)
+        score >= 50  -> stringResource(com.spanishapp.R.string.pron_score_ok)
+        else         -> stringResource(com.spanishapp.R.string.pron_score_try_again)
     }
 
     Surface(
@@ -514,21 +532,28 @@ private fun PronunciationResultBadge(score: Int, spokenText: String, target: Str
                     color = color
                 )
             }
-            Text(msg, style = MaterialTheme.typography.bodyMedium,
-                 color = MaterialTheme.colorScheme.onSurfaceVariant)
+            // v1.26.1: крупнее и контрастнее — bodySmall на onSurfaceVariant
+            // было нечитаемо на тёмной теме.
+            Text(
+                msg,
+                style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
             if (spokenText.isNotBlank()) {
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(10.dp))
                 Text(
                     stringResource(com.spanishapp.R.string.pron_you_said, spokenText),
-                    style = MaterialTheme.typography.bodySmall,
+                    fontSize = 15.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
                 )
+                Spacer(Modifier.height(2.dp))
                 Text(
                     stringResource(com.spanishapp.R.string.pron_target, target),
-                    style = MaterialTheme.typography.bodySmall,
+                    fontSize = 15.sp,
                     color = color,
-                    fontWeight = FontWeight.Medium,
+                    fontWeight = FontWeight.SemiBold,
                     textAlign = TextAlign.Center
                 )
             }

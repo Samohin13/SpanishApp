@@ -181,6 +181,7 @@
     <string name="pron_listen">Listen</string>
     <string name="pron_speak">Speak</string>
     <string name="pron_listening">Listening…</string>
+    <string name="pron_score_perfect">Perfect!</string>
     <string name="pron_score_excellent">Excellent! Almost perfect!</string>
     <string name="pron_score_good">Good! Keep going!</string>
     <string name="pron_score_ok">Not bad, try again</string>

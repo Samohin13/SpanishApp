@@ -2050,38 +2050,48 @@ private fun QuickActionsRow(
     onWeak: () -> Unit,
     onGame: () -> Unit
 ) {
+    // v1.26.1: вместо мелких кружков с 11sp-подписями — равные rounded-карточки
+    // (крупнее тап-таргет, читаемые подписи, единый стиль с bento-плитками).
     Row(
         modifier = Modifier.fillMaxWidth().padding(horizontal = 14.dp),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        QuickAction("🎯", stringResource(R.string.quick_action_random), onRandom)
-        QuickAction("🎤", stringResource(R.string.quick_action_pronounce), onPronounce)
-        QuickAction("🔄", stringResource(R.string.quick_action_weak5), onWeak)
-        QuickAction("🎲", stringResource(R.string.quick_action_game), onGame)
+        QuickAction("🎯", stringResource(R.string.quick_action_random), onRandom, Modifier.weight(1f))
+        QuickAction("🎤", stringResource(R.string.quick_action_pronounce), onPronounce, Modifier.weight(1f))
+        QuickAction("🔄", stringResource(R.string.quick_action_weak5), onWeak, Modifier.weight(1f))
+        QuickAction("🎲", stringResource(R.string.quick_action_game), onGame, Modifier.weight(1f))
     }
 }
 
 @Composable
-private fun QuickAction(emoji: String, label: String, onClick: () -> Unit) {
-    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-        Surface(
-            onClick = onClick,
-            shape = CircleShape,
-            color = MaterialTheme.colorScheme.surfaceContainerHigh,
-            shadowElevation = 4.dp,
-            modifier = Modifier.size(56.dp)
+private fun QuickAction(
+    emoji: String,
+    label: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(16.dp),
+        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+        shadowElevation = 2.dp,
+        modifier = modifier.height(76.dp)
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxSize().padding(horizontal = 4.dp)
         ) {
-            Box(contentAlignment = Alignment.Center) {
-                Text(emoji, fontSize = 24.sp)
-            }
+            Text(emoji, fontSize = 26.sp)
+            Spacer(Modifier.height(4.dp))
+            Text(
+                label,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface,
+                maxLines = 1
+            )
         }
-        Spacer(Modifier.height(4.dp))
-        Text(
-            label,
-            fontSize = 11.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            maxLines = 1
-        )
     }
 }
 

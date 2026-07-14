@@ -190,6 +190,7 @@
     <string name="pron_listen">Escuchar</string>
     <string name="pron_speak">Hablar</string>
     <string name="pron_listening">Escuchando…</string>
+    <string name="pron_score_perfect">¡Perfecto!</string>
     <string name="pron_score_excellent">¡Excelente! ¡Casi perfecto!</string>
     <string name="pron_score_good">¡Bien! ¡Sigue así!</string>
     <string name="pron_score_ok">No está mal, inténtalo otra vez</string>
