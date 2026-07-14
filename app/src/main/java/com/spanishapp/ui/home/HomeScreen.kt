@@ -1501,8 +1501,8 @@ private fun SentenceBuildQuiz(
 
         // Зона ответа — тап по слову возвращает его в банк.
         Surface(
-            modifier = Modifier.fillMaxWidth().heightIn(min = 76.dp),
-            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier.fillMaxWidth().heightIn(min = 88.dp),
+            shape = RoundedCornerShape(14.dp),
             color = when {
                 solved -> Color(0xFF1B5E20).copy(alpha = 0.35f)
                 wrong  -> Color(0xFF8B0000).copy(alpha = 0.30f)
@@ -1535,10 +1535,10 @@ private fun SentenceBuildQuiz(
                     ) {
                         Text(
                             chip.second,
-                            fontSize = 17.sp,
+                            fontSize = 20.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.White,
-                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp)
                         )
                     }
                 }
@@ -1557,8 +1557,8 @@ private fun SentenceBuildQuiz(
 
         // Банк слов.
         androidx.compose.foundation.layout.FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             bank.forEach { chip ->
                 val used = placed.contains(chip)
@@ -1575,11 +1575,11 @@ private fun SentenceBuildQuiz(
                 ) {
                     Text(
                         chip.second,
-                        fontSize = 17.sp,
+                        fontSize = 20.sp,
                         fontWeight = FontWeight.Medium,
                         color = if (used) Color.Transparent
                                 else MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)
+                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp)
                     )
                 }
             }
