@@ -244,13 +244,29 @@ fun TextToSpeech.speakSpanish(text: String?, utteranceId: String = "spk"): Boole
 }
 
 /**
- * v1.26.1: озвучить РУССКИЙ текст системным движком (WoD-квиз «Фраза»:
- * юзер слышит перевод на родном языке, потом собирает испанскую фразу).
- * Через AppTtsRouter НЕ идёт — там premium ИСПАНСКИЕ голоса. Локаль ставится
- * per-call; speakSpanish тоже ставит свою — общий движок безопасен.
+ * v1.26.1: озвучить РУССКИЙ текст (WoD-квиз «Фраза»: юзер слышит перевод на
+ * родном языке, потом собирает испанскую фразу).
+ *
+ * Сначала — ПРЕМИУМ-ДИКТОРЫ через AppTtsRouter: RemoteTtsService сегментирует
+ * текст по алфавиту (кириллица → выбранный юзером русский голос из
+ * Settings→Голос, с R2/локальным mp3-кэшем — как в AI-чате). Фолбэк —
+ * системный движок с ru-RU локалью (offline). Локаль ставится per-call;
+ * speakSpanish ставит es-ES — общий движок безопасен.
  */
 fun TextToSpeech.speakRussian(text: String?, utteranceId: String = "spk_ru"): Boolean {
     val cleaned = text?.trim()?.takeIf { it.isNotBlank() } ?: return false
+    val engine = this
+    val remoteAccepted = com.spanishapp.service.AppTtsRouter.speakIfReady(
+        cleaned,
+        onAllFailed = {
+            runCatching {
+                com.spanishapp.radio.player.RadioCoordinator.pauseForTts()
+                engine.language = java.util.Locale("ru", "RU")
+                engine.speak(cleaned, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
+            }
+        },
+    )
+    if (remoteAccepted) return true
     com.spanishapp.radio.player.RadioCoordinator.pauseForTts()
     language = java.util.Locale("ru", "RU")
     speak(cleaned, TextToSpeech.QUEUE_FLUSH, null, utteranceId)
