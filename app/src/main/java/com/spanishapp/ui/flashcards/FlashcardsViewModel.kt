@@ -53,6 +53,11 @@ data class FlashcardsUiState(
     val deckSize: Int = 0,
     /** v1.26.1 FIX (audit): название сета для топ-бара (null = generic заголовок). */
     val sessionTitle: String? = null,
+    /**
+     * v1.26.1 redesign: суммарный XP пользователя ПОСЛЕ начисления за сессию —
+     * для полосы «до следующего уровня» на финальном экране. 0 = ещё не прочитан.
+     */
+    val totalXpAfter: Int = 0,
 )
 
 @HiltViewModel
@@ -345,15 +350,24 @@ class FlashcardsViewModel @Inject constructor(
                 // false→true (SM-2 repetitions ≥ 3), а не каждый верный ответ.
                 val learnedDelta = newlyLearnedIds.size
                 xpTracker.add(_state.value.earnedXp, learnedDelta)
+                // v1.26.1 redesign: суммарный XP после начисления — финал рисует
+                // полосу «Уровень N · до следующего K XP».
+                userProgressDao.getProgressOnce()?.let { p ->
+                    _state.value = _state.value.copy(totalXpAfter = p.totalXp)
+                }
                 // If this was a Daily Set session, persist stars + best %.
                 activeSetId?.let { setId ->
                     // v1.26.1 FIX (audit): знаменатель — исходная колода со старта
                     // сессии. Прежний deckSizeBeforeRequeue снимался на ПОСЛЕДНЕМ
                     // ответе и уже включал requeue-вставки — best_percent/звёзды
-                    // занижались. correctCount может превысить колоду (requeue
-                    // отвечен верно) — коэрсим в 0..100.
+                    // занижались.
+                    // v1.26.1 redesign: процент — «с первой попытки». correctCount
+                    // включает верные ответы на requeue-повторах: провалил 3 →
+                    // карты вернулись → ответил верно → «16 из 16» и 100% при
+                    // 3 реальных ошибках. wrongWords = дедуп-список провалённых
+                    // хотя бы раз — честный числитель: total - wrongWords.
                     val total = originalDeckSize
-                    val correct = _state.value.correctCount
+                    val correct = (total - _state.value.wrongWords.size).coerceIn(0, total)
                     val percent = if (total > 0) (correct * 100 / total).coerceIn(0, 100) else 0
                     val stars = when {
                         percent >= 90 -> 3

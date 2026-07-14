@@ -969,6 +969,17 @@
     <string name="flashcards_direction_mixed">Смешанный</string>
     <string name="flashcards_tap_to_check">НАЖМИ, ЧТОБЫ ПРОВЕРИТЬ</string>
 
+    <!-- Flashcards completion redesign (v1.26.1) -->
+    <string name="fc_result_accuracy">точность</string>
+    <string name="fc_result_perfect">¡Perfecto!</string>
+    <string name="fc_result_great">Отлично!</string>
+    <string name="fc_result_good">Неплохо!</string>
+    <string name="fc_result_retry">Нужно повторение</string>
+    <string name="fc_first_try_template">С первой попытки: %1$s из %2$s</string>
+    <string name="fc_test_cta">Закрепить тестом</string>
+    <string name="fc_level_template">Уровень %1$d</string>
+    <string name="fc_to_next_level_template">до следующего: %1$s XP</string>
+
     <!-- Weekly League -->
     <string name="weekly_league_title">Лига недели</string>
     <string name="weekly_league_heading">Недельные лиги</string>

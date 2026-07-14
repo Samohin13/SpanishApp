@@ -910,6 +910,17 @@
     <string name="flashcards_direction_mixed">Mixed</string>
     <string name="flashcards_tap_to_check">TAP TO CHECK</string>
 
+    <!-- Flashcards completion redesign (v1.26.1) -->
+    <string name="fc_result_accuracy">accuracy</string>
+    <string name="fc_result_perfect">¡Perfecto!</string>
+    <string name="fc_result_great">Great job!</string>
+    <string name="fc_result_good">Not bad!</string>
+    <string name="fc_result_retry">Needs review</string>
+    <string name="fc_first_try_template">First try: %1$s of %2$s</string>
+    <string name="fc_test_cta">Lock it in with a quiz</string>
+    <string name="fc_level_template">Level %1$d</string>
+    <string name="fc_to_next_level_template">next level in %1$s XP</string>
+
     <string name="weekly_league_title">League of the week</string>
     <string name="weekly_league_heading">Weekly leagues</string>
     <string name="weekly_league_subtitle">Each week you compete with 30 learners around your level. Top 7 move up, bottom 7 move down.</string>

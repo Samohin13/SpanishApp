@@ -3,6 +3,7 @@ package com.spanishapp.ui.flashcards
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -21,8 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.rotate
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.input.pointer.pointerInput
@@ -41,7 +46,10 @@ import com.spanishapp.domain.algorithm.ReviewButton
 import com.spanishapp.ui.components.LeaguePromotionDialog
 import com.spanishapp.ui.home.ThematicWatermark
 import com.spanishapp.ui.home.WatermarkTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.math.roundToInt
+import kotlin.math.sin
 
 // ── Brand colour aliases (local) ───────────────────────────────
 private val BrandOrange   = Color(0xFFFF6B35)   // front face accent + progress bar + buttons
@@ -154,26 +162,32 @@ fun FlashcardsScreen(
         ) {
             when {
                 state.isLoading  -> LoadingBody()
-                state.isFinished -> SessionCompleteBody(
-                    // v1.26.1 FIX (audit): процент финала — от исходной колоды,
-                    // а не от sessionSize, раздутого requeue-ами.
-                    total      = if (state.deckSize > 0) state.deckSize else state.sessionSize,
-                    correct    = state.correctCount,
-                    wrong      = state.wrongCount,
-                    xp         = state.earnedXp,
-                    error      = state.error,
-                    wrongWords = state.wrongWords,
-                    hasNextSet = viewModel.nextSetId != null,
-                    onRestart  = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        viewModel.restart()
-                    },
-                    onNextSet  = {
-                        haptic.performHapticFeedback(HapticFeedbackType.LongPress)
-                        viewModel.startNextSet()
-                    },
-                    onExit     = { navController.popBackStack() }
-                )
+                state.isFinished -> {
+                    // v1.26.1 redesign: числитель — «с первой попытки».
+                    // correctCount засчитывал верные ответы requeue-повторов:
+                    // «16 из 16» при 3 реальных ошибках. wrongWords — дедуп
+                    // провалённых хотя бы раз.
+                    val deckTotal = if (state.deckSize > 0) state.deckSize else state.sessionSize
+                    SessionCompleteBody(
+                        total           = deckTotal,
+                        firstTryCorrect = (deckTotal - state.wrongWords.size).coerceIn(0, deckTotal),
+                        xp              = state.earnedXp,
+                        totalXpAfter    = state.totalXpAfter,
+                        error           = state.error,
+                        wrongWords      = state.wrongWords,
+                        hasNextSet      = viewModel.nextSetId != null,
+                        onRestart  = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            viewModel.restart()
+                        },
+                        onNextSet  = {
+                            haptic.performHapticFeedback(HapticFeedbackType.LongPress)
+                            viewModel.startNextSet()
+                        },
+                        onPractice = { navController.navigate("practice") },
+                        onExit     = { navController.popBackStack() }
+                    )
+                }
                 else             -> SessionBody(
                     state          = state,
                     onFlip         = {
@@ -214,190 +228,450 @@ private fun LoadingBody() {
 @Composable
 private fun SessionCompleteBody(
     total: Int,
-    correct: Int,
-    wrong: Int,
+    firstTryCorrect: Int,
     xp: Int,
+    totalXpAfter: Int,
     error: String?,
     wrongWords: List<WordEntity>,
     hasNextSet: Boolean,
     onRestart: () -> Unit,
     onNextSet: () -> Unit,
+    onPractice: () -> Unit,
     onExit: () -> Unit
 ) {
-    // v1.26.1 FIX (audit): звёзды по шкале VM (90/70/50) управляют тоном финала —
-    // «Сессия завершена! 🎉» + золото на 0% выглядели насмешкой.
-    val accuracy = (if (total > 0) correct * 100 / total else 0).coerceIn(0, 100)
+    // v1.26.1 redesign: точность «с первой попытки» — та же шкала 90/70/50,
+    // что VM пишет в FlashcardSetProgressEntity. Прежний экран считал от
+    // correctCount (включая requeue-повторы) → «100%» при 3 ошибках.
+    val accuracy = (if (total > 0) firstTryCorrect * 100 / total else 0).coerceIn(0, 100)
     val stars = when {
         accuracy >= 90 -> 3
         accuracy >= 70 -> 2
         accuracy >= 50 -> 1
         else           -> 0
     }
-    LazyColumn(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        contentPadding = PaddingValues(bottom = 32.dp)
-    ) {
-        // ── Orange header strip — matches HomeScreen / SetRow style ──
-        item {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(
-                        Brush.horizontalGradient(listOf(BrandOrange, BrandOrange2))
+
+    Box(Modifier.fillMaxSize()) {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            contentPadding = PaddingValues(bottom = 32.dp)
+        ) {
+            if (error != null) {
+                // Ошибка — её текст и есть заголовок, единственный CTA «Назад»:
+                // restart зациклил бы тот же падающий запрос.
+                item {
+                    Column(
+                        modifier = Modifier.padding(horizontal = 24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(Modifier.height(64.dp))
+                        Text("🤔", fontSize = 44.sp)
+                        Spacer(Modifier.height(16.dp))
+                        Text(
+                            error,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            textAlign = TextAlign.Center,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(Modifier.height(28.dp))
+                        Button(
+                            onClick = onExit,
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
+                        ) {
+                            Text(stringResource(com.spanishapp.R.string.practice_back), fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+            } else {
+                // ── Кольцо точности + звёзды + заголовок ─────────────────
+                item {
+                    Spacer(Modifier.height(18.dp))
+                    ResultRing(targetPercent = accuracy, stars = stars)
+                    Spacer(Modifier.height(6.dp))
+                    StarsRow(earned = stars)
+                    Spacer(Modifier.height(14.dp))
+                    Text(
+                        when (stars) {
+                            3    -> stringResource(com.spanishapp.R.string.fc_result_perfect)
+                            2    -> stringResource(com.spanishapp.R.string.fc_result_great)
+                            1    -> stringResource(com.spanishapp.R.string.fc_result_good)
+                            else -> stringResource(com.spanishapp.R.string.fc_result_retry)
+                        },
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.ExtraBold,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier.padding(horizontal = 24.dp)
                     )
-                    .padding(vertical = 22.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    when {
-                        // v1.26.1 FIX (audit): ошибка — её текст и есть заголовок,
-                        // без ложного «Сессия завершена».
-                        error != null -> error
-                        stars >= 1    -> stringResource(com.spanishapp.R.string.flashcards_session_complete)
-                        // v1.26.1 FIX (audit): 0 звёзд — без 🎉.
-                        else          -> "Сет пройден — нужно повторение"
-                    },
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    color = Color.White,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(horizontal = 20.dp)
+                }
+
+                // ── Чипы: «с первой попытки» + XP ────────────────────────
+                item {
+                    Spacer(Modifier.height(16.dp))
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        modifier = Modifier.padding(horizontal = 24.dp)
+                    ) {
+                        StatPill(
+                            text = "🎯 " + stringResource(
+                                com.spanishapp.R.string.fc_first_try_template,
+                                firstTryCorrect.toString(), total.toString()
+                            )
+                        )
+                        if (xp > 0) StatPill(text = "⚡ +$xp XP", accent = true)
+                    }
+                }
+
+                // ── Полоса «до следующего уровня» ────────────────────────
+                if (totalXpAfter > 0) {
+                    item {
+                        Spacer(Modifier.height(20.dp))
+                        LevelProgressCard(totalXp = totalXpAfter)
+                    }
+                }
+
+                // ── Кнопки ───────────────────────────────────────────────
+                item {
+                    Spacer(Modifier.height(24.dp))
+                    Column(modifier = Modifier.padding(horizontal = 24.dp)) {
+                        Button(
+                            onClick = if (hasNextSet) onNextSet else onRestart,
+                            modifier = Modifier.fillMaxWidth().height(56.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
+                        ) {
+                            Text(
+                                stringResource(
+                                    if (hasNextSet) com.spanishapp.R.string.flashcards_next_set
+                                    else com.spanishapp.R.string.flashcards_again
+                                ),
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
+                            )
+                        }
+                        Spacer(Modifier.height(10.dp))
+                        // v1.26.1 redesign: закрепление через quiz-режимы Practice
+                        // (выбор из 4 / набор / на слух) — только что пройденные
+                        // слова уже в пуле повторения.
+                        FilledTonalButton(
+                            onClick = onPractice,
+                            modifier = Modifier.fillMaxWidth().height(52.dp),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            Text(
+                                "🧪 " + stringResource(com.spanishapp.R.string.fc_test_cta),
+                                fontWeight = FontWeight.SemiBold
+                            )
+                        }
+                        Spacer(Modifier.height(4.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            if (hasNextSet) {
+                                TextButton(onClick = onRestart) {
+                                    Text(
+                                        stringResource(com.spanishapp.R.string.flashcards_repeat_set),
+                                        fontSize = 14.sp,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                            TextButton(onClick = onExit) {
+                                Text(
+                                    stringResource(com.spanishapp.R.string.flashcards_back_to_cards),
+                                    fontSize = 14.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+
+            // ── Работа над ошибками ──────────────────────────────────────
+            if (wrongWords.isNotEmpty()) {
+                item {
+                    Spacer(Modifier.height(20.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("🔁", fontSize = 18.sp)
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            stringResource(com.spanishapp.R.string.flashcards_need_to_repeat_count_template, wrongWords.size),
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 16.sp
+                        )
+                    }
+                    Spacer(Modifier.height(8.dp))
+                }
+                items(wrongWords) { word ->
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp, vertical = 4.dp),
+                        shape = RoundedCornerShape(14.dp),
+                        color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.35f)
+                    ) {
+                        Column(modifier = Modifier.padding(12.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    word.spanish,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp,
+                                    color = MaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.weight(1f)
+                                )
+                                Text(word.russian, fontSize = 15.sp)
+                            }
+                            if (word.example.isNotBlank()) {
+                                Spacer(Modifier.height(4.dp))
+                                Text(
+                                    word.example,
+                                    fontSize = 12.sp,
+                                    fontStyle = FontStyle.Italic,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // v1.26.1 redesign: конфетти летит по ВСЕМУ экрану — раньше рисовалось
+        // внутри 160dp-медали CompletionBadge и «не летело». Только 3★, one-shot.
+        if (error == null && stars == 3) {
+            FallingConfetti(Modifier.fillMaxSize())
+        }
+    }
+}
+
+// ── Completion widgets (v1.26.1 redesign) ──────────────────────
+
+/** Кольцо точности: трек + дуга 0→accuracy с бегущим счётчиком процентов. */
+@Composable
+private fun ResultRing(targetPercent: Int, stars: Int) {
+    val progress = remember { Animatable(0f) }
+    LaunchedEffect(targetPercent) {
+        progress.animateTo(
+            targetValue = targetPercent / 100f,
+            animationSpec = tween(durationMillis = 950, easing = FastOutSlowInEasing)
+        )
+    }
+    val ringColors = when {
+        stars >= 3 -> listOf(Color(0xFFFFD54F), Color(0xFFFFA000))   // золото
+        stars >= 1 -> listOf(BrandOrange, BrandOrange2)              // бренд
+        else       -> listOf(
+            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.55f),
+            MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.35f)
+        )
+    }
+    val trackColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.45f)
+
+    Box(Modifier.size(196.dp), contentAlignment = Alignment.Center) {
+        Canvas(Modifier.fillMaxSize()) {
+            val stroke = 15.dp.toPx()
+            val inset = stroke / 2f + 2.dp.toPx()
+            val arcSize = Size(size.width - inset * 2f, size.height - inset * 2f)
+            val topLeft = Offset(inset, inset)
+            drawArc(
+                color = trackColor,
+                startAngle = -90f, sweepAngle = 360f, useCenter = false,
+                topLeft = topLeft, size = arcSize,
+                style = Stroke(width = stroke, cap = StrokeCap.Round)
+            )
+            if (progress.value > 0.005f) {
+                drawArc(
+                    brush = Brush.linearGradient(ringColors),
+                    startAngle = -90f, sweepAngle = 360f * progress.value, useCenter = false,
+                    topLeft = topLeft, size = arcSize,
+                    style = Stroke(width = stroke, cap = StrokeCap.Round)
                 )
             }
         }
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(
+                "${(progress.value * 100).roundToInt()}%",
+                fontSize = 46.sp,
+                fontWeight = FontWeight.ExtraBold
+            )
+            Text(
+                stringResource(com.spanishapp.R.string.fc_result_accuracy),
+                fontSize = 13.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
 
-        // ── Results + buttons ────────────────────────────────────────
-        item {
-            Column(
-                modifier = Modifier.padding(horizontal = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                if (error != null) {
-                    // v1.26.1 FIX (audit): тупик ошибки — единственный CTA «Назад».
-                    // «Ещё раз» скрыт: restart зациклил бы тот же падающий запрос.
-                    Spacer(Modifier.height(32.dp))
-                    Button(
-                        onClick = onExit,
-                        modifier = Modifier.fillMaxWidth().height(56.dp),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
-                    ) {
-                        Text(stringResource(com.spanishapp.R.string.practice_back), fontWeight = FontWeight.Bold)
-                    }
-                } else {
-                    Spacer(Modifier.height(24.dp))
-                    com.spanishapp.ui.components.CompletionBadge(
-                        accuracyPercent = accuracy,
-                        size = 160.dp,
-                        // v1.26.1 FIX (audit): лента «¡COMPLETADO!» только за 100%,
-                        // приглушённый тон вместо золота при <50%.
-                        showRibbon = accuracy == 100,
-                        mutedWhenLow = true
+/** Три звезды с последовательным spring-«выстрелом» после кольца. */
+@Composable
+private fun StarsRow(earned: Int) {
+    val scales = remember { List(3) { Animatable(0f) } }
+    LaunchedEffect(earned) {
+        delay(600)   // подождать, пока кольцо почти дорисуется
+        scales.forEachIndexed { i, anim ->
+            launch {
+                delay(i * 170L)
+                anim.animateTo(
+                    targetValue = 1f,
+                    animationSpec = spring(
+                        dampingRatio = 0.42f,
+                        stiffness = Spring.StiffnessMedium
                     )
-                    Spacer(Modifier.height(16.dp))
-                    Text(
-                        "$correct правильных из $total  ·  +$xp XP",
-                        fontSize = 14.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    if (wrong > 0) {
-                        Spacer(Modifier.height(4.dp))
-                        Text(
-                            stringResource(com.spanishapp.R.string.flashcards_need_to_repeat_template, wrong.toString()),
-                            fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.error.copy(alpha = 0.8f)
-                        )
-                    }
-                    Spacer(Modifier.height(28.dp))
-                    if (hasNextSet) {
-                        Button(
-                            onClick = onNextSet,
-                            modifier = Modifier.fillMaxWidth().height(56.dp),
-                            shape = RoundedCornerShape(16.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
-                        ) {
-                            Text(stringResource(com.spanishapp.R.string.flashcards_next_set), fontWeight = FontWeight.Bold)
-                        }
-                        Spacer(Modifier.height(8.dp))
-                        OutlinedButton(
-                            onClick = onRestart,
-                            modifier = Modifier.fillMaxWidth().height(48.dp),
-                            shape = RoundedCornerShape(14.dp)
-                        ) {
-                            Text(stringResource(com.spanishapp.R.string.flashcards_repeat_set))
-                        }
-                    } else {
-                        Button(
-                            onClick = onRestart,
-                            modifier = Modifier.fillMaxWidth().height(56.dp),
-                            shape = RoundedCornerShape(16.dp),
-                            colors = ButtonDefaults.buttonColors(containerColor = BrandOrange)
-                        ) {
-                            Text(stringResource(com.spanishapp.R.string.flashcards_again), fontWeight = FontWeight.Bold)
-                        }
-                    }
-                    TextButton(onClick = onExit) {
-                        Text(
-                            stringResource(com.spanishapp.R.string.flashcards_back_to_cards),
-                            fontSize = 14.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
+                )
             }
         }
+    }
+    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        repeat(3) { i ->
+            val filled = i < earned
+            Text(
+                if (filled) "★" else "☆",
+                fontSize = 36.sp,
+                color = if (filled) Color(0xFFFFC107)
+                        else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.35f),
+                modifier = Modifier.graphicsLayer {
+                    scaleX = scales[i].value
+                    scaleY = scales[i].value
+                }
+            )
+        }
+    }
+}
 
-        // ── Mistake review list ──────────────────────────────────────
-        if (wrongWords.isNotEmpty()) {
-            item {
-                Spacer(Modifier.height(24.dp))
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("🔁", fontSize = 18.sp)
-                    Spacer(Modifier.width(8.dp))
+/** Пилюля-статистика под заголовком. */
+@Composable
+private fun StatPill(text: String, accent: Boolean = false) {
+    Surface(
+        shape = RoundedCornerShape(50),
+        color = if (accent) BrandOrange.copy(alpha = 0.16f)
+                else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f)
+    ) {
+        Text(
+            text,
+            fontSize = 13.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = if (accent) BrandOrange else MaterialTheme.colorScheme.onSurface,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
+        )
+    }
+}
+
+/** «Уровень N · до следующего K XP» + анимированная полоса прогресса. */
+@Composable
+private fun LevelProgressCard(totalXp: Int) {
+    val level = com.spanishapp.domain.algorithm.XpSystem.levelForXp(totalXp)
+    val nextAt = com.spanishapp.domain.algorithm.XpSystem.xpForNextLevel(totalXp)
+    val target = com.spanishapp.domain.algorithm.XpSystem.progressToNextLevel(totalXp)
+    val animated by animateFloatAsState(
+        targetValue = target,
+        animationSpec = tween(durationMillis = 900, delayMillis = 500, easing = FastOutSlowInEasing),
+        label = "levelProgress"
+    )
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp),
+        shape = RoundedCornerShape(18.dp),
+        color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
+    ) {
+        Column(Modifier.padding(horizontal = 16.dp, vertical = 14.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(
+                    stringResource(com.spanishapp.R.string.fc_level_template, level),
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                if (nextAt != Int.MAX_VALUE) {
                     Text(
-                        stringResource(com.spanishapp.R.string.flashcards_need_to_repeat_count_template, wrongWords.size),
-                        fontWeight = FontWeight.SemiBold,
-                        fontSize = 16.sp
+                        stringResource(
+                            com.spanishapp.R.string.fc_to_next_level_template,
+                            (nextAt - totalXp).toString()
+                        ),
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                Spacer(Modifier.height(8.dp))
             }
-            items(wrongWords) { word ->
-                Surface(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 24.dp, vertical = 4.dp),
-                    shape = RoundedCornerShape(14.dp),
-                    color = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.35f)
-                ) {
-                    Column(modifier = Modifier.padding(12.dp)) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text(
-                                word.spanish,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 16.sp,
-                                color = MaterialTheme.colorScheme.primary,
-                                modifier = Modifier.weight(1f)
-                            )
-                            Text(word.russian, fontSize = 15.sp)
-                        }
-                        if (word.example.isNotBlank()) {
-                            Spacer(Modifier.height(4.dp))
-                            Text(
-                                word.example,
-                                fontSize = 12.sp,
-                                fontStyle = FontStyle.Italic,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    }
-                }
+            Spacer(Modifier.height(8.dp))
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .height(8.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+            ) {
+                Box(
+                    Modifier
+                        .fillMaxWidth(animated.coerceIn(0f, 1f))
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(50))
+                        .background(Brush.horizontalGradient(listOf(BrandOrange, BrandOrange2)))
+                )
+            }
+        }
+    }
+}
+
+/** One-shot конфетти на весь экран (только 3★): падает, крутится, тает. */
+private data class FcConfettiPiece(
+    val x0: Float, val delay: Float, val speed: Float,
+    val drift: Float, val rot: Float, val color: Color, val isRect: Boolean
+)
+
+@Composable
+private fun FallingConfetti(modifier: Modifier = Modifier) {
+    val pieces = remember {
+        val palette = listOf(
+            Color(0xFFFFD54F), Color(0xFFFF8A3D), Color(0xFF4EA1FF),
+            Color(0xFF4ADE80), Color(0xFFA78BFA), Color(0xFFFF6B6B)
+        )
+        List(46) {
+            FcConfettiPiece(
+                x0 = Math.random().toFloat(),
+                delay = (Math.random() * 0.35).toFloat(),
+                speed = (0.8 + Math.random() * 0.45).toFloat(),
+                drift = ((Math.random() - 0.5) * 0.16).toFloat(),
+                rot = ((Math.random() - 0.5) * 900).toFloat(),
+                color = palette.random(),
+                isRect = Math.random() > 0.35
+            )
+        }
+    }
+    val t = remember { Animatable(0f) }
+    LaunchedEffect(Unit) {
+        t.animateTo(1f, animationSpec = tween(durationMillis = 2800, easing = LinearEasing))
+    }
+    if (t.value >= 1f) return   // отгорело — перестаём рисовать
+    Canvas(modifier) {
+        val w = size.width
+        val h = size.height
+        pieces.forEach { p ->
+            val local = ((t.value - p.delay) / (1f - p.delay)).coerceIn(0f, 1f)
+            if (local <= 0f) return@forEach
+            val y = -0.06f * h + h * 1.25f * local * p.speed
+            if (y > h + 24f) return@forEach
+            val x = p.x0 * w + sin(local * 6f) * p.drift * w
+            val alpha = if (local > 0.82f) ((1f - local) / 0.18f).coerceIn(0f, 1f) else 1f
+            rotate(p.rot * local, pivot = Offset(x, y)) {
+                if (p.isRect) drawRect(
+                    color = p.color.copy(alpha = alpha),
+                    topLeft = Offset(x - 7f, y - 4f),
+                    size = Size(14f, 8f)
+                ) else drawCircle(
+                    color = p.color.copy(alpha = alpha),
+                    radius = 5.5f,
+                    center = Offset(x, y)
+                )
             }
         }
     }

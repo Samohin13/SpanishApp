@@ -918,6 +918,17 @@
     <string name="flashcards_direction_mixed">Mixto</string>
     <string name="flashcards_tap_to_check">TOCA PARA COMPROBAR</string>
 
+    <!-- Flashcards completion redesign (v1.26.1) -->
+    <string name="fc_result_accuracy">precisión</string>
+    <string name="fc_result_perfect">¡Perfecto!</string>
+    <string name="fc_result_great">¡Muy bien!</string>
+    <string name="fc_result_good">¡No está mal!</string>
+    <string name="fc_result_retry">Necesita repaso</string>
+    <string name="fc_first_try_template">Al primer intento: %1$s de %2$s</string>
+    <string name="fc_test_cta">Afianzar con un test</string>
+    <string name="fc_level_template">Nivel %1$d</string>
+    <string name="fc_to_next_level_template">siguiente nivel: %1$s XP</string>
+
     <string name="weekly_league_title">Liga de la semana</string>
     <string name="weekly_league_heading">Ligas semanales</string>
     <string name="weekly_league_subtitle">Cada semana compites con 30 estudiantes de tu nivel. El top 7 sube de liga, los 7 últimos bajan.</string>

@@ -918,6 +918,17 @@
     <string name="flashcards_direction_mixed">Змішаний</string>
     <string name="flashcards_tap_to_check">НАТИСНИ, ЩОБ ПЕРЕВІРИТИ</string>
 
+    <!-- Flashcards completion redesign (v1.26.1) -->
+    <string name="fc_result_accuracy">точність</string>
+    <string name="fc_result_perfect">¡Perfecto!</string>
+    <string name="fc_result_great">Чудово!</string>
+    <string name="fc_result_good">Непогано!</string>
+    <string name="fc_result_retry">Потрібне повторення</string>
+    <string name="fc_first_try_template">З першої спроби: %1$s із %2$s</string>
+    <string name="fc_test_cta">Закріпити тестом</string>
+    <string name="fc_level_template">Рівень %1$d</string>
+    <string name="fc_to_next_level_template">до наступного: %1$s XP</string>
+
     <string name="weekly_league_title">Ліга тижня</string>
     <string name="weekly_league_heading">Тижневі ліги</string>
     <string name="weekly_league_subtitle">Кожного тижня ти змагаєшся з 30 учнями приблизно твого рівня. Топ-7 піднімаються в лігу вище, низ-7 опускаються.</string>
