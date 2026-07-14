@@ -540,7 +540,9 @@ private fun PronunciationResultBadge(score: Int, spokenText: String, target: Str
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurface
             )
-            if (spokenText.isNotBlank()) {
+            // v1.26.1: «ты сказал / эталон» показываем ТОЛЬКО при несовпадении —
+            // при 100% строки дублировали друг друга и захламляли результат.
+            if (spokenText.isNotBlank() && score < 100) {
                 Spacer(Modifier.height(10.dp))
                 Text(
                     stringResource(com.spanishapp.R.string.pron_you_said, spokenText),
