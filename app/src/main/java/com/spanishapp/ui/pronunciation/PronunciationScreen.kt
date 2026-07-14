@@ -52,7 +52,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 private val LEADING_ARTICLE = Regex("^(el|la|los|las|un|una)\\s+")
 private val PUNCTUATION = Regex("[¿?¡!.,;:…()\"«»]")
 
-private fun normalizeForScore(raw: String): String =
+internal fun normalizeForScore(raw: String): String =
     raw.lowercase().trim()
         .replace(PUNCTUATION, " ")
         .replace(Regex("\\s+"), " ")
@@ -63,10 +63,37 @@ private fun normalizeForScore(raw: String): String =
         .replace('á','a').replace('é','e').replace('í','i')
         .replace('ó','o').replace('ú','u').replace('ü','u')
 
-/** Возвращает 0..100 — насколько похоже произношение на эталон. */
-private fun pronunciationScore(spoken: String, target: String): Int {
-    val s = normalizeForScore(spoken)
-    val t = normalizeForScore(target)
+/**
+ * v1.26.1: фонетический фолдинг по-испански — сравниваем ЗВУКИ, а не буквы.
+ * Орфографические различия, которые звучат одинаково, не должны штрафовать:
+ *  • b = v (в испанском один звук)
+ *  • h немая (убираем; ch — отдельный звук, защищён плейсхолдером)
+ *  • ll = y
+ *  • z = s, c перед e/i = s (сесео; распознаватель так и слышит не-носителей)
+ *  • qu/c(a,o,u) = k;  gu(e,i) = g;  g(e,i) = j
+ * ñ и rr НЕ фолдим — año/ano и perro/pero — реальные различия.
+ */
+internal fun phoneticFoldEs(normalized: String): String {
+    val ch = ""                          // плейсхолдер: ch — отдельный звук
+    var s = normalized
+    s = s.replace("ch", ch)
+    s = s.replace("h", "")                     // немая h
+    s = s.replace("ll", "y")
+    s = s.replace("v", "b")
+    s = s.replace("z", "s")
+    s = s.replace(Regex("c([ei])"), "s$1")     // ce/ci → se/si
+    s = s.replace(Regex("qu([ei])"), "k$1")
+    s = s.replace("c", "k")                    // ca/co/cu/ct → k
+    s = s.replace(Regex("gu([ei])"), "g$1")
+    s = s.replace(Regex("g([ei])"), "j$1")
+    s = s.replace(ch, "ch")
+    return s
+}
+
+/** Возвращает 0..100 — насколько похоже произношение на эталон (по звукам). */
+internal fun pronunciationScore(spoken: String, target: String): Int {
+    val s = phoneticFoldEs(normalizeForScore(spoken))
+    val t = phoneticFoldEs(normalizeForScore(target))
     if (s == t) return 100
     // Простое расстояние Левенштейна
     val m = s.length
@@ -112,6 +139,9 @@ class PronunciationViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(PronunciationState())
     val state: StateFlow<PronunciationState> = _state.asStateFlow()
+
+    /** v1.26.1: живой текст распознавания — UI показывает под микрофоном. */
+    val partialText: StateFlow<String> = stt.partialText
 
     private var wordPool: List<WordEntity> = emptyList()
     private var poolIndex = 0
@@ -174,7 +204,9 @@ class PronunciationViewModel @Inject constructor(
             phase = PronunciationPhase.LISTENING,
             errorMessage = null
         )
-        when (val result = stt.listenOnce()) {
+        // v1.26.1: biasing-подсказка распознавателю (Android 13+) — он знает,
+        // какое слово ждём, и заметно точнее ловит его у не-носителей.
+        when (val result = stt.listenOnce(biasStrings = listOf(word.spanish))) {
             is SpeechResult.Success -> {
                 // v1.26.1: скорим ВСЕ альтернативы распознавания (до 3) и берём
                 // лучшую. Google часто ставит верный вариант вторым — раньше
@@ -439,6 +471,20 @@ private fun PronunciationContent(
                     isListening = state.phase == PronunciationPhase.LISTENING,
                     onClick     = onStartListening
                 )
+                // v1.26.1: живая расшифровка — видно, что «слышит»
+                // распознаватель, пока говоришь.
+                if (state.phase == PronunciationPhase.LISTENING) {
+                    val partial by vm.partialText.collectAsStateWithLifecycle()
+                    if (partial.isNotBlank()) {
+                        Text(
+                            "«$partial»",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = AppColors.Terracotta,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
             }
         }
 

@@ -436,13 +436,28 @@ class SpanishSpeechRecognizer @Inject constructor(
     val rmsDb: StateFlow<Float> = _rmsDb
 
     /**
+     * v1.26.1: живой промежуточный текст распознавания (обновляется пока юзер
+     * говорит). UI произношения/книг показывает его под микрофоном — видно,
+     * что «слышит» распознаватель. Сбрасывается на старте и по завершении.
+     */
+    private val _partialText = MutableStateFlow("")
+    val partialText: StateFlow<String> = _partialText
+
+    /**
      * Recognize speech once.
      *
      * @param language BCP-47 locale tag. Default `es-ES` (Spanish-Spain) for
      *   pronunciation games. Pass `ru-RU` for AI-chat dictation when the user
      *   speaks Russian, or other locales as needed.
+     * @param biasStrings v1.26.1: ожидаемые фразы — на Android 13+ передаются
+     *   распознавателю как biasing-подсказка (EXTRA_BIASING_STRINGS), он
+     *   значительно точнее ловит именно целевое слово. На старых версиях
+     *   игнорируется (безвредно).
      */
-    suspend fun listenOnce(language: String = "es-ES"): SpeechResult = suspendCancellableCoroutine { cont ->
+    suspend fun listenOnce(
+        language: String = "es-ES",
+        biasStrings: List<String> = emptyList(),
+    ): SpeechResult = suspendCancellableCoroutine { cont ->
         if (!SpeechRecognizer.isRecognitionAvailable(context)) {
             cont.resume(SpeechResult.Error("Распознавание речи недоступно на этом устройстве"))
             return@suspendCancellableCoroutine
@@ -457,16 +472,29 @@ class SpanishSpeechRecognizer @Inject constructor(
         fun finishOnce(result: SpeechResult) {
             if (!finished.compareAndSet(false, true)) return
             _isListening.value = false
+            _partialText.value = ""
             runCatching { recognizer.destroy() }
             if (cont.isActive) cont.resume(result)
         }
+        _partialText.value = ""
 
         val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE, language)
             putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, language)
-            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 3)
-            putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, false)
+            // v1.26.1: 5 гипотез вместо 3 — скоринг берёт лучшую.
+            putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 5)
+            // v1.26.1: живой промежуточный текст для UI.
+            putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
+            // v1.26.1: не обрезать речь раньше времени (пауза = не конец слова).
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_COMPLETE_SILENCE_LENGTH_MILLIS, 900L)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_POSSIBLY_COMPLETE_SILENCE_LENGTH_MILLIS, 900L)
+            putExtra(RecognizerIntent.EXTRA_SPEECH_INPUT_MINIMUM_LENGTH_MILLIS, 2000L)
+            // v1.26.1: biasing-подсказка (Android 13+) — распознаватель знает,
+            // какую фразу ждём, и точнее ловит её у не-носителей.
+            if (biasStrings.isNotEmpty() && android.os.Build.VERSION.SDK_INT >= 33) {
+                putStringArrayListExtra(RecognizerIntent.EXTRA_BIASING_STRINGS, ArrayList(biasStrings))
+            }
         }
 
         recognizer.setRecognitionListener(object : RecognitionListener {
@@ -504,7 +532,11 @@ class SpanishSpeechRecognizer @Inject constructor(
                 finishOnce(SpeechResult.Error(msg, isSilence))
             }
 
-            override fun onPartialResults(partialResults: Bundle?) {}
+            override fun onPartialResults(partialResults: Bundle?) {
+                partialResults?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
+                    ?.firstOrNull()?.takeIf { it.isNotBlank() }
+                    ?.let { _partialText.value = it }
+            }
             override fun onEvent(eventType: Int, params: Bundle?) {}
         })
 

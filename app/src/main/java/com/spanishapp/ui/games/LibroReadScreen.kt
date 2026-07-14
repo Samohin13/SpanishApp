@@ -330,7 +330,9 @@ private fun ReadingAloudPanel(
         sttError = null
         onUpdate(state.copy(isListening = true, recognizedText = ""))
         scope.launch {
-            when (val r = stt.listenOnce()) {
+            // v1.26.1: biasing-подсказка (Android 13+) — распознаватель знает,
+            // какое предложение читает юзер, и точнее ловит его.
+            when (val r = stt.listenOnce(biasStrings = listOf(sentence))) {
                 is SpeechResult.Success -> {
                     // v1.26.1: проверяем ВСЕ альтернативы распознавания и берём
                     // ту, где совпало больше слов — Google часто ставит верную
