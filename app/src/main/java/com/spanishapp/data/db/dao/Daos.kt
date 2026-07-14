@@ -205,6 +205,21 @@ interface WordDao {
         limit: Int
     ): List<WordEntity>
 
+    // v1.26.1 «Умный микс дня»: due-слова БЕЗ фильтра уровня — сессия сама
+    // собирает повторение по всему словарю (SM-2 расписание, oldest-first).
+    @Query("""
+        SELECT * FROM words
+        WHERE next_review <= :now
+          AND total_reviews > 0
+        ORDER BY next_review ASC
+        LIMIT :limit
+    """)
+    suspend fun getDueAnyLevel(limit: Int, now: Long = System.currentTimeMillis()): List<WordEntity>
+
+    /** Счётчик «N слов ждут повторения» для плитки умного микса. */
+    @Query("SELECT COUNT(*) FROM words WHERE next_review <= :now AND total_reviews > 0")
+    suspend fun countDueAnyLevel(now: Long = System.currentTimeMillis()): Int
+
     @Query("""
         SELECT * FROM words
         WHERE total_reviews > 2

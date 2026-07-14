@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -97,6 +98,10 @@ class FlashcardsSetupViewModel @Inject constructor(
     private val _weakCount = MutableStateFlow(0)
     val weakCount: StateFlow<Int> = _weakCount.asStateFlow()
 
+    /** v1.26.1: «N слов ждут повторения» — бейдж плитки «Умный микс дня». */
+    private val _dueCount = MutableStateFlow(0)
+    val dueCount: StateFlow<Int> = _dueCount.asStateFlow()
+
     /** v1.23.5: PRO state — для gate'инга A2/B1/B2 наборов. Eagerly,
      *  чтобы значение было готово к моменту loadSetsFor.value чтения. */
     val isPro: StateFlow<Boolean> = subscriptionManager.isProActive
@@ -110,13 +115,17 @@ class FlashcardsSetupViewModel @Inject constructor(
     private var loadJob: kotlinx.coroutines.Job? = null
 
     init {
-        viewModelScope.launch { _weakCount.value = wordDao.countPracticePool() }
+        viewModelScope.launch {
+            _weakCount.value = wordDao.countPracticePool()
+            _dueCount.value = wordDao.countDueAnyLevel()
+        }
         // Re-emit set list whenever ANY set's progress changes — so completing
         // a session and navigating back instantly refreshes stars/unlocks.
         viewModelScope.launch {
             setDao.observeAll().collect {
                 loadSetsFor(_selectedLevel.value)
                 _weakCount.value = wordDao.countPracticePool()
+                _dueCount.value = wordDao.countDueAnyLevel()
             }
         }
         // v1.23.5: реагируем на изменение PRO-статуса — после покупки
@@ -212,6 +221,7 @@ fun FlashcardsSetupScreen(
     val selectedLevel by viewModel.selectedLevel.collectAsStateWithLifecycle()
     val sets          by viewModel.setsForLevel.collectAsStateWithLifecycle()
     val weakCount     by viewModel.weakCount.collectAsStateWithLifecycle()
+    val dueCount      by viewModel.dueCount.collectAsStateWithLifecycle()
     // v1.26.1 FIX (audit): Toast-объяснение для прогресс-заблокированных сетов.
     val context       = androidx.compose.ui.platform.LocalContext.current
 
@@ -264,6 +274,20 @@ fun FlashcardsSetupScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+            }
+
+            // ── Smart mix tile (v1.26.1) ──────────────────────
+            item(span = { GridItemSpan(maxLineSpan) }) {
+                SmartMixTile(
+                    dueCount = dueCount,
+                    onClick = {
+                        navController.navigate(
+                            "flashcards_session?level=$selectedLevel" +
+                                "&category=$SMART_MIX_CATEGORY&direction=MIXED"
+                        )
+                    },
+                    modifier = Modifier.padding(top = 8.dp)
+                )
             }
 
             // ── Practice tile ─────────────────────────────────
@@ -663,6 +687,88 @@ private fun PracticeTile(
                         color    = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
+            }
+        }
+    }
+}
+
+/**
+ * v1.26.1 «Умный микс дня» — hero-плитка над Practice: сессия собирается
+ * сама (слабые + due по SM-2 со всего словаря + новые текущего уровня).
+ * Заливка бренд-градиентом — это главное ежедневное действие экрана.
+ */
+@Composable
+private fun SmartMixTile(
+    dueCount: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val gold = Color(0xFFFF6B35)
+    val gold2 = Color(0xFFFF9A6C)
+
+    com.spanishapp.ui.components.PressableCard(
+        onClick         = onClick,
+        modifier        = modifier.fillMaxWidth(),
+        shape           = RoundedCornerShape(18.dp),
+        backgroundColor = gold,
+        shadowElevation = 6.dp
+    ) {
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .background(Brush.horizontalGradient(listOf(gold, gold2)))
+        ) {
+            Row(
+                modifier = Modifier.padding(
+                    start = 20.dp, end = 16.dp, top = 16.dp, bottom = 16.dp
+                ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(52.dp)
+                        .clip(CircleShape)
+                        .background(Color.White.copy(alpha = 0.22f)),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text("🔥", fontSize = 26.sp)
+                }
+                Spacer(Modifier.width(14.dp))
+                Column(modifier = Modifier.weight(1f)) {
+                    Surface(
+                        shape = RoundedCornerShape(6.dp),
+                        color = Color.White.copy(alpha = 0.25f)
+                    ) {
+                        Text(
+                            stringResource(com.spanishapp.R.string.fc_smart_badge),
+                            fontSize      = 10.sp,
+                            fontWeight    = FontWeight.ExtraBold,
+                            letterSpacing = 1.5.sp,
+                            color         = Color.White,
+                            modifier      = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                        )
+                    }
+                    Spacer(Modifier.height(5.dp))
+                    val wOne = stringResource(com.spanishapp.R.string.word_count_one)
+                    val wFew = stringResource(com.spanishapp.R.string.word_count_few)
+                    val wMany = stringResource(com.spanishapp.R.string.word_count_many)
+                    Text(
+                        if (dueCount > 0)
+                            stringResource(com.spanishapp.R.string.fc_smart_ready_template,
+                                dueCount, pluralRu(dueCount, wOne, wFew, wMany))
+                        else
+                            stringResource(com.spanishapp.R.string.fc_smart_empty),
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color    = Color.White.copy(alpha = 0.95f)
+                    )
+                }
+                Spacer(Modifier.width(8.dp))
+                Icon(
+                    Icons.Default.PlayArrow, null,
+                    tint = Color.White,
+                    modifier = Modifier.size(28.dp)
+                )
             }
         }
     }

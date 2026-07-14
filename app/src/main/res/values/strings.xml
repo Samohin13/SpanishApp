@@ -979,6 +979,9 @@
     <string name="fc_test_cta">Закрепить тестом</string>
     <string name="fc_level_template">Уровень %1$d</string>
     <string name="fc_to_next_level_template">до следующего: %1$s XP</string>
+    <string name="fc_smart_badge">УМНЫЙ МИКС ДНЯ</string>
+    <string name="fc_smart_ready_template">%1$d %2$s ждут повторения — начать</string>
+    <string name="fc_smart_empty">Слабые + повторение + новые — сессия соберётся сама</string>
 
     <!-- Weekly League -->
     <string name="weekly_league_title">Лига недели</string>

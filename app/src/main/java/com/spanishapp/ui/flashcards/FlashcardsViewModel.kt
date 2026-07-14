@@ -60,6 +60,9 @@ data class FlashcardsUiState(
     val totalXpAfter: Int = 0,
 )
 
+/** v1.26.1: псевдо-категория «умный микс» — слабые + due + новые одной сессией. */
+const val SMART_MIX_CATEGORY = "smart"
+
 @HiltViewModel
 class FlashcardsViewModel @Inject constructor(
     private val wordDao: WordDao,
@@ -149,11 +152,13 @@ class FlashcardsViewModel @Inject constructor(
         requeuedIds.clear()
         newlyLearnedIds.clear()
         viewModelScope.launch {
-            val cards = if (weakOnly) {
+            val cards = when {
                 // Pulls accuracy < 60% words from any level/category.
-                wordDao.getAllWeak(sessionSize)
-            } else {
-                buildSessionDeck(level, category, sessionSize)
+                weakOnly -> wordDao.getAllWeak(sessionSize)
+                // v1.26.1 «Умный микс дня»: слабые → due по SM-2 (весь словарь)
+                // → новые текущего уровня. Юзер не выбирает — сессия собирается сама.
+                category == SMART_MIX_CATEGORY -> buildSmartMixDeck(level, sessionSize)
+                else -> buildSessionDeck(level, category, sessionSize)
             }
             if (cards.isEmpty()) {
                 _state.value = FlashcardsUiState(
@@ -175,9 +180,27 @@ class FlashcardsViewModel @Inject constructor(
                 level = level,
                 category = category,
                 sessionSize = cards.size,
-                deckSize = cards.size
+                deckSize = cards.size,
+                sessionTitle = if (category == SMART_MIX_CATEGORY) "Умный микс" else null
             )
         }
+    }
+
+    /**
+     * v1.26.1 «Умный микс дня»: колода из трёх слоёв —
+     *  1) слабые (точность <60%, worst-first) — до 7;
+     *  2) due по SM-2 расписанию со ВСЕГО словаря (oldest-first) — добор до 14;
+     *  3) новые слова текущего уровня — остаток до [sessionSize].
+     * Итог перемешивается (interleaving полезнее блоков).
+     */
+    private suspend fun buildSmartMixDeck(level: String, sessionSize: Int): List<WordEntity> {
+        val weak = wordDao.getAllWeak(7)
+        val due = wordDao.getDueAnyLevel(14)
+        val base = (weak + due).distinctBy { it.id }.take(sessionSize)
+        val remainder = (sessionSize - base.size).coerceAtLeast(0)
+        val fresh = if (remainder > 0)
+            wordDao.getNewForSession(level, "all", remainder + 4) else emptyList()
+        return (base + fresh).distinctBy { it.id }.take(sessionSize).shuffled()
     }
 
     /**
