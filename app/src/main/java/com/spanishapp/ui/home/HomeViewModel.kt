@@ -60,6 +60,9 @@ internal fun motivationResFor(date: LocalDate): Int {
     return MOTIVATION_RES[idx]
 }
 
+/** v1.26.1: результат стадии «Произнеси» WoD-квиза — score 0..100 либо error. */
+data class WodSpeakResult(val score: Int? = null, val error: String? = null)
+
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     @dagger.hilt.android.qualifiers.ApplicationContext
@@ -81,11 +84,41 @@ class HomeViewModel @Inject constructor(
     private val miniTestPreferences: com.spanishapp.data.prefs.MiniTestPreferences,
     private val uiSound: com.spanishapp.service.UiSoundPlayer,
     private val subscriptionManager: com.spanishapp.service.SubscriptionManager,
+    // v1.26.1: стадия «Произнеси» в квизе Слова дня.
+    private val stt: com.spanishapp.service.SpanishSpeechRecognizer,
 ) : ViewModel() {
 
     /** v1.23.0: PRO state — для показа/скрытия pro-bento promo-карточки. */
     val isPro: StateFlow<Boolean> = subscriptionManager.isProActive
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
+
+    /** v1.26.1: живой текст распознавания для стадии «Произнеси» (WoD-квиз). */
+    val sttPartial: StateFlow<String> = stt.partialText
+
+    /**
+     * v1.26.1: слушает микрофон и оценивает произнесённое слово против [target] —
+     * та же фонетическая оценка, что на экране «Произношение» (все альтернативы
+     * распознавания + biasing-подсказка).
+     */
+    suspend fun listenAndScorePronunciation(target: String): WodSpeakResult {
+        return when (val r = stt.listenOnce(biasStrings = listOf(target))) {
+            is com.spanishapp.service.SpeechResult.Success -> {
+                val candidates = (r.alternatives.map { it.first } + r.text).distinct()
+                val best = candidates.maxOf {
+                    com.spanishapp.ui.pronunciation.pronunciationScore(it, target)
+                }
+                WodSpeakResult(score = best)
+            }
+            is com.spanishapp.service.SpeechResult.Error -> WodSpeakResult(
+                error = when {
+                    r.isSilence -> "Не слышу — нажми и говори"
+                    r.message == "no_match" -> "Не разобрал. Попробуй ещё раз"
+                    else -> r.message
+                }
+            )
+            com.spanishapp.service.SpeechResult.Cancelled -> WodSpeakResult()
+        }
+    }
 
     /** Snapshot of mini-test ids the user has passed. Drives ✅ badges in
      * the lesson list (CourseDetailScreen). */

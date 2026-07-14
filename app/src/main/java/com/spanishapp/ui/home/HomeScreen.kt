@@ -973,6 +973,8 @@ private fun WordOfDayQuizSheet(
     onDismiss: () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    // v1.26.1: 7 стадий — дубль «перевод дважды» заменён на обратное
+    // воспоминание (RU→ES), добавлена стадия «Произнеси» (микрофон).
     val pagerState = rememberPagerState(pageCount = { 6 })
     val scope = rememberCoroutineScope()
 
@@ -1011,9 +1013,9 @@ private fun WordOfDayQuizSheet(
             val stageLabel = when (pagerState.currentPage) {
                 0 -> "✨ Знакомство"
                 1 -> "🔊 На слух"
-                2 -> "🌐 Перевод"
-                3 -> "📝 В предложении"
-                4 -> "⌨️ Напечатай"
+                2 -> "🧩 Фраза"
+                3 -> "⌨️ Собери"
+                4 -> "🎤 Произнеси"
                 else -> "🎉 Готово"
             }
             Row(
@@ -1049,7 +1051,12 @@ private fun WordOfDayQuizSheet(
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxWidth().height(360.dp),
-                pageSpacing = 12.dp
+                pageSpacing = 12.dp,
+                // v1.26.1: свайп ОТКЛЮЧЁН — раньше весь квиз можно было
+                // просвайпать до конца не ответив ни разу («проверка
+                // несерьёзная»). Вперёд — только правильным ответом
+                // (autoAdvance); пропуск — лишь у стадии «Произнеси» кнопкой.
+                userScrollEnabled = false
             ) { page ->
                 when (page) {
                     0 -> WodRevealStage(word, tts, onContinue = {
@@ -1058,15 +1065,36 @@ private fun WordOfDayQuizSheet(
                     1 -> PronunciationQuiz(word, distractors, tts) {
                         viewModel.markWordOfDayPractised(); autoAdvance()
                     }
-                    2 -> TranslationQuiz(word, distractors) {
+                    // v1.26.1 v2: каждая стадия — СВОЙ тип взаимодействия
+                    // (жалоба: «первые 3 одинаковы по смыслу, скучно»).
+                    // 2 = собери пример-предложение из слов (контекст+синтаксис);
+                    // если пример короткий/отсутствует — fallback на пропуск.
+                    2 -> {
+                        val tokens = remember(word.wordId) {
+                            word.example.trim().split(Regex("""\s+""")).filter { it.isNotBlank() }
+                        }
+                        if (tokens.size in 3..9) {
+                            SentenceBuildQuiz(word, tts) {
+                                viewModel.markWordOfDayPractised(); autoAdvance()
+                            }
+                        } else {
+                            FillBlankQuiz(word, distractors, tts) {
+                                viewModel.markWordOfDayPractised(); autoAdvance()
+                            }
+                        }
+                    }
+                    // 3 = напиши слово из букв по русской подсказке (активное
+                    // воспоминание RU→ES + написание).
+                    3 -> LetterAssemblyQuiz(word) {
                         viewModel.markWordOfDayPractised(); autoAdvance()
                     }
-                    3 -> FillBlankQuiz(word, distractors, tts) {
-                        viewModel.markWordOfDayPractised(); autoAdvance()
-                    }
-                    4 -> LetterAssemblyQuiz(word) {
-                        viewModel.markWordOfDayPractised(); autoAdvance()
-                    }
+                    // 4 = произнеси вслух — микрофон + фонетическая оценка.
+                    4 -> SpeakQuiz(
+                        word = word,
+                        viewModel = viewModel,
+                        onSolved = { viewModel.markWordOfDayPractised(); autoAdvance() },
+                        onSkip = { autoAdvance() },
+                    )
                     5 -> WodCompletionStage(
                         word = word,
                         onLessonClick = {
@@ -1105,14 +1133,13 @@ private fun WodRevealStage(
     // не нажимая «дальше» механически.
     var secondsLeft by remember(word.wordId) { mutableStateOf(5) }
 
-    // Авто-проигрывание озвучки при появлении (двукратно: сразу + через 1.5с)
+    // Авто-проигрывание озвучки при появлении — ОДИН раз (жалоба владельца:
+    // «два раза дублирует фразу»). Повтор — вручную кнопкой 🔊.
     LaunchedEffect(word.wordId) {
         kotlinx.coroutines.delay(300)
         tts?.speakSpanish(word.spanish, "wod-reveal-1")
         kotlinx.coroutines.delay(1500)
         showRussian = true
-        kotlinx.coroutines.delay(800)
-        tts?.speakSpanish(word.spanish, "wod-reveal-2")
     }
 
     // Countdown 5 → 0
@@ -1372,42 +1399,290 @@ private fun FillBlankQuiz(
     }
 }
 
-// ── Quiz Mode 2 — Translation choice ───────────────────────────
+// ── Quiz Mode 2 — Sentence builder (🧩 Фраза) ──────────────────
+// v1.26.1 v2: собери пример-предложение из перемешанных слов (стиль Duolingo
+// word-bank). Тренирует слово В КОНТЕКСТЕ + синтаксис — вместо третьего
+// подряд «выбери один из четырёх».
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
-private fun TranslationQuiz(
+private fun SentenceBuildQuiz(
     word: WordOfDay,
-    distractors: List<WordEntity>,
+    tts: android.speech.tts.TextToSpeech?,
     onSolved: () -> Unit
 ) {
-    val target = word.russian
-    val options = remember(word.wordId, distractors) {
-        (listOf(target) + distractors.map { it.russian }).distinct().shuffled()
+    val tokens = remember(word.wordId) {
+        word.example.trim().split(Regex("""\s+""")).filter { it.isNotBlank() }
     }
-    var picked by remember(word.wordId) { mutableStateOf<String?>(null) }
+    // Чипы с id — в предложении бывают одинаковые слова.
+    val bank = remember(word.wordId) {
+        tokens.mapIndexed { i, t -> i to t }.shuffled()
+    }
+    val placed = remember(word.wordId) { mutableStateListOf<Pair<Int, String>>() }
+    var wrong by remember(word.wordId) { mutableStateOf(false) }
     var solved by remember(word.wordId) { mutableStateOf(false) }
     val sound = rememberAnswerSound()
+
+    // Автопроверка, когда все чипы расставлены.
+    LaunchedEffect(placed.size) {
+        if (placed.size == tokens.size && placed.isNotEmpty() && !solved) {
+            if (placed.map { it.second } == tokens) {
+                solved = true
+                sound.correct()
+                tts?.speakSpanish(word.example, "wod_sentence")
+                onSolved()
+            } else {
+                wrong = true
+                sound.wrong()
+            }
+        }
+    }
+
+    Column(
+        modifier = Modifier.fillMaxSize().padding(vertical = 4.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                "Собери фразу",
+                fontSize = 14.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+            Spacer(Modifier.width(8.dp))
+            // Подсказка на слух — можно послушать целую фразу.
+            Surface(
+                onClick = { tts?.speakSpanish(word.example, "wod_sentence_hint") },
+                shape = CircleShape,
+                color = MaterialTheme.colorScheme.primaryContainer,
+                modifier = Modifier.size(32.dp)
+            ) {
+                Box(contentAlignment = Alignment.Center) {
+                    Icon(
+                        Icons.Default.VolumeUp, contentDescription = "Послушать фразу",
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
+            }
+        }
+        Spacer(Modifier.height(10.dp))
+
+        // Зона ответа — тап по слову возвращает его в банк.
+        Surface(
+            modifier = Modifier.fillMaxWidth().heightIn(min = 64.dp),
+            shape = RoundedCornerShape(12.dp),
+            color = when {
+                solved -> Color(0xFF1B5E20).copy(alpha = 0.35f)
+                wrong  -> Color(0xFF8B0000).copy(alpha = 0.30f)
+                else   -> MaterialTheme.colorScheme.surfaceContainerHighest
+            },
+            border = androidx.compose.foundation.BorderStroke(
+                1.dp, MaterialTheme.colorScheme.primary.copy(alpha = 0.4f)
+            )
+        ) {
+            androidx.compose.foundation.layout.FlowRow(
+                modifier = Modifier.padding(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
+            ) {
+                if (placed.isEmpty()) {
+                    Text(
+                        "Нажимай слова по порядку",
+                        fontSize = 13.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(6.dp)
+                    )
+                }
+                placed.forEach { chip ->
+                    Surface(
+                        onClick = {
+                            if (!solved) { placed.remove(chip); wrong = false }
+                        },
+                        shape = RoundedCornerShape(10.dp),
+                        color = MaterialTheme.colorScheme.primary
+                    ) {
+                        Text(
+                            chip.second,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                        )
+                    }
+                }
+            }
+        }
+
+        if (wrong) {
+            Spacer(Modifier.height(6.dp))
+            Text(
+                "Не так — тапни слово, чтобы вернуть его",
+                fontSize = 12.sp,
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+        Spacer(Modifier.height(12.dp))
+
+        // Банк слов.
+        androidx.compose.foundation.layout.FlowRow(
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            bank.forEach { chip ->
+                val used = placed.contains(chip)
+                Surface(
+                    onClick = { if (!used && !solved) { placed.add(chip); } },
+                    shape = RoundedCornerShape(10.dp),
+                    color = if (used) MaterialTheme.colorScheme.surfaceContainerHigh
+                            else MaterialTheme.colorScheme.surfaceContainerHighest,
+                    border = androidx.compose.foundation.BorderStroke(
+                        1.dp,
+                        if (used) Color.Transparent
+                        else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+                    )
+                ) {
+                    Text(
+                        chip.second,
+                        fontSize = 15.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = if (used) Color.Transparent
+                                else MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+// ── Quiz Mode 5 — Speak the word ───────────────────────────────
+// v1.26.1: произнеси слово вслух — микрофон + фонетическая оценка (та же,
+// что на экране «Произношение»: biasing + все альтернативы + звуки, не буквы).
+// ≥70% = пройдено. «Пропустить» — если говорить негде (транспорт/офлайн).
+@Composable
+private fun SpeakQuiz(
+    word: WordOfDay,
+    viewModel: HomeViewModel,
+    onSolved: () -> Unit,
+    onSkip: () -> Unit
+) {
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val scope = rememberCoroutineScope()
+    var listening by remember(word.wordId) { mutableStateOf(false) }
+    var lastScore by remember(word.wordId) { mutableStateOf<Int?>(null) }
+    var errorMsg by remember(word.wordId) { mutableStateOf<String?>(null) }
+    var solved by remember(word.wordId) { mutableStateOf(false) }
+    val partial by viewModel.sttPartial.collectAsStateWithLifecycle()
+    val sound = rememberAnswerSound()
+
+    fun startListen() {
+        if (listening || solved) return
+        listening = true; errorMsg = null; lastScore = null
+        scope.launch {
+            val r = viewModel.listenAndScorePronunciation(word.spanish)
+            listening = false
+            when {
+                r.score != null -> {
+                    lastScore = r.score
+                    if (r.score >= 70 && !solved) {
+                        solved = true; sound.correct(); onSolved()
+                    } else if (r.score < 70) sound.wrong()
+                }
+                r.error != null -> errorMsg = r.error
+            }
+        }
+    }
+    val micPermLauncher = androidx.activity.compose.rememberLauncherForActivityResult(
+        androidx.activity.result.contract.ActivityResultContracts.RequestPermission()
+    ) { granted -> if (granted) startListen() }
+    fun launchMic() {
+        val granted = androidx.core.content.ContextCompat.checkSelfPermission(
+            context, android.Manifest.permission.RECORD_AUDIO
+        ) == android.content.pm.PackageManager.PERMISSION_GRANTED
+        if (granted) startListen()
+        else micPermLauncher.launch(android.Manifest.permission.RECORD_AUDIO)
+    }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(vertical = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            "Что значит «${word.spanish}»?",
+            "Скажи вслух: «${word.spanish}»",
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurface,
+            textAlign = TextAlign.Center
+        )
+        Spacer(Modifier.height(16.dp))
+
+        // Микрофон
+        Surface(
+            onClick = { launchMic() },
+            shape = CircleShape,
+            color = when {
+                solved -> Color(0xFF1B5E20)
+                listening -> com.spanishapp.ui.theme.AppColors.Terracotta
+                else -> MaterialTheme.colorScheme.primary
+            },
+            modifier = Modifier.size(84.dp)
+        ) {
+            Box(contentAlignment = Alignment.Center) {
+                Icon(
+                    if (solved) Icons.Default.Check else Icons.Default.Mic,
+                    contentDescription = "Говорить",
+                    tint = Color.White,
+                    modifier = Modifier.size(36.dp)
+                )
+            }
+        }
+        Spacer(Modifier.height(10.dp))
+        Text(
+            when {
+                solved -> "Отлично сказано!"
+                listening -> "Слушаю…"
+                else -> "Нажми и произнеси"
+            },
             fontSize = 14.sp,
             fontWeight = FontWeight.SemiBold,
-            color = MaterialTheme.colorScheme.onPrimaryContainer
+            color = if (listening) com.spanishapp.ui.theme.AppColors.Terracotta else MaterialTheme.colorScheme.onSurfaceVariant
         )
-        Spacer(Modifier.height(12.dp))
-        OptionButtons(
-            options = options,
-            correct = target,
-            picked  = picked,
-            onPick  = { p ->
-                if (p == target) sound.correct() else sound.wrong()
-                if (picked == null || picked != target) picked = p
-                if (p == target && !solved) { solved = true; onSolved() }
+
+        // Живая расшифровка
+        if (listening && partial.isNotBlank()) {
+            Spacer(Modifier.height(6.dp))
+            Text(
+                "«$partial»",
+                fontSize = 15.sp,
+                color = com.spanishapp.ui.theme.AppColors.Terracotta,
+                textAlign = TextAlign.Center
+            )
+        }
+
+        // Результат неудачной попытки
+        lastScore?.let { s ->
+            if (!solved) {
+                Spacer(Modifier.height(8.dp))
+                Text(
+                    "$s% — почти! Послушай себя и попробуй ещё",
+                    fontSize = 13.sp,
+                    color = com.spanishapp.ui.theme.AppColors.Gold,
+                    textAlign = TextAlign.Center
+                )
             }
-        )
+        }
+        errorMsg?.let {
+            Spacer(Modifier.height(8.dp))
+            Text(it, fontSize = 13.sp, color = MaterialTheme.colorScheme.error, textAlign = TextAlign.Center)
+        }
+
+        Spacer(Modifier.weight(1f))
+
+        if (!solved) {
+            TextButton(onClick = onSkip) {
+                Text("Пропустить", fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        }
     }
 }
 
