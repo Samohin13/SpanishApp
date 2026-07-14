@@ -972,7 +972,14 @@ private fun WordOfDayQuizSheet(
     navController: NavHostController,
     onDismiss: () -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    // v1.26.1 FIX (device-repro владельца): при быстрой сборке фразы тапы по
+    // чипам превращались в микро-свайп вниз → шит закрывался («вылетает из
+    // слова дня»). Запрещаем скрытие ЖЕСТОМ: confirmValueChange отклоняет
+    // Hidden. Закрыть можно тапом мимо окна (скрим → onDismissRequest).
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true,
+        confirmValueChange = { it != SheetValue.Hidden },
+    )
     // v1.26.1: 7 стадий — дубль «перевод дважды» заменён на обратное
     // воспоминание (RU→ES), добавлена стадия «Произнеси» (микрофон).
     val pagerState = rememberPagerState(pageCount = { 6 })
@@ -1494,7 +1501,7 @@ private fun SentenceBuildQuiz(
 
         // Зона ответа — тап по слову возвращает его в банк.
         Surface(
-            modifier = Modifier.fillMaxWidth().heightIn(min = 64.dp),
+            modifier = Modifier.fillMaxWidth().heightIn(min = 76.dp),
             shape = RoundedCornerShape(12.dp),
             color = when {
                 solved -> Color(0xFF1B5E20).copy(alpha = 0.35f)
@@ -1506,9 +1513,9 @@ private fun SentenceBuildQuiz(
             )
         ) {
             androidx.compose.foundation.layout.FlowRow(
-                modifier = Modifier.padding(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
-                verticalArrangement = Arrangement.spacedBy(6.dp)
+                modifier = Modifier.padding(10.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 if (placed.isEmpty()) {
                     Text(
@@ -1523,15 +1530,15 @@ private fun SentenceBuildQuiz(
                         onClick = {
                             if (!solved) { placed.remove(chip); wrong = false }
                         },
-                        shape = RoundedCornerShape(10.dp),
+                        shape = RoundedCornerShape(12.dp),
                         color = MaterialTheme.colorScheme.primary
                     ) {
                         Text(
                             chip.second,
-                            fontSize = 15.sp,
+                            fontSize = 17.sp,
                             fontWeight = FontWeight.SemiBold,
                             color = Color.White,
-                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                            modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)
                         )
                     }
                 }
@@ -1550,8 +1557,8 @@ private fun SentenceBuildQuiz(
 
         // Банк слов.
         androidx.compose.foundation.layout.FlowRow(
-            horizontalArrangement = Arrangement.spacedBy(6.dp),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             bank.forEach { chip ->
                 val used = placed.contains(chip)
@@ -1568,11 +1575,11 @@ private fun SentenceBuildQuiz(
                 ) {
                     Text(
                         chip.second,
-                        fontSize = 15.sp,
+                        fontSize = 17.sp,
                         fontWeight = FontWeight.Medium,
                         color = if (used) Color.Transparent
                                 else MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp)
+                        modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp)
                     )
                 }
             }
