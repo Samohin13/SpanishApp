@@ -95,11 +95,15 @@ class HomeViewModel @Inject constructor(
     private val exampleRuCache = mutableMapOf<Int, String>()
 
     /**
-     * v1.26.1: перевод примера на русский для стадии «Фраза». Сначала юзер
-     * видит/слышит фразу на родном языке, потом собирает испанскую. Offline
-     * или ошибка → null (UI показывает fallback-подсказку со словом).
+     * v1.26.1: перевод примера на русский для стадии «Фраза». Порядок:
+     *  1) ВСТРОЕННАЯ мапа (WodExampleRu — все A1-примеры переведены заранее,
+     *     офлайн/мгновенно/бесплатно, покрывает 100% Слова дня);
+     *  2) Gemini через /translate — только редкий fallback (не-A1 пути);
+     *  3) null → UI показывает подсказку со словом (квиз не блокируется).
      */
-    suspend fun translateExampleRu(wordId: Int, example: String): String? {
+    suspend fun translateExampleRu(spanish: String, wordId: Int, example: String): String? {
+        com.spanishapp.data.repository.WodExampleRu.MAP[spanish.trim().lowercase()]
+            ?.let { return it }
         exampleRuCache[wordId]?.let { return it }
         val ru = runCatching { translator.translateSentence(example) }
             .getOrNull()

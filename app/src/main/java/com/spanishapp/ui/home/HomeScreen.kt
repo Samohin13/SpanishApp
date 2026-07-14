@@ -1417,7 +1417,7 @@ private fun SentenceBuildQuiz(
     var ruText by remember(word.wordId) { mutableStateOf<String?>(null) }
     var ruLoading by remember(word.wordId) { mutableStateOf(true) }
     LaunchedEffect(word.wordId) {
-        ruText = viewModel.translateExampleRu(word.wordId, word.example)
+        ruText = viewModel.translateExampleRu(word.spanish, word.wordId, word.example)
         ruLoading = false
     }
     val tokens = remember(word.wordId) {
