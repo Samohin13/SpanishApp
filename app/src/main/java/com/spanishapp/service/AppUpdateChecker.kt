@@ -6,7 +6,9 @@ import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.appupdate.AppUpdateOptions
+import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.spanishapp.BuildConfig
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -28,8 +30,14 @@ import javax.inject.Singleton
  *     └──────────────────────────────┘
  *
  * Используем FLEXIBLE update — фоновая загрузка, юзер может закрыть
- * диалог и продолжить пользоваться. По завершении скачивания
- * приложение перезапускается.
+ * диалог и продолжить пользоваться.
+ *
+ * v1.26.2 FIX (критический): FLEXIBLE update НЕ устанавливается сам —
+ * после скачивания ОБЯЗАТЕЛЕН вызов [AppUpdateManager.completeUpdate].
+ * Раньше его не было: пакет скачивался и висел, при повторном «Обновить»
+ * Play выдавал «приложение не может установиться/обновиться». Теперь
+ * [InstallStateUpdatedListener] ловит DOWNLOADED → state [UpdateState.Downloaded]
+ * → UI показывает «Перезапустить» → [completeUpdate].
  *
  * Работает только когда APK установлен из Play Store. В debug-сборках
  * со sideload — Manager вернёт UPDATE_NOT_AVAILABLE.
@@ -42,6 +50,21 @@ class AppUpdateChecker @Inject constructor(
 
     private val _updateInfo = MutableStateFlow<UpdateState>(UpdateState.Unknown)
     val updateInfo: StateFlow<UpdateState> = _updateInfo.asStateFlow()
+
+    // v1.26.2: слушатель прогресса flexible-загрузки. Singleton живёт весь
+    // процесс — регистрируем один раз, не отписываемся.
+    private val installListener = InstallStateUpdatedListener { state ->
+        when (state.installStatus()) {
+            InstallStatus.DOWNLOADED -> _updateInfo.value = UpdateState.Downloaded
+            InstallStatus.FAILED,
+            InstallStatus.CANCELED   -> _updateInfo.value = UpdateState.NoUpdate
+            else -> Unit   // DOWNLOADING/PENDING/INSTALLING — UI не дёргаем
+        }
+    }
+
+    init {
+        if (!BuildConfig.DEBUG) manager.registerListener(installListener)
+    }
 
     /**
      * Запросить статус обновления. Вызывать в Activity.onResume.
@@ -56,12 +79,22 @@ class AppUpdateChecker @Inject constructor(
         }
         manager.appUpdateInfo
             .addOnSuccessListener { info ->
-                _updateInfo.value = when (info.updateAvailability()) {
-                    UpdateAvailability.UPDATE_AVAILABLE -> UpdateState.Available(
-                        availableVersion = info.availableVersionCode(),
-                        info = info,
-                    )
-                    UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS ->
+                _updateInfo.value = when {
+                    // v1.26.2 FIX: пакет уже скачан (в этой сессии или прошлой,
+                    // процесс мог перезапуститься) — сразу предлагаем установку,
+                    // НЕ заводим второй download (он и давал ошибку Play).
+                    info.installStatus() == InstallStatus.DOWNLOADED ->
+                        UpdateState.Downloaded
+                    // Загрузка уже идёт — не показываем «Доступно обновление» повторно.
+                    info.installStatus() == InstallStatus.DOWNLOADING ->
+                        UpdateState.InProgress
+                    info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE ->
+                        UpdateState.Available(
+                            availableVersion = info.availableVersionCode(),
+                            info = info,
+                        )
+                    info.updateAvailability() ==
+                        UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS ->
                         UpdateState.InProgress
                     else -> UpdateState.NoUpdate
                 }
@@ -87,6 +120,14 @@ class AppUpdateChecker @Inject constructor(
     }
 
     /**
+     * v1.26.2: установить скачанное обновление. Перезапускает приложение —
+     * UI обязан спросить юзера («Перезапустить?») перед вызовом.
+     */
+    fun completeUpdate() {
+        runCatching { manager.completeUpdate() }
+    }
+
+    /**
      * Юзер тапнул «Позже» — больше в текущей сессии не показываем.
      * При следующем cold start checkForUpdate() снова вернёт Available.
      */
@@ -106,6 +147,8 @@ class AppUpdateChecker @Inject constructor(
             val availableVersion: Int,
             val info: AppUpdateInfo,
         ) : UpdateState()
+        /** v1.26.2: пакет скачан — UI предлагает «Перезапустить» → completeUpdate(). */
+        object Downloaded : UpdateState()
     }
 
     companion object {

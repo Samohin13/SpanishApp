@@ -199,8 +199,19 @@ class MainActivity : FragmentActivity() {
                                     onLater = { appUpdateChecker.dismissForSession() },
                                     onUpdate = {
                                         appUpdateChecker.startFlexibleUpdate(this@MainActivity, available.info)
+                                        // v1.26.2: state дальше ведёт InstallStateUpdatedListener
+                                        // (DOWNLOADING → DOWNLOADED), dismissForSession стирал бы его.
                                         appUpdateChecker.dismissForSession()
                                     },
+                                )
+                            }
+                            // v1.26.2 FIX: второй шаг flexible-обновления. Пакет
+                            // скачан — БЕЗ completeUpdate() он не установится
+                            // никогда (юзер видел «не может установиться»).
+                            if (updateState is com.spanishapp.service.AppUpdateChecker.UpdateState.Downloaded) {
+                                com.spanishapp.ui.components.UpdateReadyDialog(
+                                    onLater = { appUpdateChecker.dismissForSession() },
+                                    onRestart = { appUpdateChecker.completeUpdate() },
                                 )
                             }
                         }
