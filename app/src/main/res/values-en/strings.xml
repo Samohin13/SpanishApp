@@ -172,10 +172,10 @@
     <string name="frase_check">CHECK</string>
     <string name="frase_wrong_check_title">✗ Not yet</string>
     <string name="frase_wrong_check_body">Check the word order. Tap a word in the answer to remove it.</string>
-    <string name="frase_hint_word">💡 Word</string>
+    <string name="frase_hint_word">💡20 · Word</string>
     <string name="frase_rules_title">How to play</string>
     <string name="frase_rules_ok">Got it</string>
-    <string name="frase_rules_body">🧩 Build the Spanish phrase from the Russian prompt.\n\n• Tap tiles to place them. Tap a placed word to remove it.\n• When done, press “Check”. A wrong check costs 1 ❤️ (you have 3).\n• Some tiles are traps — typical mistakes (gender, tense, ser/estar). A failed check explains the trap.\n• 💡 Hint places the next correct word (costs 1).\n\nWord-order cheat sheet:\n• Usual order: who + action + what (Yo compro pan).\n• Adjective goes AFTER the noun: coche rojo.\n• Negation no goes before the verb: No hablo.\n• Questions start with ¿: ¿Dónde vives?\n• Articles (el/la/un/una) are almost always required.</string>
+    <string name="frase_rules_body">🧩 Build the Spanish phrase from the Russian prompt.\n\n• Tap tiles to place them. Tap a placed word to remove it.\n• When done, press “Check”. A wrong check costs 1 ❤️ (you have 3).\n• Some tiles are traps — typical mistakes (gender, tense, ser/estar). A failed check explains the trap.\n• 💡 Hint places the next correct word (costs 20 💡).\n\nWord-order cheat sheet:\n• Usual order: who + action + what (Yo compro pan).\n• Adjective goes AFTER the noun: coche rojo.\n• Negation no goes before the verb: No hablo.\n• Questions start with ¿: ¿Dónde vives?\n• Articles (el/la/un/una) are almost always required.</string>
     <string name="frase_trap_title">🪤 Trap!</string>
     <string name="frase_solved">¡Perfecto!</string>
     <string name="frase_score">Score: %1$d</string>
@@ -198,8 +198,8 @@
     <string name="oido_correct_prefix">Correct!</string>
     <string name="oido_wrong_prefix">Not quite. Correct:</string>
     <string name="oido_accent_note">Correct! But mind the spelling:</string>
-    <string name="oido_hint_fifty">💡1 · 50/50</string>
-    <string name="oido_hint_reveal">💡2 · Answer</string>
+    <string name="oido_hint_fifty">💡50 · 50/50</string>
+    <string name="oido_hint_reveal">💡100 · Answer</string>
 
     <!-- ── Profile stats ── -->
     <string name="profile_stat_words">Words</string>

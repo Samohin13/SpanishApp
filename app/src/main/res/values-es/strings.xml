@@ -181,10 +181,10 @@
     <string name="frase_check">COMPROBAR</string>
     <string name="frase_wrong_check_title">✗ Aún no</string>
     <string name="frase_wrong_check_body">Revisa el orden de las palabras. Toca una palabra de la respuesta para quitarla.</string>
-    <string name="frase_hint_word">💡 Palabra</string>
+    <string name="frase_hint_word">💡20 · Palabra</string>
     <string name="frase_rules_title">Cómo se juega</string>
     <string name="frase_rules_ok">Entendido</string>
-    <string name="frase_rules_body">🧩 Monta la frase española según la traducción.\n\n• Toca las fichas para colocarlas. Toca una palabra colocada para quitarla.\n• Al terminar, pulsa «Comprobar». Un fallo cuesta 1 ❤️ (tienes 3).\n• Algunas fichas son trampas — errores típicos (género, tiempo, ser/estar). Tras un fallo, la trampa se explica.\n• 💡 La pista coloca la siguiente palabra correcta (cuesta 1).\n\nChuleta del orden de palabras:\n• Orden habitual: quién + acción + qué (Yo compro pan).\n• El adjetivo va DESPUÉS del sustantivo: coche rojo.\n• La negación no va antes del verbo: No hablo.\n• Las preguntas empiezan con ¿: ¿Dónde vives?\n• El artículo (el/la/un/una) casi siempre es necesario.</string>
+    <string name="frase_rules_body">🧩 Monta la frase española según la traducción.\n\n• Toca las fichas para colocarlas. Toca una palabra colocada para quitarla.\n• Al terminar, pulsa «Comprobar». Un fallo cuesta 1 ❤️ (tienes 3).\n• Algunas fichas son trampas — errores típicos (género, tiempo, ser/estar). Tras un fallo, la trampa se explica.\n• 💡 La pista coloca la siguiente palabra correcta (cuesta 20 💡).\n\nChuleta del orden de palabras:\n• Orden habitual: quién + acción + qué (Yo compro pan).\n• El adjetivo va DESPUÉS del sustantivo: coche rojo.\n• La negación no va antes del verbo: No hablo.\n• Las preguntas empiezan con ¿: ¿Dónde vives?\n• El artículo (el/la/un/una) casi siempre es necesario.</string>
     <string name="frase_trap_title">🪤 ¡Trampa!</string>
     <string name="frase_solved">¡Perfecto!</string>
     <string name="frase_score">Puntos: %1$d</string>
@@ -207,8 +207,8 @@
     <string name="oido_correct_prefix">¡Correcto!</string>
     <string name="oido_wrong_prefix">No exactamente. Correcto:</string>
     <string name="oido_accent_note">¡Correcto! Pero revisa la ortografía:</string>
-    <string name="oido_hint_fifty">💡1 · 50/50</string>
-    <string name="oido_hint_reveal">💡2 · Respuesta</string>
+    <string name="oido_hint_fifty">💡50 · 50/50</string>
+    <string name="oido_hint_reveal">💡100 · Respuesta</string>
 
     <!-- ── Profile stats ── -->
     <string name="profile_stat_words">Palabras</string>

@@ -297,7 +297,7 @@ class FraseLocaViewModel @Inject constructor(
             s.placed.map { it.word } == s.tokens
         ) return
         viewModelScope.launch {
-            if (!hintBank.tryConsume(1)) {
+            if (!hintBank.tryConsume(20)) {
                 onNoHints()
                 return@launch
             }

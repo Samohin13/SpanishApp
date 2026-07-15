@@ -454,7 +454,7 @@ class SopaViewModel @Inject constructor(
      */
     fun useHint(onNoHints: () -> Unit = {}) {
         viewModelScope.launch {
-            val ok = hintBank.tryConsume(1)
+            val ok = hintBank.tryConsume(10)
             if (!ok) {
                 onNoHints()
                 return@launch

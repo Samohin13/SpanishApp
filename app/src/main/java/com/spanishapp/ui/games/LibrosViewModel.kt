@@ -148,7 +148,7 @@ class LibrosViewModel @Inject constructor(
             // первое прохождение (existing == null или wasNotCompleted)
             val wasFirstPass = passed && (existing == null || !existing.isCompleted)
             if (wasFirstPass) {
-                hintBank.award(2, com.spanishapp.service.HintEarnReason.LIBRO_QUIZ_PASSED)
+                hintBank.award(20, com.spanishapp.service.HintEarnReason.LIBRO_QUIZ_PASSED)
             }
             // v1.22.16: XP за прохождение quiz после рассказа. Раньше Libros
             // вообще не давали XP — юзер тратил 10-15 минут впустую с точки

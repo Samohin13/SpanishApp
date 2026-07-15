@@ -72,7 +72,7 @@ class LessonIntroViewModel @Inject constructor(
             repeat(5) { ratingUpdater.applyGameAnswer(correct = true) }
             achievementManager.checkAndUnlock()
             // v1.16.0: +2 💡 за прохождение урока (Hint Bank)
-            hintBank.award(2, com.spanishapp.service.HintEarnReason.LESSON_COMPLETE)
+            hintBank.award(20, com.spanishapp.service.HintEarnReason.LESSON_COMPLETE)
 
             com.spanishapp.service.Analytics.lessonCompleted(
                 lessonId = key,

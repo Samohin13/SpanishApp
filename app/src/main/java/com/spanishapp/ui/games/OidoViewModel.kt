@@ -122,6 +122,9 @@ class OidoViewModel @Inject constructor(
     private var advanceJob: kotlinx.coroutines.Job? = null
     @Volatile private var roundResolved = false
 
+    /** Ответ куплен за 💡 — очков не даёт и серию не продолжает. */
+    @Volatile private var revealUsed = false
+
     fun startLevel(level: Int) {
         advanceJob?.cancel()
         _state.value = OidoState(
@@ -189,13 +192,13 @@ class OidoViewModel @Inject constructor(
 
     // ── Подсказки (💡 HintBank — общая валюта всех игр) ──────
 
-    /** 50/50 за 1💡: гасит два неверных варианта (только режим «выбор»). */
+    /** 50/50 за 50💡: гасит два неверных варианта (только режим «выбор»). */
     fun useFiftyFifty(onNoHints: () -> Unit) {
         val s = _state.value
         val task = s.task as? OidoTask.Choice ?: return
         if (s.lastCorrect != null || s.disabledOptions.isNotEmpty()) return
         viewModelScope.launch {
-            if (!hintBank.tryConsume(1)) {
+            if (!hintBank.tryConsume(50)) {
                 onNoHints()
                 return@launch
             }
@@ -204,16 +207,17 @@ class OidoViewModel @Inject constructor(
         }
     }
 
-    /** Верный ответ за 2💡: задание закрывается как решённое. */
+    /** Верный ответ за 100💡: задание закрывается как решённое. */
     fun useRevealAnswer(onNoHints: () -> Unit) {
         val s = _state.value
         val task = s.task ?: return
         if (s.lastCorrect != null) return
         viewModelScope.launch {
-            if (!hintBank.tryConsume(2)) {
+            if (!hintBank.tryConsume(100)) {
                 onNoHints()
                 return@launch
             }
+            revealUsed = true
             when (task) {
                 is OidoTask.Choice -> submitChoice(task.correctRu)
                 is OidoTask.MinimalPair -> submitPair(task.correctWord)
@@ -304,9 +308,12 @@ class OidoViewModel @Inject constructor(
     ) {
         if (roundResolved) return
         roundResolved = true
+        val hinted = revealUsed
+        revealUsed = false
         val s = _state.value
-        val newStreak = if (isCorrect) s.streak + 1 else 0
-        val points = if (isCorrect) (10 * (1 + newStreak * 0.1f)).toInt() else 0
+        // Купленный ответ: уровень засчитывается, но очков и серии не даёт.
+        val newStreak = if (isCorrect && !hinted) s.streak + 1 else 0
+        val points = if (isCorrect && !hinted) (10 * (1 + newStreak * 0.1f)).toInt() else 0
 
         if (isCorrect) soundPlayer.playCorrect() else soundPlayer.playWrong()
 

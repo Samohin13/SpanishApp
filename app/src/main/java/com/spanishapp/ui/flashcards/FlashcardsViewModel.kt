@@ -421,7 +421,7 @@ class FlashcardsViewModel @Inject constructor(
                     )
                     // v1.16.0: +3 💡 за прохождение сета на 100% (perfect)
                     if (percent == 100) {
-                        hintBank.award(3, com.spanishapp.service.HintEarnReason.FLASHCARD_SET_100)
+                        hintBank.award(30, com.spanishapp.service.HintEarnReason.FLASHCARD_SET_100)
                     }
                 }
             }

@@ -185,10 +185,10 @@
     <string name="frase_check">ПРОВЕРИТЬ</string>
     <string name="frase_wrong_check_title">✗ Пока неверно</string>
     <string name="frase_wrong_check_body">Проверь порядок слов. Нажми на слово в ответе, чтобы убрать его.</string>
-    <string name="frase_hint_word">💡 Слово</string>
+    <string name="frase_hint_word">💡20 · Слово</string>
     <string name="frase_rules_title">Как играть</string>
     <string name="frase_rules_ok">Понятно</string>
-    <string name="frase_rules_body">🧩 Собери испанскую фразу по русскому переводу.\n\n• Нажимай плитки — они встают в строку ответа. Тап по слову в строке — убрать его.\n• Собрал всё — жми «Проверить». Неверная проверка стоит 1 ❤️ (всего 3).\n• Среди плиток есть ловушки — типичные ошибки (род, время, ser/estar). После неверной проверки ловушка объяснит себя.\n• 💡 Подсказка ставит следующее верное слово (1 подсказка).\n\nШпаргалка порядка слов:\n• Обычный порядок как в русском: кто + действие + что (Yo compro pan).\n• Прилагательное — ПОСЛЕ существительного: coche rojo.\n• Отрицание no — перед глаголом: No hablo.\n• Вопрос начинается с ¿: ¿Dónde vives?\n• Артикль (el/la/un/una) почти всегда нужен перед существительным.</string>
+    <string name="frase_rules_body">🧩 Собери испанскую фразу по русскому переводу.\n\n• Нажимай плитки — они встают в строку ответа. Тап по слову в строке — убрать его.\n• Собрал всё — жми «Проверить». Неверная проверка стоит 1 ❤️ (всего 3).\n• Среди плиток есть ловушки — типичные ошибки (род, время, ser/estar). После неверной проверки ловушка объяснит себя.\n• 💡 Подсказка ставит следующее верное слово (20 💡).\n\nШпаргалка порядка слов:\n• Обычный порядок как в русском: кто + действие + что (Yo compro pan).\n• Прилагательное — ПОСЛЕ существительного: coche rojo.\n• Отрицание no — перед глаголом: No hablo.\n• Вопрос начинается с ¿: ¿Dónde vives?\n• Артикль (el/la/un/una) почти всегда нужен перед существительным.</string>
     <string name="frase_trap_title">🪤 Ловушка!</string>
     <string name="frase_solved">¡Perfecto!</string>
     <string name="frase_score">Очки: %1$d</string>
@@ -211,8 +211,8 @@
     <string name="oido_correct_prefix">Верно!</string>
     <string name="oido_wrong_prefix">Не то. Правильно:</string>
     <string name="oido_accent_note">Верно! Но проверь написание:</string>
-    <string name="oido_hint_fifty">💡1 · 50/50</string>
-    <string name="oido_hint_reveal">💡2 · Ответ</string>
+    <string name="oido_hint_fifty">💡50 · 50/50</string>
+    <string name="oido_hint_reveal">💡100 · Ответ</string>
 
     <!-- ── Profile stats ────────────────────────────────────── -->
     <string name="profile_stat_words">Слов</string>

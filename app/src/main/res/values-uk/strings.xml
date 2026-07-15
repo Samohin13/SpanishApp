@@ -181,10 +181,10 @@
     <string name="frase_check">ПЕРЕВІРИТИ</string>
     <string name="frase_wrong_check_title">✗ Поки невірно</string>
     <string name="frase_wrong_check_body">Перевір порядок слів. Натисни на слово у відповіді, щоб прибрати його.</string>
-    <string name="frase_hint_word">💡 Слово</string>
+    <string name="frase_hint_word">💡20 · Слово</string>
     <string name="frase_rules_title">Як грати</string>
     <string name="frase_rules_ok">Зрозуміло</string>
-    <string name="frase_rules_body">🧩 Збери іспанську фразу за перекладом.\n\n• Натискай плитки — вони стають у рядок відповіді. Натисни на слово в рядку, щоб прибрати його.\n• Зібрав усе — тисни «Перевірити». Невірна перевірка коштує 1 ❤️ (усього 3).\n• Серед плиток є пастки — типові помилки (рід, час, ser/estar). Після невірної перевірки пастка пояснить себе.\n• 💡 Підказка ставить наступне вірне слово (1 підказка).\n\nШпаргалка порядку слів:\n• Звичайний порядок: хто + дія + що (Yo compro pan).\n• Прикметник — ПІСЛЯ іменника: coche rojo.\n• Заперечення no — перед дієсловом: No hablo.\n• Питання починається з ¿: ¿Dónde vives?\n• Артикль (el/la/un/una) майже завжди потрібен перед іменником.</string>
+    <string name="frase_rules_body">🧩 Збери іспанську фразу за перекладом.\n\n• Натискай плитки — вони стають у рядок відповіді. Натисни на слово в рядку, щоб прибрати його.\n• Зібрав усе — тисни «Перевірити». Невірна перевірка коштує 1 ❤️ (усього 3).\n• Серед плиток є пастки — типові помилки (рід, час, ser/estar). Після невірної перевірки пастка пояснить себе.\n• 💡 Підказка ставить наступне вірне слово (20 💡).\n\nШпаргалка порядку слів:\n• Звичайний порядок: хто + дія + що (Yo compro pan).\n• Прикметник — ПІСЛЯ іменника: coche rojo.\n• Заперечення no — перед дієсловом: No hablo.\n• Питання починається з ¿: ¿Dónde vives?\n• Артикль (el/la/un/una) майже завжди потрібен перед іменником.</string>
     <string name="frase_trap_title">🪤 Пастка!</string>
     <string name="frase_solved">¡Perfecto!</string>
     <string name="frase_score">Бали: %1$d</string>
@@ -207,8 +207,8 @@
     <string name="oido_correct_prefix">Вірно!</string>
     <string name="oido_wrong_prefix">Не те. Правильно:</string>
     <string name="oido_accent_note">Вірно! Але перевір написання:</string>
-    <string name="oido_hint_fifty">💡1 · 50/50</string>
-    <string name="oido_hint_reveal">💡2 · Відповідь</string>
+    <string name="oido_hint_fifty">💡50 · 50/50</string>
+    <string name="oido_hint_reveal">💡100 · Відповідь</string>
 
     <!-- ── Profile stats ── -->
     <string name="profile_stat_words">Слів</string>

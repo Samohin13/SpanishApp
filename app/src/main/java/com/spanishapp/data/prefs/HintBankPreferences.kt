@@ -14,6 +14,8 @@ private val Context.hintBankDataStore by preferencesDataStore(name = "hint_bank_
 
 private object HintKeys {
     val HINTS = intPreferencesKey("hints")
+    /** v1.27.1: экономика ×10 (цены 10/20/50/100) — флаг разовой миграции. */
+    val SCALED_X10 = intPreferencesKey("hints_scaled_x10")
 }
 
 /**
@@ -33,7 +35,23 @@ class HintBankPreferences @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
     companion object {
-        const val INITIAL_HINTS = 5
+        // v1.27.1: экономика ×10 — стартовый бонус 50 💡
+        const val INITIAL_HINTS = 50
+    }
+
+    /**
+     * v1.27.1: разовая миграция старых балансов на экономику ×10
+     * (награды 10..50 за учёбу, цены подсказок 10/20/50/100).
+     * Вызывается на старте приложения; идемпотентна.
+     */
+    suspend fun migrateToX10() {
+        context.hintBankDataStore.edit { prefs ->
+            if ((prefs[HintKeys.SCALED_X10] ?: 0) == 0) {
+                val old = prefs[HintKeys.HINTS]
+                if (old != null) prefs[HintKeys.HINTS] = old * 10
+                prefs[HintKeys.SCALED_X10] = 1
+            }
+        }
     }
 
     val hintsFlow: Flow<Int> = context.hintBankDataStore.data.map {

@@ -21,6 +21,7 @@ class SpanishApp : Application() {
 
     @Inject lateinit var databaseSeeder: DatabaseSeeder
     @Inject lateinit var appPreferences: AppPreferences
+    @Inject lateinit var hintBankPreferences: com.spanishapp.data.prefs.HintBankPreferences
 
     /** Радио-плеер инжектится для регистрации в RadioCoordinator (TTS↔Radio mutex). */
     @Inject lateinit var radioPlayerController: com.spanishapp.radio.player.RadioPlayerController
@@ -90,6 +91,14 @@ class SpanishApp : Application() {
         // Цель: даже если что-то падает (миграция, seeder, worker scheduling),
         // приложение всё равно стартует и юзер видит UI. Стектрейс пишется
         // в Crashlytics для диагностики без полного crash.
+        // v1.27.1: разовая миграция банка подсказок на экономику ×10
+        appScope.launch {
+            runCatching { hintBankPreferences.migrateToX10() }.onFailure { e ->
+                com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+                    .recordException(RuntimeException("[SpanishApp] hint bank x10 migration failed", e))
+            }
+        }
+
         appScope.launch {
             runCatching {
                 val enabled = appPreferences.remindersEnabled.first()

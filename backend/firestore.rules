@@ -46,9 +46,18 @@ service cloud.firestore {
       allow delete: if request.auth != null && request.auth.uid == uid;
     }
 
-    // ── Профили пользователей (если будут) ─────────────────────────
+    // ── Профили пользователей ──────────────────────────────────────
     match /users/{uid} {
       allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      // v1.27.1 КРИТИЧЕСКИЙ ФИКС: правила Firestore НЕ рекурсивны —
+      // match /users/{uid} не покрывает вложенные коллекции. Синк
+      // прогресса пишет в users/{uid}/state/main (SyncRepository),
+      // и без блока ниже ВЕСЬ синк (upload и download) молча падал
+      // с PERMISSION_DENIED: бэкап прогресса не работал ни у кого.
+      match /{document=**} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
     }
 
     // ── Недельные турниры ──────────────────────────────────────────

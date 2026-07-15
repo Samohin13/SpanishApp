@@ -73,7 +73,7 @@ class TheoryReaderViewModel @Inject constructor(
                 justMarkedRead = true,
             )
             if (wasFirstTime) {
-                hintBank.award(1, com.spanishapp.service.HintEarnReason.THEORY_READ)
+                hintBank.award(10, com.spanishapp.service.HintEarnReason.THEORY_READ)
                 // v1.22.16: XP за первое прочтение теория-карточки.
                 xpTracker.add(
                     xp = com.spanishapp.domain.algorithm.XpSystem.THEORY_FIRST_READ,

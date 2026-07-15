@@ -157,7 +157,7 @@ class AchievementManager @Inject constructor(
         _unlockedFlow.tryEmit(updated)
         notificationService.showAchievement(updated.titleRu, updated.descriptionRu)
         // v1.16.0: +5 💡 за разблокировку достижения
-        hintBank.award(5, HintEarnReason.ACHIEVEMENT)
+        hintBank.award(50, HintEarnReason.ACHIEVEMENT)
         // v1.25.97 (audit): и обещанный XP — раньше не начислялся вообще.
         if (a.xpReward > 0) {
             runCatching { xpTracker.get().add(xp = a.xpReward, words = 0) }

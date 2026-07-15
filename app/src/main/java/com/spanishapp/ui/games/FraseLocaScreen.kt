@@ -138,6 +138,9 @@ private fun FraseLocaContent(
                     }
                 },
                 actions = {
+                    // Баланс 💡
+                    val hintBalance by viewModel.hintBalance.collectAsStateWithLifecycle()
+                    com.spanishapp.ui.components.HintBadge(count = hintBalance)
                     // Правила игры
                     IconButton(onClick = { showRules = true }) {
                         Icon(
@@ -456,7 +459,6 @@ private fun FraseLocaContent(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         if (!state.isMistakesPractice) {
-                            val hintBalance by viewModel.hintBalance.collectAsStateWithLifecycle()
                             OutlinedButton(
                                 onClick = { viewModel.useHint { showNoHints = true } },
                                 shape = RoundedCornerShape(14.dp),
@@ -464,7 +466,7 @@ private fun FraseLocaContent(
                                 modifier = Modifier.height(52.dp)
                             ) {
                                 Text(
-                                    stringResource(R.string.frase_hint_word) + "  💡$hintBalance",
+                                    stringResource(R.string.frase_hint_word),
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = ACCENT

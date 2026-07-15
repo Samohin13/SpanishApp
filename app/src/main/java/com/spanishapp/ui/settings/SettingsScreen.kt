@@ -139,6 +139,13 @@ class SettingsViewModel @Inject constructor(
     suspend fun restoreFromCloud(): SyncResult {
         if (FirebaseAuth.getInstance().currentUser == null) return SyncResult.AUTH_FAILED
         val down = syncRepository.downloadAll()
+        down.exceptionOrNull()?.let { e ->
+            android.util.Log.e("RestoreCloud", "downloadAll failed", e)
+            runCatching {
+                com.google.firebase.crashlytics.FirebaseCrashlytics.getInstance()
+                    .recordException(RuntimeException("[Settings] restoreFromCloud failed", e))
+            }
+        }
         return when {
             down.isSuccess -> SyncResult.SUCCESS
             down.exceptionOrNull()?.message?.contains("network", true) == true ->
