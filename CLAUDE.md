@@ -1,8 +1,8 @@
 # SpanishApp / ESPEAK — единый источник правды
 
 > Android-приложение для изучения испанского языка русскоязычными пользователями (CEFR A1→B2).
-> **Версия:** v1.25.95 (versionCode 197). Канон диалекта: **Spain Madrid**.
-> **Последний апдейт документа:** 2026-06-19.
+> **Версия:** v1.27.0 (versionCode 202). Канон диалекта: **Spain Madrid**.
+> **Последний апдейт документа:** 2026-07-15.
 
 > ⚠️ **Документ частично stale.** Header + §1 «Текущее состояние» + §12 «Версии релизов»
 > обновлены до v1.25.95. Остальные секции (§2 Контент-инвентарь, §4 БД, §8 Roadmap,
@@ -43,9 +43,24 @@ per answer (`ratingUpdater.applyGameAnswer`), XP в finishGame (= показу �
   y cuarto / y media / menos cuarto, «Son las nueve menos cuarto» = 8:45).
   Слова из Room по CEFR: новый `WordDao.getRandomByLevels(levels, limit)`.
   2 прослушивания на задание (второе медленнее).
-- Тесты: `FraseLocaEngineTest` (13) + `OidoEngineTest` (14) — банк-integrity
-  (ловушка ≠ токен case-insensitive, одноплиточность ловушек), движки.
-  394/394 unit зелёные. ⚠️ versionCode НЕ поднят — поднять при релизе.
+- Тесты: `FraseLocaEngineTest` (15) + `OidoEngineTest` (14) — банк-integrity
+  (ловушка ≠ токен case-insensitive, одноплиточность ловушек), движки,
+  adjacent-disjoint окна фраз.
+- **Фидбэк-батч v1.27.0 (2026-07-15, релиз versionCode 202):** Frase Loca —
+  свободная сборка + «Проверить» (ошибка = −1 ❤️), снятие плиток тапом,
+  правила-диалог со шпаргалкой порядка слов, подсказка «слово»; окна фраз
+  соседних уровней не пересекаются. El Oído — подсказки 50/50 (50💡) и
+  «Ответ» (100💡, 0 очков + сброс комбо), варианты по центру/с заглавной/
+  без дублей/соразмерные. **Экономика 💡 ×10** (урок +20 … 3★ +50,
+  цены 10/20/50/100, миграция балансов в SpanishApp.onCreate).
+  Все 10 логотипов хаба — в Compose (GameLogos.kt, дизайн v3.3).
+  Настройки: «Восстановить из облака» (download-only) + честный текст сброса.
+- **🔥 КРИТИЧЕСКИЙ ФИКС СИНКА:** Firestore rules не рекурсивны —
+  `users/{uid}/state/main` был под default-deny, ВЕСЬ синк прогресса
+  (upload+download) молча падал PERMISSION_DENIED у всех юзеров всегда.
+  Добавлен вложенный match в [backend/firestore.rules](backend/firestore.rules);
+  **правила опубликованы владельцем в Firebase Console 2026-07-15** —
+  облачный бэкап прогресса заработал впервые.
 - ⚠️ Сборка перегенерировала `docs/content_packs/*.json` (side-effect
   gradle-таска) — изменения ОТКАЧЕНЫ, в коммит не попали. Если OTA-паки
   надо обновить — отдельной задачей.
@@ -842,7 +857,9 @@ Comment'нуто: CAMERA (убрана т.к. PickVisualMedia без permission)
 | 1.25.92 | 194 | 11 Tier-2 educational (B1/B2 + Grammar) |
 | 1.25.93 | 195 | Theory dialect Spain + A2 Indef/Imperf big + B2 estilo indirecto + Grammar id=17→B1 |
 | 1.25.94 | 196 | Phase B audit: verbs typos, vocab gender/spelling, libros AI artifact |
-| **1.25.95** | **197** | **Текущая** — Tier-1 technical audit (date locale, fake test asserts, broken androidTest) |
+| 1.25.95 | 197 | Tier-1 technical audit (date locale, fake test asserts, broken androidTest) |
+| 1.26.1 | 201 | Волна 2 аудита + гостевой режим + флэшкарты «Умный микс дня» |
+| **1.27.0** | **202** | **Текущая** — 2 новые игры (Frase Loca + El Oído), 10 логотипов хаба, экономика 💡×10, фикс Firestore rules (синк прогресса), «Восстановить из облака» |
 
 ---
 
