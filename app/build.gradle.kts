@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION", "DEPRECATION_ERROR")
+
 import java.util.Properties
 
 plugins {
@@ -82,14 +84,14 @@ android {
     // может отличаться. Сменён на "com.espeak.app" т.к. "com.spanishapp"
     // уже зарегистрирован другим разработчиком в Google Play.
     namespace = "com.spanishapp"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.espeak.app"
         minSdk = 26
         targetSdk = 35
-        versionCode = 202
-        versionName = "1.27.0"
+        versionCode = 203
+        versionName = "1.27.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // Proxy URL for production: hides the API key from the APK.
         // When non-empty, AiChatRepository routes requests through it.
@@ -186,7 +188,8 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    kotlinOptions { jvmTarget = "17" }
+    // AGP9/KGP2.3: kotlinOptions устарел — compilerOptions DSL
+
 
     buildFeatures {
         compose = true
@@ -290,4 +293,9 @@ dependencies {
     testImplementation("org.json:json:20240303")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+}
+kotlin {
+    compilerOptions {
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
+    }
 }
