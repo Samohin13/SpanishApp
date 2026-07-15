@@ -10,6 +10,46 @@
 > v1.25.95 / Room v32 / 31 миграция / 27 entities / 24 DAO. Подробности дрифта в
 > [audit-доке]. Не цитируй числа из § ниже без перепроверки grep'ом.
 
+## 🆕 v1.27 (2026-07-15): две новые игры — Frase Loca + El Oído
+
+Хаб игр: 6 → **8 игр**. Обе — 100 уровней через общий `GameLevelManager`
+(общая таблица `game_level_progress`, БЕЗ миграции Room), `LevelMapScreen` +
+`LevelCompleteSheet`, «Работа над ошибками» (`GameMistakesDao`), рейтинг+стрик
+per answer (`ratingUpdater.applyGameAnswer`), XP в finishGame (= показу шита:
+`(percent/10)*5`), PRO-гейт 10 уровней + гейт «Дальше», `TrackActivity(GAME)`.
+Карточки в хабе первыми с бейджем NEW и фирменными вектор-логотипами
+([GameLogos.kt](app/src/main/java/com/spanishapp/ui/games/GameLogos.kt),
+дизайн утверждён 2026-07-14). Строки UI ×4 локали. GameId: `frase`, `oido`.
+Маршруты: `game_frase`, `game_oido`.
+
+- **Frase Loca** («собери фразу из плиток», акцент #FF8A3D): 240 авторских
+  фраз = 20 тем × 12 (тема = 5 уровней, скользящее окно по пулу). Темы
+  A1→B2: saludos/familia/comida/ciudad/compras → Indefinido/Imperfecto/
+  Perfecto/planes/viajes → subjuntivo/condicional/косвенная речь/salud/
+  opiniones → subj.II/пассив/formal/идиомы/культура. **Ловушки** — лишние
+  плитки под типовые ошибки русских (род, ser/estar, артикли, времена,
+  subjuntivo) с объяснением-микроуроком; лимит по ярусам 0/1/2/3
+  (`trapLimitForLevel`). 3 жизни (минус — только ловушка), комбо за чистые
+  фразы, TTS озвучивает собранную фразу. Файлы: FraseLocaData/Engine/
+  ViewModel/Screen + FraseLocaBankA1/A2/B1/B2.
+- **El Oído** (аудирование, акцент #4EA1FF): сложность = **темп речи**
+  0.75→0.9→1.0→1.15 (`SpanishTts.speak(..., rateMultiplier)` — новый
+  параметр, прокинут в RemoteTts speed и локальный движок). 4 режима по
+  плану яруса (`OidoEngine.planForLevel`): выбор перевода, диктант
+  (accent-lenient: `matchDictation` EXACT/ACCENT_LOOSE), минимальные пары
+  (65 пар в `OidoPairsBank`: r/rr, s/[θ] (distinción!), гласные, ударение
+  hablo/habló, n/ñ, l/ll, d/r — b/v и ll/y НЕ используются, в Испании
+  неразличимы), числа (`NumberToSpanish`) и время (`TimeToSpanish`:
+  y cuarto / y media / menos cuarto, «Son las nueve menos cuarto» = 8:45).
+  Слова из Room по CEFR: новый `WordDao.getRandomByLevels(levels, limit)`.
+  2 прослушивания на задание (второе медленнее).
+- Тесты: `FraseLocaEngineTest` (13) + `OidoEngineTest` (14) — банк-integrity
+  (ловушка ≠ токен case-insensitive, одноплиточность ловушек), движки.
+  394/394 unit зелёные. ⚠️ versionCode НЕ поднят — поднять при релизе.
+- ⚠️ Сборка перегенерировала `docs/content_packs/*.json` (side-effect
+  gradle-таска) — изменения ОТКАЧЕНЫ, в коммит не попали. Если OTA-паки
+  надо обновить — отдельной задачей.
+
 ## 🆕 Что произошло за v1.25.89 → v1.25.95 (краткая хронология)
 
 - **v1.25.89** — убран Android Auto (закрытие Play Console reject «No items» в AA browse).
