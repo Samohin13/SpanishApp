@@ -19,11 +19,14 @@ object FraseLocaEngine {
         return FraseLocaContent.themes[idx]
     }
 
-    /** Число фраз в уровне — растёт с ярусом. */
+    /**
+     * Число фраз в уровне. Максимум 5: при пуле темы в 12 фраз это
+     * гарантирует, что СОСЕДНИЕ уровни не делят ни одной фразы
+     * (см. phrasesForLevel). Сложность растёт длиной фраз и ловушками.
+     */
     fun roundsForLevel(level: Int): Int = when {
         level <= 10 -> 4
-        level <= 50 -> 5
-        else        -> 6
+        else        -> 5
     }
 
     /**
@@ -38,19 +41,25 @@ object FraseLocaEngine {
     }
 
     /**
-     * Фразы уровня: скользящее окно по пулу темы (пул отсортирован от
-     * простых к сложным). Уровень 1 темы берёт начало пула, уровень 5 —
-     * хвост; соседние уровни пересекаются — это осознанное повторение.
+     * Фразы уровня (v1.27.1, фидбэк владельца: «последние 2 фразы
+     * переходят в начало следующего уровня» — убрано).
+     *
+     * Пул темы один раз детерминированно перемешивается, уровни берут
+     * ПОСЛЕДОВАТЕЛЬНЫЕ непересекающиеся срезы с закольцовыванием:
+     * уровень i → [i·rounds, i·rounds + rounds). При rounds ≤ 6 и пуле
+     * из 12 фраз соседние уровни гарантированно не делят ни одной фразы;
+     * повторы возможны только через 2+ уровня (это осознанное
+     * интервальное повторение, не баг).
      */
     fun phrasesForLevel(level: Int): List<FrasePhrase> {
-        val theme = themeForLevel(level)
-        val pool = theme.phrases
+        val themeIdx = ((level.coerceIn(1, 100) - 1) / LEVELS_PER_THEME)
+            .coerceIn(0, FraseLocaContent.themes.size - 1)
+        val pool = FraseLocaContent.themes[themeIdx].phrases
+            .shuffled(Random(themeIdx * 911L + 17))
         val rounds = roundsForLevel(level).coerceAtMost(pool.size)
         val levelIdx = (level - 1) % LEVELS_PER_THEME               // 0..4
-        val maxStart = (pool.size - rounds).coerceAtLeast(0)
-        val start = if (LEVELS_PER_THEME <= 1) 0
-                    else (levelIdx * maxStart) / (LEVELS_PER_THEME - 1)
-        return pool.subList(start, start + rounds)
+        val start = (levelIdx * rounds) % pool.size
+        return List(rounds) { pool[(start + it) % pool.size] }
     }
 
     /**

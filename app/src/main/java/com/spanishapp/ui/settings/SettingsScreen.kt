@@ -130,6 +130,23 @@ class SettingsViewModel @Inject constructor(
      * Anonymous-аккаунт даёт uid в Firebase → достаточно для синхронизации
      * прогресса между устройствами одного юзера через recover-flow.
      */
+    /**
+     * v1.27.1: восстановление из облака — ТОЛЬКО download, без
+     * предварительного upload. Нужен после случайного «Сброса прогресса»:
+     * syncNow() сначала заливает локальные нули (force=true) и тем самым
+     * затирает облачную копию — для восстановления он непригоден.
+     */
+    suspend fun restoreFromCloud(): SyncResult {
+        if (FirebaseAuth.getInstance().currentUser == null) return SyncResult.AUTH_FAILED
+        val down = syncRepository.downloadAll()
+        return when {
+            down.isSuccess -> SyncResult.SUCCESS
+            down.exceptionOrNull()?.message?.contains("network", true) == true ->
+                SyncResult.NO_INTERNET
+            else -> SyncResult.FAILED
+        }
+    }
+
     suspend fun syncNow(): SyncResult {
         // 1. Гарантируем наличие uid — авто-логин если нужно
         if (FirebaseAuth.getInstance().currentUser == null) {
@@ -462,6 +479,7 @@ fun SettingsScreen(
     var showLogoutDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
+    var showRestoreDialog by remember { mutableStateOf(false) }
     var showFontDialog by remember { mutableStateOf(false) }
     var showLevelDialog by remember { mutableStateOf(false) }
     var showGoalDialog by remember { mutableStateOf(false) }
@@ -812,6 +830,8 @@ fun SettingsScreen(
                     navController.navigate("leaderboard") { launchSingleTop = true }
                 }
                 // OTA «Загрузить обновления контента» убрана в v1 — см. Navigation.kt
+                // v1.27.1: восстановление из облака (download-only)
+                SettingsItem(Icons.Default.CloudDownload, stringResource(R.string.settings_restore_cloud)) { showRestoreDialog = true }
                 SettingsItem(Icons.Default.Refresh, stringResource(R.string.settings_reset_progress)) { showResetDialog = true }
                 val shareTextTpl = stringResource(R.string.set_share_text, "https://github.com/Samohin13/SpanishApp")
                 val shareChooser = stringResource(R.string.set_share_chooser)
@@ -901,6 +921,30 @@ fun SettingsScreen(
                 ) { Text(stringResource(R.string.set_dlg_delete_confirm), color = Color.White) }
             },
             dismissButton = { TextButton(onClick = { showDeleteDialog = false }) { Text(stringResource(R.string.btn_cancel)) } }
+        )
+    }
+
+    if (showRestoreDialog) {
+        val restoreDone = stringResource(R.string.restore_cloud_done)
+        val restoreFail = stringResource(R.string.restore_cloud_failed)
+        AlertDialog(
+            onDismissRequest = { showRestoreDialog = false },
+            title = { Text(stringResource(R.string.set_dlg_restore_title)) },
+            text = { Text(stringResource(R.string.set_dlg_restore_text)) },
+            confirmButton = {
+                Button(onClick = {
+                    showRestoreDialog = false
+                    scope.launch {
+                        val res = vm.restoreFromCloud()
+                        Toast.makeText(
+                            context,
+                            if (res == SettingsViewModel.SyncResult.SUCCESS) restoreDone else restoreFail,
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }) { Text(stringResource(R.string.set_dlg_restore_confirm)) }
+            },
+            dismissButton = { TextButton(onClick = { showRestoreDialog = false }) { Text(stringResource(R.string.btn_cancel)) } }
         )
     }
 

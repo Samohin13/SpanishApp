@@ -61,16 +61,24 @@ private val GAMES: List<Game> = listOf(
         customLogo = { size -> FraseLocaLogo(size) }, isNew = true),
     Game("El Oído",        com.spanishapp.R.string.game_oido_desc,      Icons.Default.Hearing,    Color(0xFF4EA1FF), "game_oido",       com.spanishapp.ui.home.WatermarkTheme.GAME_OIDO,
         customLogo = { size -> ElOidoLogo(size) }, isNew = true),
-    Game("Artículos",      com.spanishapp.R.string.game_articles_desc,  Icons.Default.Category,   Color(0xFF7B2FBE), "game_articles",   com.spanishapp.ui.home.WatermarkTheme.GAME_ARTICLES),
-    Game("Rápido",         com.spanishapp.R.string.game_speed_desc,     Icons.Default.Timer,      Color(0xFFE040FB), "game_speed",      com.spanishapp.ui.home.WatermarkTheme.GAME_SPEED),
-    Game("Verbos",         com.spanishapp.R.string.game_verbos_desc,    Icons.Default.Translate,  Color(0xFF2196F3), "conjugation_quiz",com.spanishapp.ui.home.WatermarkTheme.GAME_VERBS),
-    Game("Sopa de Letras", com.spanishapp.R.string.game_sopa_desc,      Icons.Default.GridOn,     Color(0xFF4CAF50), "game_sopa",       com.spanishapp.ui.home.WatermarkTheme.GAME_SOPA),
-    Game("Palabra Maestra",com.spanishapp.R.string.game_palabra_desc,   Icons.Default.TextFields, Color(0xFFFF9500), "game_palabra",    com.spanishapp.ui.home.WatermarkTheme.GAME_PALABRA),
-    Game("Cálculo",        com.spanishapp.R.string.game_math_desc,      Icons.Default.Calculate,  Color(0xFFF44336), "game_math",       com.spanishapp.ui.home.WatermarkTheme.GAME_MATH),
-    Game("Crucigrama",     com.spanishapp.R.string.game_crossword_desc, Icons.Default.BorderAll,  Color(0xFF26A69A), "game_crossword",  com.spanishapp.ui.home.WatermarkTheme.GAME_CROSSWORD),
+    Game("Artículos",      com.spanishapp.R.string.game_articles_desc,  Icons.Default.Category,   Color(0xFF7B2FBE), "game_articles",   com.spanishapp.ui.home.WatermarkTheme.GAME_ARTICLES,
+        customLogo = { size -> ArticulosLogo(size) }),
+    Game("Rápido",         com.spanishapp.R.string.game_speed_desc,     Icons.Default.Timer,      Color(0xFFE040FB), "game_speed",      com.spanishapp.ui.home.WatermarkTheme.GAME_SPEED,
+        customLogo = { size -> RapidoLogo(size) }),
+    Game("Verbos",         com.spanishapp.R.string.game_verbos_desc,    Icons.Default.Translate,  Color(0xFF2196F3), "conjugation_quiz",com.spanishapp.ui.home.WatermarkTheme.GAME_VERBS,
+        customLogo = { size -> VerbosLogo(size) }),
+    Game("Sopa de Letras", com.spanishapp.R.string.game_sopa_desc,      Icons.Default.GridOn,     Color(0xFF4CAF50), "game_sopa",       com.spanishapp.ui.home.WatermarkTheme.GAME_SOPA,
+        customLogo = { size -> SopaLogo(size) }),
+    Game("Palabra Maestra",com.spanishapp.R.string.game_palabra_desc,   Icons.Default.TextFields, Color(0xFFFF9500), "game_palabra",    com.spanishapp.ui.home.WatermarkTheme.GAME_PALABRA,
+        customLogo = { size -> PalabraLogo(size) }),
+    Game("Cálculo",        com.spanishapp.R.string.game_math_desc,      Icons.Default.Calculate,  Color(0xFFF44336), "game_math",       com.spanishapp.ui.home.WatermarkTheme.GAME_MATH,
+        customLogo = { size -> CalculoLogo(size) }),
+    Game("Crucigrama",     com.spanishapp.R.string.game_crossword_desc, Icons.Default.BorderAll,  Color(0xFF26A69A), "game_crossword",  com.spanishapp.ui.home.WatermarkTheme.GAME_CROSSWORD,
+        customLogo = { size -> CrucigramaLogo(size) }),
     Game("Libros",         com.spanishapp.R.string.game_libros_desc,    Icons.AutoMirrored.Filled.MenuBook,   Color(
         0xFFBEA62F
-    ), "game_libros", com.spanishapp.ui.home.WatermarkTheme.GAME_LIBROS)
+    ), "game_libros", com.spanishapp.ui.home.WatermarkTheme.GAME_LIBROS,
+        customLogo = { size -> LibrosLogo(size) })
 )
 
 @Composable

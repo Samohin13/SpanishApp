@@ -13,6 +13,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.VolumeUp
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -107,6 +108,7 @@ private fun FraseLocaContent(
     viewModel: FraseLocaViewModel,
     onBack: () -> Unit
 ) {
+    var showRules by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -136,7 +138,15 @@ private fun FraseLocaContent(
                     }
                 },
                 actions = {
-                    // Жизни (только в обычном уровне; ловушек в практике нет)
+                    // Правила игры
+                    IconButton(onClick = { showRules = true }) {
+                        Icon(
+                            Icons.Default.Info,
+                            contentDescription = stringResource(R.string.frase_rules_title),
+                            tint = ACCENT,
+                        )
+                    }
+                    // Жизни (только в обычном уровне)
                     if (!state.isMistakesPractice) {
                         Text(
                             buildString {
@@ -152,6 +162,35 @@ private fun FraseLocaContent(
         }
     ) { padding ->
         var confettiKey by remember { mutableIntStateOf(0) }
+        if (showRules) {
+            AlertDialog(
+                onDismissRequest = { showRules = false },
+                title = { Text(stringResource(R.string.frase_rules_title), fontWeight = FontWeight.Bold) },
+                text = {
+                    Text(
+                        stringResource(R.string.frase_rules_body),
+                        fontSize = 14.sp,
+                        lineHeight = 21.sp,
+                    )
+                },
+                confirmButton = {
+                    TextButton(onClick = { showRules = false }) {
+                        Text(stringResource(R.string.frase_rules_ok), fontWeight = FontWeight.Bold, color = ACCENT)
+                    }
+                },
+            )
+        }
+        var showNoHints by remember { mutableStateOf(false) }
+        if (showNoHints) {
+            AlertDialog(
+                onDismissRequest = { showNoHints = false },
+                title = { Text(stringResource(R.string.hint_bank_empty_title)) },
+                text = { Text(stringResource(R.string.hint_bank_empty_msg)) },
+                confirmButton = {
+                    TextButton(onClick = { showNoHints = false }) { Text("OK") }
+                },
+            )
+        }
         val hapticVm: com.spanishapp.ui.components.HapticPrefViewModel =
             androidx.hilt.navigation.compose.hiltViewModel()
         val hapticPercent by hapticVm.intensity.collectAsStateWithLifecycle()
@@ -265,14 +304,18 @@ private fun FraseLocaContent(
                                 modifier = Modifier.padding(8.dp)
                             )
                         }
-                        state.placed.forEach { w ->
+                        state.placed.forEachIndexed { idx, tile ->
+                            // Тап по поставленной плитке — вернуть в пул
                             Surface(
                                 shape = RoundedCornerShape(10.dp),
                                 color = ACCENT.copy(alpha = 0.14f),
-                                border = BorderStroke(1.dp, ACCENT.copy(alpha = 0.45f))
+                                border = BorderStroke(1.dp, ACCENT.copy(alpha = 0.45f)),
+                                modifier = Modifier.clickable(enabled = !state.phraseSolved) {
+                                    viewModel.unplaceTile(idx)
+                                }
                             ) {
                                 Text(
-                                    w,
+                                    tile.word,
                                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                                     fontSize = 16.sp,
                                     fontWeight = FontWeight.SemiBold,
@@ -283,8 +326,32 @@ private fun FraseLocaContent(
                     }
                 }
 
-                // Фидбэк: ловушка / фраза собрана
+                // Фидбэк: ловушка / неверный порядок / фраза собрана
                 when {
+                    state.checkFailed && state.trapMessage == null -> {
+                        Surface(
+                            modifier = Modifier.fillMaxWidth(),
+                            shape = RoundedCornerShape(14.dp),
+                            color = TRAP_RED.copy(alpha = 0.10f),
+                            border = BorderStroke(1.dp, TRAP_RED.copy(alpha = 0.45f))
+                        ) {
+                            Column(modifier = Modifier.padding(14.dp)) {
+                                Text(
+                                    stringResource(R.string.frase_wrong_check_title),
+                                    fontSize = 14.sp,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    color = TRAP_RED
+                                )
+                                Spacer(Modifier.height(3.dp))
+                                Text(
+                                    stringResource(R.string.frase_wrong_check_body),
+                                    fontSize = 13.5.sp,
+                                    lineHeight = 19.sp,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        }
+                    }
                     state.trapMessage != null -> {
                         Surface(
                             modifier = Modifier.fillMaxWidth(),
@@ -376,6 +443,47 @@ private fun FraseLocaContent(
                                 fontWeight = FontWeight.SemiBold,
                                 textAlign = TextAlign.Center,
                                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = alpha)
+                            )
+                        }
+                    }
+                }
+
+                // ── Подсказка + Проверить ───────────────────
+                if (!state.phraseSolved && !state.isGameOver) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (!state.isMistakesPractice) {
+                            val hintBalance by viewModel.hintBalance.collectAsStateWithLifecycle()
+                            OutlinedButton(
+                                onClick = { viewModel.useHint { showNoHints = true } },
+                                shape = RoundedCornerShape(14.dp),
+                                border = BorderStroke(1.dp, ACCENT.copy(alpha = 0.5f)),
+                                modifier = Modifier.height(52.dp)
+                            ) {
+                                Text(
+                                    stringResource(R.string.frase_hint_word) + "  💡$hintBalance",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = ACCENT
+                                )
+                            }
+                        }
+                        Button(
+                            onClick = { viewModel.checkPhrase() },
+                            enabled = state.placed.size == state.tokens.size,
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(52.dp),
+                            shape = RoundedCornerShape(14.dp),
+                            colors = ButtonDefaults.buttonColors(containerColor = ACCENT)
+                        ) {
+                            Text(
+                                stringResource(R.string.frase_check),
+                                fontWeight = FontWeight.ExtraBold,
+                                fontSize = 16.sp
                             )
                         }
                     }

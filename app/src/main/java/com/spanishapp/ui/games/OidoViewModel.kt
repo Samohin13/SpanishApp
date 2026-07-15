@@ -79,6 +79,8 @@ data class OidoState(
     val feedback: String? = null,
     /** Диктант засчитан, но без акцентов/ñ — показать правильное написание. */
     val accentWarning: Boolean = false,
+    /** 50/50: варианты, погашенные подсказкой (только режим «выбор»). */
+    val disabledOptions: Set<String> = emptySet(),
     val score: Int = 0,
     val correctCount: Int = 0,
     val streak: Int = 0,
@@ -100,11 +102,16 @@ class OidoViewModel @Inject constructor(
     private val mistakesDao: com.spanishapp.data.db.dao.GameMistakesDao,
     private val soundPlayer: SoundPlayer,
     private val tts: SpanishTts,
+    private val hintBank: com.spanishapp.service.HintBankManager,
     val levelManager: GameLevelManager,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(OidoState())
     val state = _state.asStateFlow()
+
+    /** Баланс 💡 для бейджа и кнопок подсказок. */
+    val hintBalance: kotlinx.coroutines.flow.StateFlow<Int> = hintBank.hintsFlow
+        .stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000), 0)
 
     val mistakesCount: kotlinx.coroutines.flow.StateFlow<Int> = mistakesDao
         .observeCount(GameId.OIDO)
@@ -178,6 +185,43 @@ class OidoViewModel @Inject constructor(
         val slowFactor = if (s.replaysLeft == 1) 0.75f else 1f
         tts.speak(task.spoken, rateMultiplier = s.rate * slowFactor)
         _state.value = s.copy(replaysLeft = s.replaysLeft - 1)
+    }
+
+    // ── Подсказки (💡 HintBank — общая валюта всех игр) ──────
+
+    /** 50/50 за 1💡: гасит два неверных варианта (только режим «выбор»). */
+    fun useFiftyFifty(onNoHints: () -> Unit) {
+        val s = _state.value
+        val task = s.task as? OidoTask.Choice ?: return
+        if (s.lastCorrect != null || s.disabledOptions.isNotEmpty()) return
+        viewModelScope.launch {
+            if (!hintBank.tryConsume(1)) {
+                onNoHints()
+                return@launch
+            }
+            val wrong = task.options.filter { it != task.correctRu }.shuffled().take(2)
+            _state.value = _state.value.copy(disabledOptions = wrong.toSet())
+        }
+    }
+
+    /** Верный ответ за 2💡: задание закрывается как решённое. */
+    fun useRevealAnswer(onNoHints: () -> Unit) {
+        val s = _state.value
+        val task = s.task ?: return
+        if (s.lastCorrect != null) return
+        viewModelScope.launch {
+            if (!hintBank.tryConsume(2)) {
+                onNoHints()
+                return@launch
+            }
+            when (task) {
+                is OidoTask.Choice -> submitChoice(task.correctRu)
+                is OidoTask.MinimalPair -> submitPair(task.correctWord)
+                is OidoTask.Dictation -> submitDictation(task.word)
+                is OidoTask.Number -> submitDigits(task.value)
+                is OidoTask.Time -> submitDigits(task.expected)
+            }
+        }
     }
 
     override fun onCleared() {
@@ -321,6 +365,7 @@ class OidoViewModel @Inject constructor(
             lastCorrect = null,
             feedback = null,
             accentWarning = false,
+            disabledOptions = emptySet(),
         )
         tts.speak(task.spoken, rateMultiplier = s.rate)
     }
@@ -342,29 +387,39 @@ class OidoViewModel @Inject constructor(
         val pairs = OidoEngine.pairsForLevel(level, plan.count { it == OidoMode.PAIRS })
             .toMutableList()
 
+        // Заглавная буква — как в остальном UI приложения
+        fun cap(s: String) = s.trim().replaceFirstChar { it.uppercaseChar() }
+
         val result = mutableListOf<OidoTask>()
         for (mode in plan) {
             when (mode) {
                 OidoMode.CHOICE -> {
                     if (choicePool.size < 4) continue
                     val word = choicePool.removeAt(0)
+                    val correctRu = cap(word.russian)
+                    val targetWords = word.russian.trim().split(' ').size
+                    // Дистракторы: без дублей, без совпадения с ответом и
+                    // соразмерные по длине (чтобы «У меня есть бронь» не
+                    // выдавала себя рядом с одиночными словами).
                     val distractors = choicePool.asSequence()
-                        .filter { it.russian != word.russian }
+                        .map { cap(it.russian) }
+                        .filter { it.lowercase() != correctRu.lowercase() }
+                        .filter { kotlin.math.abs(it.split(' ').size - targetWords) <= 1 }
+                        .distinctBy { it.lowercase() }
                         .take(3)
-                        .map { it.russian }
                         .toList()
                     if (distractors.size < 3) continue
                     result += OidoTask.Choice(
                         word = word.spanish,
-                        correctRu = word.russian,
-                        options = (distractors + word.russian).shuffled(rng),
+                        correctRu = correctRu,
+                        options = (distractors + correctRu).shuffled(rng),
                     )
                 }
                 OidoMode.DICTATION -> {
                     if (dictationPool.isEmpty()) continue
                     val word = dictationPool.removeAt(0)
                     choicePool.removeAll { it.spanish == word.spanish }
-                    result += OidoTask.Dictation(word = word.spanish, ru = word.russian)
+                    result += OidoTask.Dictation(word = word.spanish, ru = cap(word.russian))
                 }
                 OidoMode.PAIRS -> {
                     if (pairs.isEmpty()) continue

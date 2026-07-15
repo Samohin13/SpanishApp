@@ -136,6 +136,32 @@ class FraseLocaEngineTest {
     }
 
     @Test
+    fun `adjacent levels never share a phrase`() {
+        // v1.27.1, фидбэк владельца: «последние 2 фразы переходят в начало
+        // следующего уровня» — соседние уровни не должны делить фразы.
+        for (level in 1..99) {
+            val sameTheme =
+                (level - 1) / FraseLocaEngine.LEVELS_PER_THEME ==
+                    level / FraseLocaEngine.LEVELS_PER_THEME
+            if (!sameTheme) continue
+            val a = FraseLocaEngine.phrasesForLevel(level).map { it.sentence }.toSet()
+            val b = FraseLocaEngine.phrasesForLevel(level + 1).map { it.sentence }.toSet()
+            assertTrue(
+                "levels $level and ${level + 1} share phrases: ${a intersect b}",
+                (a intersect b).isEmpty()
+            )
+        }
+    }
+
+    @Test
+    fun `no duplicate phrases inside one level`() {
+        for (level in 1..100) {
+            val sentences = FraseLocaEngine.phrasesForLevel(level).map { it.sentence }
+            assertEquals("duplicates at level $level", sentences.size, sentences.distinct().size)
+        }
+    }
+
+    @Test
     fun `activeTraps respects level limit`() {
         for (level in listOf(1, 10)) {
             FraseLocaEngine.phrasesForLevel(level).forEach { p ->

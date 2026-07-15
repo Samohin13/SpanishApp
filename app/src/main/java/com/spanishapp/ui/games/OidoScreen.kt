@@ -151,11 +151,29 @@ private fun OidoContent(
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, null)
                     }
+                },
+                actions = {
+                    val hintBalance by viewModel.hintBalance.collectAsStateWithLifecycle()
+                    com.spanishapp.ui.components.HintBadge(
+                        count = hintBalance,
+                        modifier = Modifier.padding(end = 12.dp),
+                    )
                 }
             )
         }
     ) { padding ->
         var confettiKey by remember { mutableIntStateOf(0) }
+        var showNoHints by remember { mutableStateOf(false) }
+        if (showNoHints) {
+            AlertDialog(
+                onDismissRequest = { showNoHints = false },
+                title = { Text(stringResource(R.string.hint_bank_empty_title)) },
+                text = { Text(stringResource(R.string.hint_bank_empty_msg)) },
+                confirmButton = {
+                    TextButton(onClick = { showNoHints = false }) { Text("OK") }
+                },
+            )
+        }
         val hapticVm: com.spanishapp.ui.components.HapticPrefViewModel =
             androidx.hilt.navigation.compose.hiltViewModel()
         val hapticPercent by hapticVm.intensity.collectAsStateWithLifecycle()
@@ -293,10 +311,27 @@ private fun OidoContent(
                     }
                 }
 
-                // ── Ввод по режиму ──────────────────────────
+                // ── Подсказки (💡 общий банк всех игр) ──────
                 val answered = state.lastCorrect != null
+                if (!answered && state.task != null) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally)
+                    ) {
+                        if (state.task is OidoTask.Choice && state.disabledOptions.isEmpty()) {
+                            HintChip(stringResource(R.string.oido_hint_fifty)) {
+                                viewModel.useFiftyFifty { showNoHints = true }
+                            }
+                        }
+                        HintChip(stringResource(R.string.oido_hint_reveal)) {
+                            viewModel.useRevealAnswer { showNoHints = true }
+                        }
+                    }
+                }
+
+                // ── Ввод по режиму ──────────────────────────
                 when (val task = state.task) {
-                    is OidoTask.Choice -> OidoChoiceInput(task, answered) { viewModel.submitChoice(it) }
+                    is OidoTask.Choice -> OidoChoiceInput(task, answered, state.disabledOptions) { viewModel.submitChoice(it) }
                     is OidoTask.MinimalPair -> OidoPairInput(task, answered) { viewModel.submitPair(it) }
                     is OidoTask.Dictation -> OidoDictationInput(state.currentRound, answered) {
                         viewModel.submitDictation(it)
@@ -318,12 +353,33 @@ private fun OidoContent(
     }
 }
 
+// ── Чип-кнопка подсказки ─────────────────────────────────────
+
+@Composable
+private fun HintChip(label: String, onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(100.dp),
+        color = Color(0xFFFF6B35).copy(alpha = 0.14f),
+        border = BorderStroke(1.dp, Color(0xFFFF6B35).copy(alpha = 0.5f)),
+    ) {
+        Text(
+            label,
+            modifier = Modifier.padding(horizontal = 14.dp, vertical = 7.dp),
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFFFF6B35),
+        )
+    }
+}
+
 // ── Режим «выбор перевода» ───────────────────────────────────
 
 @Composable
 private fun OidoChoiceInput(
     task: OidoTask.Choice,
     answered: Boolean,
+    disabledOptions: Set<String>,
     onPick: (String) -> Unit
 ) {
     Column(
@@ -332,25 +388,31 @@ private fun OidoChoiceInput(
     ) {
         task.options.forEach { option ->
             val showState = answered && option == task.correctRu
+            val killed = option in disabledOptions   // погашен подсказкой 50/50
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable(enabled = !answered) { onPick(option) },
+                    .clickable(enabled = !answered && !killed) { onPick(option) },
                 shape = RoundedCornerShape(14.dp),
                 color = if (showState) OK_GREEN.copy(alpha = 0.12f)
-                        else MaterialTheme.colorScheme.surfaceContainerHighest,
+                        else MaterialTheme.colorScheme.surfaceContainerHighest.copy(
+                            alpha = if (killed) 0.35f else 1f
+                        ),
                 border = BorderStroke(
                     1.dp,
                     if (showState) OK_GREEN
-                    else MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
+                    else MaterialTheme.colorScheme.outline.copy(alpha = if (killed) 0.15f else 0.4f)
                 )
             ) {
                 Text(
                     option,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 14.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 14.dp),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.onSurface
+                    textAlign = TextAlign.Center,
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = if (killed) 0.3f else 1f)
                 )
             }
         }

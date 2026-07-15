@@ -83,6 +83,12 @@
     <string name="settings_export">Export data</string>
     <string name="settings_leaderboards">Leaderboards</string>
     <string name="settings_reset_progress">Reset progress</string>
+    <string name="settings_restore_cloud">Restore from cloud</string>
+    <string name="set_dlg_restore_title">Restore from cloud</string>
+    <string name="set_dlg_restore_text">Local data will be replaced with your cloud copy. Continue?</string>
+    <string name="set_dlg_restore_confirm">Restore</string>
+    <string name="restore_cloud_done">Progress restored from cloud ✓</string>
+    <string name="restore_cloud_failed">Restore failed — check internet and account sign-in</string>
     <string name="settings_protection_biometric">App lock with biometrics</string>
     <string name="settings_biometric_hint">Next time you open the app, we\'ll ask for your fingerprint or face.</string>
     <string name="settings_reminder_time">Reminder time</string>
@@ -162,7 +168,14 @@
     <string name="frase_levels_title">Frase Loca · levels</string>
     <string name="frase_level_of">Level %1$d / 100</string>
     <string name="frase_prompt_label">Translate the phrase</string>
-    <string name="frase_tap_hint">Tap the words in order</string>
+    <string name="frase_tap_hint">Build the phrase and tap “Check”</string>
+    <string name="frase_check">CHECK</string>
+    <string name="frase_wrong_check_title">✗ Not yet</string>
+    <string name="frase_wrong_check_body">Check the word order. Tap a word in the answer to remove it.</string>
+    <string name="frase_hint_word">💡 Word</string>
+    <string name="frase_rules_title">How to play</string>
+    <string name="frase_rules_ok">Got it</string>
+    <string name="frase_rules_body">🧩 Build the Spanish phrase from the Russian prompt.\n\n• Tap tiles to place them. Tap a placed word to remove it.\n• When done, press “Check”. A wrong check costs 1 ❤️ (you have 3).\n• Some tiles are traps — typical mistakes (gender, tense, ser/estar). A failed check explains the trap.\n• 💡 Hint places the next correct word (costs 1).\n\nWord-order cheat sheet:\n• Usual order: who + action + what (Yo compro pan).\n• Adjective goes AFTER the noun: coche rojo.\n• Negation no goes before the verb: No hablo.\n• Questions start with ¿: ¿Dónde vives?\n• Articles (el/la/un/una) are almost always required.</string>
     <string name="frase_trap_title">🪤 Trap!</string>
     <string name="frase_solved">¡Perfecto!</string>
     <string name="frase_score">Score: %1$d</string>
@@ -185,6 +198,8 @@
     <string name="oido_correct_prefix">Correct!</string>
     <string name="oido_wrong_prefix">Not quite. Correct:</string>
     <string name="oido_accent_note">Correct! But mind the spelling:</string>
+    <string name="oido_hint_fifty">💡1 · 50/50</string>
+    <string name="oido_hint_reveal">💡2 · Answer</string>
 
     <!-- ── Profile stats ── -->
     <string name="profile_stat_words">Words</string>
@@ -601,7 +616,7 @@
     <string name="set_dlg_delete_text">Are you sure? All your progress will be permanently deleted.</string>
     <string name="set_dlg_delete_confirm">Delete</string>
     <string name="set_dlg_reset_title">Reset progress</string>
-    <string name="set_dlg_reset_text">All your game progress will be erased. Are you sure?</string>
+    <string name="set_dlg_reset_text">All progress will be erased PERMANENTLY — on this device and in your cloud copy (auto-sync). Are you sure?</string>
     <string name="set_dlg_reset_confirm">Reset</string>
     <string name="set_dlg_goal_title">Daily goal</string>
     <string name="set_dlg_goal_minutes">%1$d minutes a day</string>

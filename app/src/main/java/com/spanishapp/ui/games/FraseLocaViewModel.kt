@@ -24,6 +24,12 @@ data class FraseTile(
     val used: Boolean = false,
 )
 
+/**
+ * v1.27.1 (фидбэк владельца): сборка СВОБОДНАЯ — любую плитку можно
+ * поставить и снять обратно, ответ проверяется кнопкой «Проверить».
+ * Неверная проверка сжигает жизнь. Так ошибку СОВЕРШИТЬ можно —
+ * и на ней можно учиться (ловушки объясняются после проверки).
+ */
 data class FraseLocaState(
     val level: Int = 1,
     val themeTitle: String = "",
@@ -34,17 +40,19 @@ data class FraseLocaState(
     val tokens: List<String> = emptyList(),
     /** Плитки: токены + ловушки, перемешанные детерминированно. */
     val tiles: List<FraseTile> = emptyList(),
-    /** Слова, уже поставленные в строку ответа (по порядку). */
-    val placed: List<String> = emptyList(),
+    /** Плитки, поставленные в строку ответа (по порядку тапов). */
+    val placed: List<FraseTile> = emptyList(),
     /** Активные ловушки текущей фразы: слово → объяснение. */
     val traps: Map<String, String> = emptyMap(),
     val lives: Int = 3,
-    /** Объяснение ловушки, на которую наступил игрок (баннер). */
+    /** Объяснение ловушки, стоящей в неверной сборке (баннер). */
     val trapMessage: String? = null,
-    /** Счётчик неверных тапов — триггер тряски. */
+    /** Проверка не прошла (generic-баннер, если ловушки нет). */
+    val checkFailed: Boolean = false,
+    /** Счётчик неверных проверок — триггер тряски. */
     val wrongTapCount: Int = 0,
     val score: Int = 0,
-    /** Сколько фраз собрано чисто (без единой ошибки). */
+    /** Сколько фраз собрано чисто (с первой проверки, без подсказок). */
     val cleanCount: Int = 0,
     val streak: Int = 0,
     val currentRound: Int = 0,
@@ -68,6 +76,7 @@ class FraseLocaViewModel @Inject constructor(
     private val mistakesDao: com.spanishapp.data.db.dao.GameMistakesDao,
     private val soundPlayer: SoundPlayer,
     private val tts: SpanishTts,
+    private val hintBank: com.spanishapp.service.HintBankManager,
     val levelManager: GameLevelManager,
 ) : ViewModel() {
 
@@ -78,11 +87,17 @@ class FraseLocaViewModel @Inject constructor(
         .observeCount(GameId.FRASE)
         .stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000), 0)
 
+    /** Баланс 💡 для бейджа и кнопки подсказки. */
+    val hintBalance: kotlinx.coroutines.flow.StateFlow<Int> = hintBank.hintsFlow
+        .stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000), 0)
+
     /** Фразы текущей попытки (окно уровня или батч практики ошибок). */
     private var phrases: List<FrasePhrase> = emptyList()
 
-    /** Была ли ошибка в текущей фразе (для clean-статистики и mistakes). */
+    /** Была ли ошибка/подсказка в текущей фразе (для clean-статистики). */
     private var phraseHadError = false
+    private var phraseUsedHint = false
+    private var mistakeRecorded = false
 
     /** item_id текущей фразы практики — для removeMistake при чистой сборке. */
     private var currentMistakeKey: String? = null
@@ -137,7 +152,7 @@ class FraseLocaViewModel @Inject constructor(
     fun speakPhrase() {
         val s = _state.value
         val text = if (s.phraseSolved) s.tokens.joinToString(" ")
-                   else s.placed.joinToString(" ")
+                   else s.placed.joinToString(" ") { it.word }
         if (text.isNotBlank()) tts.speak(text)
     }
 
@@ -155,6 +170,8 @@ class FraseLocaViewModel @Inject constructor(
         }
         val phrase = phrases[s.currentRound]
         phraseHadError = false
+        phraseUsedHint = false
+        mistakeRecorded = false
         currentMistakeKey = if (s.isMistakesPractice) phrase.sentence else null
         val traps = if (s.isMistakesPractice) emptyList()
                     else FraseLocaEngine.activeTraps(phrase, s.level)
@@ -168,93 +185,154 @@ class FraseLocaViewModel @Inject constructor(
             placed = emptyList(),
             traps = traps.associate { it.word to it.explanation },
             trapMessage = null,
+            checkFailed = false,
             currentRound = s.currentRound + 1,
             phraseSolved = false,
         )
     }
 
+    // ── Свободная сборка ─────────────────────────────────────
+
+    /** Поставить плитку в строку ответа (любую — проверка потом). */
     fun tapTile(tileId: Int) {
         val s = _state.value
         if (s.phraseSolved || s.isGameOver || s.showLevelMap || s.lives <= 0) return
         val tile = s.tiles.getOrNull(tileId) ?: return
-        if (tile.used) return
+        if (tile.used || s.placed.size >= s.tokens.size) return
+        _state.value = s.copy(
+            tiles = s.tiles.map { if (it.id == tileId) it.copy(used = true) else it },
+            placed = s.placed + tile,
+            trapMessage = null,
+            checkFailed = false,
+        )
+    }
 
-        val expected = s.tokens.getOrNull(s.placed.size) ?: return
-        when {
-            tile.word == expected -> onCorrectTap(s, tile)
-            s.traps.containsKey(tile.word) -> onTrapTap(s, tile)
-            else -> onWrongOrderTap(s)
+    /** Снять плитку из строки ответа обратно в пул. */
+    fun unplaceTile(index: Int) {
+        val s = _state.value
+        if (s.phraseSolved || s.isGameOver || s.lives <= 0) return
+        val tile = s.placed.getOrNull(index) ?: return
+        _state.value = s.copy(
+            tiles = s.tiles.map { if (it.id == tile.id) it.copy(used = false) else it },
+            placed = s.placed.filterIndexed { i, _ -> i != index },
+            trapMessage = null,
+            checkFailed = false,
+        )
+    }
+
+    /** Проверить собранную фразу. Неверно = −1 жизнь. */
+    fun checkPhrase() {
+        val s = _state.value
+        if (s.phraseSolved || s.isGameOver || s.lives <= 0) return
+        if (s.placed.size != s.tokens.size) return
+
+        val assembled = s.placed.map { it.word }
+        if (assembled == s.tokens) {
+            onSolved(s)
+        } else {
+            onWrongCheck(s, assembled)
         }
     }
 
-    private fun onCorrectTap(s: FraseLocaState, tile: FraseTile) {
-        val newPlaced = s.placed + tile.word
-        val solved = newPlaced.size == s.tokens.size
-        val clean = solved && !phraseHadError
+    private fun onSolved(s: FraseLocaState) {
+        val clean = !phraseHadError && !phraseUsedHint
+        soundPlayer.playCorrect()
+        tts.speak(s.tokens.joinToString(" "))
         _state.value = s.copy(
-            tiles = s.tiles.map { if (it.id == tile.id) it.copy(used = true) else it },
-            placed = newPlaced,
+            phraseSolved = true,
             trapMessage = null,
-            phraseSolved = solved,
+            checkFailed = false,
             cleanCount = if (clean) s.cleanCount + 1 else s.cleanCount,
-            streak = if (solved) (if (clean) s.streak + 1 else 0) else s.streak,
-            score = if (solved) s.score + (if (clean) 20 + s.streak * 5 else 10) else s.score,
-            answerHistory = if (solved) s.answerHistory + clean else s.answerHistory,
+            streak = if (clean) s.streak + 1 else 0,
+            score = s.score + (if (clean) 20 + s.streak * 5 else 10),
+            answerHistory = s.answerHistory + clean,
         )
-        if (solved) {
-            soundPlayer.playCorrect()
-            tts.speak(s.tokens.joinToString(" "))
-            viewModelScope.launch {
-                ratingUpdater.applyGameAnswer(clean)
-                if (_state.value.isMistakesPractice && clean) {
-                    currentMistakeKey?.let {
-                        runCatching { mistakesDao.removeMistake(GameId.FRASE, it) }
-                    }
+        viewModelScope.launch {
+            ratingUpdater.applyGameAnswer(clean)
+            if (_state.value.isMistakesPractice && clean) {
+                currentMistakeKey?.let {
+                    runCatching { mistakesDao.removeMistake(GameId.FRASE, it) }
                 }
             }
-            advanceJob?.cancel()
-            advanceJob = viewModelScope.launch {
-                delay(1600)
-                nextPhrase()
-            }
+        }
+        advanceJob?.cancel()
+        advanceJob = viewModelScope.launch {
+            delay(1600)
+            nextPhrase()
         }
     }
 
-    private fun onTrapTap(s: FraseLocaState, tile: FraseTile) {
+    private fun onWrongCheck(s: FraseLocaState, assembled: List<String>) {
         phraseHadError = true
         soundPlayer.playWrong()
+        // Если в сборке стоит ловушка — показываем её объяснение
+        // (микро-урок); иначе — общий баннер «проверь порядок».
+        val trapUsed = assembled.firstOrNull { it in s.traps }
         val newLives = (s.lives - 1).coerceAtLeast(0)
         _state.value = s.copy(
             lives = newLives,
-            trapMessage = s.traps[tile.word],
+            trapMessage = trapUsed?.let { s.traps[it] },
+            checkFailed = true,
             wrongTapCount = s.wrongTapCount + 1,
             streak = 0,
         )
         recordPhraseMistake(s)
         if (newLives <= 0) {
-            // Жизни кончились — уровень завершается с текущим результатом.
             advanceJob?.cancel()
             advanceJob = viewModelScope.launch {
-                delay(1600)
+                delay(2000)
                 finishGame()
             }
         }
     }
 
-    private fun onWrongOrderTap(s: FraseLocaState) {
-        phraseHadError = true
-        soundPlayer.playWrong()
-        _state.value = s.copy(
-            wrongTapCount = s.wrongTapCount + 1,
-            trapMessage = null,
-            streak = 0,
-        )
-        recordPhraseMistake(s)
+    /**
+     * Подсказка за 1💡: убирает неверный «хвост» сборки и ставит
+     * следующее правильное слово.
+     */
+    fun useHint(onNoHints: () -> Unit) {
+        val s = _state.value
+        if (s.phraseSolved || s.isGameOver || s.lives <= 0 || s.isMistakesPractice) return
+        if (s.placed.size >= s.tokens.size &&
+            s.placed.map { it.word } == s.tokens
+        ) return
+        viewModelScope.launch {
+            if (!hintBank.tryConsume(1)) {
+                onNoHints()
+                return@launch
+            }
+            phraseUsedHint = true
+            val cur = _state.value
+            // Длина правильного префикса
+            var prefix = 0
+            while (prefix < cur.placed.size &&
+                cur.placed[prefix].word == cur.tokens.getOrNull(prefix)
+            ) prefix++
+            val keep = cur.placed.take(prefix)
+            val returnedIds = cur.placed.drop(prefix).map { it.id }.toSet()
+            // Следующее правильное слово из пула
+            val nextWord = cur.tokens.getOrNull(prefix)
+            val tilesAfterReturn = cur.tiles.map {
+                if (it.id in returnedIds) it.copy(used = false) else it
+            }
+            val nextTile = nextWord?.let { w ->
+                tilesAfterReturn.firstOrNull { !it.used && it.word == w }
+            }
+            _state.value = cur.copy(
+                tiles = tilesAfterReturn.map {
+                    if (nextTile != null && it.id == nextTile.id) it.copy(used = true) else it
+                },
+                placed = if (nextTile != null) keep + nextTile else keep,
+                trapMessage = null,
+                checkFailed = false,
+            )
+        }
     }
 
-    /** Первая ошибка во фразе → фраза уходит в «Работу над ошибками». */
+    /** Первая неверная проверка фразы → фраза в «Работу над ошибками». */
     private fun recordPhraseMistake(s: FraseLocaState) {
-        if (s.isMistakesPractice) return
+        if (s.isMistakesPractice || mistakeRecorded) return
+        mistakeRecorded = true
         val sentence = s.tokens.joinToString(" ")
         if (sentence.isBlank()) return
         viewModelScope.launch {
