@@ -38,7 +38,9 @@ class GamesScreenViewModel @Inject constructor(
         "game_sopa"      to GameId.SOPA,
         "game_palabra"   to GameId.PALABRA,
         "game_math"      to GameId.MATH,
-        "game_crossword" to GameId.CROSSWORD
+        "game_crossword" to GameId.CROSSWORD,
+        "game_frase"     to GameId.FRASE,
+        "game_oido"      to GameId.OIDO,
     )
 
     // v1.26.1 FIX: РЕАКТИВНЫЙ прогресс через Flow. Раньше refresh() звался

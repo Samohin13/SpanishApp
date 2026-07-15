@@ -170,6 +170,35 @@
     <string name="game_crossword_desc">Кроссворды</string>
     <string name="game_libros_desc">Рассказы + тесты</string>
 
+    <!-- v1.27: Frase Loca — собери фразу -->
+    <string name="game_frase_desc">Собери фразу из плиток</string>
+    <string name="frase_levels_title">Frase Loca · уровни</string>
+    <string name="frase_level_of">Уровень %1$d / 100</string>
+    <string name="frase_prompt_label">Переведи фразу</string>
+    <string name="frase_tap_hint">Нажимай слова по порядку</string>
+    <string name="frase_trap_title">🪤 Ловушка!</string>
+    <string name="frase_solved">¡Perfecto!</string>
+    <string name="frase_score">Очки: %1$d</string>
+
+    <!-- v1.27: El Oído — тренажёр слуха -->
+    <string name="game_oido_desc">Пойми испанский на слух</string>
+    <string name="oido_levels_title">El Oído · уровни</string>
+    <string name="oido_level_of">Уровень %1$d / 100</string>
+    <string name="oido_score">Очки: %1$d</string>
+    <string name="oido_tempo">Темп ×%1$s</string>
+    <string name="oido_replays_left">Осталось прослушиваний: %1$d</string>
+    <string name="oido_listen_again">Прослушать ещё раз</string>
+    <string name="oido_mode_choice">Выбери перевод</string>
+    <string name="oido_mode_dictation">Напиши, что услышал</string>
+    <string name="oido_mode_pairs">Какое слово прозвучало?</string>
+    <string name="oido_mode_number">Набери число</string>
+    <string name="oido_mode_time">Который час?</string>
+    <string name="oido_type_hint">Пиши по-испански…</string>
+    <string name="oido_check">ПРОВЕРИТЬ</string>
+    <string name="oido_correct_prefix">Верно!</string>
+    <string name="oido_wrong_prefix">Не то. Правильно:</string>
+    <string name="oido_accent_note">Верно! Но проверь написание:</string>
+
     <!-- ── Profile stats ────────────────────────────────────── -->
     <string name="profile_stat_words">Слов</string>
     <string name="profile_stat_days">Дня</string>

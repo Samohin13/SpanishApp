@@ -46,12 +46,21 @@ private data class Game(
     val icon: ImageVector,
     val color: Color,
     val route: String,
-    val watermark: com.spanishapp.ui.home.WatermarkTheme
+    val watermark: com.spanishapp.ui.home.WatermarkTheme,
+    /** v1.27: фирменный вектор-логотип вместо тонированной иконки. */
+    val customLogo: (@Composable (androidx.compose.ui.unit.Dp) -> Unit)? = null,
+    /** v1.27: бейдж NEW на карточке. */
+    val isNew: Boolean = false,
 )
 
 // Описания через @StringRes — переключаются по языку. Названия игр
 // (Artículos, Rápido, etc.) — испанский бренд, не локализуем.
 private val GAMES: List<Game> = listOf(
+    // v1.27: новые игры — первыми, с бейджем NEW и фирменными логотипами.
+    Game("Frase Loca",     com.spanishapp.R.string.game_frase_desc,     Icons.Default.Extension,  Color(0xFFFF8A3D), "game_frase",      com.spanishapp.ui.home.WatermarkTheme.GAME_FRASE,
+        customLogo = { size -> FraseLocaLogo(size) }, isNew = true),
+    Game("El Oído",        com.spanishapp.R.string.game_oido_desc,      Icons.Default.Hearing,    Color(0xFF4EA1FF), "game_oido",       com.spanishapp.ui.home.WatermarkTheme.GAME_OIDO,
+        customLogo = { size -> ElOidoLogo(size) }, isNew = true),
     Game("Artículos",      com.spanishapp.R.string.game_articles_desc,  Icons.Default.Category,   Color(0xFF7B2FBE), "game_articles",   com.spanishapp.ui.home.WatermarkTheme.GAME_ARTICLES),
     Game("Rápido",         com.spanishapp.R.string.game_speed_desc,     Icons.Default.Timer,      Color(0xFFE040FB), "game_speed",      com.spanishapp.ui.home.WatermarkTheme.GAME_SPEED),
     Game("Verbos",         com.spanishapp.R.string.game_verbos_desc,    Icons.Default.Translate,  Color(0xFF2196F3), "conjugation_quiz",com.spanishapp.ui.home.WatermarkTheme.GAME_VERBS),
@@ -193,15 +202,22 @@ private fun GameCard(
                 .padding(pad),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Box(
-                modifier = Modifier
-                    .size(iconBoxSize)
-                    .clip(CircleShape)
-                    .background(game.color.copy(alpha = 0.12f))
-                    .graphicsLayer { rotationZ = wobble },
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(game.icon, null, tint = game.color, modifier = Modifier.size(iconSize))
+            if (game.customLogo != null) {
+                // v1.27: фирменный вектор-логотип (Frase Loca / El Oído)
+                Box(modifier = Modifier.graphicsLayer { rotationZ = wobble }) {
+                    game.customLogo.invoke(iconBoxSize)
+                }
+            } else {
+                Box(
+                    modifier = Modifier
+                        .size(iconBoxSize)
+                        .clip(CircleShape)
+                        .background(game.color.copy(alpha = 0.12f))
+                        .graphicsLayer { rotationZ = wobble },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(game.icon, null, tint = game.color, modifier = Modifier.size(iconSize))
+                }
             }
 
             Column {
@@ -238,6 +254,26 @@ private fun GameCard(
                 }
             } else {
                 Spacer(Modifier.height(0.dp))
+            }
+        }
+
+        // v1.27: бейдж NEW у свежих игр
+        if (game.isNew) {
+            Surface(
+                color = Color(0xFF4ADE80),
+                shape = RoundedCornerShape(99.dp),
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(10.dp)
+            ) {
+                Text(
+                    "NEW",
+                    fontSize = 9.sp,
+                    fontWeight = FontWeight.Black,
+                    letterSpacing = 1.sp,
+                    color = Color(0xFF052312),
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
+                )
             }
         }
       } // Box

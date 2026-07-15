@@ -166,6 +166,35 @@
     <string name="game_crossword_desc">Crucigramas</string>
     <string name="game_libros_desc">Relatos + tests</string>
 
+    <!-- v1.27: Frase Loca -->
+    <string name="game_frase_desc">Monta la frase con fichas</string>
+    <string name="frase_levels_title">Frase Loca · niveles</string>
+    <string name="frase_level_of">Nivel %1$d / 100</string>
+    <string name="frase_prompt_label">Traduce la frase</string>
+    <string name="frase_tap_hint">Toca las palabras en orden</string>
+    <string name="frase_trap_title">🪤 ¡Trampa!</string>
+    <string name="frase_solved">¡Perfecto!</string>
+    <string name="frase_score">Puntos: %1$d</string>
+
+    <!-- v1.27: El Oído -->
+    <string name="game_oido_desc">Entiende el español de oído</string>
+    <string name="oido_levels_title">El Oído · niveles</string>
+    <string name="oido_level_of">Nivel %1$d / 100</string>
+    <string name="oido_score">Puntos: %1$d</string>
+    <string name="oido_tempo">Ritmo ×%1$s</string>
+    <string name="oido_replays_left">Repeticiones restantes: %1$d</string>
+    <string name="oido_listen_again">Escuchar otra vez</string>
+    <string name="oido_mode_choice">Elige la traducción</string>
+    <string name="oido_mode_dictation">Escribe lo que oíste</string>
+    <string name="oido_mode_pairs">¿Qué palabra sonó?</string>
+    <string name="oido_mode_number">Teclea el número</string>
+    <string name="oido_mode_time">¿Qué hora es?</string>
+    <string name="oido_type_hint">Escribe en español…</string>
+    <string name="oido_check">COMPROBAR</string>
+    <string name="oido_correct_prefix">¡Correcto!</string>
+    <string name="oido_wrong_prefix">No exactamente. Correcto:</string>
+    <string name="oido_accent_note">¡Correcto! Pero revisa la ortografía:</string>
+
     <!-- ── Profile stats ── -->
     <string name="profile_stat_words">Palabras</string>
     <string name="profile_stat_days">Días</string>

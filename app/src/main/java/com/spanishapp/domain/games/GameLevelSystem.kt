@@ -27,6 +27,8 @@ object GameId {
     const val PALABRA   = "palabra"
     const val MATH      = "math"
     const val CROSSWORD = "crossword"
+    const val FRASE     = "frase"   // v1.27: Frase Loca — собери фразу
+    const val OIDO      = "oido"    // v1.27: El Oído — тренажёр слуха
     // libros — не трогаем (там свой libro_progress)
 }
 

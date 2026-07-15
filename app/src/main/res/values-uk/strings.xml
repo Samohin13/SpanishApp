@@ -166,6 +166,35 @@
     <string name="game_crossword_desc">Кросворди</string>
     <string name="game_libros_desc">Оповідання + тести</string>
 
+    <!-- v1.27: Frase Loca -->
+    <string name="game_frase_desc">Збери фразу з плиток</string>
+    <string name="frase_levels_title">Frase Loca · рівні</string>
+    <string name="frase_level_of">Рівень %1$d / 100</string>
+    <string name="frase_prompt_label">Переклади фразу</string>
+    <string name="frase_tap_hint">Натискай слова по порядку</string>
+    <string name="frase_trap_title">🪤 Пастка!</string>
+    <string name="frase_solved">¡Perfecto!</string>
+    <string name="frase_score">Бали: %1$d</string>
+
+    <!-- v1.27: El Oído -->
+    <string name="game_oido_desc">Зрозумій іспанську на слух</string>
+    <string name="oido_levels_title">El Oído · рівні</string>
+    <string name="oido_level_of">Рівень %1$d / 100</string>
+    <string name="oido_score">Бали: %1$d</string>
+    <string name="oido_tempo">Темп ×%1$s</string>
+    <string name="oido_replays_left">Залишилось прослуховувань: %1$d</string>
+    <string name="oido_listen_again">Прослухати ще раз</string>
+    <string name="oido_mode_choice">Обери переклад</string>
+    <string name="oido_mode_dictation">Напиши, що почув</string>
+    <string name="oido_mode_pairs">Яке слово прозвучало?</string>
+    <string name="oido_mode_number">Набери число</string>
+    <string name="oido_mode_time">Котра година?</string>
+    <string name="oido_type_hint">Пиши іспанською…</string>
+    <string name="oido_check">ПЕРЕВІРИТИ</string>
+    <string name="oido_correct_prefix">Вірно!</string>
+    <string name="oido_wrong_prefix">Не те. Правильно:</string>
+    <string name="oido_accent_note">Вірно! Але перевір написання:</string>
+
     <!-- ── Profile stats ── -->
     <string name="profile_stat_words">Слів</string>
     <string name="profile_stat_days">Дні</string>

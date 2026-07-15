@@ -157,6 +157,35 @@
     <string name="game_crossword_desc">Crosswords</string>
     <string name="game_libros_desc">Stories + quizzes</string>
 
+    <!-- v1.27: Frase Loca -->
+    <string name="game_frase_desc">Build the phrase from tiles</string>
+    <string name="frase_levels_title">Frase Loca · levels</string>
+    <string name="frase_level_of">Level %1$d / 100</string>
+    <string name="frase_prompt_label">Translate the phrase</string>
+    <string name="frase_tap_hint">Tap the words in order</string>
+    <string name="frase_trap_title">🪤 Trap!</string>
+    <string name="frase_solved">¡Perfecto!</string>
+    <string name="frase_score">Score: %1$d</string>
+
+    <!-- v1.27: El Oído -->
+    <string name="game_oido_desc">Understand Spanish by ear</string>
+    <string name="oido_levels_title">El Oído · levels</string>
+    <string name="oido_level_of">Level %1$d / 100</string>
+    <string name="oido_score">Score: %1$d</string>
+    <string name="oido_tempo">Speed ×%1$s</string>
+    <string name="oido_replays_left">Replays left: %1$d</string>
+    <string name="oido_listen_again">Listen again</string>
+    <string name="oido_mode_choice">Pick the translation</string>
+    <string name="oido_mode_dictation">Type what you heard</string>
+    <string name="oido_mode_pairs">Which word was it?</string>
+    <string name="oido_mode_number">Type the number</string>
+    <string name="oido_mode_time">What time is it?</string>
+    <string name="oido_type_hint">Type in Spanish…</string>
+    <string name="oido_check">CHECK</string>
+    <string name="oido_correct_prefix">Correct!</string>
+    <string name="oido_wrong_prefix">Not quite. Correct:</string>
+    <string name="oido_accent_note">Correct! But mind the spelling:</string>
+
     <!-- ── Profile stats ── -->
     <string name="profile_stat_words">Words</string>
     <string name="profile_stat_days">Days</string>

@@ -168,7 +168,17 @@ class SpanishTts @Inject constructor(
      *                   между русскими и испанскими сегментами (для AI Chat).
      *                   Если false (default) — только испанские части.
      */
-    fun speak(text: String, slow: Boolean = false, fullMixed: Boolean = false, esVoiceOverride: String? = null) {
+    fun speak(
+        text: String,
+        slow: Boolean = false,
+        fullMixed: Boolean = false,
+        esVoiceOverride: String? = null,
+        /**
+         * v1.27 (El Oído): точный множитель темпа (0.25..4.0). Имеет
+         * приоритет над [slow]. null = обычное поведение.
+         */
+        rateMultiplier: Float? = null,
+    ) {
         if (!enabled) {
             Log.d(TAG_ROUTE, "speak() blocked: ttsEnabled=false")
             return
@@ -189,9 +199,9 @@ class SpanishTts @Inject constructor(
                 // RemoteTtsService зовёт onAllFailed → играем системным TTS.
                 val ok = remoteTts.speak(
                     speakText,
-                    speed = if (slow) 0.7f else null,
+                    speed = rateMultiplier ?: if (slow) 0.7f else null,
                     esVoiceOverride = esVoiceOverride,
-                    onAllFailed = { speakLocal(text, slow, fullMixed) },
+                    onAllFailed = { speakLocal(text, slow, fullMixed, rateMultiplier) },
                 )
                 Log.d(TAG_ROUTE, "→ remoteTts.speak() returned $ok")
                 if (ok) return
@@ -200,15 +210,20 @@ class SpanishTts @Inject constructor(
             }
         }
 
-        speakLocal(text, slow, fullMixed)
+        speakLocal(text, slow, fullMixed, rateMultiplier)
     }
 
     /** Fallback: системный Android TTS (offline-путь). */
-    private fun speakLocal(text: String, slow: Boolean, fullMixed: Boolean) {
+    private fun speakLocal(
+        text: String,
+        slow: Boolean,
+        fullMixed: Boolean,
+        rateMultiplier: Float? = null,
+    ) {
         val t = tts ?: return
         if (!_isReady.value) return
-        val rate = if (slow) (voiceCfg.rate * 0.7f).coerceIn(0.3f, 2.0f)
-                   else voiceCfg.rate.coerceIn(0.3f, 2.0f)
+        val mult = rateMultiplier ?: if (slow) 0.7f else 1.0f
+        val rate = (voiceCfg.rate * mult).coerceIn(0.3f, 2.0f)
         t.setSpeechRate(rate)
 
         if (fullMixed) {

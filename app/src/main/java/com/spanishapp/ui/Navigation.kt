@@ -283,6 +283,18 @@ object Navigation {
                 }
                 PalabraMaestraScreen(navController)
             }
+            composable("game_frase") {
+                androidx.compose.runtime.LaunchedEffect(Unit) {
+                    com.spanishapp.service.Analytics.gameStarted("frase_loca")
+                }
+                FraseLocaScreen(navController)
+            }
+            composable("game_oido") {
+                androidx.compose.runtime.LaunchedEffect(Unit) {
+                    com.spanishapp.service.Analytics.gameStarted("el_oido")
+                }
+                OidoScreen(navController)
+            }
             composable("game_libros") {
                 androidx.compose.runtime.LaunchedEffect(Unit) {
                     com.spanishapp.service.Analytics.gameStarted("libros")

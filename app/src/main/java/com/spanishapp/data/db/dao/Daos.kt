@@ -65,6 +65,10 @@ interface WordDao {
     @Query("SELECT * FROM words ORDER BY RANDOM() LIMIT :limit")
     suspend fun getRandomWords(limit: Int): List<WordEntity>
 
+    // v1.27: случайные слова по CEFR-уровням — для El Oído (выбор/диктант)
+    @Query("SELECT * FROM words WHERE level IN (:levels) ORDER BY RANDOM() LIMIT :limit")
+    suspend fun getRandomByLevels(levels: List<String>, limit: Int): List<WordEntity>
+
     // Детерминированная выборка для кроссворда: фиксированный порядок по id,
     // перемешивается в Kotlin с seed = level → один уровень = один кроссворд всегда
     @Query("SELECT * FROM words ORDER BY id ASC LIMIT :limit")

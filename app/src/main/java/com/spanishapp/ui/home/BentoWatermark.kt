@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.rotate
 
 /**
  * Thematic background watermark.
@@ -40,6 +41,7 @@ enum class WatermarkTheme {
     // Games
     GAME_ARTICLES, GAME_SPEED, GAME_VERBS, GAME_SOPA,
     GAME_PALABRA, GAME_MATH, GAME_CROSSWORD, GAME_LIBROS,
+    GAME_FRASE, GAME_OIDO,
 
     // Course blocks
     BLOCK_ROCKET, BLOCK_HOME, BLOCK_LIGHTNING, BLOCK_MOUNTAIN
@@ -82,6 +84,8 @@ fun ThematicWatermark(
             WatermarkTheme.GAME_MATH       -> drawMathOps(origin, area, accent)
             WatermarkTheme.GAME_CROSSWORD  -> drawCrossword(origin, area, accent)
             WatermarkTheme.GAME_LIBROS     -> drawOpenBook(origin, area, accent)
+            WatermarkTheme.GAME_FRASE      -> drawWordTiles(origin, area, accent)
+            WatermarkTheme.GAME_OIDO       -> drawSoundWaves(origin, area, accent)
 
             WatermarkTheme.BLOCK_ROCKET    -> drawRocket(origin, area, accent)
             WatermarkTheme.BLOCK_HOME      -> drawHouse(origin, area, accent)
@@ -112,6 +116,55 @@ private fun DrawScope.drawBookStack(origin: Offset, area: Size, accent: Color) {
         val top    = origin.y + (3 - i) * (bookH + gap) - bookH
         drawRect(color, Offset(left, top + area.height - 3 * (bookH + gap)), Size(width, bookH))
         drawRect(accent.copy(alpha = 0.18f), Offset(left, top + area.height - 3 * (bookH + gap)), Size(width * 0.04f, bookH))
+    }
+}
+
+/** v1.27 Frase Loca: три плитки-слова под углами (мотив логотипа). */
+private fun DrawScope.drawWordTiles(origin: Offset, area: Size, accent: Color) {
+    val color = accent.copy(alpha = 0.13f)
+    val side = area.width.coerceAtMost(area.height) * 0.42f
+    val corner = androidx.compose.ui.geometry.CornerRadius(side * 0.22f, side * 0.22f)
+    val cx = origin.x + area.width * 0.45f
+    val cy = origin.y + area.height * 0.45f
+
+    fun tile(dx: Float, dy: Float, deg: Float, alpha: Float) {
+        rotate(degrees = deg, pivot = Offset(cx + dx + side / 2f, cy + dy + side / 2f)) {
+            drawRoundRect(
+                color = accent.copy(alpha = alpha),
+                topLeft = Offset(cx + dx, cy + dy),
+                size = Size(side, side),
+                cornerRadius = corner,
+            )
+        }
+    }
+    tile(-side * 0.75f, -side * 0.35f, -10f, 0.13f)
+    tile(side * 0.30f, -side * 0.55f, 7f, 0.18f)
+    tile(-side * 0.15f, side * 0.45f, -4f, 0.13f)
+}
+
+/** v1.27 El Oído: три расходящиеся звуковые дуги. */
+private fun DrawScope.drawSoundWaves(origin: Offset, area: Size, accent: Color) {
+    val side = area.width.coerceAtMost(area.height)
+    val cx = origin.x + area.width * 0.30f
+    val cy = origin.y + area.height * 0.60f
+    val stroke = side * 0.07f
+    // Точка-источник
+    drawCircle(accent.copy(alpha = 0.18f), radius = side * 0.08f, center = Offset(cx, cy))
+    // Три дуги вправо-вверх
+    for (i in 1..3) {
+        val r = side * (0.20f + i * 0.16f)
+        drawArc(
+            color = accent.copy(alpha = if (i == 2) 0.16f else 0.12f),
+            startAngle = -55f,
+            sweepAngle = 110f,
+            useCenter = false,
+            topLeft = Offset(cx - r, cy - r),
+            size = Size(r * 2, r * 2),
+            style = androidx.compose.ui.graphics.drawscope.Stroke(
+                width = stroke,
+                cap = androidx.compose.ui.graphics.StrokeCap.Round,
+            ),
+        )
     }
 }
 
